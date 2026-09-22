@@ -1,114 +1,389 @@
 # evaluation_protocol.md — Giao thức đánh giá
 
-## 1. Nguyên tắc
+> **Đọc file này trước khi báo cáo bất kỳ con số nào.**
+>
+> Bộ metric: [SYSTEM.md](SYSTEM.md) §8. File này nói *cách chạy để số có nghĩa*,
+> và quan trọng hơn: **số đó KHÔNG được nói gì**.
 
-- Metric, threshold và post-processing được định nghĩa trước test run.
-- Report macro và per-class; không dùng micro score che class yếu.
-- Confidence interval bootstrap theo recording, không theo frame.
-- Test chỉ chạy khi config và checkpoint đã đóng băng.
-- Mỗi bảng kết quả gắn run ID, split hash và taxonomy hash.
+---
 
-## 2. DataSEC classification
+## 0. Năm quy tắc nền
 
-### Primary
+| # | Quy tắc |
+|---:|---|
+| **Q1** | Metric, threshold và post-processing được định nghĩa **trước** test run |
+| **Q2** | Báo macro **và** per-class. Không dùng micro score che class yếu |
+| **Q3** | Confidence interval bootstrap theo **recording**, không theo frame |
+| **Q4** | Test chỉ chạy khi config và checkpoint đã đóng băng |
+| **Q5** | Mỗi bảng kết quả gắn run ID, split hash và taxonomy hash |
 
-- Macro F1 trên 22 coarse class.
-- Balanced accuracy.
-- Per-class precision, recall, F1.
+**Q3 đáng giải thích.** Frame không độc lập: 671,570 frame của test set đến từ
+140 recording. Bootstrap theo frame sẽ cho khoảng tin cậy hẹp giả tạo — nó giả
+định 671,570 mẫu độc lập trong khi thực tế chỉ có 140. Đơn vị lấy mẫu là recording.
 
-### Secondary
+---
 
-- Subclass macro F1 trên các node có subclass.
-- Hierarchical consistency: subclass prediction phải thuộc coarse parent.
-- Expected calibration error và reliability plot.
+## 1. Ba tập, ba câu hỏi khác nhau — đừng trộn
 
-## 3. DataSED SED
+| Tập | Trả lời câu hỏi | Được dùng để |
+|---|---|---|
+| **train** | — | Tối ưu tham số model; suy duration prior cho post-processing |
+| **dev** | "Cấu hình nào tốt hơn?" | Chọn θ, early stopping, chọn checkpoint, chọn config |
+| **test** | "Cấu hình đã chọn tốt đến đâu?" | **Chạy một lần, config đóng băng** |
 
-### Primary benchmark
+### Ba điều tuyệt đối không
 
-DataSED polyphonic, 21 class.
+- ❌ Dùng DataSED test để chọn threshold, duration prior hoặc checkpoint.
+- ❌ Dùng DataSEC test để chọn encoder cho báo cáo cuối.
+- ❌ Chọn run tốt nhất theo test.
 
-- PSDS theo hai operating scenarios được đóng băng trong config.
-- Event-based macro F1 với onset/offset collars công bố trong report.
-- Segment-based macro F1 tại segment length cố định.
+### Một vi phạm tinh vi, dễ mắc
 
-### Secondary benchmark
+Chạy test 3 lần với 3 checkpoint rồi báo cái tốt nhất **là tuning trên test**, dù
+mỗi lần chạy đều "đúng quy trình". Số lần chạy test phải bằng số cấu hình đã đóng
+băng từ trước, và mọi lần chạy đều phải báo cáo — kể cả lần xấu.
 
-DataSED monophonic, 22 class:
+---
 
-- Cùng metric và post-processing.
-- Không so trực tiếp score polyphonic và monophonic như cùng task.
+## 2. Chọn θ — quy tắc quan trọng nhất và dễ vi phạm nhất
 
-### Error analysis
+### 2.1 Bốn tham số post-processing và nguồn học
 
-- Class confusion.
-- Insertion, deletion, fragmentation, merging.
-- Hiệu năng theo event duration, polyphony và confidence.
-- Chênh lệch pretraining DataSEC vs no-pretraining.
+| Tham số | Học từ | **Không** được học từ | Lý do |
+|---|---|---|---|
+| $\theta_c$ — threshold per class | **dev** | test | Tối ưu event-based F1 trên dev |
+| $w_c$ — median filter | **train** | dev, test | Là duration prior |
+| $d^{min}_c$ — event tối thiểu | **train** | dev, test | Là duration prior |
+| $g^{max}_c$ — gap gộp | **train** | dev, test | Là duration prior |
 
-## 4. Grounded caption
+### 2.2 Vì sao duration prior phải suy từ TRAIN, không từ dev
 
-Caption được đánh giá so với event timeline, không cần reference prose.
+Đây là điểm dễ sai nhất và hậu quả im lặng.
 
-| Metric | Ý nghĩa |
-|---|---|
-| Event precision | Tỷ lệ event được nhắc có trong timeline |
-| Event recall | Tỷ lệ event timeline được nhắc trong caption |
-| Hallucination rate | Event mention không có bằng chứng |
-| Omission rate | Event có bằng chứng nhưng không được nhắc |
-| Temporal order accuracy | Thứ tự mention khớp onset |
-| Coverage by evidence | Tỷ lệ mention liên kết được event ID |
+$w_c$, $d^{min}_c$, $g^{max}_c$ được suy từ **phân bố thời lượng event**. Nếu suy
+chúng từ dev rồi đánh giá trên dev, thì hậu xử lý đã "biết trước" phân bố của
+chính tập đang chấm. Kết quả dev cao lên, nhưng cao vì rò rỉ, không vì model tốt.
 
-N-gram metric chỉ là phụ vì không có một câu diễn đạt duy nhất.
+Hậu quả thực tế: chọn cấu hình sai, vì cấu hình nào khớp dev nhất được chọn chứ
+không phải cấu hình tổng quát nhất. Rồi test tụt so với dev nhiều hơn dự kiến, và
+người làm tưởng là overfit model trong khi thật ra là rò rỉ post-processing.
 
-## 5. Retrieval/RAG
+**Quy tắc:** mọi tham số suy từ *thống kê nhãn* lấy từ train. Chỉ θ — thứ phụ
+thuộc vào *phân bố điểm của model* — mới quét trên dev.
 
-Tập query gồm bốn nhóm:
-
-1. Single-class retrieval.
-2. Multi-class conjunction.
-3. Temporal relation: A trước/sau B.
-4. Duration/confidence + semantic description.
-
-Metric:
-
-- Recall@1, @5, @10.
-- MRR.
-- nDCG@10 khi có graded relevance.
-- Filter exactness.
-- Evidence precision.
-- Unsupported-claim rate của answer.
-
-So sánh:
+### 2.3 Quy trình quét θ
 
 ```text
-structured only
-vector only
-hybrid structured + vector
+1. Train model, chọn checkpoint theo dev primary metric
+2. Sinh logit thô trên dev  →  ml/runs/<run>/predictions/dev.npz
+3. Suy w_c, d_min_c, g_max_c từ thống kê thời lượng của TRAIN
+4. Quét θ_c trên lưới [0.05, 0.95] bước 0.05, tối ưu event-based F1 per class
+5. Ghi postproc.json  →  ĐÓNG BĂNG
+6. Sinh logit thô trên test, áp postproc.json y nguyên, chạy MỘT lần
 ```
 
-## 6. Ablation tối thiểu
+Bước 2 và 6 tách logit ra khỏi metric là có chủ ý: nó cho phép quét lại θ mà
+không chạy lại inference. Không có nó, mỗi lần thử một θ khác tốn cả một lượt
+forward toàn bộ tập.
 
-- Không DataSEC pretraining vs có DataSEC pretraining.
-- Global threshold vs per-class threshold.
-- Caption template vs constrained learned captioner, nếu triển khai.
-- Vector retrieval vs hybrid retrieval.
-- Coarse-only vs hierarchical classifier trên DataSEC.
+### 2.4 Global θ hay per-class θ
 
-## 7. Model selection
+Báo cáo **cả hai** (ablation A2). Per-class kỳ vọng tốt hơn vì 21 class có tiên
+nghiệm rất khác nhau, nhưng nó cũng có 21 bậc tự do được fit trên dev — nên phải
+kiểm chênh lệch dev→test của cả hai. Nếu per-class tốt hơn hẳn trên dev mà tụt
+mạnh hơn trên test, đó là dấu hiệu overfit dev.
 
-- Checkpoint chọn bằng dev primary metric.
-- Threshold và median filter học từ train/dev, không dùng test labels.
-- Nếu nhiều seed, chọn config trước rồi report mean ± std của các seed đã định.
-- Không chọn run tốt nhất theo test.
+---
 
-## 8. Báo cáo bắt buộc
+## 3. Metric SED — cấu hình cụ thể
 
-- Dataset version và file counts thực tế.
-- Split rule và hash.
-- Model parameter count, input representation và training budget.
-- Metric config đầy đủ.
-- Per-class table.
-- Failure cases đại diện, gồm false positive và false negative.
-- Giới hạn: DataSED coarse labels không xác nhận subclass prediction.
+### 3.1 Ba loại metric, ba mục đích
 
+| Metric | Mục đích | Dùng làm primary? |
+|---|---|:---:|
+| Frame-based F1 | Xác nhận pipeline train chạy đúng | ❌ |
+| Segment-based F1 | So sánh thô, ít nhạy với biên | ❌ |
+| **Event-based F1** | Chất lượng phát hiện và biên | ✅ |
+| **PSDS** | Hiệu năng trên toàn dải operating point | ✅ |
+
+### 3.2 Cấu hình event-based F1
+
+Dùng `sed_eval`, **không tự viết lại**.
+
+| Tham số | Giá trị | Lý do |
+|---|---|---|
+| `t_collar` (onset) | 0.200 s | Chuẩn quen thuộc của DCASE, so sánh được |
+| `percentage_of_length` (offset) | 0.200 | Offset dung sai 20% độ dài event |
+| Offset collar hiệu dụng | $\max(0.2\text{ s},\ 0.2 \cdot L_{ref})$ | Sai 1 s trên event 2 s khác hẳn trên event 60 s |
+| Averaging | **macro** | Q2 |
+
+### 3.3 Cấu hình PSDS — hai scenario đóng băng
+
+Dùng `psds_eval`. Hai scenario phải khai trong config **trước** test.
+
+| | PSDS-1 | PSDS-2 |
+|---|---|---|
+| Mục tiêu | Định vị thời gian tốt | Tránh nhầm lớp |
+| `dtc_threshold` | 0.7 | 0.1 |
+| `gtc_threshold` | 0.7 | 0.1 |
+| `cttc_threshold` | — | 0.3 |
+| `alpha_ct` | 0 | 0.5 |
+| `alpha_st` | 1 | 1 |
+| `max_efpr` | 100 | 100 |
+
+PSDS-1 khắt khe về biên; PSDS-2 nới biên nhưng phạt cross-trigger. Báo cả hai vì
+một model có thể tốt ở cái này và tệ ở cái kia — và chênh lệch đó là thông tin.
+
+### 3.4 Chỉ dùng 21 class cho polyphonic
+
+`wind_turbine` không thuộc polyphonic label set. Class list **phải** lấy từ
+`taxonomy.polyphonic_class_ids`, không phải `taxonomy.class_ids`.
+
+**Không so trực tiếp score polyphonic (21 class) với monophonic (22 class)** như
+cùng một task. Chúng khác cả label set lẫn định nghĩa nhãn.
+
+---
+
+## 4. Class có ít mẫu — cách báo cáo
+
+### 4.1 Vấn đề đo được
+
+Bốn subclass DataSEC có dưới 25 file, nên dev/test chỉ 3–4 mẫu:
+
+| Subclass | Files | test | Một mẫu sai = |
+|---|---:|---:|---:|
+| `Crickets` | 20 | 3 | 33 điểm % |
+| `Olive shaker` | 20 | 3 | 33 điểm % |
+| `Magpies` | 21 | 4 | 25 điểm % |
+| `Lawn mower` | 21 | 4 | 25 điểm % |
+
+### 4.2 Quy tắc báo cáo
+
+| Điều kiện | Báo thế nào |
+|---|---|
+| $n_{test} \ge 30$ | F1 bình thường, kèm CI bootstrap |
+| $10 \le n_{test} < 30$ | F1 kèm CI, **đánh dấu mẫu nhỏ** |
+| $n_{test} < 10$ | **Số tuyệt đối, KHÔNG báo tỷ lệ** |
+
+```text
+✅ ĐÚNG: Crickets: đúng 2/3 · Olive shaker: đúng 1/3 · Magpies: đúng 3/4
+❌ SAI : Crickets: F1 = 0.67 · Olive shaker: F1 = 0.33 · Magpies: F1 = 1.00
+```
+
+**Vì sao "F1 = 1.00" là sai dù đúng số học:** nó gợi ý một mức tin cậy mà 3 mẫu
+không thể cung cấp. Người đọc bảng sẽ so nó với F1 = 0.85 của một class có 300
+mẫu, và kết luận ngược hoàn toàn với thực tế.
+
+### 4.3 Ảnh hưởng lên macro-F1
+
+Macro-F1 cho mỗi class trọng số bằng nhau, nên 4 subclass low-support có ảnh
+hưởng không cân xứng lên macro-F1 subclass. **Báo hai con số:**
+
+```text
+subclass macro-F1 (tất cả node)        = X.XXX   ← có nhiễu từ 4 class n<10
+subclass macro-F1 (node có n_test>=10) = Y.YYY   ← số diễn giải được
+```
+
+Không thay thế con số này bằng con số kia. Báo cả hai và nói rõ chênh lệch đến
+từ đâu.
+
+---
+
+## 5. "Chưa đo" không phải là 0
+
+| Tình huống | Ghi |
+|---|---|
+| Chưa chạy thí nghiệm | `○` hoặc "chưa đo" |
+| Đã chạy, kết quả bằng 0 | `0.000` kèm run ID |
+| Đã chạy, thất bại | "fail" kèm lý do và log |
+| Có số nhưng chưa xác minh | `⚠️ CẦN XÁC MINH` |
+
+Ô trống trong bảng kết quả là **lỗi trình bày**, không phải kết quả. Mỗi ô phải
+là một trong bốn trạng thái trên.
+
+---
+
+## 6. Khi nào hai run so được với nhau
+
+Hai run chỉ so được khi **toàn bộ** các mục sau giống nhau:
+
+| # | Phải giống | Kiểm bằng |
+|---:|---|---|
+| 1 | Split | `split_sha256` |
+| 2 | Taxonomy và class order | `taxonomy_sha256` |
+| 3 | Label mode (polyphonic / monophonic) | config |
+| 4 | Feature version | `data_manifest_sha256` |
+| 5 | Metric và tham số metric | config |
+| 6 | Training budget (epoch × batch) | config |
+
+Khác bất kỳ mục nào → **không so được**, và không được đặt cạnh nhau trong cùng
+một bảng mà không ghi chú.
+
+### 6.1 Hai thứ TUYỆT ĐỐI không so
+
+**1. Frame-based F1 với event-based F1.** Khác đơn vị đo. Một model frame-F1
+0.359 có thể có event-F1 0.10 hoặc 0.45 tùy hậu xử lý. Đặt chúng cùng một cột là
+gây hiểu nhầm nghiêm trọng.
+
+**2. Score polyphonic (21 class) với monophonic (22 class).** Khác label set,
+khác định nghĩa nhãn, khác số lớp trong mẫu số macro.
+
+### 6.2 Trường hợp baseline hiện tại
+
+Run `sed_polyphonic_20260922T115340Z`, frame macro-F1 test **0.359448**:
+
+| Điều kiện | Trạng thái |
+|---|---|
+| Split đã freeze | ❌ candidate, chưa qua D3/D4 |
+| θ đã hiệu chuẩn | ❌ cố định 0.5 |
+| Event-based metric | ❌ chỉ có frame |
+| `git.revision` truy vết được | ❌ `"HEAD"`, `dirty: true` |
+| Đã hội tụ | ❌ 8 epoch, chưa có bằng chứng |
+
+→ **Đây là số dò đường, không phải kết quả báo cáo.** Mọi lần trích dẫn phải kèm
+bốn giới hạn trên. Nó không so được với bất kỳ paper nào.
+
+---
+
+## 7. Điều kiện để một lần train được tính là hợp lệ
+
+| # | Điều kiện | Kiểm |
+|---:|---|---|
+| 1 | `complete = true` trong manifest | Run bị ngắt không được ghi `complete` |
+| 2 | `git.revision` là commit thật, `dirty = false` | Không tái lập được nếu dirty |
+| 3 | `split_sha256` khớp split đã freeze | |
+| 4 | `taxonomy_sha256` khớp taxonomy đang dùng | |
+| 5 | Seed đã set cho torch, numpy, python | |
+| 6 | Manifest có đủ trường bắt buộc | [SYSTEM.md](SYSTEM.md) §9.2 |
+| 7 | Cổng D4 đã pass | Trước benchmark chính |
+
+Artifact thiếu manifest hoặc thiếu bất kỳ mục nào ở trên **không hợp lệ cho báo
+cáo**, kể cả khi số đẹp.
+
+---
+
+## 8. Đánh giá caption
+
+### 8.1 Hai mức, phải báo cả hai
+
+| Mức | Timeline đầu vào | Trả lời |
+|---|---|---|
+| **Oracle** | Ground truth DataSED | Captioner tự nó có grounded không |
+| **End-to-end** | SED prediction đã đóng băng | Hệ thống thật có grounded không |
+
+Chênh lệch giữa hai mức = lỗi do SED, không phải lỗi captioner. **Chỉ báo
+end-to-end sẽ quy tội sai cho captioner.**
+
+### 8.2 Điều kiện để RQ2 có nghĩa
+
+Ba nhánh caption (template / constrained / unconstrained) phải chạy trên **cùng
+một bộ SED prediction đóng băng** (E5). Nếu đổi SED giữa các nhánh thì Δ
+hallucination trộn hai nguyên nhân và không nói gì về grounding.
+
+### 8.3 N-gram metric chỉ là phụ
+
+BLEU/METEOR/CIDEr so với reference caption sinh xác định từ timeline. Vì reference
+đó không phải caption người viết, điểm n-gram **không** nói lên chất lượng ngôn
+ngữ, và **không** phát hiện được hallucination (một caption bịa vẫn có thể trùng
+n-gram cao). Báo để tham khảo, không dùng kết luận.
+
+---
+
+## 9. Đánh giá retrieval
+
+### 9.1 Query set xây trước khi xem kết quả
+
+100 query, bốn nhóm (30/25/25/20 — [SYSTEM.md](SYSTEM.md) §8.5). Relevance
+judgment phải xác định được **bằng máy từ ground truth**, không phán đoán thủ công:
+
+```text
+Query "bản ghi có tiếng kính vỡ"
+  → relevant = mọi recording có ≥1 event ground-truth class glass_breaking
+```
+
+Như vậy relevance không phụ thuộc vào output của hệ thống đang đánh giá.
+
+### 9.2 Filter exactness — metric bắt vi phạm kiến trúc
+
+$$\text{filter exactness} = \frac{\text{số kết quả thỏa MỌI hard filter}}{\text{tổng số kết quả trả về}}$$
+
+`hybrid` và `structured_only` phải đạt **1.000**. Thấp hơn 1.000 là **lỗi hệ
+thống**, không phải hiệu năng kém — nghĩa là semantic ranker đã ghi đè hard filter,
+vi phạm [SYSTEM.md](SYSTEM.md) §7.2.
+
+`vector_only` sẽ thấp hơn 1.000 theo thiết kế. Đó chính là thứ cần đo để chứng
+minh giá trị của structured filter (RQ3).
+
+### 9.3 Unsupported-claim rate
+
+Tỷ lệ câu trả lời chứa claim không có `evidence[]` chống lưng. Mục tiêu **0.000**
+— vì đây là ràng buộc A1, không phải mục tiêu hiệu năng.
+
+---
+
+## 10. Quy ước trình bày số
+
+| Hạng mục | Quy ước |
+|---|---|
+| F1, precision, recall, PSDS | 3 chữ số thập phân: `0.359` |
+| Số trong artifact JSON | Giữ đầy đủ: `0.35944821333661925` |
+| Phần trăm | 1 chữ số: `37.6%` |
+| Đếm | Có phân cách nghìn: `5,048` |
+| Thời gian | Giây, 1–2 chữ số: `12.4–13.1 s` |
+| Δ giữa hai nhánh | Kèm dấu: `+0.042` |
+| CI | `0.359 [0.331, 0.388]` |
+| Hash trong bảng | 8 ký tự đầu: `656c1851…` |
+
+**Không làm tròn trong artifact.** Làm tròn chỉ ở tầng trình bày, do
+`scripts/report_*.py` thực hiện. Số gốc giữ nguyên trong JSON để tính lại được.
+
+---
+
+## 11. Giao thức chạy test một lần
+
+```text
+TIỀN ĐIỀU KIỆN
+  [ ] D4 pass, split đã freeze
+  [ ] Checkpoint chọn theo dev, đã đóng băng
+  [ ] postproc.json đã đóng băng
+  [ ] Danh sách cấu hình sẽ chạy đã viết ra TRƯỚC
+  [ ] git clean, revision ghi được
+
+CHẠY
+  1. Sinh logit thô trên test → predictions/test.npz
+  2. Áp postproc.json y nguyên
+  3. Tính event-based F1, PSDS-1, PSDS-2, per-class
+  4. Bootstrap CI theo recording, 1000 lần lặp
+  5. Sinh docs/measurements/<run_id>.md bằng script
+
+SAU KHI CHẠY
+  [ ] Báo cáo MỌI cấu hình đã chạy, kể cả cấu hình xấu
+  [ ] Không quay lại sửa θ rồi chạy lại
+  [ ] Cập nhật STATUS.md
+```
+
+**Nếu phát hiện lỗi thật sau khi chạy test** (bug trong metric, split sai), được
+sửa và chạy lại — nhưng **phải ghi vào báo cáo** rằng test đã chạy N lần và vì
+sao. Che giấu việc này là gian lận; ghi rõ thì không.
+
+---
+
+## 12. Những gì bộ đánh giá hiện tại CHƯA làm được
+
+Viết vào báo cáo, không giấu.
+
+| # | Chưa có | Hệ quả |
+|---:|---|---|
+| 1 | Event-based F1 và PSDS | Chưa có kết luận SED nào so được với văn liệu |
+| 2 | Post-processing hiệu chuẩn | θ = 0.5 gần như chắc chắn không tối ưu |
+| 3 | Bootstrap CI | Chưa biết chênh lệch giữa hai run có ý nghĩa không |
+| 4 | Lưu logit thô | Mỗi lần đổi θ phải chạy lại inference |
+| 5 | Nhiều seed | Chưa tách được chênh lệch thật với nhiễu seed |
+| 6 | Metric calibration (ECE) | Chưa biết score có diễn giải như xác suất được không |
+| 7 | Phân tích lỗi per-class | Chưa biết class yếu sai kiểu gì |
+| 8 | Toàn bộ metric caption và retrieval | Chưa triển khai |
+
+**Mục 5 đáng chú ý:** hiện mỗi cấu hình chỉ chạy một seed. Không có nhiều seed
+thì Δ +0.02 giữa hai nhánh **không phân biệt được với nhiễu**. Kế hoạch: 3 seed
+cho các cấu hình cuối, báo mean ± std. Nếu ngân sách tính toán không cho phép,
+phải nói rõ và không tuyên bố cải thiện nhỏ là có ý nghĩa.
