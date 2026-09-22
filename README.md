@@ -2,7 +2,10 @@
 
 Khóa luận Khoa học dữ liệu về phát hiện sự kiện âm thanh môi trường, sinh mô tả có căn cứ và truy xuất sự kiện bằng RAG.
 
-> Trạng thái: khung kiến trúc ban đầu. Chưa tải dữ liệu, chưa huấn luyện model, chưa có kết quả thực nghiệm. Xem [STATUS](docs/STATUS.md).
+> **Trạng thái:** hai dataset đã tải và verify (MD5 khớp, license `cc-by-nc-sa-4.0`).
+> Taxonomy 22 lớp + 28 subclass đã xác minh từ archive. SED baseline đã chạy nhưng
+> là số dò đường, chưa phải kết quả. Cổng đang chặn: **D3 audit duplicate**.
+> Chi tiết có bằng chứng: [STATUS](docs/STATUS.md).
 
 ## 1. Bài toán
 
@@ -67,15 +70,21 @@ environmental-audio-rag/
 
 ## 6. Nguồn chân lý
 
-| Nội dung | File |
-|---|---|
-| Phạm vi và kiến trúc | `docs/SYSTEM.md` |
-| Trạng thái thực tế | `docs/STATUS.md` |
-| Roadmap | `docs/PLAN.md` |
-| Dữ liệu và split | `docs/DATA_PLAN.md` |
-| Class và mapping | `docs/taxonomy.md` |
-| Đánh giá | `docs/evaluation_protocol.md` |
-| Quyết định kiến trúc | `docs/decisions/` |
+| Nội dung | File | Khi nào đọc |
+|---|---|---|
+| **Đang ở đâu, làm gì tiếp** | [CLAUDE.md](CLAUDE.md) | **Đầu mỗi phiên** |
+| Đặc tả hệ thống (khung báo cáo) | [docs/SYSTEM.md](docs/SYSTEM.md) | Khi cần chi tiết kỹ thuật |
+| Trạng thái có bằng chứng | [docs/STATUS.md](docs/STATUS.md) | Khi cần số liệu hiện hành |
+| Roadmap 8 tuần | [docs/PLAN.md](docs/PLAN.md) | Đầu mỗi tuần |
+| Dữ liệu, dedup và split | [docs/DATA_PLAN.md](docs/DATA_PLAN.md) | Suốt giai đoạn D1–D4 |
+| 22 lớp và ranh giới | [docs/taxonomy.md](docs/taxonomy.md) | Khi làm việc với nhãn hoặc caption |
+| Xử lý nhãn | [docs/annotation_guideline.md](docs/annotation_guideline.md) | Khi viết parser nhãn |
+| **Số nào có nghĩa, số đó KHÔNG nói gì** | [docs/evaluation_protocol.md](docs/evaluation_protocol.md) | **Trước khi báo cáo bất kỳ con số nào** |
+| Vận hành huấn luyện | [docs/TRAINING_OPS_PLAN.md](docs/TRAINING_OPS_PLAN.md) | Trước lần train mới |
+| Văn liệu và mức xác minh | [docs/RELATED_WORK.md](docs/RELATED_WORK.md) | Khi viết Chương 2 |
+| Inventory (sinh tự động) | [docs/data_inventory.md](docs/data_inventory.md) | Khi cần số liệu dữ liệu |
+| Quyết định kiến trúc | [docs/decisions/](docs/decisions/) | Khi định thay đổi kiến trúc |
+| Số đo (sinh tự động) | [docs/measurements/](docs/measurements/) | Khi cần bằng chứng cho một claim |
 
 ## 7. Nguyên tắc
 
@@ -85,3 +94,34 @@ environmental-audio-rag/
 - Caption không được thêm event ngoài timeline đầu vào.
 - Mọi số liệu trong báo cáo phải truy ngược được tới manifest, config và model artifact.
 
+## 8. Dữ liệu và license
+
+Hai dataset dùng trong đề tài, cả hai **CC-BY-NC-SA-4.0**:
+
+| Dataset | Record DOI | Files |
+|---|---|---:|
+| DataSEC | [10.5281/zenodo.17033970](https://doi.org/10.5281/zenodo.17033970) | 5,048 |
+| DataSED | [10.5281/zenodo.15346092](https://doi.org/10.5281/zenodo.15346092) | 717 |
+
+Tác giả: Fredianelli L., Artuso F., Pompei G., Licitra G., Iannace G., Akbaba A.
+
+**Ràng buộc `SA` áp lên derivative:** feature, checkpoint và caption sinh từ dữ
+liệu này nếu công bố phải cùng CC-BY-NC-SA-4.0, **không** được MIT/Apache. Code
+pipeline là tác phẩm độc lập nên có thể license riêng. Chi tiết:
+[DATA_PLAN §3](docs/DATA_PLAN.md).
+
+Không archive nào chứa LICENSE hay README — license chỉ lấy được từ Zenodo record
+metadata đã lưu trong `data/reference/`.
+
+## 9. Bắt đầu
+
+```bash
+python -m venv .venv
+.venv/Scripts/python.exe -m pip install -r requirements.txt
+.venv/Scripts/python.exe -m pip install -r requirements-torch.txt     --index-url https://download.pytorch.org/whl/cu128
+
+.venv/Scripts/python.exe -m pytest -q
+.venv/Scripts/python.exe -m ruff check .
+```
+
+Lệnh tái lập pipeline: [CLAUDE.md §7](CLAUDE.md).
