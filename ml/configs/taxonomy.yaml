@@ -1,0 +1,58 @@
+version: "0.1"
+classes:
+  - id: bells
+    source_label: Bells
+  - id: birds
+    source_label: Birds
+  - id: cat_fights_and_moans
+    source_label: Cat fight and moans
+    aliases: [Cat fights and moans]
+  - id: chicken_coop
+    source_label: Chicken coop
+  - id: cicadas_and_crickets
+    source_label: Cicadas and crickets
+    subclasses: [cicadas, crickets]
+  - id: crows_seagulls_magpies
+    source_label: Crows seagulls and magpies
+    subclasses: [crows, seagulls, magpies]
+  - id: dog_barkings_and_howlings
+    source_label: Dog barkings and howlings
+  - id: glass_breaking
+    source_label: Glass breaking
+  - id: horn
+    source_label: Horn
+  - id: jet_aircrafts
+    source_label: Jet aircrafts
+  - id: lawn_mower_brush_cutter_olive_shaker
+    source_label: Lawn mower brush cutter and olive shaker
+    subclasses: [lawn_mower, brush_cutter, olive_shaker]
+  - id: music
+    source_label: Music
+  - id: propeller_aircrafts
+    source_label: Propeller aircrafts
+    subclasses: [airplanes, helicopters]
+  - id: sirens_and_alarms
+    source_label: Sirens and alarms
+    subclasses: [sirens, alarms]
+  - id: thunder_fireworks_gunshot
+    source_label: Thunder fireworks and gunshot
+    subclasses: [thunder, fireworks, gunshot]
+  - id: train
+    source_label: Train
+  - id: vacuum_cleaner_fan_hairdryer
+    source_label: Vacuum cleaner fan and hairdryer
+    subclasses: [vacuum_cleaner, fan, hairdryer]
+  - id: vehicle_idling
+    source_label: Vehicle idling
+    subclasses: [car_truck_idling, motorbike_idling]
+  - id: vehicle_pass_by
+    source_label: Vehicle pass-by
+    subclasses: [car_pass_by, motorbike_pass_by, truck_pass_by]
+  - id: voices
+    source_label: Voices
+  - id: wind_turbine
+    source_label: Wind turbine
+    polyphonic: false
+  - id: workshop
+    source_label: Workshop
+    subclasses: [air_compressor, drill, grinder, jackhammer, saw]

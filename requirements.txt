@@ -1,0 +1,15 @@
+iterative-stratification>=0.1.9,<1
+librosa>=0.11,<1
+numpy>=2,<3
+pandas>=2.2,<3
+PyYAML>=6,<7
+requests>=2.32,<3
+scikit-learn>=1.6,<2
+scipy>=1.15,<2
+soundfile>=0.13,<1
+tqdm>=4.67,<5
+
+# Development
+pytest>=8,<10
+ruff>=0.12,<1
+

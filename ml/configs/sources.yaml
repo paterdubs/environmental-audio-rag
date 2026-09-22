@@ -1,0 +1,16 @@
+sources:
+  datasec:
+    record_id: 17033970
+    record_url: https://zenodo.org/records/17033970
+    api_url: https://zenodo.org/api/records/17033970
+    expected_file: DATASEC.zip
+    expected_size: 6414663316
+    expected_md5: 29fa9b8cc84cfa69aa4e5e674e780383
+  datased:
+    record_id: 15346092
+    record_url: https://zenodo.org/records/15346092
+    api_url: https://zenodo.org/api/records/15346092
+    expected_file: DataSED - Dataset for Sound Event Detection of environmental noise.zip
+    expected_size: 4510378259
+    expected_md5: 44e093f675fc44cfb8a11b68456b72d7
+

@@ -1,0 +1,86 @@
+{
+  "recordings": 717,
+  "hours": 18.684703628117916,
+  "exact_duplicate_groups": 8,
+  "taxonomy_version": "0.1",
+  "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+  "annotations": {
+    "polyphonic": {
+      "mode": "polyphonic",
+      "source_file": "Polyphonic_sound_detection.csv",
+      "events": 4034,
+      "recordings_with_events": 703,
+      "classes": 21,
+      "raw_labels": [
+        "Bells",
+        "Birds",
+        "Cat fight and moans",
+        "Chicken coop",
+        "Cicadas and crickets",
+        "Crows seagulls and magpies",
+        "Dog barkings and howlings",
+        "Glass breaking",
+        "Horn",
+        "Jet aircrafts",
+        "Lawn mower brush cutter and olive shaker",
+        "Music",
+        "Propeller aircrafts",
+        "Sirens and alarms",
+        "Thunder fireworks and gunshot",
+        "Train",
+        "Vacuum cleaner fan and hairdryer",
+        "Vehicle idling",
+        "Vehicle pass-by",
+        "Voices",
+        "Workshop"
+      ],
+      "maximum_end_overrun_s": 0.004988662131523824,
+      "maximum_fraction_error": 0.005266437861271567,
+      "duplicate_annotation_rows": 0,
+      "event_duration_s": {
+        "minimum": 0.41000000000000014,
+        "median": 5.800000000000001,
+        "maximum": 296.5
+      }
+    },
+    "monophonic": {
+      "mode": "monophonic",
+      "source_file": "Monophonic_sound_detection.csv",
+      "events": 4309,
+      "recordings_with_events": 717,
+      "classes": 22,
+      "raw_labels": [
+        "Bells",
+        "Birds",
+        "Cat fight and moans",
+        "Chicken coop",
+        "Cicadas and crickets",
+        "Crows seagulls and magpies",
+        "Dog barkings and howlings",
+        "Glass breaking",
+        "Horn",
+        "Jet aircrafts",
+        "Lawn mower brush cutter and olive shaker",
+        "Music",
+        "Propeller aircrafts",
+        "Sirens and alarms",
+        "Thunder fireworks and gunshot",
+        "Train",
+        "Vacuum cleaner fan and hairdryer",
+        "Vehicle idling",
+        "Vehicle pass-by",
+        "Voices",
+        "Wind turbine",
+        "Workshop"
+      ],
+      "maximum_end_overrun_s": 0.004988662131523824,
+      "maximum_fraction_error": 0.005266437861271567,
+      "duplicate_annotation_rows": 0,
+      "event_duration_s": {
+        "minimum": 0.389999999999997,
+        "median": 6.1299999999999955,
+        "maximum": 284.95
+      }
+    }
+  }
+}

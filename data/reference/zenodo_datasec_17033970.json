@@ -1,0 +1,166 @@
+{
+  "created": "2025-09-02T05:40:53.292485+00:00",
+  "modified": "2025-09-16T04:57:26.197796+00:00",
+  "id": 17033970,
+  "conceptrecid": "15340688",
+  "doi": "10.5281/zenodo.17033970",
+  "conceptdoi": "10.5281/zenodo.15340688",
+  "doi_url": "https://doi.org/10.5281/zenodo.17033970",
+  "metadata": {
+    "title": "DataSEC - Dataset for Sound Event Classification of environmental noise",
+    "doi": "10.5281/zenodo.17033970",
+    "publication_date": "2025-09-02",
+    "description": "<p><span lang=\"EN-US\">Sound Event Classification (SEC) has attracted considerable attention in recent times, with applications in a variety of fields, including environmental acoustics. In particular, there has been a notable increase in the level of interest in outdoor measurements, with a view to distinguishing the contributions of a particular source from the background noise. The utilisation of machine learning tools is contingent upon the availability of substantial datasets for the purposes of training or validation. DataSEC is an open-access dataset specifically designed for Sound Event Classification of environmental noise that can be listened in outdoor environments.<br>The collection consists of 18 hours and 26 minutes of authentic, non-synthesized audio recordings, which have been meticulously gathered from two distinct sources: sound level measurements and online repositories. The authors have conducted a comprehensive analysis of the sound samples, encompassing a diverse range of environments, from urban to rural settings.<br>DataSEC comprises a total of 4,292 mono-channel .wav audio samples, with a sampling rate of 44.1 kHz. Each sample represents a single event that has been classified into one of the following 22 defined sound classes and 28 subclasses. The utilisation of the symbol \"/\" serves to denote the subclasses. The identified classes and subclasses are: Bells; Birds; Cat fights and moans; Chicken coop; Cicadas and crickets \\Cicadas \\Crickets; Crows seagulls and magpies \\Crows \\Seagulls \\Magpies; Dog barkings and howlings; Glass breaking; Horn; Jet aircrafts; Lawn mower brush cutter and olive shaker \\lawn mower \\Brush cutter \\Olive shaker; Music; Propeller aircrafts \\Airplanes, \\Helicopters; Sirens and alarms \\Sirens \\Alarms; Thunder fireworks and gunshot \\Thunder \\Fireworks \\Gunshot; Train; Vacuum cleaner fan and hairdryer \\Vacuum cleaner \\Fan \\Hairdryer; Vehicle idling \\Car-truck idling, \\Motorbike idling; Vehicle pass-by \\Car pass-by, \\Motorbike pass-by, \\Truck pass-by; Voices; Wind turbine; Workshop \\Air compressor, \\Drill, Grinder, \\Jackhammer, \\Saw.<br>The minimum number of entries required for each class has been set at 50, with a minimum of 20 entries stipulated for each sub-class. A thorough examination of all samples has been conducted by the authors, with all files being meticulously preprocessed to eliminate silences and superfluous parts. This preprocessing involved the removal of irrelevant background activity and overlapping sounds.<br>The authors expect that the dataset will contribute to future research in real-world sound event analysis and automated acoustic evaluation by means of machine learning.</span></p>",
+    "access_right": "open",
+    "creators": [
+      {
+        "name": "Fredianelli, Luca",
+        "affiliation": "Institute for Chemical-Physical Processes of the Italian Research Council",
+        "orcid": "0000-0001-6575-9040"
+      },
+      {
+        "name": "Artuso, Francesco",
+        "affiliation": "University of Pisa - Physics Department",
+        "orcid": "0000-0002-4856-7888"
+      },
+      {
+        "name": "Pompei, Geremia",
+        "affiliation": "Institute for Chemical-Physical Processes of the Italian Research Council",
+        "orcid": "0009-0000-5522-0084"
+      },
+      {
+        "name": "Licitra, Gaetano",
+        "affiliation": "Institute for Chemical-Physical Processes of the Italian Research Council",
+        "orcid": "0000-0003-4867-0954"
+      },
+      {
+        "name": "Iannace, Gino",
+        "affiliation": "University of Campania \"Luigi Vanvitelli\"",
+        "orcid": "0000-0003-3182-3934"
+      },
+      {
+        "name": "Akbaba, Andaç",
+        "affiliation": "University of Campania \"Luigi Vanvitelli\"",
+        "orcid": "0009-0003-5981-2716"
+      }
+    ],
+    "contributors": [
+      {
+        "name": "Akbaba, Andaç",
+        "affiliation": "University of Campania \"Luigi Vanvitelli\"",
+        "type": "DataCurator",
+        "orcid": "0009-0003-5981-2716"
+      },
+      {
+        "name": "Fredianelli, Luca",
+        "affiliation": "Istituto per i Processi Chimico-Fisici Consiglio Nazionale delle Ricerche Unità Organizzativa di Supporto di Pisa",
+        "type": "ProjectManager",
+        "orcid": "0000-0001-6575-9040"
+      }
+    ],
+    "keywords": [
+      "Sound dataset",
+      "Outdoor Noise Assessment",
+      "Environmental Acoustics",
+      "Deep-learning in Acoustic"
+    ],
+    "language": "eng",
+    "resource_type": {
+      "title": "Video/Audio",
+      "type": "video"
+    },
+    "license": {
+      "id": "cc-by-nc-sa-4.0"
+    },
+    "grants": [
+      {
+        "code": "20223LMSZN",
+        "internal_id": "0341vw408::20223LMSZN",
+        "funder": {
+          "name": "Ministero dell'università e della ricerca"
+        },
+        "title": "Sustainable condition monitoring of wind turbines using acoustic signals and machine learning techniques"
+      }
+    ],
+    "relations": {
+      "version": [
+        {
+          "index": 2,
+          "is_last": true,
+          "parent": {
+            "pid_type": "recid",
+            "pid_value": "15340688"
+          }
+        }
+      ]
+    }
+  },
+  "title": "DataSEC - Dataset for Sound Event Classification of environmental noise",
+  "links": {
+    "self": "https://zenodo.org/api/records/17033970",
+    "self_html": "https://zenodo.org/records/17033970",
+    "preview_html": "https://zenodo.org/records/17033970?preview=1",
+    "doi": "https://doi.org/10.5281/zenodo.17033970",
+    "self_doi": "https://doi.org/10.5281/zenodo.17033970",
+    "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.17033970",
+    "reserve_doi": "https://zenodo.org/api/records/17033970/draft/pids/doi",
+    "parent": "https://zenodo.org/api/records/15340688",
+    "parent_html": "https://zenodo.org/records/15340688",
+    "parent_doi": "https://doi.org/10.5281/zenodo.15340688",
+    "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.15340688",
+    "self_iiif_manifest": "https://zenodo.org/api/iiif/record:17033970/manifest",
+    "self_iiif_sequence": "https://zenodo.org/api/iiif/record:17033970/sequence/default",
+    "files": "https://zenodo.org/api/records/17033970/files",
+    "media_files": "https://zenodo.org/api/records/17033970/media-files",
+    "archive": "https://zenodo.org/api/records/17033970/files-archive",
+    "archive_media": "https://zenodo.org/api/records/17033970/media-files-archive",
+    "latest": "https://zenodo.org/api/records/17033970/versions/latest",
+    "latest_html": "https://zenodo.org/records/17033970/latest",
+    "versions": "https://zenodo.org/api/records/17033970/versions",
+    "draft": "https://zenodo.org/api/records/17033970/draft",
+    "access_links": "https://zenodo.org/api/records/17033970/access/links",
+    "access_grants": "https://zenodo.org/api/records/17033970/access/grants",
+    "access_users": "https://zenodo.org/api/records/17033970/access/users",
+    "access_request": "https://zenodo.org/api/records/17033970/access/request",
+    "access": "https://zenodo.org/api/records/17033970/access",
+    "communities": "https://zenodo.org/api/records/17033970/communities",
+    "communities-suggestions": "https://zenodo.org/api/records/17033970/communities-suggestions",
+    "request_deletion": "https://zenodo.org/api/records/17033970/request-deletion",
+    "file_modification": "https://zenodo.org/api/records/17033970/file-modification",
+    "quota_increase": "https://zenodo.org/api/records/17033970/quota-increase",
+    "requests": "https://zenodo.org/api/records/17033970/requests"
+  },
+  "updated": "2025-09-16T04:57:26.197796+00:00",
+  "recid": "17033970",
+  "revision": 8,
+  "files": [
+    {
+      "id": "f49f993e-550d-4b3c-8206-104fb7bdb993",
+      "key": "DATASEC.zip",
+      "size": 6414663316,
+      "checksum": "md5:29fa9b8cc84cfa69aa4e5e674e780383",
+      "links": {
+        "self": "https://zenodo.org/api/records/17033970/files/DATASEC.zip/content"
+      }
+    }
+  ],
+  "swh": {},
+  "owners": [
+    {
+      "id": "1310847"
+    }
+  ],
+  "status": "published",
+  "stats": {
+    "downloads": 2111,
+    "unique_downloads": 770,
+    "views": 3108,
+    "unique_views": 2798,
+    "version_downloads": 1078,
+    "version_unique_downloads": 226,
+    "version_unique_views": 595,
+    "version_views": 665
+  },
+  "state": "done",
+  "submitted": true
+}

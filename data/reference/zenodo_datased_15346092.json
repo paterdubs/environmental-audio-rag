@@ -1,0 +1,168 @@
+{
+  "created": "2025-05-06T07:01:36.313314+00:00",
+  "modified": "2026-03-31T10:29:39.385921+00:00",
+  "id": 15346092,
+  "conceptrecid": "15346091",
+  "doi": "10.5281/zenodo.15346092",
+  "conceptdoi": "10.5281/zenodo.15346091",
+  "doi_url": "https://doi.org/10.5281/zenodo.15346092",
+  "metadata": {
+    "title": "DataSED - Dataset for Sound Event Detection of environmental noise",
+    "doi": "10.5281/zenodo.15346092",
+    "publication_date": "2025-05-05",
+    "description": "<p>The field of Sound Event Detection (SED) has recently attracted significant attention from the academic community, with its applications extending to a variety of disciplines, including environmental acoustics. Of particular interest is a notable increase in the level of interest in outdoor measurements, with a view to distinguishing the contributions of a particular source from the background noise. The utilisation of machine learning tools is contingent upon the availability of substantial datasets for the purposes of training or validation. DataSED is an open-access dataset specifically designed for Sound Event Detection of environmental noise that can be listened in outdoor environments.</p>\n<p>The collection under consideration consists of 717 .wav audio tracks, with a sampling rate of 44.1 kHz. The ground truth labelling is in .csv format. &nbsp;All files consist of non-synthesized audio recordings, which have been meticulously gathered from two distinct sources: sound level measurements and online repositories. The authors conducted a comprehensive analysis of the sound samples, encompassing a diverse range of environments, from urban to rural settings. &nbsp;Two versions of the labels are provided to support the development and evaluation of two types of application: monophonic and polyphonic sound detection. The first version does not contain overlapping events of different classes, meaning that each moment in time is assigned to a single class only. The second version incorporates overlapping events from multiple classes, providing a more realistic representation of real-world conditions. The labels were manually annotated by experts through a rigorous process to ensure high quality and usability. The monophonic version encompasses the complete set of 22 defined sound classes: Bells; Birds; Cat fights and moans; Chicken coop; Cicadas and crickets; Crows, seagulls and magpies; Dog barkings and howlings; Glass breaking; Horn; Jet aircrafts; Lawn mower, brush cutter and olive shaker; Music; Propeller aircrafts; Sirens and alarms; Thunder, fireworks and gunshot; Train; Vacuum cleaner, fan and hairdryer; Vehicle idling; Vehicle pass-by; Voices; Wind turbine; Workshop. The polyphonic version, however, comprises 21 sound classes, with the exclusion of the Wind turbine category. This exclusion arises from the nature of wind turbine recordings and the associated audio files have been designated for monophonic processing only.</p>\n<p>The development of DataSED was initiated with the objective of facilitating temporal analysis of multiple sound events within real-world acoustic scenarios. The collection comprises continuous and unsegmented sound recordings, incorporating simultaneous sound events. In certain instances, tracks have been manually modified to remove extended periods of minimal or no change, while sounds have been manually added to achieve a more dynamic effect. It is not obligatory for the entirety of the track to be comprehensively labelled, as there may be periods where no source is identified. This means that there may be silences or periods of unrecognisable sound.</p>\n<p>The minimum number of entries required for each class has been set at 100.<br>The files have been organised into a single folder directory and have been named in a consistent pattern, ranging from S-0001 to S-0717, where S indicates \"Sample\". The shortest audio clip is 2.29 seconds, while the longest is 285.0 seconds, with an average audio duration of 87.18 seconds across all clips. The total duration of the audio content is approximately 17.02 hours.</p>\n<p>Two versions of the labels are uploaded to support the development and evaluation of two types of application: monophonic and polyphonic sound detection. The first version does not contain overlapping events of different classes, meaning that each moment in time is assigned to a single class only. The second version incorporates overlapping events from multiple classes, providing a more realistic representation of real-world conditions.</p>\n<p><br>The authors hypothesise that the dataset will contribute to future research in real-world sound event analysis and automated acoustic evaluation by means of machine learning.</p>",
+    "access_right": "open",
+    "creators": [
+      {
+        "name": "Fredianelli, Luca",
+        "affiliation": "Institute for Chemical-Physical Processes of the Italian Research Council",
+        "orcid": "0000-0001-6575-9040"
+      },
+      {
+        "name": "Artuso, Francesco",
+        "affiliation": "University of Pisa - Physics Department",
+        "orcid": "0000-0002-4856-7888"
+      },
+      {
+        "name": "Pompei, Geremia",
+        "affiliation": "Institute for Chemical-Physical Processes of the Italian Research Council",
+        "orcid": "0009-0000-5522-0084"
+      },
+      {
+        "name": "Licitra, Gaetano",
+        "affiliation": "Institute for Chemical-Physical Processes of the Italian Research Council",
+        "orcid": "0000-0003-4867-0954"
+      },
+      {
+        "name": "Iannace, Gino",
+        "affiliation": "University of Campania \"Luigi Vanvitelli\"",
+        "orcid": "0000-0003-3182-3934"
+      },
+      {
+        "name": "Akbaba, Andaç",
+        "affiliation": "University of Campania \"Luigi Vanvitelli\"",
+        "orcid": "0009-0003-5981-2716"
+      }
+    ],
+    "contributors": [
+      {
+        "name": "Akbaba, Andaç",
+        "affiliation": "University of Campania \"Luigi Vanvitelli\"",
+        "type": "DataCurator",
+        "orcid": "0009-0003-5981-2716"
+      },
+      {
+        "name": "Fredianelli, Luca",
+        "affiliation": "Institute for Chemical-Physical Processes of the Italian Research Council",
+        "type": "DataManager",
+        "orcid": "0000-0001-6575-9040"
+      }
+    ],
+    "keywords": [
+      "Sound Dataset",
+      "Outdoor Noise Assessment",
+      "Environmental Acoustics",
+      "Deep-learning in Acoustic",
+      "monophonic sound detection",
+      "polyphonic sound detection"
+    ],
+    "language": "eng",
+    "resource_type": {
+      "title": "Video/Audio",
+      "type": "video"
+    },
+    "license": {
+      "id": "cc-by-nc-sa-4.0"
+    },
+    "grants": [
+      {
+        "code": "20223LMSZN",
+        "internal_id": "0341vw408::20223LMSZN",
+        "funder": {
+          "name": "Ministero dell'università e della ricerca"
+        },
+        "title": "Sustainable condition monitoring of wind turbines using acoustic signals and machine learning techniques"
+      }
+    ],
+    "relations": {
+      "version": [
+        {
+          "index": 0,
+          "is_last": true,
+          "parent": {
+            "pid_type": "recid",
+            "pid_value": "15346091"
+          }
+        }
+      ]
+    }
+  },
+  "title": "DataSED - Dataset for Sound Event Detection of environmental noise",
+  "links": {
+    "self": "https://zenodo.org/api/records/15346092",
+    "self_html": "https://zenodo.org/records/15346092",
+    "preview_html": "https://zenodo.org/records/15346092?preview=1",
+    "doi": "https://doi.org/10.5281/zenodo.15346092",
+    "self_doi": "https://doi.org/10.5281/zenodo.15346092",
+    "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.15346092",
+    "reserve_doi": "https://zenodo.org/api/records/15346092/draft/pids/doi",
+    "parent": "https://zenodo.org/api/records/15346091",
+    "parent_html": "https://zenodo.org/records/15346091",
+    "parent_doi": "https://doi.org/10.5281/zenodo.15346091",
+    "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.15346091",
+    "self_iiif_manifest": "https://zenodo.org/api/iiif/record:15346092/manifest",
+    "self_iiif_sequence": "https://zenodo.org/api/iiif/record:15346092/sequence/default",
+    "files": "https://zenodo.org/api/records/15346092/files",
+    "media_files": "https://zenodo.org/api/records/15346092/media-files",
+    "archive": "https://zenodo.org/api/records/15346092/files-archive",
+    "archive_media": "https://zenodo.org/api/records/15346092/media-files-archive",
+    "latest": "https://zenodo.org/api/records/15346092/versions/latest",
+    "latest_html": "https://zenodo.org/records/15346092/latest",
+    "versions": "https://zenodo.org/api/records/15346092/versions",
+    "draft": "https://zenodo.org/api/records/15346092/draft",
+    "access_links": "https://zenodo.org/api/records/15346092/access/links",
+    "access_grants": "https://zenodo.org/api/records/15346092/access/grants",
+    "access_users": "https://zenodo.org/api/records/15346092/access/users",
+    "access_request": "https://zenodo.org/api/records/15346092/access/request",
+    "access": "https://zenodo.org/api/records/15346092/access",
+    "communities": "https://zenodo.org/api/records/15346092/communities",
+    "communities-suggestions": "https://zenodo.org/api/records/15346092/communities-suggestions",
+    "request_deletion": "https://zenodo.org/api/records/15346092/request-deletion",
+    "file_modification": "https://zenodo.org/api/records/15346092/file-modification",
+    "quota_increase": "https://zenodo.org/api/records/15346092/quota-increase",
+    "requests": "https://zenodo.org/api/records/15346092/requests"
+  },
+  "updated": "2026-03-31T10:29:39.385921+00:00",
+  "recid": "15346092",
+  "revision": 10,
+  "files": [
+    {
+      "id": "6f00726c-16a0-4701-a808-69d25bb24016",
+      "key": "DataSED - Dataset for Sound Event Detection of environmental noise.zip",
+      "size": 4510378259,
+      "checksum": "md5:44e093f675fc44cfb8a11b68456b72d7",
+      "links": {
+        "self": "https://zenodo.org/api/records/15346092/files/DataSED%20-%20Dataset%20for%20Sound%20Event%20Detection%20of%20environmental%20noise.zip/content"
+      }
+    }
+  ],
+  "swh": {},
+  "owners": [
+    {
+      "id": "1310847"
+    }
+  ],
+  "status": "published",
+  "stats": {
+    "downloads": 780,
+    "unique_downloads": 394,
+    "views": 2336,
+    "unique_views": 2194,
+    "version_downloads": 780,
+    "version_unique_downloads": 394,
+    "version_unique_views": 2194,
+    "version_views": 2336
+  },
+  "state": "done",
+  "submitted": true
+}

@@ -1,0 +1,10 @@
+{
+  "sample_rate": 16000,
+  "n_fft": 1024,
+  "hop_length": 320,
+  "n_mels": 64,
+  "fmin": 20.0,
+  "fmax": 8000.0,
+  "top_db": 80.0,
+  "sha256": "e53cd56e0e9911d829bd978c3ca766f775d83d12ffb2ff77f051561f6be1cd0c"
+}

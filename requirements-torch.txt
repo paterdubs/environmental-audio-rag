@@ -1,0 +1,4 @@
+# Install from CUDA wheel index on GPU machines, for example:
+# python -m pip install -r requirements-torch.txt --index-url https://download.pytorch.org/whl/cu128
+torch>=2.8,<3
+

@@ -1,0 +1,47 @@
+{
+  "dataset": "datased",
+  "files": 717,
+  "hours": 18.684703628117916,
+  "bytes": 5961792358,
+  "sample_rates": {
+    "44100": 717
+  },
+  "channels": {
+    "1": 716,
+    "2": 1
+  },
+  "exact_duplicate_groups": [
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0062.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0198.wav"
+    ],
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0108.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0589.wav"
+    ],
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0289.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0500.wav"
+    ],
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0397.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0585.wav"
+    ],
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0569.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0572.wav"
+    ],
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0570.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0571.wav"
+    ],
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav"
+    ],
+    [
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0621.wav",
+      "datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0623.wav"
+    ]
+  ]
+}

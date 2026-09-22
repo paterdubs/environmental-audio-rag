@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+
+# Frontend
+node_modules/
+dist/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Downloaded/generated data
+data/raw/**
+data/interim/**
+data/features/**
+data/cache/**
+ml/runs/**
+artifacts/**
+
+# Keep directory placeholders and small reproducibility records
+!data/raw/**/.gitkeep
+!data/interim/.gitkeep
+!data/features/.gitkeep
+!ml/runs/.gitkeep
+!data/manifests/**
+!data/splits/**
+!data/reference/**
+!data/annotations/**
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
