@@ -1,0 +1,193 @@
+{
+  "dataset": "datasec",
+  "archive_name": "DATASEC.zip",
+  "bytes_actual": 6414663316,
+  "bytes_expected": 6414663316,
+  "md5_actual": "29fa9b8cc84cfa69aa4e5e674e780383",
+  "md5_expected": "29fa9b8cc84cfa69aa4e5e674e780383",
+  "entries": 5099,
+  "audio_files": 5048,
+  "uncompressed_bytes": 7528061430,
+  "annotation_files": [],
+  "documentation_files": [],
+  "taxonomy_version": "0.1",
+  "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+  "labels": [
+    {
+      "source_label": "Bells",
+      "canonical_class_id": "bells",
+      "files": 67,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Birds",
+      "canonical_class_id": "birds",
+      "files": 69,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Cat fights and moans",
+      "canonical_class_id": "cat_fights_and_moans",
+      "files": 50,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Chicken coop",
+      "canonical_class_id": "chicken_coop",
+      "files": 58,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Cicadas and crickets",
+      "canonical_class_id": "cicadas_and_crickets",
+      "files": 74,
+      "subclasses": {
+        "Cicadas": 54,
+        "Crickets": 20
+      }
+    },
+    {
+      "source_label": "Crows seagulls and magpies",
+      "canonical_class_id": "crows_seagulls_magpies",
+      "files": 106,
+      "subclasses": {
+        "Crows": 50,
+        "Magpies": 21,
+        "Seagulls": 35
+      }
+    },
+    {
+      "source_label": "Dog barkings and howlings",
+      "canonical_class_id": "dog_barkings_and_howlings",
+      "files": 70,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Glass breaking",
+      "canonical_class_id": "glass_breaking",
+      "files": 109,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Horn",
+      "canonical_class_id": "horn",
+      "files": 57,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Jet aircrafts",
+      "canonical_class_id": "jet_aircrafts",
+      "files": 103,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Lawn mower brush cutter and olive shaker",
+      "canonical_class_id": "lawn_mower_brush_cutter_olive_shaker",
+      "files": 127,
+      "subclasses": {
+        "Brush cutter": 86,
+        "Lawn mower": 21,
+        "Olive shaker": 20
+      }
+    },
+    {
+      "source_label": "Music",
+      "canonical_class_id": "music",
+      "files": 1001,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Propeller aircrafts",
+      "canonical_class_id": "propeller_aircrafts",
+      "files": 108,
+      "subclasses": {
+        "Airplanes": 50,
+        "Helicopters": 58
+      }
+    },
+    {
+      "source_label": "Sirens and alarms",
+      "canonical_class_id": "sirens_and_alarms",
+      "files": 105,
+      "subclasses": {
+        "Alarms": 37,
+        "Sirens": 68
+      }
+    },
+    {
+      "source_label": "Thunder fireworks and gunshot",
+      "canonical_class_id": "thunder_fireworks_gunshot",
+      "files": 235,
+      "subclasses": {
+        "Fireworks": 68,
+        "Gunshot": 141,
+        "Thunder": 26
+      }
+    },
+    {
+      "source_label": "Train",
+      "canonical_class_id": "train",
+      "files": 67,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Vacuum cleaner fan and hairdryer",
+      "canonical_class_id": "vacuum_cleaner_fan_hairdryer",
+      "files": 95,
+      "subclasses": {
+        "fan": 32,
+        "hairdryer": 32,
+        "vacuum cleaner": 31
+      }
+    },
+    {
+      "source_label": "Vehicle idling",
+      "canonical_class_id": "vehicle_idling",
+      "files": 112,
+      "subclasses": {
+        "car truck idling": 81,
+        "motorbike idling": 31
+      }
+    },
+    {
+      "source_label": "Vehicle pass-by",
+      "canonical_class_id": "vehicle_pass_by",
+      "files": 217,
+      "subclasses": {
+        "car pass-by": 110,
+        "motorbike pass-by": 57,
+        "truck pass-by": 50
+      }
+    },
+    {
+      "source_label": "Voices",
+      "canonical_class_id": "voices",
+      "files": 1900,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Wind turbine",
+      "canonical_class_id": "wind_turbine",
+      "files": 100,
+      "subclasses": {}
+    },
+    {
+      "source_label": "Workshop",
+      "canonical_class_id": "workshop",
+      "files": 218,
+      "subclasses": {
+        "air compressor": 30,
+        "drill": 45,
+        "grinder": 38,
+        "jackhammer": 63,
+        "saw": 42
+      }
+    }
+  ],
+  "size_match": true,
+  "md5_match": true,
+  "coarse_labels": 22,
+  "subclass_labels": 28,
+  "unmapped_labels": [],
+  "verdict": "pass"
+}

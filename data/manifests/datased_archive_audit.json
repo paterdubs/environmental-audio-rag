@@ -1,0 +1,25 @@
+{
+  "dataset": "datased",
+  "archive_name": "DataSED - Dataset for Sound Event Detection of environmental noise.zip",
+  "bytes_actual": 4510378259,
+  "bytes_expected": 4510378259,
+  "md5_actual": "44e093f675fc44cfb8a11b68456b72d7",
+  "md5_expected": "44e093f675fc44cfb8a11b68456b72d7",
+  "entries": 722,
+  "audio_files": 717,
+  "uncompressed_bytes": 5961792358,
+  "annotation_files": [
+    "DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_ground_truth/Monophonic_sound_detection.csv",
+    "DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_ground_truth/Polyphonic_sound_detection.csv"
+  ],
+  "documentation_files": [],
+  "taxonomy_version": "0.1",
+  "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+  "labels": [],
+  "size_match": true,
+  "md5_match": true,
+  "coarse_labels": 0,
+  "subclass_labels": 0,
+  "unmapped_labels": [],
+  "verdict": "pass"
+}
