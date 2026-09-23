@@ -10,6 +10,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
 import torch
 from torch import Tensor, nn
 
@@ -49,6 +50,18 @@ class PretrainedLoadReport:
         return self.transplanted_parameters / self.checkpoint_parameters
 
 
+def load_feature_normalization(path: str | Path) -> tuple[Tensor, Tensor]:
+    """Load train-only per-mel z-score statistics saved by the F1 measurement."""
+    with np.load(Path(path), allow_pickle=False) as values:
+        mean = np.asarray(values["mean"], dtype=np.float32)
+        std = np.asarray(values["std"], dtype=np.float32)
+    if mean.shape != (64,) or std.shape != (64,) or not np.isfinite(std).all():
+        raise ValueError("normalization statistics must contain 64 finite mean/std values")
+    if not np.isfinite(mean).all() or (std <= 0).any():
+        raise ValueError("normalization statistics must have finite means and positive std")
+    return torch.from_numpy(mean), torch.from_numpy(std)
+
+
 _PANN_KEY = re.compile(r"^conv_block([1-6])\.(conv[12]|bn[12])\.(.+)$")
 _LAYER_FOR_PANN = {"conv1": 0, "bn1": 1, "conv2": 3, "bn2": 4}
 
@@ -74,9 +87,9 @@ def safe_batch_size(window_seconds: float, *, max_vram_gb: float = 8.0) -> int:
     if max_vram_gb < 8:
         return 1
     if window_seconds <= 5:
-        return 4
+        return 32
     if window_seconds <= 10:
-        return 2
+        return 24
     return 1
 
 
@@ -106,7 +119,12 @@ class PannsCNN14Encoder(nn.Module):
 
     output_channels = 2048
 
-    def __init__(self, *, channels: tuple[int, ...] = (64, 128, 256, 512, 1024, 2048)) -> None:
+    def __init__(
+        self,
+        *,
+        channels: tuple[int, ...] = (64, 128, 256, 512, 1024, 2048),
+        normalization_path: str | Path | None = None,
+    ) -> None:
         super().__init__()
         if len(channels) != 6 or any(channel <= 0 for channel in channels):
             raise ValueError("CNN14 requires six positive channel sizes")
@@ -117,6 +135,17 @@ class PannsCNN14Encoder(nn.Module):
             input_channels = output_channels
         self.blocks = nn.ModuleList(blocks)
         self.output_channels = channels[-1]
+        self.register_buffer("input_mean", torch.zeros(1, 1, 64, 1))
+        self.register_buffer("input_std", torch.ones(1, 1, 64, 1))
+        if normalization_path is not None:
+            self.set_input_normalization(*load_feature_normalization(normalization_path))
+
+    def set_input_normalization(self, mean: Tensor, std: Tensor) -> None:
+        """Install immutable train-corpus per-mel statistics before CNN14 blocks."""
+        if mean.shape != (64,) or std.shape != (64,) or torch.any(std <= 0):
+            raise ValueError("normalization mean/std must each have 64 values and positive std")
+        self.input_mean.copy_(mean.to(dtype=self.input_mean.dtype).reshape(1, 1, 64, 1))
+        self.input_std.copy_(std.to(dtype=self.input_std.dtype).reshape(1, 1, 64, 1))
 
     @property
     def time_reduction(self) -> int:
@@ -133,7 +162,9 @@ class PannsCNN14Encoder(nn.Module):
                 f"input chỉ có {frames} frame sẽ về 0 giữa chừng. Cần ≥ {self.time_reduction} "
                 "frame — cửa sổ SED thật (500 frame @ 50 fps = 10 s) thoả điều kiện này."
             )
-        encoded = inputs
+        if inputs.shape[2] != self.input_mean.shape[2]:
+            raise ValueError("CNN14 normalization expects 64 mel bands")
+        encoded = (inputs - self.input_mean) / self.input_std
         for block in self.blocks:
             encoded = block(encoded)
             encoded = nn.functional.avg_pool2d(encoded, kernel_size=(2, 2))

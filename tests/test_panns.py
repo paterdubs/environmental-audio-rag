@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 import torch
 
@@ -30,9 +31,21 @@ def test_panns_classifier_and_config_are_explicit() -> None:
 
 
 def test_vram_policy_is_conservative_for_eight_gb() -> None:
-    assert safe_batch_size(5.0) == 4
-    assert safe_batch_size(10.0) == 2
+    assert safe_batch_size(5.0) == 32
+    assert safe_batch_size(10.0) == 24
     assert safe_batch_size(10.0, max_vram_gb=6.0) == 1
+
+
+def test_encoder_loads_train_only_per_mel_normalization(tmp_path) -> None:
+    path = tmp_path / "normalization.npz"
+    np.savez(path, mean=np.arange(64, dtype=np.float32), std=np.ones(64, dtype=np.float32))
+
+    encoder = PannsCNN14Encoder(channels=(4, 8, 16, 32, 64, 128), normalization_path=path)
+
+    assert torch.equal(encoder.input_mean.flatten(), torch.arange(64, dtype=torch.float32))
+    assert torch.equal(encoder.input_std.flatten(), torch.ones(64))
+    with pytest.raises(ValueError, match="positive std"):
+        encoder.set_input_normalization(torch.zeros(64), torch.zeros(64))
 
 
 def test_load_audioset_blocks_is_strict_and_reports_transfer(tmp_path) -> None:

@@ -17,4 +17,14 @@
 | Transplanted parameter share | 92.2301% |
 
 Only `conv_block1...conv_block6` are mapped to the local encoder's six blocks.
-The required train-DataSEC normalization replacing official `bn0` awaits B2 features; do not claim it is active yet.
+## Train-only `bn0` replacement
+
+Statistics use 5,505,853 unpadded frames from the 3,434 frozen DataSEC train clips.
+Per-mel mean range: [0.129214, 0.673998]; std range: [0.173550, 0.219708].
+
+| Five train clips, 500 frames each | zero fraction | embedding std | max abs |
+|---|---:|---:|---:|
+| Before z-score | 0.940876 | 0.008950 | 0.300704 |
+| After z-score | 0.936830 | 0.011389 | 0.452954 |
+
+The post-normalization embedding is neither all zero nor numerically saturated; this is only an indirect activation check, not equivalence to official `bn0`.

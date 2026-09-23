@@ -6,12 +6,17 @@ import argparse
 import hashlib
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
+import torch
+
 from ml.models.panns import PannsCNN14Encoder
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CHECKPOINT = ROOT / "artifacts" / "checkpoints" / "Cnn14_mAP=0.431.pth"
 DEFAULT_OUTPUT = ROOT / "docs" / "measurements" / "panns_checkpoint_20260923.md"
 EXPECTED_MD5 = "595633ac2d1cac7ef04ebf70e2fee4e4"
+NORMALIZATION = ROOT / "data" / "manifests" / "datasec_logmel_panns_v1_train_normalization.npz"
 
 
 def file_hash(path: Path, algorithm: str) -> str:
@@ -20,6 +25,26 @@ def file_hash(path: Path, algorithm: str) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def activation_summary(checkpoint: Path) -> tuple[dict[str, float], dict[str, float]]:
+    features = pd.read_csv(ROOT / "data" / "manifests" / "datasec_logmel_panns_v1.csv")
+    splits = pd.read_csv(ROOT / "data" / "splits" / "datasec_classification.csv")
+    train = features.merge(splits[["file_id", "split"]], on="file_id", validate="one_to_one")
+    selected = train.loc[train["split"] == "train"].head(5)
+    batch = np.stack(
+        [np.load(ROOT / "data" / "features" / "datasec" / "logmel_panns_v1" / row.feature_relative_path, mmap_mode="r", allow_pickle=False)[:, :500] for row in selected.itertuples(index=False)]  # noqa: E501
+    )
+    inputs = torch.from_numpy(batch.copy()).unsqueeze(1)
+
+    def measure(normalization: Path | None) -> dict[str, float]:
+        encoder = PannsCNN14Encoder(normalization_path=normalization).eval()
+        encoder.load_audioset_pretrained(checkpoint)
+        with torch.inference_mode():
+            values = encoder(inputs)
+        return {"zero": float((values == 0).float().mean()), "abs_max": float(values.abs().max()), "std": float(values.std())}  # noqa: E501
+
+    return measure(None), measure(NORMALIZATION)
 
 
 def main() -> None:
@@ -33,6 +58,9 @@ def main() -> None:
         raise SystemExit(f"MD5 mismatch: expected {EXPECTED_MD5}, got {md5}")
     sha256 = file_hash(checkpoint, "sha256")
     report = PannsCNN14Encoder().load_audioset_pretrained(checkpoint)
+    with np.load(NORMALIZATION, allow_pickle=False) as stats:
+        mean, std, frames = stats["mean"], stats["std"], int(stats["frames"])
+    raw, normalized = activation_summary(checkpoint)
     args.output.write_text(
         "\n".join(
             [
@@ -55,7 +83,17 @@ def main() -> None:
                 f"| Transplanted parameter share | {report.parameter_fraction:.4%} |",
                 "",
                 "Only `conv_block1...conv_block6` are mapped to the local encoder's six blocks.",
-                "The required train-DataSEC normalization replacing official `bn0` awaits B2 features; do not claim it is active yet.",  # noqa: E501
+                "## Train-only `bn0` replacement",
+                "",
+                f"Statistics use {frames:,} unpadded frames from the 3,434 frozen DataSEC train clips.",  # noqa: E501
+                f"Per-mel mean range: [{mean.min():.6f}, {mean.max():.6f}]; std range: [{std.min():.6f}, {std.max():.6f}].",  # noqa: E501
+                "",
+                "| Five train clips, 500 frames each | zero fraction | embedding std | max abs |",
+                "|---|---:|---:|---:|",
+                f"| Before z-score | {raw['zero']:.6f} | {raw['std']:.6f} | {raw['abs_max']:.6f} |",
+                f"| After z-score | {normalized['zero']:.6f} | {normalized['std']:.6f} | {normalized['abs_max']:.6f} |",  # noqa: E501
+                "",
+                "The post-normalization embedding is neither all zero nor numerically saturated; this is only an indirect activation check, not equivalence to official `bn0`.",  # noqa: E501
                 "",
             ]
         ),

@@ -148,6 +148,7 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Ngưỡng T3 theo overlap | 0.95/0.85 khi overlap ≥ 3 s; **0.99, không review** khi ngắn hơn | [0009](docs/decisions/ADR-0009-nguong-phu-thuoc-overlap.md) | 95.5% cặp có overlap đúng 1 s — nhiễu của phép so 16.6M cặp |
 | Kiểm 5 (D4) theo corpus | benchmark giữ nghĩa cũ; pretraining hỏi "clip đã loại có vắng mặt" | [0013](docs/decisions/ADR-0013-kiem-5-theo-corpus.md) | Dùng chung sẽ pass rỗng — DataSEC không có dev/test cần bảo vệ |
 | Checkpoint AudioSet — phạm vi nạp | Chỉ transplant `conv_block1…6`, **không** faithful full CNN14 | [0018](docs/decisions/ADR-0018-nap-mot-phan-checkpoint-panns.md) | Checkpoint gốc có `spectrogram_extractor/bn0/fc1/fc_audioset` mà encoder repo không có — viết lại toàn bộ sẽ đổi input pipeline ở tuần 2/8 |
+| `scripts/train_classifier.py` viết lại | Bỏ hẳn `AudioClassifier`/`ClassificationFeatureDataset` cũ, dùng `HierarchicalAudioClassifier` + registry | [0019](docs/decisions/ADR-0019-viet-lai-train-classifier-datasec.md) | Script cũ đọc 2 file **chưa từng tồn tại** trong git — chưa bao giờ chạy được |
 | Giao thức ECE (D5) | Chỉ head coarse; temperature scaling, T chọn trên dev; 15 bin; 2 số trước/sau | [0017](docs/decisions/ADR-0017-hieu-chuan-ece-datasec.md) | Head subclass có lớp n_test<25 làm ECE ra nhiễu; DataSED không phải phân loại đơn nhãn |
 | Checkpoint AudioSet | Zenodo `3576403`, SHA-256 xác minh; **license `not recorded`** — xử lý như chưa rõ, không giả định permissive | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
 | Hierarchical head DataSEC | Một encoder, 2 head tuyến tính, consistency loss = -log(khối lượng xác suất đúng gia đình) | [0016](docs/decisions/ADR-0016-hierarchical-head-consistency-loss.md) | CE 28-way một mình không phạt lệch gia đình coarse |
@@ -722,7 +723,31 @@ số — kiến trúc không còn là việc của Codex.
 Test 257 → **265 pass**, ruff sạch. Board thêm F1 (checkpoint) và G1
 (data_inventory.md — số thuần, an toàn cho Codex).
 
-### 2026-09-23 (tiếp) — Kiểm độc lập báo cáo Codex; sửa một sai sót của chính mình
+### 2026-09-23 (tiếp) — D1 suýt bị giao cho một script chết từ đầu dự án
+
+Người dùng hỏi "đang làm gì" — nhân đó rà lại đường D1 trước khi Codex chạm
+tới, thay vì chờ Codex tự phát hiện. Kiểm `scripts/train_classifier.py`:
+**chưa bao giờ chạy được**. Hai file nó đọc — `data/manifests/datasec_clips.csv`
+và `data/splits/datasec.csv` — **0 commit nào tạo ra** kể từ scaffold ban đầu
+(`c9ccbc6`). `ml/runs/` chỉ có hai run SED, không có run classifier nào —
+khớp với việc không ai từng chạy thử.
+
+Ngoài đường dẫn sai còn bốn lớp không tương thích khác: model
+(`AudioClassifier`/`AudioEncoder`, không ứng với nhánh nào trong ADR-0002 —
+nhánh A train thẳng trên DataSED, không qua bước DataSEC), dataset
+(`ClassificationFeatureDataset` trả `(x, label)` — không khớp
+`DataSECFeatureDataset` trả `(x, coarse, subclass)` mà D4 cần), split (khoá
+`clip_id`, không phải `file_id` như registry đã chốt ở ADR-0010), và feature
+(`logmel_v1` 16kHz thay vì `logmel_panns_v1` 32kHz mà CNN14 cần).
+
+Quyết định: viết lại hoàn toàn, không vá. → ADR-0019. Ban đầu đề xuất thêm một
+lớp `NormalizedPannsEncoder` bọc ngoài để thay `bn0`, nhưng phát hiện F1 (Codex
+làm song song) đã có cơ chế tốt hơn — buffer `input_mean`/`input_std` ngay
+trong `PannsCNN14Encoder` — nên rút đề xuất, dùng thẳng cái đã có thay vì viết
+trùng. Tự sửa lại ADR ngay khi thấy thực tế tốt hơn dự kiến, không giữ đề xuất
+cũ vì đã lỡ viết ra.
+
+
 
 Codex báo B1, A4, G1, và phần tải/remap checkpoint của F1 đã xong. Kiểm độc lập
 thay vì tin ngay: chạy lại `pytest -q` (267 pass) và `tests/test_panns.py`
