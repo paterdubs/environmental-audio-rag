@@ -1,0 +1,28 @@
+# PostgreSQL 16 + pgvector cho event store (ADR-0005). Chỉ service `db` — không
+# cài PostgreSQL native trên Windows: pgvector native đòi biên dịch C extension
+# theo đúng bản build Postgres, trong khi image chính thức đã có sẵn (H3).
+#
+#   docker compose up -d
+#   docker compose exec db psql -U app -d environmental_audio -f /migrations/001_event_store.sql
+#
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: environmental_audio
+    ports:
+      - "5432:5432"
+    volumes:
+      - environmental_audio_db:/var/lib/postgresql/data
+      - ./db/migrations:/migrations:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d environmental_audio"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  environmental_audio_db:
