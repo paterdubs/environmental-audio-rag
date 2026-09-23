@@ -86,9 +86,21 @@ class PannsCNN14Encoder(nn.Module):
         self.blocks = nn.ModuleList(blocks)
         self.output_channels = channels[-1]
 
+    @property
+    def time_reduction(self) -> int:
+        """Tỉ lệ CNN14 nén trục thời gian — 2 lần mỗi khối, sáu khối = /64."""
+        return 2 ** len(self.blocks)
+
     def forward(self, inputs: Tensor) -> Tensor:
         if inputs.ndim != 4 or inputs.shape[1] != 1:
             raise ValueError("expected log-mel input shaped [batch, 1, mel_bins, frames]")
+        frames = inputs.shape[-1]
+        if frames < self.time_reduction:
+            raise ValueError(
+                f"CNN14 nén trục thời gian /{self.time_reduction} qua sáu lần pool 2x2; "
+                f"input chỉ có {frames} frame sẽ về 0 giữa chừng. Cần ≥ {self.time_reduction} "
+                "frame — cửa sổ SED thật (500 frame @ 50 fps = 10 s) thoả điều kiện này."
+            )
         encoded = inputs
         for block in self.blocks:
             encoded = block(encoded)

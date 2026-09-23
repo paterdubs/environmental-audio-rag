@@ -1,29 +1,29 @@
 {
-  "dataset": "datased",
-  "label_mode": "polyphonic",
-  "frozen_at": "2026-09-23T07:14:40Z",
-  "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+  "dataset": "datasec",
+  "label_mode": "classification",
+  "frozen_at": "2026-09-23T07:47:05Z",
+  "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
   "config": {
-    "train": 0.6,
-    "validation": 0.2,
-    "test": 0.2,
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15,
     "seed": 20260922
   },
   "items": {
-    "test": 142,
-    "train": 438,
-    "validation": 137
+    "test": 740,
+    "train": 3434,
+    "validation": 744
   },
   "leakage_groups": {
     "source": "content_sha256 + duplicate_groups.csv + split_cohesion_pairs.csv",
-    "groups": 687,
+    "groups": 4873,
     "largest": 4,
     "size_histogram": {
-      "1": 661,
+      "1": 4841,
       "2": 23,
-      "3": 2,
-      "4": 1
+      "3": 5,
+      "4": 4
     }
   },
   "gates": {
@@ -35,10 +35,10 @@
     "leaked_pretraining_clips": 11,
     "leaked_clips_scope": "datasec clips overlapping datased dev/test",
     "exclusion_policy": {
-      "corpus": "benchmark",
-      "checked": 13,
-      "must_be_absent": 0,
-      "grouped": 13
+      "corpus": "pretraining",
+      "checked": 130,
+      "must_be_absent": 130,
+      "grouped": 0
     }
   }
 }

@@ -146,6 +146,13 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Fingerprint T3 | Bỏ C0, delta trị tuyệt đối, `fmax` 7000, chuẩn hoá z-score corpus | [0007](docs/decisions/ADR-0007-fingerprint-va-luat-dedup.md) | Không chuẩn hoá thì 52.6% cặp ngẫu nhiên vượt ngưỡng review |
 | Tỉ lệ split DataSED | **60/20/20**, không phải 70/15/15 | [0008](docs/decisions/ADR-0008-ti-le-split-datased.md) | ADR-0003 lập luận trên dev 142 = 60/20/20; code và candidate đều vậy |
 | Ngưỡng T3 theo overlap | 0.95/0.85 khi overlap ≥ 3 s; **0.99, không review** khi ngắn hơn | [0009](docs/decisions/ADR-0009-nguong-phu-thuoc-overlap.md) | 95.5% cặp có overlap đúng 1 s — nhiễu của phép so 16.6M cặp |
+| Kiểm 5 (D4) theo corpus | benchmark giữ nghĩa cũ; pretraining hỏi "clip đã loại có vắng mặt" | [0013](docs/decisions/ADR-0013-kiem-5-theo-corpus.md) | Dùng chung sẽ pass rỗng — DataSEC không có dev/test cần bảo vệ |
+| Temporal head CNN14 | interpolate(nearest) phục hồi T; độ phân giải thật vẫn ở khối 1.28s | [0014](docs/decisions/ADR-0014-doi-chieu-do-phan-giai-thoi-gian-cnn14.md) | Cắm CNN14 thẳng vào SED head sẽ vỡ shape loss so với target 50fps |
+| Ngưỡng cohesion | **sim ≥ 0.93**, trên mức dương tính giả đã đo 0.9205 | [0012](docs/decisions/ADR-0012-nguong-cohesion.md) | Ở 0.85 chaining tạo khối 315 file mật độ 0.024, lệch tỉ lệ split 5 điểm |
+| Nguồn nhãn DataSEC | Cây thư mục, module **torch-free** `ml/dataops/datasec_labels.py` | [0011](docs/decisions/ADR-0011-nhan-va-do-phu-lop-datasec.md) | Không có file annotation; cổng dữ liệu không được phụ thuộc torch |
+| Tập lớp kiểm phủ D4 | DataSED **21** polyphonic · DataSEC **50** (22 coarse + 28 subclass) | 0011 | Đo được 0/22 và 0/28 lớp kẹt trong < 3 `leakage_group` |
+| Định danh item DataSEC | **`file_id`**, không bịa `recording_id` | [0010](docs/decisions/ADR-0010-dinh-danh-datasec-va-cong-freeze.md) | Archive chỉ phát hành clip rời; nguồn gốc đã nằm trong `leakage_group` đo được |
+| Nghĩa của loại trừ D3 | Tách theo corpus: benchmark **giữ + buộc cùng nhóm**, pretraining **vắng mặt** | 0010 | Luật chung làm trượt chính split đã đóng băng |
 | Subclass trên continuous | Chỉ báo trên DataSEC | [0006](docs/decisions/ADR-0006-danh-gia-subclass.md) | DataSED không có subclass ground truth |
 | Caption song ngữ | EN benchmark, VI giao diện, embed cả hai | 0004 | So được với văn liệu AAC, truy vấn được tiếng Việt |
 | Không có risk score | Bỏ hoàn toàn | 0001 | Không có cơ sở gán mức nguy hiểm cho nguồn âm |
@@ -545,6 +552,140 @@ tin vào lời khai:
 **Một số báo cáo sai đã sửa:** trình đọc báo encoding là `utf-8-sig` cho file
 **không có BOM**, vì `utf-8-sig` giải mã được cả hai. Giờ kiểm BOM tường minh nên
 tên encoding trong artifact đúng với thứ nằm trên đĩa. Thêm `tests/test_textio.py`.
+
+### 2026-09-23 (tiếp) — Gỡ hai chặn kiến trúc của split DataSEC
+
+Rà đường đi để mở khoá split DataSEC thì lộ ra hai câu hỏi chưa ai trả lời, cả
+hai đều không phải lỗi cú pháp.
+
+**DataSEC không có `recording_id`, và cổng D4 đòi có.** `check_leakage` phân giải
+khoá split qua `<dataset>_recordings.csv`; DataSEC không có file đó, không có cột
+`recording_id`, và đặt tên cột hash là `sha256` chứ không phải `content_sha256`.
+Khác biệt phản ánh hai cách công bố: DataSED phát hành *recording* 60 s có
+annotation riêng, DataSEC phát hành *clip* rời và **không** cho biết clip nào cắt
+từ bản thu nào.
+
+Quyết định: không bịa `recording_id`. Quan hệ nguồn gốc giữa clip DataSEC là thứ
+cổng D3 **đã đo** — nó nằm trong `leakage_group`. Thêm một định danh suy đoán bên
+cạnh vừa là tuyên bố không có cơ sở, vừa là namespace **thứ ba** trong repo đã hai
+lần hỏng vì lệch namespace. Khoá và tên cột giờ khai báo tập trung ở
+`ml/dataops/registry.py`; ánh xạ của DataSEC là đồng nhất nhưng vẫn đi qua manifest
+để item lạ vỡ tại chỗ thay vì thành một phép giao rỗng ở tầng trên.
+
+**Cổng freeze đọc một con số của dataset khác.** Bản ghi đóng băng ghi
+`leaked_pretraining_clips = 11`, nhưng 11 đếm **clip DataSEC** trùng dev/test
+DataSED — trong bản ghi của DataSED nó đọc như thể DataSED rò rỉ 11 file.
+
+Thử đặt luật "mọi loại trừ phải vắng mặt khỏi split" thì **split đã đóng băng của
+DataSED trượt ngay**: đo được **13/13** dòng `datased:` đang nằm trong split, và
+**0/13** vi phạm bất biến cùng `leakage_group`. Tức `exclusions.csv` gộp hai động
+từ khác nhau dưới một tên: với benchmark, `exclude_duplicate` nghĩa là *buộc cùng
+split* (xoá thì benchmark teo lại); với corpus pretraining, loại trừ nghĩa là
+*vắng mặt thật*. Cổng giờ tách luật theo corpus, từ chối kết luận "sạch" trên phép
+giao rỗng, và ghi kèm phạm vi cho con số báo động. → ADR-0010.
+
+**Không đụng tới `data-v1.0`:** `check_leakage datased` vẫn 5/5 PASS,
+`split_sha256` vẫn `d2924a5e45c2b271…`. Test 218 → **231 pass**, ruff sạch.
+
+### 2026-09-23 (tiếp) — Cổng D4 đọc được nhãn DataSEC, và thôi đọc cứng 21 lớp
+
+Hai chặn còn lại của split DataSEC, cả hai nằm trong kiểm 4 và **không** làm
+chương trình vỡ — chúng làm nó trả lời sai.
+
+**Nhãn.** `load_labels` đọc `data/annotations/<dataset>_<mode>_events.csv`; DataSEC
+không có file nào như vậy, nhãn nằm ở cây thư mục. Logic suy nhãn đã tồn tại nhưng
+nằm trong `ml/datasets/datasec.py`, module `import torch` ở cấp module — mà chính
+môi trường này đã một lần không khởi tạo được torch (`0x8007000e`, nhật ký W2). Một
+cổng dữ liệu phụ thuộc thứ có thể không nạp được là cổng có thể bị bỏ qua đúng lúc
+cần nó nhất. Tách sang `ml/dataops/datasec_labels.py` (vùng torch-free), `datasec.py`
+import lại nên không có hai bản logic, và thêm test chạy cổng trong tiến trình con
+khẳng định `torch` không nằm trong `sys.modules`.
+
+**Số lớp.** Kiểm phủ đọc cứng `polyphonic_class_ids` = 21. Đúng cho DataSED —
+`wind_turbine` ngoài nhãn polyphonic nên đòi nó sẽ làm trượt một split đúng. Sai cho
+DataSEC: 22 lớp coarse, lớp nào cũng có clip.
+
+**Đo trước khi chốt có nên đòi cả 28 subclass.** Trên 4,918 clip còn lại sau khi loại
+130: **4,457** `leakage_group`, cụm lớn nhất **315 file (6.4%)** — không phải 326, vì
+loại trừ đã lấy đi một phần. Và **0/22 coarse, 0/28 subclass** kẹt trong < 3 nhóm.
+Không lớp nào *bị buộc* vắng mặt, nên cổng được phép đòi cả hai mức: tập kiểm phủ của
+DataSEC là **50** nhãn. Cụm 315 nằm gọn trong bất kỳ split nào ở cả hai tỉ lệ, nên
+câu hỏi khả thi của split DataSEC đã có nửa câu trả lời. → ADR-0011.
+
+**Vẫn không đụng `data-v1.0`:** `check_leakage datased` 5/5 PASS, `split_sha256`
+giữ nguyên. Test 231 → **242 pass**, ruff sạch.
+
+### 2026-09-23 (tiếp) — Split DataSEC chạy được, và một khối 315 file hoá ra là ảo
+
+**Split DataSEC sinh lần đầu ra 65.2/20.4/14.5** thay vì 70/15/15 đã chốt. Lệch 5
+điểm không phải sai số làm tròn: một `leakage_group` **315 file** rơi trọn vào
+validation.
+
+**Cụm đó không phải một cụm.** 315 đỉnh nhưng chỉ 1,171 cạnh trên 49,455 cạnh tối
+đa — **mật độ 0.024**, trong khi cụm trùng thật phải ≈ 1.0. 70 đỉnh dính vào bằng
+đúng **một** cạnh. Và nó trộn bốn lớp: `voices` 259, `music` 42,
+`thunder_fireworks_gunshot` 13, `propeller_aircrafts` 1. Một cụm chứa cả tiếng
+người lẫn tiếng nổ không phải "cùng một bản thu nguồn".
+
+Đây đúng là lỗi ADR-0009 §2 đã sửa cho cạnh `duplicate` (khối 2,310 file nối bằng
+ngưỡng yếu nhất 0.850). Lần đó chỉ sửa `build_groups`; cohesion vẫn union toàn bộ
+cạnh `review`, nên **cùng một cơ chế hỏng còn nguyên ở tầng bên cạnh** — chưa ai
+nhìn thấy vì DataSED cụm lớn nhất chỉ có 4.
+
+**Ngưỡng không phải chọn tay.** Bỏ cạnh xuyên lớp chỉ làm cụm co 315 → 254;
+chaining nằm bên trong `voices` (37.6% DataSEC). Hiệu chuẩn ADR-0007 đã có sẵn con
+số cần: negative max = **0.9205** trên 5,000 cặp ngẫu nhiên khác nhãn. Cohesion giờ
+đòi `sim ≥ 0.93` — trên mức nhiễu đã đo. Cặp 1,731 → **109**, cụm lớn nhất 315 → **4**.
+
+| | Trước | Sau |
+|---|---:|---:|
+| Tỉ lệ split DataSEC | 65.2/20.4/14.5 | **69.8/15.1/15.1** |
+| Cụm lớn nhất | 315 | **4** |
+| Phủ lớp | — | **50/50** nhãn ở cả 3 split |
+
+Subclass hỗ trợ thấp ra đúng như ADR-0006 §4 dự báo: `magpies` 13/3/3, `crickets`
+14/3/3, `olive_shaker` 14/3/3, `lawn_mower` 15/3/3 — báo bằng số tuyệt đối.
+
+**`data-v1.0` không sinh lại, và điều đó chứng minh được.** Luật mới chỉ *bỏ* cạnh
+nên phân hoạch mới mịn hơn; split thoả nhóm cũ thì tự động thoả nhóm mới. Kiểm trên
+split đã đóng băng: 0 vi phạm với cả hai luật, `split_sha256` giữ nguyên.
+
+**Một mìn đã gỡ:** `find_duplicates regroup` gọi `_finalise`, mà hàm đó **ghi đè
+`exclusions.csv`** bằng luật nội bộ — chạy nó sẽ xoá sạch 11 quyết định của người
+và đặt lại `cross_dataset_exclusions_pending_split`. Thêm action `cohesion` chỉ ghi
+đúng một file. → ADR-0012. Test 242 → **245 pass**.
+
+### 2026-09-23 (tiếp) — Split DataSEC đóng băng; CNN14 cắm được vào SED head
+
+**A5/A6 xong.** Cổng D4 chạy được cho DataSEC: kiểm 5 gốc chỉ có nghĩa cho
+benchmark (bảo vệ dev/test), nên viết `check_pretraining_exclusions_absent` —
+câu hỏi tương ứng cho corpus pretraining là "clip đã loại có vắng mặt". Phá thử:
+chèn lại 1 clip đã loại (`Helicopters-0050.wav`) → FAIL đúng file → ADR-0013.
+Freeze split DataSEC: `exclusion_policy` xác nhận đúng vai trò — 130/130 phải
+vắng mặt, 0 grouped (khác hẳn 13/13 giữ lại của DataSED). Phá thử guard: sửa 1
+byte split đã đóng băng → cổng chặn đúng lúc.
+
+**C1 phát hiện một vấn đề sâu hơn đặc tả ban đầu.** Codex đo trực tiếp:
+`PannsCNN14Encoder` nén T còn T/64 (pool cả tần số lẫn thời gian 6 lần), trong
+khi `SoundEventDetector` cần output đúng T frame để khớp target 50fps. Sửa
+`strict=True` một mình sẽ không đủ — đây là vỡ shape loss, không phải tương thích
+checkpoint. `SoundEventDetector` giờ nhận `encoder` qua constructor; forward
+phục hồi T bằng `interpolate(mode="nearest")` (không dùng linear — mỗi frame đã
+pool mang thông tin của ~64 frame gốc, nội suy tuyến tính sẽ bịa ra giá trị
+không tồn tại); `PannsCNN14Encoder` guard input < 64 frame với lỗi rõ thay vì để
+`avg_pool2d` vỡ khó hiểu; `load_classifier_encoder` kiểm khớp kiểu encoder trước
+`strict=True`. **Giới hạn khoa học ghi vào ADR-0014:** phục hồi shape không phục
+hồi thông tin — nhánh CNN14 chỉ định vị được ở khối 1.28s, thô hơn collar 0.2s
+của evaluation_protocol. Ảnh hưởng thật lên RQ1 (C−B) chưa đo, để lại làm nợ sau
+D1. 6 test mới pass.
+
+**Đóng 8 mục `[MỞ]` của Codex**, phần lớn là phản biện đúng chỗ: E1 (thiếu
+negative ngắn để hiệu chuẩn — chỉ đo positive không đủ xác nhận ngưỡng), E2
+(chưa định nghĩa "lớp tần số cao"), E3 (không có entry point sinh report), E4
+(random có ≥3 nghĩa). Cả bốn đã chốt đặc tả đo được, viết vào §6 và ADR-0006 §7
+(công thức đóng $k_c/28$ cho baseline parent-consistency). Refill 7 task TODO.
+
+Test 245 → **257 pass**, ruff sạch. `data-v1.0` không bị động tới.
 
 ### 2026-09-23 (chốt) — Đóng băng split, rà soát toàn bộ
 

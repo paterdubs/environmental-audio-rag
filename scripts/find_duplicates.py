@@ -34,6 +34,7 @@ from ml.dataops.dedup_run import (
     unreachable_by_tier3,
 )
 from ml.dataops.duplicates import (
+    COHESION_MIN_SIMILARITY,
     DuplicateGroup,
     DuplicateThresholds,
     Exclusion,
@@ -384,6 +385,31 @@ def _write_exclusions(path: Path, exclusions: list[Exclusion]) -> None:
             writer.writerow([item.file_id, item.group_id, item.reason_code, item.decided_by])
 
 
+def command_cohesion(min_similarity: float) -> None:
+    """Ghi lại **chỉ** `split_cohesion_pairs.csv` từ `review_pairs.csv`.
+
+    Cố ý không dùng `regroup`: `_finalise` ghi đè `exclusions.csv` bằng luật nội
+    bộ, tức xoá sạch 11 quyết định của người và đặt lại
+    `cross_dataset_exclusions_pending_split`. Ngưỡng cohesion không liên quan gì
+    tới những thứ đó, nên nó không được phép chạm vào.
+    """
+    matches = read_pair_cache(MANIFESTS / "review_pairs.csv")
+    cohesion = split_cohesion_pairs(matches, min_similarity=min_similarity)
+    before = split_cohesion_pairs(matches, min_similarity=0.0)
+    _write_cohesion(MANIFESTS / "split_cohesion_pairs.csv", cohesion)
+    print(
+        json.dumps(
+            {
+                "cohesion_min_similarity": min_similarity,
+                "pairs_before": len(before),
+                "pairs_kept": len(cohesion),
+                "pairs_dropped": len(before) - len(cohesion),
+            },
+            indent=2,
+        )
+    )
+
+
 def _write_json(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -391,12 +417,15 @@ def _write_json(path: Path, payload: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["signatures", "calibrate", "detect", "regroup"])
+    parser.add_argument(
+        "action", choices=["signatures", "calibrate", "detect", "regroup", "cohesion"]
+    )
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--sample-pairs", type=int, default=5_000)
     parser.add_argument("--seed", type=int, default=20260922)
     parser.add_argument("--duplicate-min", type=float, default=0.95)
     parser.add_argument("--review-min", type=float, default=0.85)
+    parser.add_argument("--cohesion-min", type=float, default=COHESION_MIN_SIMILARITY)
     args = parser.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
@@ -404,6 +433,8 @@ def main() -> None:
         command_signatures(args.workers)
     elif args.action == "calibrate":
         command_calibrate(args.sample_pairs, args.seed)
+    elif args.action == "cohesion":
+        command_cohesion(args.cohesion_min)
     elif args.action == "regroup":
         command_regroup(
             DuplicateThresholds(duplicate_min=args.duplicate_min, review_min=args.review_min)

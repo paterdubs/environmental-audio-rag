@@ -17,8 +17,9 @@ import torch
 from torch import Tensor
 from torch.utils.data import Dataset, Sampler
 
+from ml.dataops.datasec_labels import path_labels as _path_labels
 from ml.datasets.features import _fit_frames
-from ml.taxonomy import Taxonomy, load_taxonomy, normalize_text
+from ml.taxonomy import Taxonomy, load_taxonomy
 
 
 @dataclass(frozen=True)
@@ -36,26 +37,6 @@ class DataSECLabelSpace:
                 subclass for item in taxonomy.classes for subclass in item.subclasses
             ),
         )
-
-
-def _path_labels(relative_path: str, taxonomy: Taxonomy) -> tuple[str, str | None]:
-    parts = [normalize_text(part) for part in Path(relative_path).parts]
-    aliases = taxonomy.alias_to_id
-    coarse_index = next(
-        (index for index, part in enumerate(parts) if part in aliases), None
-    )
-    if coarse_index is None:
-        raise ValueError(f"Cannot map DataSEC path to taxonomy: {relative_path}")
-    coarse = aliases[parts[coarse_index]]
-    subclass = None
-    if coarse_index + 1 < len(parts) - 1:
-        candidate = parts[coarse_index + 1]
-        item = next(value for value in taxonomy.classes if value.class_id == coarse)
-        valid = {normalize_text(value): value for value in item.subclasses}
-        if candidate not in valid:
-            raise ValueError(f"Unknown subclass {candidate!r} under {coarse!r}")
-        subclass = valid[candidate]
-    return coarse, subclass
 
 
 def build_datasec_manifest(

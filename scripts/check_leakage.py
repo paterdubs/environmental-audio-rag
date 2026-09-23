@@ -17,6 +17,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ml.dataops.datasec_labels import labels_by_file_id
 from ml.dataops.leakage import (
     CheckResult,
     check_class_coverage,
@@ -24,7 +25,14 @@ from ml.dataops.leakage import (
     check_duplicate_pairs_within_split,
     check_group_integrity,
     check_hash_integrity,
+    check_pretraining_exclusions_absent,
     run_all,
+)
+from ml.dataops.registry import (
+    content_hash_by_file_id,
+    coverage_labels,
+    file_id_by_item,
+    keys_for,
 )
 from ml.taxonomy import load_taxonomy
 
@@ -33,17 +41,16 @@ MANIFESTS = ROOT / "data" / "manifests"
 
 
 def file_id_by_recording(dataset: str) -> dict[str, str]:
-    """`recording_id` → `file_id`. Mọi khoá trong cổng này phải là `file_id`.
+    """Khoá item của split → `file_id`. Mọi khoá trong cổng này phải là `file_id`.
 
-    Split lưu `recording_id` (`S-0233`), cổng D3 lưu `file_id`
+    Split DataSED lưu `recording_id` (`S-0233`), cổng D3 lưu `file_id`
     (`datased:<đường dẫn>.wav`). Trộn hai namespace làm mọi phép giao thành rỗng,
     và một cổng giao rỗng thì **luôn** báo pass. Đã xảy ra thật hai lần.
+
+    DataSEC không có `recording_id` nên ánh xạ là đồng nhất — nhưng vẫn phải đi
+    qua manifest để item lạ vỡ ra ở đây (ADR-0010).
     """
-    path = MANIFESTS / f"{dataset}_recordings.csv"
-    if not path.exists():
-        raise SystemExit(f"Thiếu {path}: không suy được file_id từ recording_id.")
-    frame = pd.read_csv(path)
-    return dict(zip(frame["recording_id"], frame["file_id"].astype(str), strict=True))
+    return file_id_by_item(dataset, MANIFESTS)
 
 
 def assert_matches_frozen(split_path: Path) -> None:
@@ -76,16 +83,19 @@ def load_assignment(split_path: Path, dataset: str) -> tuple[dict[str, str], dic
             f"{split_path} thiếu cột 'leakage_group': split được sinh trước khi cổng D3 "
             "được nối vào create_splits. Sinh lại split."
         )
+    item_col = keys_for(dataset).item_col
+    if item_col not in frame.columns:
+        raise SystemExit(f"{split_path} thiếu cột khoá {item_col!r} của {dataset}.")
     mapping = file_id_by_recording(dataset)
-    unknown = set(frame["recording_id"]).difference(mapping)
+    unknown = set(frame[item_col].astype(str)).difference(mapping)
     if unknown:
-        raise SystemExit(f"{len(unknown)} recording_id ngoài manifest, ví dụ {sorted(unknown)[0]}")
+        raise SystemExit(f"{len(unknown)} {item_col} ngoài manifest, ví dụ {sorted(unknown)[0]}")
 
     assignment = {
-        mapping[row["recording_id"]]: str(row["split"]) for _, row in frame.iterrows()
+        mapping[str(row[item_col])]: str(row["split"]) for _, row in frame.iterrows()
     }
     groups = {
-        mapping[row["recording_id"]]: str(row["leakage_group"]) for _, row in frame.iterrows()
+        mapping[str(row[item_col])]: str(row["leakage_group"]) for _, row in frame.iterrows()
     }
     return assignment, groups
 
@@ -107,17 +117,39 @@ def load_exclusions(path: Path) -> list[str]:
         return [row["file_id"] for row in csv.DictReader(handle)]
 
 
-def load_recording_hashes(dataset: str) -> dict[str, str]:
-    path = MANIFESTS / f"{dataset}_recordings.csv"
+def load_exclusions_for_dataset(path: Path, dataset: str) -> list[str]:
+    """`file_id` bị D3 loại khỏi corpus của `dataset`, đúng luật của corpus đó.
+
+    Với DataSEC (pretraining), loại trừ nghĩa là vắng mặt thật — cả nội bộ
+    (`exclude_duplicate`) lẫn xuyên dataset (`exclude_cross_dataset_leak`/
+    `_unsure`). Dùng chung một luật cho mọi dataset là sai: nó từng làm trượt
+    chính split DataSED đã đóng băng (ADR-0010).
+    """
     if not path.exists():
-        return {}
-    frame = pd.read_csv(path)
-    return {
-        str(row["file_id"]): str(row["content_sha256"]) for _, row in frame.iterrows()
-    }
+        return []
+    reasons = set(keys_for(dataset).excluded_must_be_absent)
+    with path.open(encoding="utf-8") as handle:
+        return [
+            row["file_id"]
+            for row in csv.DictReader(handle)
+            if row["file_id"].startswith(f"{dataset}:") and row["reason_code"] in reasons
+        ]
 
 
-def load_labels(dataset: str, label_mode: str) -> dict[str, list[str]]:
+def load_recording_hashes(dataset: str) -> dict[str, str]:
+    """Hash nội dung theo `file_id`. Tên cột khác nhau giữa hai manifest."""
+    return content_hash_by_file_id(dataset, MANIFESTS)
+
+
+def load_labels(dataset: str, label_mode: str, taxonomy) -> dict[str, list[str]]:
+    """Nhãn theo `file_id`. Hai dataset công bố nhãn theo hai cách khác nhau.
+
+    DataSED có bảng event; DataSEC **không có** file annotation nào — lớp nằm ở
+    cây thư mục ([ADR-0011](../docs/decisions/ADR-0011-nhan-va-do-phu-lop-datasec.md)).
+    """
+    keys = keys_for(dataset)
+    if keys.label_source == "directory":
+        return labels_by_file_id(MANIFESTS / keys.manifest, taxonomy)
     path = ROOT / "data" / "annotations" / f"{dataset}_{label_mode}_events.csv"
     frame = pd.read_csv(path)
     mapping = file_id_by_recording(dataset)
@@ -149,7 +181,23 @@ def build_checks(
     assignment, groups = load_assignment(split_path, dataset)
     duplicate_groups = load_duplicate_groups(MANIFESTS / "duplicate_groups.csv")
     taxonomy = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
-    expected = list(taxonomy.polyphonic_class_ids)
+    expected = coverage_labels(dataset, taxonomy)
+    keys = keys_for(dataset)
+
+    if keys.corpus == "pretraining":
+        # DataSEC không có dev/test cần bảo vệ — nó *là* corpus pretraining.
+        # Kiểm 5 hỏi câu tương ứng: clip đã bị D3 loại có thực sự vắng mặt
+        # (ADR-0010 §3), không phải "loại trừ xuyên dataset đã áp lên benchmark".
+        excluded = load_exclusions_for_dataset(MANIFESTS / "exclusions.csv", dataset)
+        if not excluded:
+            raise SystemExit(
+                f"exclusions.csv không có dòng {dataset}: nào bị loại. Kiểm 5 sẽ pass rỗng."
+            )
+        fifth = check_pretraining_exclusions_absent(assignment, excluded)
+    else:
+        fifth = check_cross_dataset_exclusions_applied(
+            assignment, duplicate_groups, load_exclusions(MANIFESTS / "exclusions.csv")
+        )
 
     return [
         check_group_integrity(assignment, groups),
@@ -157,20 +205,18 @@ def build_checks(
         check_duplicate_pairs_within_split(assignment, duplicate_groups),
         check_class_coverage(
             assignment,
-            load_labels(dataset, label_mode),
+            load_labels(dataset, label_mode, taxonomy),
             expected_classes=expected,
             allowed_empty=allowed_empty,
         ),
-        check_cross_dataset_exclusions_applied(
-            assignment, duplicate_groups, load_exclusions(MANIFESTS / "exclusions.csv")
-        ),
+        fifth,
     ]
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("dataset", choices=("datased",))
-    parser.add_argument("--label-mode", choices=("polyphonic", "monophonic"), default="polyphonic")
+    parser.add_argument("dataset", choices=("datased", "datasec"))
+    parser.add_argument("--label-mode", default=None)
     parser.add_argument(
         "--allow-missing-dedup",
         action="store_true",
@@ -183,19 +229,23 @@ def main() -> None:
         help="Class được phép vắng ở một split. Phải nêu trong báo cáo.",
     )
     args = parser.parse_args()
+    dataset_keys = keys_for(args.dataset)
+    label_mode = args.label_mode or dataset_keys.label_modes[0]
+    if label_mode not in dataset_keys.label_modes:
+        raise SystemExit(f"{args.dataset} chỉ nhận label-mode {list(dataset_keys.label_modes)}.")
     # Console Windows mặc định cp1252, không in được tên kiểm bằng tiếng Việt.
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
     results = build_checks(
         args.dataset,
-        args.label_mode,
+        label_mode,
         args.allow_empty_class,
         allow_missing_dedup=args.allow_missing_dedup,
     )
     dedup_available = (MANIFESTS / "duplicate_groups.csv").exists()
     report = run_all(results)
     report["dataset"] = args.dataset
-    report["label_mode"] = args.label_mode
+    report["label_mode"] = label_mode
     report["dedup_available"] = dedup_available
     if not dedup_available:
         report["warning"] = "Kiểm 3 và 5 pass rỗng: chưa có duplicate_groups.csv"

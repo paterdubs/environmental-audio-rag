@@ -6,6 +6,7 @@ from ml.dataops.leakage import (
     check_duplicate_pairs_within_split,
     check_group_integrity,
     check_hash_integrity,
+    check_pretraining_exclusions_absent,
     run_all,
 )
 
@@ -96,6 +97,34 @@ def test_cross_dataset_exclusion_required_when_group_touches_holdout() -> None:
 def test_cross_dataset_group_inside_train_needs_no_exclusion() -> None:
     groups = {"dup-0001": ["datasec:clip.wav", "datased:S-0001"]}
     assert check_cross_dataset_exclusions_applied(ASSIGNMENT, groups, excluded=[]).passed
+
+
+def test_pretraining_exclusion_fails_when_the_clip_is_still_in_the_split() -> None:
+    """DataSEC không có dev/test cần bảo vệ — nó là corpus pretraining tự thân."""
+    assignment = {"datasec:clip-a.wav": "train", "datasec:clip-b.wav": "validation"}
+
+    result = check_pretraining_exclusions_absent(assignment, excluded=["datasec:clip-a.wav"])
+
+    assert not result.passed
+    assert result.violations == ["datasec:clip-a.wav"]
+
+
+def test_pretraining_exclusion_passes_when_the_clip_is_absent() -> None:
+    assignment = {"datasec:clip-b.wav": "validation"}
+
+    result = check_pretraining_exclusions_absent(assignment, excluded=["datasec:clip-a.wav"])
+
+    assert result.passed
+    assert result.violations == []
+
+
+def test_pretraining_exclusion_ignores_split_membership() -> None:
+    """Không liên quan tới split nào — chỉ hỏi có mặt hay không."""
+    assignment = {"datasec:clip-a.wav": "test"}
+
+    result = check_pretraining_exclusions_absent(assignment, excluded=["datasec:clip-a.wav"])
+
+    assert not result.passed
 
 
 def test_run_all_requires_exactly_five_checks() -> None:

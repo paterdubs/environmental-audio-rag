@@ -21,6 +21,13 @@ ALARM_BANDS: tuple[tuple[float, str, str], ...] = (
 )
 
 
+#: Ngưỡng similarity tối thiểu để một cặp `review` trở thành ràng buộc cùng split.
+#: 0.93 nằm **trên** mức dương tính giả cao nhất đã đo khi hiệu chuẩn (0.9205 trên
+#: 5,000 cặp ngẫu nhiên khác nhãn, ADR-0007). Dưới mức đó, cặp không mang bằng
+#: chứng phân biệt được với nhiễu, mà vẫn phải trả giá bằng chất lượng split.
+COHESION_MIN_SIMILARITY = 0.93
+
+
 @dataclass(frozen=True)
 class DuplicateThresholds:
     """Ngưỡng T3. Mặc định là điểm khởi đầu của DATA_PLAN §7.3, **phải hiệu chuẩn**."""
@@ -194,19 +201,30 @@ def human_review_queue(matches: Iterable[PairMatch]) -> list[PairMatch]:
     return [match for match in collect_review_pairs(matches) if match.is_cross_dataset]
 
 
-def split_cohesion_pairs(matches: Iterable[PairMatch]) -> list[tuple[str, str]]:
+def split_cohesion_pairs(
+    matches: Iterable[PairMatch], *, min_similarity: float = COHESION_MIN_SIMILARITY
+) -> list[tuple[str, str]]:
     """Cặp `review` **nội bộ** một dataset — ràng buộc "cùng split", không phải xoá.
 
     Vì sao được xử lý tự động mà không vi phạm DATA_PLAN §7.3: hành động ở đây
     **không phải loại trừ**. Giữ hai recording nghi ngờ trong cùng một split chỉ
     có thể làm giảm rò rỉ, không bao giờ che giấu nó, và không xoá dữ liệu nào.
     Điều §7.3 cấm là tự động *quyết định loại* — việc đó vẫn cần người.
+
+    Nhưng "chỉ có thể làm giảm rò rỉ" **không** có nghĩa là miễn phí. Ràng buộc
+    được lấy hợp bắc cầu, nên single-linkage chaining trên cạnh yếu tạo ra khối
+    lớn — đúng lỗi [ADR-0009 §2](../../docs/decisions/ADR-0009-nguong-phu-thuoc-overlap.md)
+    đã sửa cho cạnh `duplicate`. Ở ngưỡng review 0.85, DataSEC ra một khối **315
+    file** mật độ 0.024 trộn bốn lớp. Vì vậy cohesion đòi bằng chứng mạnh hơn
+    ngưỡng review: trên mức dương tính giả đã đo (ADR-0012).
     """
     return sorted(
         {
             tuple(sorted((match.left_file_id, match.right_file_id)))
             for match in matches
-            if match.verdict == "review" and not match.is_cross_dataset
+            if match.verdict == "review"
+            and not match.is_cross_dataset
+            and match.similarity >= min_similarity
         }
     )
 

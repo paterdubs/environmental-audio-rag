@@ -103,6 +103,68 @@ thị cảnh báo, và metric không được tính precision/recall trên dòng
 | **Gộp 4 subclass nhỏ vào "other"** | Làm hỏng cấu trúc hierarchy, và "other" không có nghĩa âm học |
 | **Chia 50/25/25 riêng cho subclass nhỏ** | Hai quy tắc split trong một dataset, khó tái lập và khó giải thích |
 
+## 7. Đặc tả baseline "random" cho parent-consistency (bổ sung 2026-09-23)
+
+Giải quyết mục đầu của "Evidence cần kiểm lại" ở trên. Codex nêu đúng: "random"
+có ít nhất ba nghĩa (uniform trên 28 subclass, prior DataSEC, hay logits của head
+chưa train) và không nghĩa nào tái lập được nếu chọn tuỳ ý.
+
+### Chốt: uniform trên toàn bộ 28 subclass, không điều kiện theo coarse
+
+Đây là baseline "không kỹ năng" đúng nghĩa — một head có trọng số ngẫu nhiên và
+softmax gần đều sẽ xấp xỉ phân phối này trước khi học được gì. Hai lựa chọn kia
+bị loại có lý do:
+
+- **Prior DataSEC** không phải "không kỹ năng" — nó đã mã hoá thông tin thật về
+  phân bố lớp (`voices`+`music` = 57.5%, ADR-0002), nên một head chỉ học prior
+  cũng vượt qua baseline này. Dùng nó làm baseline sẽ che mất tín hiệu yếu thật.
+- **Logits của head chưa train** phụ thuộc phân phối khởi tạo trọng số (Xavier,
+  Kaiming, …) — không phải một đại lượng có công thức đóng, và "seed cố định"
+  không đủ để tái lập nếu công thức khởi tạo đổi giữa các phiên bản PyTorch.
+
+### Công thức đóng, không cần mô phỏng Monte Carlo
+
+Với mỗi item DataSED có coarse label (ground truth, vì D1 dùng để đo *trước khi*
+có prediction thật), nếu coarse đó thuộc 10 nhóm có subclass với $k_c$ lớp con,
+xác suất trúng ngẫu nhiên khi vẽ đều trên 28 lớp là:
+
+$$P(\text{parent-consistent} \mid \text{coarse} = c) = \frac{k_c}{28}$$
+
+Baseline là trung bình có trọng số theo tần suất coarse thật trên tập đang đo:
+
+$$\text{baseline} = \frac{1}{N}\sum_{i=1}^{N} \frac{k_{c_i}}{28}$$
+
+chỉ tính trên $N$ item có coarse thuộc 10 nhóm có subclass — 12 coarse còn lại
+không có khái niệm "subclass đúng" nên bị loại khỏi mẫu số, giống hệt cách
+`ignore_index=-1` loại chúng khỏi loss huấn luyện
+([`ml/datasets/datasec.py`](../../ml/datasets/datasec.py)).
+
+Đây là một **giá trị kỳ vọng đóng**, không phải kết quả mô phỏng — không cần
+seed, không có phương sai giữa các lần chạy. Generator chỉ cần: với mỗi coarse
+$c$, tra `len(taxonomy.classes[c].subclasses) / 28`, rồi lấy trung bình trên tập
+item đang đánh giá.
+
+### Phạm vi
+
+- **Dataset:** DataSED — đúng nơi ADR-0006 §2 áp dụng parent-consistency.
+- **Coarse dùng để tra $k_c$:** nhãn coarse **thật** (ground truth annotation),
+  không phải coarse do SED phát hiện — vì baseline đo "không có kỹ năng ở tầng
+  subclass", cô lập khỏi sai số của tầng coarse. Khi có prediction thật (sau D1),
+  báo cáo song song hai con số: baseline dùng coarse thật, và baseline dùng
+  coarse **do SED phát hiện** — chênh lệch giữa hai con số đo lỗi lan truyền từ
+  tầng coarse, một quan sát tự nó có giá trị.
+- **Đơn vị đếm:** theo **event** (một khoảng annotation), không theo frame — khớp
+  với cách `event_subclass_predictions` được định nghĩa ở §2/§6.
+
+### Nghiệm thu
+
+```
+.venv/Scripts/python.exe -m scripts.report_run --random-baseline datased
+```
+sinh `docs/measurements/parent_consistency_random_baseline_<YYYYMMDD>.md` có:
+bảng $k_c$ cho 10 nhóm, số item mỗi coarse trên DataSED, baseline tổng, và ghi rõ
+12 coarse không subclass bị loại khỏi mẫu số kèm số lượng bị loại.
+
 ## Evidence cần kiểm lại
 
 - [ ] Parent-consistency rate của một model chưa train (random) là bao nhiêu —

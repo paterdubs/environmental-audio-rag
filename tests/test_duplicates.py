@@ -1,6 +1,7 @@
 import pytest
 
 from ml.dataops.duplicates import (
+    COHESION_MIN_SIMILARITY,
     DuplicateThresholds,
     PairMatch,
     alarm_band,
@@ -254,19 +255,57 @@ def test_human_queue_holds_only_cross_dataset_reviews() -> None:
 def test_within_dataset_reviews_become_split_cohesion_constraints() -> None:
     """Không xoá gì — chỉ buộc hai recording nghi ngờ nằm cùng split."""
     matches = [
-        _match("datased:S-2.wav", "datased:S-3.wav", 0.90),
-        _match("datasec:a.wav", "datased:S-1.wav", 0.90),
+        _match("datased:S-2.wav", "datased:S-3.wav", 0.94),
+        _match("datasec:a.wav", "datased:S-1.wav", 0.94),
     ]
     assert split_cohesion_pairs(matches) == [("datased:S-2.wav", "datased:S-3.wav")]
 
 
 def test_split_cohesion_pairs_are_deduplicated_and_ordered() -> None:
     matches = [
-        _match("datased:S-3.wav", "datased:S-2.wav", 0.90),
-        _match("datased:S-2.wav", "datased:S-3.wav", 0.91),
+        _match("datased:S-3.wav", "datased:S-2.wav", 0.94),
+        _match("datased:S-2.wav", "datased:S-3.wav", 0.945),
     ]
     assert split_cohesion_pairs(matches) == [("datased:S-2.wav", "datased:S-3.wav")]
 
 
 def test_duplicate_pairs_are_not_split_cohesion_pairs() -> None:
     assert split_cohesion_pairs([_match("datased:a.wav", "datased:b.wav", 0.99)]) == []
+
+
+def test_weak_review_pairs_do_not_become_cohesion_constraints() -> None:
+    """Chaining của single-linkage: cạnh yếu gom bắc cầu thành khối lớn.
+
+    Đo trên DataSEC thật ở ngưỡng review 0.85: một khối **315 file**, mật độ cạnh
+    0.024, trộn bốn lớp, đẩy tỉ lệ split từ 70/15/15 lệch thành 65/20/15. Hiệu
+    chuẩn ADR-0007 cho thấy negative max là 0.9205 — dưới mức đó cặp không mang
+    bằng chứng phân biệt được với nhiễu.
+    """
+    weak = _match("datased:S-2.wav", "datased:S-3.wav", 0.92)
+
+    assert split_cohesion_pairs([weak]) == []
+    assert split_cohesion_pairs([weak], min_similarity=0.85) == [
+        ("datased:S-2.wav", "datased:S-3.wav")
+    ]
+
+
+def test_cohesion_threshold_sits_above_the_measured_negative_maximum() -> None:
+    """0.9205 là dương tính giả cao nhất đo được trên 5,000 cặp ngẫu nhiên khác nhãn."""
+    assert COHESION_MIN_SIMILARITY > 0.9205
+
+
+def test_tightening_cohesion_only_refines_the_grouping() -> None:
+    """Luật mới chỉ bỏ cạnh, nên split hợp lệ theo luật cũ vẫn hợp lệ theo luật mới.
+
+    Đây là lý do `data-v1.0` không phải sinh lại: phân hoạch mới mịn hơn phân
+    hoạch cũ, không bao giờ gộp thêm.
+    """
+    matches = [
+        _match("datased:a.wav", "datased:b.wav", 0.94),
+        _match("datased:b.wav", "datased:c.wav", 0.87),
+    ]
+
+    loose = set(split_cohesion_pairs(matches, min_similarity=0.85))
+    strict = set(split_cohesion_pairs(matches))
+
+    assert strict < loose

@@ -9,7 +9,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from ml.dataops.datasec_labels import labels_by_file_id
 from ml.dataops.grouping import build_leakage_groups, group_size_histogram, largest_group
+from ml.dataops.registry import keys_for
 from ml.dataops.splits import (
     SplitConfig,
     grouped_multilabel_split,
@@ -43,6 +45,58 @@ def datased_rows(mode: str) -> tuple[pd.DataFrame, pd.DataFrame]:
     )
     rows["leakage_group"] = _leakage_group_column(rows)
     return rows, labels
+
+
+def datasec_rows(taxonomy) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Clip DataSEC ở dạng dài `(file_id, class_id)`, đã loại theo cổng D3.
+
+    Khoá item là `file_id`: DataSEC không có `recording_id` và không được bịa ra
+    ([ADR-0010](../docs/decisions/ADR-0010-dinh-danh-datasec-va-cong-freeze.md)).
+    Mỗi clip sinh 1–2 dòng — coarse, và subclass nếu có — để bộ chia phân tầng
+    trên **cả hai mức**, đúng tập mà cổng D4 sẽ đòi phủ (ADR-0011 §3).
+    """
+    keys = keys_for("datasec")
+    manifests = ROOT / "data" / "manifests"
+    inventory = pd.read_csv(manifests / keys.manifest)
+    excluded = read_excluded_file_ids(manifests / "exclusions.csv", "datasec")
+    kept = inventory[~inventory["file_id"].isin(excluded)]
+    if len(kept) == len(inventory):
+        raise SystemExit(
+            "Không loại được clip nào của datasec khỏi split. exclusions.csv có "
+            f"{len(excluded)} dòng nhưng không khớp file_id nào — lỗi lệch namespace."
+        )
+
+    labels_by_clip = labels_by_file_id(manifests / keys.manifest, taxonomy)
+    pairs = [
+        (str(file_id), label)
+        for file_id in kept["file_id"].astype(str)
+        for label in labels_by_clip[str(file_id)]
+    ]
+    labels = pd.DataFrame(pairs, columns=["file_id", "class_id"])
+    rows = labels.merge(
+        kept[["file_id", keys.hash_col]].rename(columns={keys.hash_col: "content_sha256"}),
+        on="file_id",
+        validate="many_to_one",
+    )
+    rows["leakage_group"] = _leakage_group_column(rows)
+    return rows, labels
+
+
+def read_excluded_file_ids(path: Path, dataset: str) -> set[str]:
+    """`file_id` bị cổng D3 loại khỏi corpus của `dataset`.
+
+    Với corpus pretraining, loại trừ nghĩa là **vắng mặt thật** — khác với
+    benchmark, nơi trùng nội bộ chỉ bị buộc cùng split (ADR-0010 §3).
+    """
+    if not path.exists():
+        raise SystemExit(f"Thiếu {path}: cổng D3 chưa chạy xong.")
+    reasons = set(keys_for(dataset).excluded_must_be_absent)
+    with path.open(encoding="utf-8") as handle:
+        return {
+            row["file_id"]
+            for row in csv.DictReader(handle)
+            if row["file_id"].startswith(f"{dataset}:") and row["reason_code"] in reasons
+        }
 
 
 def _leakage_group_column(rows: pd.DataFrame) -> pd.Series:
@@ -87,17 +141,25 @@ def read_cohesion_pairs(path: Path) -> list[tuple[str, str]]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Create deterministic leakage-safe splits")
-    parser.add_argument("dataset", choices=("datased",))
-    parser.add_argument("--label-mode", choices=("polyphonic", "monophonic"), default="polyphonic")
+    parser.add_argument("dataset", choices=("datased", "datasec"))
+    parser.add_argument("--label-mode", default=None)
     parser.add_argument("--seed", type=int, default=20260922)
     args = parser.parse_args()
+    keys = keys_for(args.dataset)
+    label_mode = args.label_mode or keys.label_modes[0]
+    if label_mode not in keys.label_modes:
+        raise SystemExit(f"{args.dataset} chỉ nhận label-mode {list(keys.label_modes)}.")
     taxonomy = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
 
-    rows, labels = datased_rows(args.label_mode)
-    config = SplitConfig(train=0.6, validation=0.2, test=0.2, seed=args.seed)
+    if args.dataset == "datasec":
+        rows, labels = datasec_rows(taxonomy)
+    else:
+        rows, labels = datased_rows(label_mode)
+    train, validation, test = keys.split_ratio
+    config = SplitConfig(train=train, validation=validation, test=test, seed=args.seed)
     assignments = grouped_multilabel_split(
         rows,
-        item_col="recording_id",
+        item_col=keys.item_col,
         group_col="leakage_group",
         label_col="class_id",
         config=config,
@@ -107,13 +169,13 @@ def main() -> None:
     summary = split_summary(
         assignments,
         labels,
-        item_col="recording_id",
+        item_col=keys.item_col,
         label_col="class_id",
     )
-    output = ROOT / "data" / "splits" / f"datased_{args.label_mode}.csv"
+    output = ROOT / "data" / "splits" / f"{args.dataset}_{label_mode}.csv"
     metadata = {
-        "dataset": "datased",
-        "label_mode": args.label_mode,
+        "dataset": args.dataset,
+        "label_mode": label_mode,
         "config": asdict(config),
         "taxonomy_version": taxonomy.version,
         "taxonomy_sha256": taxonomy.checksum,
@@ -121,10 +183,10 @@ def main() -> None:
             "source": "content_sha256 + duplicate_groups.csv + split_cohesion_pairs.csv",
             "groups": int(rows["leakage_group"].nunique()),
             "largest": largest_group(
-                dict(zip(rows["recording_id"], rows["leakage_group"], strict=True))
+                dict(zip(rows[keys.item_col], rows["leakage_group"], strict=True))
             ),
             "size_histogram": group_size_histogram(
-                dict(zip(rows["recording_id"], rows["leakage_group"], strict=True))
+                dict(zip(rows[keys.item_col], rows["leakage_group"], strict=True))
             ),
         },
         "summary": summary,

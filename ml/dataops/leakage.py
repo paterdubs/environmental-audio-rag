@@ -126,6 +126,30 @@ def check_cross_dataset_exclusions_applied(
     )
 
 
+def check_pretraining_exclusions_absent(
+    assignment: Mapping[str, str], excluded: Sequence[str]
+) -> CheckResult:
+    """Kiểm 5, biến thể **corpus pretraining** (DataSEC).
+
+    Kiểm 5 gốc ([`check_cross_dataset_exclusions_applied`](#check_cross_dataset_exclusions_applied))
+    chỉ có nghĩa khi áp cho **benchmark**: nó bảo vệ dev/test của DataSED khỏi bị
+    một clip pretraining trùng lọt vào. DataSEC không có dev/test cần bảo vệ theo
+    nghĩa đó — nó *là* corpus pretraining.
+
+    Câu hỏi tương ứng cho DataSEC là câu đơn giản hơn nhưng dễ pass rỗng hơn:
+    clip đã bị D3 loại — **cả** trùng nội bộ lẫn trùng xuyên dataset — có thực sự
+    vắng mặt khỏi split hay không, hay `create_splits` đã bỏ sót một vài file khi
+    lọc. Đây chính là bất biến mà [`require_exclusion_policy`](../../scripts/freeze_split.py)
+    kiểm khi freeze; hàm này cho kiểm đó xuất hiện trong báo cáo D4 **trước** khi
+    freeze, thay vì chỉ vỡ ra ở bước cuối cùng.
+    """
+    present = set(assignment)
+    violations = sorted(file_id for file_id in excluded if file_id in present)
+    return CheckResult(
+        5, "Clip đã bị D3 loại không lọt vào split pretraining", not violations, violations
+    )
+
+
 def run_all(results: Sequence[CheckResult]) -> dict:
     if len(results) != 5:
         raise ValueError("DATA_PLAN §8.4 yêu cầu đúng 5 kiểm")
