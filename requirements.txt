@@ -10,6 +10,6 @@ soundfile>=0.13,<1
 tqdm>=4.67,<5
 
 # Development
+jsonschema>=4.23,<5
 pytest>=8,<10
 ruff>=0.12,<1
-

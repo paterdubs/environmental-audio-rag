@@ -1,6 +1,6 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-22, sau Phase 1 (xác minh archive + git baseline)
+**Cập nhật:** 2026-09-23, sau các hạng mục W1 độc lập (contract, CI, tài liệu vận hành)
 **Git:** `3c80110` · **Taxonomy:** `0.1` / `67ca8a8c…`
 
 > Đây là nguồn chân lý duy nhất về **phần đã chạy được**. Kiến trúc dự kiến nằm
@@ -32,7 +32,7 @@ Không freeze split, không chạy thí nghiệm transfer trước khi D3 xong.
 | **Taxonomy xác minh từ archive** | ✅ | 22/22 coarse, 10/10 nhóm subclass, 0 unmapped |
 | DataSED inventory (D1) | ✅ | `datased_inventory_summary.json` |
 | DataSED annotation (D2) | ✅ | `datased_preparation_audit.json` |
-| DataSEC giải nén + inventory (D1) | ○ | Archive đã verify, chưa giải nén |
+| DataSEC giải nén + inventory (D1) | ✅ | 5,048 WAV; `datasec_inventory_summary.json` |
 | Dedup T1 DataSED | ✅ | 8 nhóm exact duplicate |
 | **Dedup T2/T3 + xuyên dataset (D3)** | ○ | **Cổng đang chặn** |
 | Split DataSED | ◐ candidate | 435/142/140, chưa freeze |
@@ -44,8 +44,12 @@ Không freeze split, không chạy thí nghiệm transfer trước khi D3 xong.
 | Grounded caption | ○ | Chỉ có contract [SYSTEM §6](SYSTEM.md) |
 | RAG / retrieval | ○ | Chỉ có thiết kế [SYSTEM §7](SYSTEM.md) |
 | API / inference / frontend | ○ | Chỉ có thư mục scaffold |
-| CI | ○ | |
-| Test suite | ✅ | 18 test pass, ruff sạch |
+| JSON Schema contracts | ✅ | 6 schema Draft 2020-12; `tests/test_contracts.py` (13 pass) |
+| CI | ✅ baseline | `.github/workflows/ci.yml`; guard `tests/test_api_boundaries.py` pass |
+| W2 nền tảng | ◐ | DataSEC loader/sampler, PANNs CNN14-compatible, `logmel_panns_v1`; chưa train |
+| W3 nền tảng | ◐ | Prediction NPZ contract, post-processing guards, run manifest v2; chưa có prediction thật |
+| W4–W6 nền tảng | ◐ | Metric/bootstrap/error harness, grounded caption fixtures, event-store/retrieval foundation; chưa chạy dữ liệu thật |
+| Test suite | ◐ | Targeted contracts + API boundary: 14 pass; full suite chờ fingerprint D3 và lỗi quyền `%TEMP%` của pytest |
 
 ---
 
@@ -191,8 +195,8 @@ Cổng D3 vì vậy không phải thủ tục hình thức. Ngưỡng báo độ
 | [evaluation_protocol.md](evaluation_protocol.md) | 389 | ✅ viết lại 22/09 |
 | [CLAUDE.md](../CLAUDE.md) | ~330 | ✅ mới 22/09 |
 | [decisions/](decisions/) | 6 ADR | ✅ ADR-0002…0006 mới 22/09 |
-| [TRAINING_OPS_PLAN.md](TRAINING_OPS_PLAN.md) | 69 | ○ chờ viết lại |
-| [annotation_guideline.md](annotation_guideline.md) | 86 | ○ chờ viết lại |
+| [TRAINING_OPS_PLAN.md](TRAINING_OPS_PLAN.md) | 305 | ✅ cập nhật 23/09 |
+| [annotation_guideline.md](annotation_guideline.md) | 291 | ✅ cập nhật 23/09 |
 | [RELATED_WORK.md](RELATED_WORK.md) | 61 | ○ chờ viết lại |
 | [data_inventory.md](data_inventory.md) | 29 | ○ chờ sinh lại từ manifest |
-| `contracts/*.schema.json` | 0/6 | ○ chưa tồn tại |
+| `contracts/*.schema.json` | 6/6 | ✅ Draft 2020-12, có test |

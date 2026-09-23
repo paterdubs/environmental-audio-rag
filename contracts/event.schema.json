@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://environmental-audio-rag.local/contracts/event.schema.json",
+  "title": "Event",
+  "description": "A persisted event after annotation normalization or post-processing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "recording_id",
+    "class_id",
+    "onset_s",
+    "offset_s",
+    "score",
+    "label_mode",
+    "provenance",
+    "model_version",
+    "taxonomy_version"
+  ],
+  "properties": {
+    "event_id": {"type": "integer", "minimum": 1},
+    "recording_id": {"type": "string", "pattern": "^(datased|datasec|upload):.+$"},
+    "class_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "onset_s": {"type": "number", "minimum": 0},
+    "offset_s": {"type": "number", "exclusiveMinimum": 0},
+    "score": {"type": "number", "minimum": 0, "maximum": 1},
+    "label_mode": {"type": "string", "enum": ["polyphonic", "monophonic"]},
+    "provenance": {"type": "string", "enum": ["ground_truth", "prediction"]},
+    "model_version": {"type": ["string", "null"], "minLength": 1},
+    "taxonomy_version": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"provenance": {"const": "ground_truth"}}},
+      "then": {"properties": {"model_version": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"provenance": {"const": "prediction"}}},
+      "then": {"properties": {"model_version": {"type": "string", "minLength": 1}}}
+    }
+  ]
+}

@@ -68,7 +68,33 @@ S-0001.wav,Birds,0.00,0.30,0.00,17.60,17.60
 
 ---
 
-## 3. Event contract
+## 3. Canonical contracts theo dataset
+
+DataSEC là bài toán clip classification: archive không cung cấp onset/offset.
+Không được bịa event timeline cho DataSEC chỉ để dùng chung một schema với
+DataSED. Hai output canonical dùng chung provenance và taxonomy, nhưng có đơn vị
+nhãn khác nhau.
+
+### 3.1 DataSEC clip-label contract
+
+Mỗi audio DataSEC sau canonicalize phải giữ tối thiểu:
+
+```text
+file_id              datasec:<relative_path>
+source_dataset       datasec
+source_path          <relative_path trong archive>
+source_coarse_label  <tên thư mục nguyên văn>
+canonical_class_id   <class_id từ taxonomy>
+source_subclass_label <tên thư mục nguyên văn | null>
+canonical_subclass_id <subclass_id | null>
+taxonomy_version     0.1
+```
+
+`source_path` cùng hai trường `source_*_label` là lineage để audit lại cây thư
+mục. `canonical_subclass_id = null` là hợp lệ với lớp không có subclass; nó
+không có nghĩa là model dự đoán "không xác định".
+
+### 3.2 DataSED event contract
 
 Mỗi annotation canonical phải có đủ 8 trường:
 
@@ -84,7 +110,10 @@ taxonomy_version    0.1
 ```
 
 **`source_label` và `canonical_class_id` cùng tồn tại.** Mất `source_label` là
-mất khả năng kiểm tra lại mapping và mất khả năng phát hiện lỗi taxonomy.
+mất khả năng kiểm tra lại mapping và mất khả năng phát hiện lỗi taxonomy. Một
+event canonical phải truy ngược được về dòng CSV nguồn; nếu implementation cần
+một định danh, nó phải sinh xác định từ file CSV, số dòng nguồn và taxonomy hash,
+không dựa vào thứ tự đọc ngẫu nhiên.
 
 ### Ràng buộc
 
@@ -99,6 +128,10 @@ mất khả năng kiểm tra lại mapping và mất khả năng phát hiện l�
 
 Ràng buộc 6 đáng nhấn: hai label mode có số lớp khác nhau (21 vs 22) và định
 nghĩa nhãn khác nhau. Trộn chúng cho ra một con số không diễn giải được.
+
+Mọi canonical output đều phải kèm `taxonomy_version` và hash của taxonomy ở
+manifest/provenance của lần sinh. Thay taxonomy, parser hoặc raw input là tạo
+artifact mới; không sửa đè artifact cũ.
 
 ---
 

@@ -12,7 +12,11 @@ import numpy as np
 import torch
 
 
-def seed_everything(seed: int) -> None:
+def seed_everything(seed: int) -> dict[str, int]:
+    """Seed every RNG used by the training stack and return manifest evidence."""
+
+    if seed < 0:
+        raise ValueError("seed must be non-negative")
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -20,6 +24,7 @@ def seed_everything(seed: int) -> None:
         torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
+    return {name: seed for name in ("python", "numpy", "torch", "cuda")}
 
 
 def sha256_file(path: Path) -> str:
@@ -41,10 +46,10 @@ def git_state(root: Path) -> dict:
         )
         return completed.stdout.strip()
 
-    return {
-        "revision": run("rev-parse", "HEAD") or None,
-        "dirty": bool(run("status", "--porcelain")),
-    }
+    revision = run("rev-parse", "HEAD")
+    if not revision:
+        raise RuntimeError(f"Cannot resolve Git revision under {root}")
+    return {"revision": revision, "dirty": bool(run("status", "--porcelain"))}
 
 
 def runtime_environment() -> dict:

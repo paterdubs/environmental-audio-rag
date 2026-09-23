@@ -1,0 +1,9 @@
+model: panns_cnn14
+sample_rate: 32000
+mel_bins: 64
+window_seconds: 5.0
+batch_size: 4
+gradient_accumulation_steps: 2
+amp: true
+max_vram_gb: 8.0
+pretrained: false

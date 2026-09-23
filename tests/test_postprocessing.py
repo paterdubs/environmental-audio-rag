@@ -1,0 +1,180 @@
+import json
+from pathlib import Path
+
+import numpy as np
+import pytest
+from jsonschema import Draft202012Validator
+
+from ml.postprocessing import (
+    DurationPrior,
+    build_postproc_artifact,
+    derive_duration_priors,
+    probabilities_to_events,
+    sweep_global_threshold,
+    sweep_per_class_thresholds,
+    validate_postproc_artifact,
+)
+from ml.taxonomy import load_taxonomy
+
+ROOT = Path(__file__).resolve().parents[1]
+TAXONOMY = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
+CLASS_IDS = TAXONOMY.polyphonic_class_ids
+
+
+def _priors() -> dict[str, DurationPrior]:
+    return {
+        class_id: DurationPrior(median_w=1, d_min_s=0.0, g_max_s=0.0, n_events=1)
+        for class_id in CLASS_IDS
+    }
+
+
+def _train_events() -> dict[str, list[dict[str, float | str]]]:
+    events = []
+    for index, class_id in enumerate(CLASS_IDS):
+        start = float(index * 10)
+        events.extend(
+            [
+                {"class_id": class_id, "onset_s": start, "offset_s": start + 1.0},
+                {"class_id": class_id, "onset_s": start + 3.0, "offset_s": start + 5.0},
+            ]
+        )
+    return {"datased:S-train": events}
+
+
+def test_probabilities_to_events_applies_filter_gap_merge_and_minimum_duration():
+    probabilities = np.asarray(
+        [
+            [0.0],
+            [0.9],
+            [0.9],
+            [0.0],
+            [0.9],
+            [0.9],
+            [0.0],
+            [0.0],
+            [0.0],
+            [0.9],
+            [0.0],
+        ],
+        dtype=np.float32,
+    )
+    events = probabilities_to_events(
+        probabilities,
+        recording_id="datased:S-0001",
+        class_ids=["birds"],
+        thresholds={"birds": 0.5},
+        priors={"birds": DurationPrior(median_w=1, d_min_s=0.3, g_max_s=0.2)},
+        frame_rate=10.0,
+    )
+
+    assert len(events) == 1
+    assert events[0].onset_s == pytest.approx(0.1)
+    assert events[0].offset_s == pytest.approx(0.6)
+    assert events[0].score == pytest.approx(0.9)
+
+
+def test_median_filter_suppresses_isolated_active_frame():
+    events = probabilities_to_events(
+        np.asarray([[0.0], [0.9], [0.0]], dtype=np.float32),
+        recording_id="datased:S-0001",
+        class_ids=["birds"],
+        thresholds={"birds": 0.5},
+        priors={"birds": DurationPrior(median_w=3, d_min_s=0.0, g_max_s=0.0)},
+        frame_rate=10.0,
+    )
+    assert events == []
+
+
+def test_duration_priors_are_train_only_and_cover_polyphonic_taxonomy():
+    priors = derive_duration_priors(
+        _train_events(), class_ids=CLASS_IDS, frame_rate=50.0, source_split="train"
+    )
+    assert tuple(priors) == CLASS_IDS
+    assert priors["bells"].d_min_s == pytest.approx(1.05)
+    assert priors["bells"].g_max_s == pytest.approx(2.0)
+    assert priors["bells"].median_w % 2 == 1
+
+    with pytest.raises(ValueError, match="only be derived"):
+        derive_duration_priors(
+            _train_events(), class_ids=CLASS_IDS, frame_rate=50.0, source_split="dev"
+        )
+    with pytest.raises(ValueError, match="exact order"):
+        derive_duration_priors(
+            _train_events(),
+            class_ids=tuple(reversed(CLASS_IDS)),
+            frame_rate=50.0,
+            source_split="train",
+        )
+
+
+def test_threshold_sweeps_are_dev_only_and_deterministic():
+    probabilities = np.zeros((2, len(CLASS_IDS)), dtype=np.float32)
+    probabilities[0, :] = 0.6
+    predictions = {"datased:S-dev": probabilities}
+
+    best_global, global_curve = sweep_global_threshold(
+        predictions,
+        class_ids=CLASS_IDS,
+        priors=_priors(),
+        frame_rate=10.0,
+        score_fn=lambda events: float(sum(len(rows) for rows in events.values())),
+        split="dev",
+        grid=[0.5, 0.7],
+    )
+    assert best_global == 0.5
+    assert global_curve == {0.5: 21.0, 0.7: 0.0}
+
+    thresholds, curves = sweep_per_class_thresholds(
+        predictions,
+        class_ids=CLASS_IDS,
+        priors=_priors(),
+        frame_rate=10.0,
+        score_fn=lambda events, class_id: float(
+            sum(row["class_id"] == class_id for rows in events.values() for row in rows)
+        ),
+        split="dev",
+        grid=[0.5, 0.7],
+    )
+    assert set(thresholds.values()) == {0.5}
+    assert all(curve == {0.5: 1.0, 0.7: 0.0} for curve in curves.values())
+
+    with pytest.raises(ValueError, match="split='dev'"):
+        sweep_global_threshold(
+            predictions,
+            class_ids=CLASS_IDS,
+            priors=_priors(),
+            frame_rate=10.0,
+            score_fn=lambda events: 0.0,
+            split="test",
+            grid=[0.5],
+        )
+
+
+def test_postproc_artifact_schema_provenance_and_semantic_guards():
+    digest = "a" * 64
+    artifact = build_postproc_artifact(
+        class_ids=CLASS_IDS,
+        thresholds=dict.fromkeys(CLASS_IDS, 0.5),
+        priors=_priors(),
+        taxonomy_sha256=TAXONOMY.checksum,
+        split_sha256=digest,
+        data_manifest_sha256=digest,
+        dev_predictions_sha256=digest,
+        threshold_mode="per_class",
+        threshold_grid=[0.5],
+    )
+    schema = json.loads((ROOT / "contracts" / "postproc.schema.json").read_text("utf-8"))
+    Draft202012Validator.check_schema(schema)
+    Draft202012Validator(schema).validate(artifact)
+    assert artifact["class_ids"] == list(CLASS_IDS)
+    assert list(artifact["per_class"]) == list(CLASS_IDS)
+
+    leaked = dict(artifact, calibrated_on="test")
+    with pytest.raises(ValueError, match="calibrated on dev"):
+        validate_postproc_artifact(leaked)
+    leaked = dict(artifact, duration_prior_from="dev")
+    with pytest.raises(ValueError, match="come from train"):
+        validate_postproc_artifact(leaked)
+    wrong_taxonomy = dict(artifact, taxonomy_sha256=digest)
+    with pytest.raises(ValueError, match="active taxonomy"):
+        validate_postproc_artifact(wrong_taxonomy)

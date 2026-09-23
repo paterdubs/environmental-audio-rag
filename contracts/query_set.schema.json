@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://environmental-audio-rag.local/contracts/query_set.schema.json",
+  "title": "Retrieval query set",
+  "type": "array",
+  "minItems": 100,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["query_id", "question", "filters", "relevance"],
+    "properties": {
+      "query_id": {"type": "string", "pattern": "^q-[0-9]{3}$"},
+      "question": {"type": "string", "minLength": 1},
+      "filters": {
+        "type": "object",
+        "required": ["temporal"],
+        "properties": {
+          "temporal": {
+            "type": "object",
+            "required": ["predicate", "a", "b", "tolerance_s"],
+            "properties": {
+              "predicate": {"enum": ["before", "after", "overlaps", "within"]},
+              "a": {"type": "string"},
+              "b": {"type": "string"},
+              "tolerance_s": {"type": "number", "minimum": 0}
+            }
+          }
+        }
+      },
+      "relevance": {
+        "type": "object",
+        "required": ["type", "source"],
+        "properties": {
+          "type": {"const": "recording_ids"},
+          "source": {"const": "temporal_filter"}
+        }
+      }
+    }
+  }
+}

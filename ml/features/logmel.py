@@ -4,9 +4,11 @@ import hashlib
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Any, ClassVar
 
 import librosa
 import numpy as np
+import yaml
 
 
 @dataclass(frozen=True)
@@ -27,6 +29,48 @@ class LogMelConfig:
     def checksum(self) -> str:
         encoded = json.dumps(asdict(self), sort_keys=True).encode()
         return hashlib.sha256(encoded).hexdigest()
+
+
+@dataclass(frozen=True)
+class PannsLogMelConfig(LogMelConfig):
+    """Frontend parameters used by the PANNs CNN14 implementation.
+
+    PANNs uses 32 kHz audio, a 1024-sample Hann analysis window, 320-sample
+    hop, and 64 mel bins spanning 50--14,000 Hz.  The inherited extraction
+    function is deliberately reused so the feature orientation stays
+    ``[mel, time]`` across both feature versions.
+    """
+
+    sample_rate: int = 32_000
+    n_fft: int = 1_024
+    hop_length: int = 320
+    n_mels: int = 64
+    fmin: float = 50.0
+    fmax: float = 14_000.0
+    top_db: float = 80.0
+
+    name: ClassVar[str] = "logmel_panns_v1"
+
+
+def load_logmel_config(name: str, config_path: Path | None = None) -> LogMelConfig:
+    """Load a named log-mel configuration from the repository YAML file."""
+
+    path = config_path or Path(__file__).parents[1] / "configs" / "features.yaml"
+    raw: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8"))
+    try:
+        entry = raw["features"][name]
+        params = dict(entry["parameters"])
+    except (KeyError, TypeError) as exc:
+        raise ValueError(f"Unknown or malformed log-mel configuration: {name}") from exc
+
+    config_type = entry.get("type")
+    if config_type == "panns":
+        config_class: type[LogMelConfig] = PannsLogMelConfig
+    elif config_type == "librosa":
+        config_class = LogMelConfig
+    else:
+        raise ValueError(f"Unsupported log-mel configuration type: {config_type}")
+    return config_class(**params)
 
 
 def waveform_to_logmel(waveform: np.ndarray, config: LogMelConfig) -> np.ndarray:

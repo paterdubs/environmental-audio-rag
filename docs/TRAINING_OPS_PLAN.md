@@ -33,7 +33,8 @@ sau.
 | Y3 | Đổi θ không cần train lại, không cần inference lại | Quét ngưỡng là thao tác lặp nhiều lần |
 | Y4 | Run bị ngắt không được ghi `complete = true` | Artifact dở dang lẫn vào báo cáo |
 | Y5 | Resume kiểm được config và data hash khớp | Resume nhầm dữ liệu là lỗi im lặng |
-| Y6 | Cổng dữ liệu chặn được việc train | Train trên split chưa freeze là lãng phí |
+| Y6 | Cổng dữ liệu chặn được việc train | Train trên split chưa freeze là không hợp lệ cho kết luận |
+| Y7 | Test là ranh giới một chiều | Không dùng test để chọn checkpoint, encoder, threshold hoặc post-processing |
 
 ---
 
@@ -63,9 +64,9 @@ ml/runs/<run_id>/
     └── test.npz             chỉ sinh SAU khi chọn model
 ```
 
-**`predictions/` là thứ thiếu gây tốn nhất.** Với 1,344 window test × 500 frame ×
-21 class × 4 byte ≈ 56 MB mỗi run — rẻ so với việc chạy lại inference mỗi lần
-thử một θ khác.
+**`predictions/` là thứ thiếu gây tốn nhất.** Kích thước phụ thuộc số window,
+frame và class của run, nhưng nhỏ hơn đáng kể chi phí phải inference lại mỗi lần
+quét θ. Chúng vẫn là artifact run, không commit vào Git.
 
 `taxonomy.snapshot.yaml` tồn tại vì `taxonomy_sha256` cho biết taxonomy **đã đổi**
 nhưng không cho biết **đổi gì**. Snapshot cho phép so sánh hai run qua ranh giới
@@ -102,6 +103,22 @@ taxonomy version.
 
 **`dirty: true` làm run không hợp lệ cho báo cáo.** Cảnh báo lúc train, và từ
 chối khi sinh measurement cuối.
+
+### 3.4 Preflight phải được lưu cùng run
+
+Trước khi tạo checkpoint đầu tiên, launcher phải kiểm và ghi verdict của các
+điều kiện sau vào manifest hoặc artifact preflight có hash:
+
+| Điều kiện | Verdict fail |
+|---|---|
+| D3/D4 đã pass; split frozen và hash khớp | Chặn train chính thức |
+| Taxonomy, feature config và data manifest có hash | Chặn vì không tái lập được |
+| `class_ids` đúng task (`polyphonic_class_ids` cho SED) | Chặn vì class order sai làm checkpoint vô nghĩa |
+| Branch, seed và training budget đã khai báo | Chặn so sánh liên-run, không chặn smoke test được đánh dấu `provisional` |
+| Working tree sạch, revision là commit cụ thể | Không được dùng cho measurement cuối |
+
+Không dùng `--allow-unfrozen-split` để lách một run báo cáo. Nếu cần dò đường,
+run phải ghi `provisional: true`; mọi metric của nó chỉ phục vụ chẩn đoán.
 
 ---
 

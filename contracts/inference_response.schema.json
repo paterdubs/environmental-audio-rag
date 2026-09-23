@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://environmental-audio-rag.local/contracts/inference_response.schema.json",
+  "title": "Inference API response",
+  "description": "Framework-neutral API envelope for a successful or failed inference request.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["success", "data", "error", "meta"],
+  "properties": {
+    "success": {"type": "boolean"},
+    "data": {
+      "type": ["object", "null"],
+      "properties": {
+        "recording_id": {"type": "string", "pattern": "^(datased|datasec|upload):.+$"},
+        "duration_s": {"type": "number", "exclusiveMinimum": 0},
+        "taxonomy_version": {"type": "string", "minLength": 1},
+        "model_version": {"type": "string", "minLength": 1},
+        "events": {"type": "array"}
+      },
+      "required": ["recording_id", "duration_s", "taxonomy_version", "model_version", "events"]
+    },
+    "error": {
+      "type": ["object", "null"],
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "message": {"type": "string", "minLength": 1}
+      },
+      "required": ["code", "message"],
+      "additionalProperties": false
+    },
+    "meta": {"type": "object"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"success": {"const": true}}},
+      "then": {"properties": {"data": {"type": "object"}, "error": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"success": {"const": false}}},
+      "then": {"properties": {"data": {"type": "null"}, "error": {"type": "object"}}}
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://environmental-audio-rag.local/contracts/postproc.schema.json",
+  "title": "Frozen SED post-processing calibration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "frozen",
+    "class_ids",
+    "taxonomy_sha256",
+    "split_sha256",
+    "data_manifest_sha256",
+    "dev_predictions_sha256",
+    "calibrated_on",
+    "duration_prior_from",
+    "threshold_mode",
+    "threshold_grid",
+    "per_class"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "frozen": {"const": true},
+    "class_ids": {
+      "type": "array",
+      "minItems": 21,
+      "maxItems": 21,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"}
+    },
+    "taxonomy_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "split_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "data_manifest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "dev_predictions_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "calibrated_on": {"const": "dev"},
+    "duration_prior_from": {"const": "train"},
+    "threshold_mode": {"enum": ["global", "per_class"]},
+    "threshold_grid": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1}
+    },
+    "per_class": {
+      "type": "object",
+      "minProperties": 21,
+      "maxProperties": 21,
+      "additionalProperties": {"$ref": "#/$defs/class_parameters"}
+    }
+  },
+  "$defs": {
+    "class_parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "theta",
+        "median_w",
+        "d_min_s",
+        "g_max_s",
+        "n_train_events",
+        "n_train_gaps"
+      ],
+      "properties": {
+        "theta": {"type": "number", "minimum": 0, "maximum": 1},
+        "median_w": {"type": "integer", "minimum": 1},
+        "d_min_s": {"type": "number", "minimum": 0},
+        "g_max_s": {"type": "number", "minimum": 0},
+        "n_train_events": {"type": "integer", "minimum": 1},
+        "n_train_gaps": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}
