@@ -60,13 +60,18 @@ hợp không hợp lệ (vd `audio` encoder + feature 32 kHz).
 ### 3. Cùng độ dài cửa sổ theo **giây**, không phải theo frame, giữa các nhánh
 
 C2 đã đo VRAM CNN14 an toàn ở cửa sổ 10 s (batch 24). ADR-0002 §5 đòi "cùng
-training budget" giữa ba nhánh — nghĩa là cùng **10 s window / 5 s hop** về mặt
-thời gian, không phải cùng số frame:
+training budget" giữa ba nhánh — nghĩa là cùng độ dài cửa sổ/hop **theo giây**,
+không phải cùng số frame.
 
-| Encoder | frame_rate | window_frames (10 s) | hop_frames (5 s) |
+**Sửa lỗi 2026-09-24:** bản đầu ADR này ghi nhầm hop hiện tại của nhánh A là
+250 frame (5 s). Đọc lại `SedTrainingConfig` thật: `hop_frames` mặc định là
+**500**, bằng `window_frames` — tức nhánh A hiện chạy cửa sổ **10 s / hop 10 s
+(không overlap)**, không phải 5 s. Bảng dưới sửa theo số thật:
+
+| Encoder | frame_rate | window_frames (10 s) | hop_frames (10 s, không overlap) |
 |---|---:|---:|---:|
-| `audio` (nhánh A) | 50 | 500 (hiện trạng) | 250 (hiện trạng) |
-| `panns` (nhánh B/C) | 100 | **1000** | **500** |
+| `audio` (nhánh A) | 50 | 500 (hiện trạng) | 500 (hiện trạng) |
+| `panns` (nhánh B/C) | 100 | **1000** | **1000** |
 
 Batch size cho `--encoder panns` mặc định **24** (số đo thật C2 ở 10 s), không
 phải batch 8 hiện tại của nhánh A.
