@@ -1,0 +1,15 @@
+# Metric chuẩn cho SED — tách riêng vì chỉ cần khi chạy đánh giá (W3.6 trở đi),
+# không cần cho cổng dữ liệu hay training. `ml/evaluation/sed_metrics.py` raise
+# `MissingMetricDependency` với hướng dẫn trỏ về đúng file này khi thiếu.
+#
+#   .venv/Scripts/python.exe -m pip install -r requirements-eval.txt
+#
+# CLAUDE.md §5 cấm tự viết lại metric đã có thư viện chuẩn — hai gói dưới đây là
+# lý do điều cấm đó khả thi.
+#
+# ⚠️ Giải được dependency KHÔNG bằng chạy được. `psds_eval` 0.5.3 phát hành ở
+# thời pandas 1.x; repo này dùng pandas 2.2+. Phải smoke-test thật (task H1)
+# trước khi tin rằng W4 chạy được, không chỉ `pip install` thành công.
+
+sed_eval>=0.2.1,<1
+psds_eval>=0.5.3,<1

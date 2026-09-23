@@ -123,9 +123,23 @@ trong `ml/training/sed.py`, đọc trực tiếp `loader.dataset.windows` theo *
 thứ tự index** (chỉ hợp lệ khi `shuffle=False` — đúng thực trạng của
 `validation`/`test` loader trong `train_sed.py`, không hợp lệ cho `train`
 loader, không cần thiết cho `train`). `frame_offsets_s = start_frame /
-frame_rate`. Gọi hàm này trong `--evaluate-test` (và thêm việc lưu cho
-`validation` nếu W3.6 quét threshold trên dev cần logits dev — có, theo PLAN.md
-3.6) — ghi cả `predictions/validation.npz` và `predictions/test.npz`.
+frame_rate`.
+
+**⚠️ Namespace khác nhau giữa hai tầng — phải ánh xạ tường minh, không đổi tên
+cột split CSV.** Cột `split` trong `data/splits/datased_polyphonic.csv` và dict
+`loaders` của `train_sed.py` dùng `"validation"`; nhưng
+`PredictionArtifact.split` (`ml/evaluation/predictions.py`) và toàn bộ
+`ml/postprocessing/calibration.py` (`sweep_*`, `build_postproc_artifact`,
+`calibrated_on`) chỉ chấp nhận **literal `"dev"`** — `validate_predictions`
+raise `ValueError` với bất kỳ giá trị nào khác `{"dev", "test"}`. Đây là đúng
+mẫu lỗi lệch namespace đã gặp nhiều lần trong dự án (`clip_id`/`file_id`,
+`recording_id`) — khác ở chỗ lần này có guard raise sẵn nên sẽ lộ ngay, không
+âm thầm sai như các lần trước. Khi gọi `save_predictions`, truyền
+`split="dev"` cho loader `"validation"` và `split="test"` cho loader `"test"`
+— **không** đổi tên cột `split` trong CSV/`train_sed.py` để khớp theo chiều
+ngược lại, vì "validation" đã lan ra nhiều chỗ khác (`build_loaders`,
+`report_split.py`, mọi manifest DataSEC/DataSED). Ghi
+`predictions/dev.npz` và `predictions/test.npz` (đúng tên PLAN.md §2.3 dùng).
 
 **Guard bắt buộc:** raise rõ nếu `isinstance(loader.sampler, ...)` không phải
 sequential hoặc `shuffle=True` được truyền nhầm cho loader dùng để dump
