@@ -8,8 +8,9 @@ import numpy as np
 import torch
 from sklearn.metrics import average_precision_score, f1_score
 from torch import Tensor, nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, SequentialSampler
 
+from ml.evaluation.predictions import PredictionArtifact
 from ml.models import SoundEventDetector
 
 
@@ -90,6 +91,78 @@ def run_epoch(
     )
     metrics["loss"] = float(np.mean(losses))
     return metrics
+
+
+def collect_predictions(
+    model: SoundEventDetector,
+    loader: DataLoader,
+    *,
+    device: torch.device,
+    class_ids: tuple[str, ...],
+    split: str,
+    model_version: str,
+    taxonomy_sha256: str,
+    frame_rate: float,
+) -> PredictionArtifact:
+    """Gom logit thô của một split thành `PredictionArtifact` (ADR-0020 §6).
+
+    Danh tính cửa sổ (`recording_id`, `start_frame`) **không** đi qua batch —
+    `SedFeatureDataset.__getitem__` chỉ trả `(features, target, valid)`. Ở đây
+    lấy lại từ `dataset.windows` theo đúng thứ tự index, nên **chỉ đúng khi
+    loader duyệt tuần tự**; guard bên dưới từ chối mọi loader khác thay vì ghép
+    logit sai recording một cách im lặng.
+
+    Dùng autocast y hệt `run_epoch` để frame metric tính lại từ NPZ khớp đúng số
+    đã báo cáo — lệch nghĩa là artifact không đến từ cùng checkpoint/state.
+    """
+    dataset = loader.dataset
+    windows = getattr(dataset, "windows", None)
+    if windows is None:
+        raise TypeError("collect_predictions cần một SedFeatureDataset (thiếu .windows)")
+    if not isinstance(loader.sampler, SequentialSampler):
+        raise ValueError(
+            "loader phải duyệt tuần tự (shuffle=False, không sampler) — "
+            f"nhận {type(loader.sampler).__name__}; thứ tự khác làm logit lệch recording"
+        )
+    if loader.drop_last:
+        raise ValueError("drop_last=True sẽ bỏ mất cửa sổ cuối — không dùng để dump prediction")
+    if frame_rate <= 0:
+        raise ValueError("frame_rate phải dương")
+
+    model.to(device)
+    model.eval()
+    logit_chunks: list[np.ndarray] = []
+    target_chunks: list[np.ndarray] = []
+    mask_chunks: list[np.ndarray] = []
+    with torch.inference_mode():
+        for features, targets, valid in loader:
+            features = features.to(device, non_blocking=True)
+            with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
+                logits = model(features)
+            logit_chunks.append(logits.float().cpu().numpy())
+            target_chunks.append(targets.numpy())
+            mask_chunks.append(valid.numpy())
+
+    logits_array = np.concatenate(logit_chunks, axis=0)
+    if logits_array.shape[0] != len(windows):
+        raise ValueError(
+            f"đếm được {logits_array.shape[0]} cửa sổ nhưng dataset có {len(windows)} — "
+            "thứ tự/độ dài không khớp, không ghép được danh tính recording"
+        )
+    return PredictionArtifact(
+        logits=logits_array,
+        targets=np.concatenate(target_chunks, axis=0).astype(np.uint8),
+        recording_ids=np.asarray([window.recording_id for window in windows], dtype=np.str_),
+        frame_offsets_s=np.asarray(
+            [window.start_frame / frame_rate for window in windows], dtype=np.float64
+        ),
+        mask=np.concatenate(mask_chunks, axis=0).astype(bool),
+        class_ids=tuple(class_ids),
+        split=split,
+        model_version=model_version,
+        frame_hop_s=1.0 / frame_rate,
+        taxonomy_sha256=taxonomy_sha256,
+    )
 
 
 def train_sed(

@@ -11,6 +11,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from ml.datasets.features import SedFeatureDataset
+from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
 from ml.taxonomy import load_taxonomy
 from ml.training.common import (
@@ -21,9 +22,17 @@ from ml.training.common import (
     sha256_file,
     write_json,
 )
-from ml.training.sed import SedTrainingConfig, estimate_pos_weight, run_epoch, train_sed
+from ml.training.sed import (
+    SedTrainingConfig,
+    collect_predictions,
+    estimate_pos_weight,
+    run_epoch,
+    train_sed,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
+FRAME_RATE = 50.0  # `logmel_v1` (nhánh A). ADR-0020 sẽ tham số hoá khi thêm --encoder panns.
+MODEL_VERSION = "sed-v1.0"
 
 
 def parse_args() -> argparse.Namespace:
@@ -125,9 +134,29 @@ def main() -> None:
     )
     write_json(run / "logs" / "history.json", {"epochs": history})
     metrics = {"best_validation": max(item["validation"]["macro_f1"] for item in history)}
+
+    checkpoint = torch.load(best_path, map_location=device, weights_only=True)
+    model.load_state_dict(checkpoint["model_state"])
+
+    # `predictions/dev.npz` luôn được ghi (kể cả không --evaluate-test): W3.6 quét
+    # threshold trên dev không phụ thuộc việc test đã mở hay chưa. Split CSV/loaders
+    # dùng "validation"; contract prediction dùng literal "dev" — ánh xạ tường minh
+    # ở đây, không đổi tên cột split (ADR-0020 §6).
+    dev_predictions = collect_predictions(
+        model,
+        loaders["validation"],
+        device=device,
+        class_ids=class_ids,
+        split="dev",
+        model_version=MODEL_VERSION,
+        taxonomy_sha256=taxonomy.checksum,
+        frame_rate=FRAME_RATE,
+    )
+    dev_sha256 = save_predictions(
+        run / "predictions" / "dev.npz", dev_predictions, expected_class_ids=class_ids
+    )
+
     if args.evaluate_test:
-        checkpoint = torch.load(best_path, map_location=device, weights_only=True)
-        model.load_state_dict(checkpoint["model_state"])
         with torch.inference_mode():
             metrics["test"] = run_epoch(
                 model,
@@ -138,6 +167,21 @@ def main() -> None:
                 scaler=None,
                 threshold=config.threshold,
             )
+        test_predictions = collect_predictions(
+            model,
+            loaders["test"],
+            device=device,
+            class_ids=class_ids,
+            split="test",
+            model_version=MODEL_VERSION,
+            taxonomy_sha256=taxonomy.checksum,
+            frame_rate=FRAME_RATE,
+        )
+        test_sha256 = save_predictions(
+            run / "predictions" / "test.npz", test_predictions, expected_class_ids=class_ids
+        )
+        metrics["test_predictions_sha256"] = test_sha256
+    metrics["dev_predictions_sha256"] = dev_sha256
     write_json(run / "metrics.json", metrics)
     manifest["complete"] = True
     manifest["best_checkpoint"] = str(best_path.relative_to(run))
