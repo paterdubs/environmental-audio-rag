@@ -79,6 +79,7 @@ def hierarchical_loss(
     family_mask: Tensor,
     *,
     weights: HierarchicalLossWeights | None = None,
+    coarse_weight: Tensor | None = None,
 ) -> dict[str, Tensor]:
     """Ba thành phần: coarse CE, subclass CE (ignore -1), và consistency.
 
@@ -88,20 +89,34 @@ def hierarchical_loss(
     nghĩa ở [ADR-0006 §2](../../docs/decisions/ADR-0006-danh-gia-subclass.md).
     Không có nó, CE 28-way một mình không phạt việc đặt khối lượng xác suất lớn
     ở một gia đình sai miễn là lớp đúng vẫn là argmax.
+
+    `coarse_weight` (trọng số nghịch tần suất lớp, ADR-0002 §4) áp cho **riêng**
+    CE của coarse. Chỉ `total` mang gradient — `coarse`/`subclass`/`consistency`
+    trả về đã `.detach()`, dùng để **ghi log**, không dùng để `backward()` lại;
+    ghép các thành phần đã detach sẽ làm subclass/consistency không nhận được
+    gradient dù `total.backward()` chạy bình thường.
     """
     weights = weights or HierarchicalLossWeights()
     valid = subclass_target != IGNORE_SUBCLASS
-    coarse_loss = nn.functional.cross_entropy(coarse_logits, coarse_target)
-    subclass_loss = nn.functional.cross_entropy(
-        subclass_logits, subclass_target, ignore_index=IGNORE_SUBCLASS
-    )
+    coarse_loss = nn.functional.cross_entropy(coarse_logits, coarse_target, weight=coarse_weight)
 
     if valid.any():
+        # `cross_entropy(..., ignore_index=X)` chia tổng loss cho số phần tử
+        # HỢP LỆ trong chính lệnh gọi đó. Batch nào có 100% item thuộc 12 lớp
+        # coarse không subclass (rows liền kề trong `datasec_classification.csv`
+        # thường cùng lớp — 12/22 lớp là loại này) sẽ có 0 phần tử hợp lệ, và
+        # PyTorch trả **NaN** thay vì 0. Bắt được thật: validation loss ra NaN
+        # ở lần chạy `--epochs 1` đầu tiên vì `shuffle=False` giữ nguyên thứ tự
+        # theo lớp. Chỉ gọi cross_entropy khi chắc có ít nhất 1 phần tử hợp lệ.
+        subclass_loss = nn.functional.cross_entropy(
+            subclass_logits, subclass_target, ignore_index=IGNORE_SUBCLASS
+        )
         probabilities = nn.functional.softmax(subclass_logits[valid], dim=-1)
         family = family_mask[coarse_target[valid]]
         mass = (probabilities * family).sum(dim=-1).clamp_min(_CONSISTENCY_EPS)
         consistency_loss = -torch.log(mass).mean()
     else:
+        subclass_loss = coarse_logits.new_zeros(())
         consistency_loss = coarse_logits.new_zeros(())
 
     total = coarse_loss + weights.subclass * subclass_loss + weights.consistency * consistency_loss

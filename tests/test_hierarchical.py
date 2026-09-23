@@ -113,6 +113,70 @@ def test_parent_consistency_rate_perfect_and_zero() -> None:
     assert parent_consistency_rate(coarse_prediction, wrong, mask) == 0.0
 
 
+def test_hierarchical_loss_total_carries_gradient_to_every_head() -> None:
+    """`total` phải là thứ duy nhất dùng để backward — các thành phần khác đã detach.
+
+    Bug thật đã bắt được khi viết `run_hierarchical_epoch`: ghép các thành phần
+    `coarse`/`subclass`/`consistency` (đã `.detach()`, dùng để log) lại với nhau
+    tưởng là loss huấn luyện sẽ làm subclass/consistency **không nhận gradient**
+    dù `backward()` không báo lỗi gì. Test này khoá lại hành vi đúng.
+    """
+    model = HierarchicalAudioClassifier(AudioEncoder(), num_coarse=22, num_subclass=28)
+    mask = build_family_mask(TAXONOMY, COARSE_IDS, SUBCLASS_IDS)
+    inputs = torch.rand(4, 1, 64, 50)
+    coarse_target = torch.randint(0, 22, (4,))
+    subclass_target = torch.randint(0, 28, (4,))
+
+    coarse_logits, subclass_logits = model(inputs)
+    result = hierarchical_loss(coarse_logits, subclass_logits, coarse_target, subclass_target, mask)
+    result["total"].backward()
+
+    assert model.subclass_head.weight.grad is not None
+    assert torch.any(model.subclass_head.weight.grad != 0)
+    assert model.coarse_head.weight.grad is not None
+
+
+def test_hierarchical_loss_handles_a_batch_with_no_subclass_at_all() -> None:
+    """Bug thật đo được: `cross_entropy(ignore_index=X)` trả NaN nếu 100% item
+    trong batch bị ignore — không phải 0 như trực giác. Validation loader dùng
+    `shuffle=False`, và 12/22 lớp coarse không có subclass thường nằm liền kề
+    nhau trong manifest, nên một batch toàn item không-subclass là chuyện thật
+    đã xảy ra ở lần chạy đầu của `scripts.train_classifier --epochs 1`.
+    """
+    mask = build_family_mask(TAXONOMY, COARSE_IDS, SUBCLASS_IDS)
+    coarse_target = torch.tensor([0, 1, 2])
+    subclass_target = torch.full((3,), -1)  # toàn bộ batch không có subclass
+
+    result = hierarchical_loss(
+        torch.rand(3, 22), torch.rand(3, 28), coarse_target, subclass_target, mask
+    )
+
+    assert torch.isfinite(result["total"])
+    assert result["subclass"].item() == 0.0
+    assert result["consistency"].item() == 0.0
+
+
+def test_hierarchical_loss_accepts_a_coarse_class_weight() -> None:
+    """Trọng số nghịch tần suất (ADR-0002 §4) áp riêng cho coarse CE."""
+    mask = build_family_mask(TAXONOMY, COARSE_IDS, SUBCLASS_IDS)
+    coarse_logits = torch.rand(4, 22, requires_grad=True)
+    subclass_logits = torch.rand(4, 28)
+    coarse_target = torch.tensor([0, 0, 1, 1])
+    subclass_target = torch.full((4,), -1)
+    weight = torch.ones(22)
+    weight[0] = 5.0
+
+    unweighted = hierarchical_loss(
+        coarse_logits, subclass_logits, coarse_target, subclass_target, mask
+    )
+    weighted = hierarchical_loss(
+        coarse_logits, subclass_logits, coarse_target, subclass_target, mask,
+        coarse_weight=weight,
+    )
+
+    assert not torch.isclose(unweighted["total"], weighted["total"])
+
+
 def test_parent_consistency_rate_excludes_coarse_without_a_family() -> None:
     """Coarse không subclass (vd `bells`) không có khái niệm "đúng gia đình"."""
     mask = build_family_mask(TAXONOMY, COARSE_IDS, SUBCLASS_IDS)

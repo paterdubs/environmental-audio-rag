@@ -103,11 +103,11 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 | B1 | `extract_features` nhận `logmel_panns_v1` + `datasec` | Codex | `scripts/extract_features.py` | — | ✅ |
 | B2 | Trích `logmel_panns_v1` cho 5,048 + 717 file (32 kHz). Đo thời gian, dung lượng → §5 | Codex | `data/features/` | B1 | ✅ |
 | B3 | Kiểm feature: shape, frame rate, không NaN, checksum config vào manifest | Codex | `tests/` | B2 | ✅ |
-| B4 | So `logmel_v1` vs `logmel_panns_v1` trên **5 file DataSED** (đã có cả hai feature) — khác biệt đúng tỷ lệ sample rate 32/16 kHz, không phải lỗi resample. DataSEC **không** trích thêm `logmel_v1` — vô ích, ADR-0019 đã bỏ nhánh duy nhất cần nó | Codex | `docs/measurements/` | B2 | TODO |
+| B4 | So `logmel_v1` vs `logmel_panns_v1` trên **5 file DataSED** (đã có cả hai feature) — khác biệt đúng tỷ lệ sample rate 32/16 kHz, không phải lỗi resample. DataSEC **không** trích thêm `logmel_v1` — vô ích, ADR-0019 đã bỏ nhánh duy nhất cần nó | Claude | `docs/measurements/` | B2 | ✅ |
 | C1 | `load_classifier_encoder` nhận CNN14 + đối chiếu độ phân giải thời gian (ADR-0014) | Claude | `ml/models/audio.py`, `ml/models/panns.py` | — | ✅ |
 | C2 | Đo VRAM thật CNN14 (`SoundEventDetector(classes, encoder=PannsCNN14Encoder())`) window 10 s trên 8 GB; đối chiếu `safe_batch_size`, sửa theo số đo | Codex | `ml/models/panns.py` | C1 ✅ | ✅ |
 | C3 | Nếu batch < 4 → gradient accumulation, ghi vào run manifest | Codex | `scripts/train_classifier.py` | C2 | ✅ |
-| D1 | ⚠️ **`scripts/train_classifier.py` chưa từng chạy được** — đọc 2 file chưa từng tồn tại trong git (`datasec_clips.csv`, `data/splits/datasec.csv`), sai model/dataset/split/feature. **Viết lại hoàn toàn** theo ADR-0019: `HierarchicalAudioClassifier(PannsCNN14Encoder(normalization_path=...), 22, 28)` rồi `.load_audioset_pretrained(checkpoint)` — **dùng thẳng cơ chế chuẩn hoá F1 đã có, không viết lớp bọc mới**; nạp dữ liệu qua registry (`file_id`, `datasec_classification.csv`, `datasec_logmel_panns_v1.csv`); thêm `run_hierarchical_epoch`/`train_hierarchical_classifier` vào `ml/training/classification.py`, `primary_metric="coarse_macro_f1"` | Codex | `scripts/train_classifier.py`, `ml/training/classification.py`, `ml/runs/` | A6, B2, C2, F1 | TODO |
+| D1 | **Xong** — `classifier_datasec_20260923T120538Z`, checkpoint AudioSet đúng (sha256 khớp F1, 92.2301% tham số). Test: coarse macro-F1 **0.8467**, subclass macro-F1 (all/n≥10) **0.6266/0.8453**, parent-consistency **0.9526**. ⚠️ `git.dirty=true` lúc chạy — cần chạy lại một lần trên tree sạch sau khi commit để có số "khoá" chính thức | Claude | `scripts/train_classifier.py`, `ml/training/classification.py`, `ml/models/hierarchical.py`, `ml/runs/` | A6, B2, C2, F1 | ✅ |
 | D2 | Chứng minh seed đủ: 2 lần cùng seed → so checkpoint hash (nợ #5) | Codex | `tests/` | D1 | TODO |
 | D3 | Bảng per-class macro-F1 + hỗ trợ; 4 subclass low-support báo **số tuyệt đối** | Codex | `docs/measurements/` | D1 | TODO |
 | D4 | Kiến trúc + loss **đã có** (`ml/models/hierarchical.py`, ADR-0016) — quét `λ_cons ∈ {0, 0.25, 0.5, 1.0}` trên **dev**, chọn theo parent-consistency + subclass macro-F1 (n≥10); báo **hai** số macro-F1 (ADR-0006 §3) | Codex | `docs/measurements/`, `scripts/train_classifier.py` | D1 | TODO |
@@ -147,6 +147,7 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 ```
 
 <!-- APPEND Ở NGAY DƯỚI DÒNG NÀY -->
+[20:07] claude D1 -- HOAN TAT: viet lai train_classifier.py (ADR-0019), sua bug NaN trong hierarchical_loss (batch toan item khong-subclass), suyt quen --checkpoint (tu bat qua kiem manifest), chay that: test coarse macro-F1 0.8467, subclass 0.6266/0.8453, parent-consistency 0.9526 · ml/runs/classifier_datasec_20260923T120538Z
 [21:30] claude — dong B4: chuyen sang DataSED (da co ca hai feature), khong trich them logmel_v1 cho DataSEC (ADR-0019 da bo nhanh can no). Kiem C2/C3: safe_batch_size cu sai ~12x so voi do that, C3 dung khi xac dinh khong ap dung
 [21:10] claude — ADR-0019: scripts/train_classifier.py chua tung chay duoc tu dau du an (2 file khong ton tai trong git). Viet lai theo dac ta moi; ruf lai de xuat NormalizedPannsEncoder vi F1 da co san co che tot hon (input_mean/input_std buffer)
 [20:45] claude — kiem doc lap toan bo bao cao Codex: 267 pass, remap dung toan, 130 not_in_split khop A4/G1. Sua ADR-0015 (license that la not recorded, khong phai CC-BY-4.0)
@@ -236,6 +237,13 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 | F1 hoàn tất | Z-score train-only 3,434 clip DataSEC / 5,505,853 frame; activation 5 clip không bão hoà | `panns_checkpoint_20260923.md` | Codex |
 | ⚠️ `safe_batch_size` cũ sai lệch rất xa | Dự đoán cũ: batch 2 @ 10s. Đo thật RTX 3070 8.59 GB: batch **24** @ 10s = 5.895 GB, batch 32 @ 10s = 7.739 GB (sát trần). Đã sửa policy: 10s→24, 5s→32 | `ml/models/panns.py::safe_batch_size`, test 6/6 | Codex |
 | C3 không cần gradient accumulation | Batch đo được (24) ≥ 4 nên điều kiện kích hoạt không xảy ra — không phải bỏ qua, mà tiền đề không thoả | cùng trên | Codex |
+| B4 kết luận | Tỷ lệ frame khớp đúng 2.0 (32k/16k) cả 5 file; tương quan bao trùm năng lượng 0.988–0.998 — không phải lỗi resample | `logmel_feature_comparison_20260923.md` | Claude |
+| ⚠️ Bug thật: `hierarchical_loss` NaN | Batch validation toàn item thuộc 12 lớp không-subclass (shuffle=False, rows liền kề cùng lớp) → `cross_entropy(ignore_index=X)` chia 0 phần tử hợp lệ = NaN, không phải 0 | `ml/models/hierarchical.py`, test 11/11 | Claude |
+| D1 smoke-test 1 epoch (sau khi sửa NaN) | train coarse_macro_f1 0.162, validation 0.143, validation loss hữu hạn 7.126 (trước khi sửa: NaN) | `ml/runs/classifier_datasec_*` | Claude |
+| ⚠️ Suýt bỏ sót: chạy D1 lần đầu **quên `--checkpoint`** | Encoder khởi tạo ngẫu nhiên thay vì AudioSet — đúng lỗi ADR-0015 §3 cảnh báo. Phát hiện qua `manifest.config.checkpoint_path: null`. Checkpoint thật ở `artifacts/checkpoints/Cnn14_mAP=0.431.pth`, SHA-256 khớp F1. Xoá run sai, chạy lại | `scripts/train_classifier.py --checkpoint ...` | Claude |
+| So sánh 1 epoch: scratch vs AudioSet | scratch 12 epoch tốt nhất validation coarse_macro_f1 **0.487**; AudioSet **1 epoch** đã đạt **0.590** | `ml/runs/classifier_datasec_*` (đã xoá run scratch sai) | Claude |
+| **D1 kết quả cuối (test, checkpoint đúng)** | coarse macro-F1 **0.8467** · subclass macro-F1 all **0.6266** · subclass macro-F1 n≥10 **0.8453** (5 node: idx 13,14,18,20,26) · parent-consistency **0.9526** | `ml/runs/classifier_datasec_20260923T120538Z/metrics.json` | Claude |
+| D1 best validation (chọn theo coarse_macro_f1) | epoch 12/12, **0.8230** (không phải epoch loss thấp nhất) | cùng trên, `history.json` | Claude |
 | % tham số transplant thật | **92.2301%** (75,493,452/81,853,340), 72/84 tensor | cùng trên, kiểm lại đúng | Codex |
 | License checkpoint AudioSet | **`not recorded`** trên Zenodo — **không phải** CC-BY-4.0 (ADR-0015 bản đầu sai, đã sửa) | cùng trên | Codex |
 | DataSEC not_in_split | **130** clip, 1.377 giờ — khớp khít A4 (chênh lệch từng lớp cộng dồn đúng 130) | `data_inventory.md` | Codex |

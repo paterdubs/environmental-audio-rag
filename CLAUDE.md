@@ -55,10 +55,13 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật:** 23/09/2026, sau các hạng mục W1 độc lập (contract, CI, tài liệu vận hành).
+**Cập nhật:** 23/09/2026, sau D1 (train E1 = DataSEC classifier, checkpoint AudioSet).
 
-**Cổng đang chặn: D3 — audit duplicate.** DataSEC nội bộ và duplicate xuyên
-DataSEC–DataSED phải xong trước khi freeze split và trước mọi thí nghiệm transfer.
+**Cổng dữ liệu D3/D4 đã đóng** (`data-v1.0`). **Split DataSEC đã đóng băng**
+(70/15/15). **D1 đã chạy thật với checkpoint AudioSet đúng**, kết quả tốt
+(coarse macro-F1 test 0.8467) nhưng git dirty lúc chạy — cần chạy lại một lần
+trên tree sạch để có số khoá chính thức. Đang chờ: D2–D6 (seed reproducibility,
+per-class report, tune consistency loss, ECE, ablation).
 
 ### Đã có ✅
 
@@ -96,36 +99,42 @@ DataSEC–DataSED phải xong trước khi freeze split và trước mọi thí 
 | Tài liệu vận hành + annotation | `TRAINING_OPS_PLAN.md` và `annotation_guideline.md` đã cập nhật 23/09 |
 | W4–W6 nền tảng | Metric/bootstrap/error harness, grounded caption, event-store/retrieval fixtures; 11 test pass |
 | W3 nền tảng | Raw prediction NPZ contract, post-processing calibration guards và run manifest v2 đã có code/test |
+| **Split DataSEC đóng băng** | 3,434/744/740 = 69.8/15.1/15.1; 50/50 nhãn (22 coarse+28 subclass) phủ cả 3 split; sha256 `e8d3099010ac2937…` |
+| **`logmel_panns_v1` đã trích** | DataSEC 5,048 + DataSED 717 file, 32 kHz, config sha256 `bbf5188f…` |
+| **Checkpoint AudioSet đã xác minh** | Zenodo `3576403`, SHA-256 `7f0ea3a7ad9622f7…`, 92.2301% tham số transplant vào `PannsCNN14Encoder` |
+| **D1 — train E1 (DataSEC classifier, nhánh C bước giữa)** | Test coarse macro-F1 **0.8467**, subclass macro-F1 all/n≥10 **0.6266/0.8453**, parent-consistency **0.9526**; `ml/runs/classifier_datasec_20260923T120538Z` |
+| `data_inventory.md` | Sinh tự động từ manifest + split đóng băng |
 
 ### Đang làm / chưa nghiệm thu ◐
 
 | Hạng mục | Còn thiếu |
 |---|---|
 | Split DataSED | **Đã đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
-| Cổng D3/D4 | **Xong, split đã đóng băng.** |
-| Tài liệu | `RELATED_WORK.md` và `data_inventory.md` còn chờ; contracts đã có |
-| W2 nền tảng | Loader/sampler DataSEC, CNN14-compatible PANNs, `logmel_panns_v1` đã có code/test; chưa train |
+| Cổng D3/D4 | **Xong, cả hai split đã đóng băng.** |
+| Tài liệu | `RELATED_WORK.md` còn chờ (cần trích dẫn — rủi ro bịa, ưu tiên thấp); `data_inventory.md` đã xong |
+| D1 số khoá chính thức | Đã chạy thật (git dirty) — cần chạy lại một lần trên tree sạch sau commit |
+| D2–D6 | Chưa làm: seed reproducibility, per-class report, tune `λ_cons`, ECE, ablation sampler |
 | W4–W6 nền tảng | Đã có code/test fixture; chưa chạy metric thật, PostgreSQL, embedding hay prediction thật |
 | W3 nền tảng | Chưa có logits/checkpoint thật; threshold và duration prior chưa được hiệu chuẩn trên split freeze |
 
 ### Chưa có ○
 
-DataSEC classifier · transfer DataSEC→DataSED · post-processing hiệu chuẩn ·
-event-based F1 / PSDS · grounded caption · RAG / retrieval · API / inference /
-frontend.
+Transfer DataSEC→DataSED (nhánh B/C fine-tune trên DataSED) · post-processing
+hiệu chuẩn · event-based F1 / PSDS · grounded caption · RAG / retrieval ·
+API / inference / frontend.
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **Đọc kết quả `detect`** — `duplicate_groups.csv`, đối chiếu ngưỡng báo động
-   [DATA_PLAN §7.6](docs/DATA_PLAN.md). Nếu trùng dev/test > 5% thì RQ1 chuyển
-   thành kết quả âm tính, phải xử lý **ngay tuần này**.
-2. **Xử lý nhóm `review` bằng người** — ghi `decided_by: human:<tên>` vào
-   `exclusions.csv`. Cấm tự động hoá bước này.
-3. Sinh lại split sau D3 (duplicate group có thể buộc recording đổi split),
-   tỉ lệ 60/20/20 theo [ADR-0008](docs/decisions/ADR-0008-ti-le-split-datased.md).
-4. `scripts.check_leakage datased` — 5 kiểm phải pass **thật**, không pass rỗng.
-5. Áp `cross_dataset_exclusions` sau khi có split, rồi freeze + tag `data-v1.0`.
-6. Train DataSEC classifier (E1), rồi transfer (E3).
+1. **D2** — chứng minh seed đủ: train 2 lần cùng seed, so checkpoint hash.
+2. **D3** — bảng per-class macro-F1 + hỗ trợ từ run D1 đã có, 4 subclass
+   low-support báo số tuyệt đối.
+3. **D4** — quét `λ_cons` trên dev, chọn theo parent-consistency + subclass
+   macro-F1 (n≥10), báo hai số macro-F1.
+4. **D5** — ECE calibration head coarse, temperature scaling trên dev.
+5. **D6** — ablation class-balanced vs uniform sampling.
+6. Chạy lại D1 trên tree sạch (sau khi commit) để có số khoá chính thức.
+7. Sau D1–D6: chuyển sang fine-tune SED trên DataSED (nhánh B/C), so với
+   baseline nhánh A đã có (frame macro-F1 0.359448) — trả lời RQ1 (`C − B`).
 
 ---
 
@@ -739,6 +748,48 @@ cả hai bộ đặc trưng). Quyết định chuyển B4 sang so sánh trên Da
 trích thêm `logmel_v1` cho DataSEC — ADR-0019 vừa loại bỏ hẳn nhánh
 `AudioClassifier` từng là lý do duy nhất cần đặc trưng đó cho DataSEC, nên
 trích thêm sẽ là công vô ích.
+
+### 2026-09-23 (tiếp) — D1 chạy thật: kết quả tốt, và hai lần tự bắt lỗi của chính mình
+
+Viết lại `scripts/train_classifier.py` xong (ADR-0019), chạy thử 1 epoch để bắt
+lỗi sớm thì lộ ra một bug thật: **`validation.loss: NaN`**. Nguyên nhân —
+`hierarchical_loss` gọi `cross_entropy(subclass_logits, subclass_target,
+ignore_index=-1)` **vô điều kiện**; PyTorch chia tổng loss cho số phần tử hợp
+lệ trong chính batch đó, và nếu 100% item một batch thuộc 12 lớp coarse không
+subclass thì số chia là 0 → NaN, không phải 0 như trực giác. Validation loader
+dùng `shuffle=False` nên các dòng cùng lớp nằm liền kề, làm tình huống này xảy
+ra thật ngay ở epoch đầu; train loader dùng `ClassBalancedSampler` nên hiếm
+gặp — đây là lý do train loss không lộ bug mà validation lộ ngay. Sửa: chỉ
+gọi `cross_entropy` khi `valid.any()`; thêm test khoá lại hành vi
+(`ml/models/hierarchical.py`, `tests/test_hierarchical.py`, 11/11 pass).
+
+Chạy full 12 epoch lần đầu **quên truyền `--checkpoint`** — đúng lỗi
+[ADR-0015](decisions/ADR-0015-checkpoint-audioset-panns.md) §3 cảnh báo trước:
+encoder khởi tạo ngẫu nhiên thay vì AudioSet, kết quả không phải nhánh C như
+ADR-0002 định nghĩa. Tự bắt được qua đọc lại `manifest.config.checkpoint_path`
+— thấy `null` thay vì đường dẫn thật — trước khi tin bất kỳ con số nào. Xoá
+run sai, chạy lại với `artifacts/checkpoints/Cnn14_mAP=0.431.pth` (SHA-256
+khớp đúng F1). Một epoch với checkpoint đúng đã vượt cả 12 epoch scratch:
+validation coarse macro-F1 0.590 so với 0.487.
+
+**Kết quả D1 cuối** (`ml/runs/classifier_datasec_20260923T120538Z`, 12 epoch,
+checkpoint AudioSet, 92.2301% tham số transplant):
+
+| Metric (test) | Giá trị |
+|---|---:|
+| coarse macro-F1 | **0.8467** |
+| subclass macro-F1 (tất cả node) | 0.6266 |
+| subclass macro-F1 (n≥10, 5 node) | **0.8453** |
+| parent-consistency rate | 0.9526 |
+
+⚠️ Run này chạy khi `git dirty=true` (nhiều thay đổi chưa commit trong phiên) —
+số trên là thăm dò đủ tin cậy để tiếp tục D2–D6, nhưng cần chạy lại một lần
+trên tree sạch sau khi commit để có số "khoá" chính thức cho báo cáo cuối.
+
+Thêm `scripts/report_classifier_run.py` in lại đúng số từ
+`manifest.json`/`metrics.json`/`history.json`, không tính toán lại.
+
+Test 268 → **275 pass**, ruff sạch.
 
 ### 2026-09-23 (tiếp) — D1 suýt bị giao cho một script chết từ đầu dự án
 

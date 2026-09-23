@@ -80,8 +80,32 @@ dùng để so với baseline random đã đặc tả ở
 - Thêm một siêu tham số (`λ_cons`) chưa hiệu chuẩn — nợ kỹ thuật, phải quét trên
   dev trước khi báo số D4 là kết luận cuối.
 - Head subclass 28-way học trên tập cực mất cân bằng theo `leakage_group` (một
-  số subclass có 19-21 file) — `ClassBalancedSampler` đã có sẵn cho coarse, cần
-  xác nhận áp dụng đúng ở mức nào (theo coarse hay theo subclass) khi D1 chạy.
+  số subclass có 19-21 file). **Đã chốt ở D1** (`scripts/train_classifier.py`):
+  `make_class_balanced_sampler(level="coarse")` — cân bằng theo coarse, không
+  theo subclass. Head subclass vẫn học trên phân bố lệch tự nhiên của nó trong
+  mỗi batch đã cân bằng coarse; nếu D4 cho macro-F1 subclass thấp bất thường ở
+  vài node, cân nhắc lại mức lấy mẫu.
+
+## Bổ sung 2026-09-23 — sửa lỗi NaN bắt được khi chạy D1 thật
+
+`hierarchical_loss` bản đầu gọi `nn.functional.cross_entropy(subclass_logits,
+subclass_target, ignore_index=IGNORE_SUBCLASS)` **vô điều kiện**. PyTorch chia
+tổng loss cho số phần tử **hợp lệ trong chính batch đó** — nếu 100% item trong
+batch thuộc 12 lớp coarse không có subclass (`subclass_target` toàn `-1`), số
+chia là 0 và hàm trả **NaN**, không phải 0 như trực giác.
+
+Bắt được thật khi chạy `scripts.train_classifier --epochs 1`: validation loss
+ra NaN. Nguyên nhân — validation loader dùng `shuffle=False`, và các dòng
+trong `datasec_classification.csv` giữ nguyên thứ tự theo thư mục nguồn (cùng
+lớp nằm liền kề), nên hoàn toàn có thể có một batch 32 item toàn thuộc một lớp
+không-subclass. Train loader dùng `ClassBalancedSampler` (lấy mẫu đều theo
+lớp mỗi batch) nên tình huống này hiếm xảy ra ở train — chính vì thế train loss
+không lộ ra bug mà validation loss lộ ra ngay ở epoch đầu.
+
+Sửa: chỉ gọi `cross_entropy` cho subclass/consistency khi `valid.any()`; batch
+toàn `-1` trả `subclass_loss = consistency_loss = 0` thay vì NaN. Thêm
+`test_hierarchical_loss_handles_a_batch_with_no_subclass_at_all` khoá lại hành
+vi đúng (`tests/test_hierarchical.py`, 11/11 pass).
 
 ## Alternatives considered
 
