@@ -45,15 +45,36 @@ Nguồn: `data/reference/zenodo_datasec_17033970.json`,
 
 ### Còn phải làm
 
-- [ ] Tìm paper kèm dataset (nếu có) — Zenodo record có description nhưng chưa
-      xác minh có publication riêng.
+- [x] Tìm paper kèm dataset — **đã kiểm tra record DataSEC (Zenodo 17033970,
+      v3), không có publication/venue nào được liệt kê**, không có "related
+      identifiers"/"cited by". ⚠️ Đây là kết quả từ tóm tắt `WebFetch` (mô hình
+      nhỏ đọc trang), **không phải đọc trực tiếp HTML** — theo đúng bài học đã
+      rút ra ở ADR-0015 (tóm tắt WebSearch từng báo sai license), kết quả này
+      cần một người **mở trực tiếp trang Zenodo xác nhận lại** trước khi coi là
+      chốt. Chưa kiểm DataSED (15346092).
+- [ ] ⚠️ **Chênh lệch cần đối chiếu:** tóm tắt trên báo record DataSEC ghi
+      "4,292 mẫu, 18h26" — khác với `datasec_archive_audit.json` đã đo trực
+      tiếp từ archive (**5,048 file, 23.7082 h**). Nhiều khả năng tóm tắt đọc
+      nhầm phiên bản cũ hơn v3, hoặc lẫn với một con số khác trên trang. **Không
+      dùng số 4,292/18h26 ở bất kỳ đâu** cho tới khi có người xác nhận trực
+      tiếp trên trang Zenodo. Theo nguyên tắc đã ghi ở dòng dưới: archive là sự
+      thật, trang mô tả thì không.
 - [ ] Đối chiếu số file và số giờ trong paper với archive thật.
       **Archive là sự thật kiểm chứng được; paper thì không.** Chênh lệch phải ghi,
       không ép số theo paper.
 - [ ] Xác minh có paper nào đã công bố baseline trên hai dataset này chưa. Nếu có,
       đó là baseline để so sánh trực tiếp → nâng lên V4.
-- [ ] **Xác minh DataSEC và DataSED có chia sẻ nguồn ghi âm không** — liên quan
-      trực tiếp tới rủi ro R1 và cổng D3.
+- [x] **DataSEC và DataSED có chia sẻ nguồn ghi âm — đã đo, không phải suy đoán.**
+      Cổng D3 tìm được **3 cặp trùng xuyên dataset**, hai cặp similarity
+      **1.000000** (không phải trùng ngẫu nhiên): `Sirens-0046.wav` (DataSEC) ↔
+      `S-0233.wav` (DataSED, 35 s chồng lấp), `Sirens-0067.wav` ↔ `S-0211.wav`
+      (13 s), và `Train-0012.wav` ↔ `S-0213.wav` (sim 0.9548, 31 s). Cả 6 tác
+      giả trùng nhau, công bố cách nhau 4 tháng — khớp giả thuyết ban đầu. Xử lý:
+      loại 11 clip DataSEC khỏi pretraining (0.2179%, dải `minor`), RQ1 vẫn hợp
+      lệ. Nguồn: `docs/measurements/dedup_20260923.md`,
+      [ADR-0009](decisions/ADR-0009-nguong-phu-thuoc-overlap.md). **Đây là dữ
+      kiện tự đo, không phải trích dẫn văn liệu — không nâng mức V, nhưng viết
+      thẳng vào báo cáo được vì có artifact kiểm chứng.**
 
 ---
 

@@ -151,8 +151,8 @@ def build_loaders(
 
 
 def main() -> None:
-    args = parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    args = parse_args()
     if args.device == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but unavailable")
     seed_everything(args.seed)

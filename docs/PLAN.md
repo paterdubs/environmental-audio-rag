@@ -77,8 +77,11 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 - [x] `duplicate_groups.csv` và `exclusions.csv` đã commit
 - [x] Báo cáo dedup xuyên dataset trong `docs/measurements/dedup_20260923.md`
 - [x] Split freeze (`datased_polyphonic.frozen.json`), SHA-256 `d2924a5e45c2b271…`, 5 kiểm leakage pass
-- [ ] Tag `data-v1.0`
-- [ ] CI xanh
+- [x] Tag `data-v1.0` (`git tag -n`: "cổng dữ liệu D1–D4 đã đóng")
+- [ ] CI xanh — **chưa thể xác nhận**: repo không có remote (`git remote -v` rỗng), nên
+      `.github/workflows/ci.yml` chưa từng chạy trên GitHub. Chỉ có bằng chứng cục bộ
+      (`pytest -q` + `ruff check .` xanh trên máy). Không tự thêm remote/push — cần
+      quyết định của người dùng.
 
 > ⚠️ **Nếu D3 phát hiện trùng lặp > 5%**, RQ1 phải đổi cách diễn giải ngay tuần
 > này, không để tới W3. Xem [DATA_PLAN §7.6](DATA_PLAN.md).

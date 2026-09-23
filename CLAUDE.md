@@ -158,6 +158,7 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Checkpoint AudioSet — phạm vi nạp | Chỉ transplant `conv_block1…6`, **không** faithful full CNN14 | [0018](docs/decisions/ADR-0018-nap-mot-phan-checkpoint-panns.md) | Checkpoint gốc có `spectrogram_extractor/bn0/fc1/fc_audioset` mà encoder repo không có — viết lại toàn bộ sẽ đổi input pipeline ở tuần 2/8 |
 | `scripts/train_classifier.py` viết lại | Bỏ hẳn `AudioClassifier`/`ClassificationFeatureDataset` cũ, dùng `HierarchicalAudioClassifier` + registry | [0019](docs/decisions/ADR-0019-viet-lai-train-classifier-datasec.md) | Script cũ đọc 2 file **chưa từng tồn tại** trong git — chưa bao giờ chạy được |
 | Giao thức ECE (D5) | Chỉ head coarse; temperature scaling, T chọn trên dev; 15 bin; 2 số trước/sau | [0017](docs/decisions/ADR-0017-hieu-chuan-ece-datasec.md) | Head subclass có lớp n_test<25 làm ECE ra nhiễu; DataSED không phải phân loại đơn nhãn |
+| Cấu hình PANNs cho SED nhánh B/C | `--encoder {audio,panns}`; cùng cửa sổ 10s/5s theo giây; nhánh C không cần normalization riêng (đi kèm checkpoint D1) | [0020](docs/decisions/ADR-0020-cau-hinh-panns-cho-sed-nhanh-bc.md) | Nhánh C fine-tune tiếp từ trọng số đã quen chuẩn hoá DataSEC — tự tính lại theo DataSED sẽ đẩy input lệch phân bố đã pretrain |
 | Checkpoint AudioSet | Zenodo `3576403`, SHA-256 xác minh; **license `not recorded`** — xử lý như chưa rõ, không giả định permissive | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
 | Hierarchical head DataSEC | Một encoder, 2 head tuyến tính, consistency loss = -log(khối lượng xác suất đúng gia đình) | [0016](docs/decisions/ADR-0016-hierarchical-head-consistency-loss.md) | CE 28-way một mình không phạt lệch gia đình coarse |
 | Temporal head CNN14 | interpolate(nearest) phục hồi T; độ phân giải thật vẫn ở khối 1.28s | [0014](docs/decisions/ADR-0014-doi-chieu-do-phan-giai-thoi-gian-cnn14.md) | Cắm CNN14 thẳng vào SED head sẽ vỡ shape loss so với target 50fps |
@@ -320,6 +321,24 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-23 (tiếp) — Chuẩn bị trước kiến trúc SED nhánh B/C (W3), trước khi D-series xong
+
+Rà `scripts/train_sed.py` trước khi Codex chạm tới W3, thay vì chờ phát hiện lúc
+đã chặn (đúng mẫu hình đã lặp ở C1/D4/D1 tuần này). Phát hiện script hiện tại
+**không có đường nào cắm PANNs vào** mà không tự đoán: `SoundEventDetector`
+luôn dùng `AudioEncoder` mặc định, feature set hardcode `logmel_v1`/50fps,
+`window_frames`/`hop_frames` gắn với fps đó, và chưa phân biệt cách nạp trọng số
+giữa nhánh B (AudioSet trực tiếp) và nhánh C (qua checkpoint D1).
+
+Chốt ADR-0020: `--encoder {audio,panns}` + `--audioset-checkpoint`/
+`--datasec-checkpoint`; cùng cửa sổ 10s/5s **theo giây** giữa các nhánh (nhánh
+`panns` ở 100fps thật đo B3 cần window_frames=1000/hop=500, không phải giữ 500/250
+cũ đổi nghĩa thành 5s). Điểm tinh tế nhất: **nhánh C không cần truyền
+`normalization_path`** — `input_mean`/`input_std` là buffer nằm trong chính
+state_dict của checkpoint D1, `load_classifier_encoder` tự mang theo. Nhánh B
+thì ngược lại, cần chuẩn hoá riêng tính từ train DataSED (chưa từng đo) — thêm
+task **F2** vào board, độc lập hoàn toàn với D2-D6, Codex có thể làm ngay.
 
 ### 2026-09-23 — W3: prediction, post-processing và reproducibility
 

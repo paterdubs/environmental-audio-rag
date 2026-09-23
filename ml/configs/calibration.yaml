@@ -1,0 +1,5 @@
+classifier_ece:
+  bins: 15
+  temperature:
+    max_iterations: 100
+    learning_rate: 0.1
