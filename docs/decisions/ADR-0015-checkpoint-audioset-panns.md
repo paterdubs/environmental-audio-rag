@@ -1,7 +1,9 @@
 # ADR-0015 — Nguồn checkpoint PANNs CNN14 pretrained trên AudioSet
 
-**Status:** Proposed — chờ tải và xác minh thật (xem "Evidence cần kiểm lại")
-**Date:** 2026-09-23
+**Status:** Accepted một phần — nguồn/hash/kiến trúc đã xác minh thật (Codex,
+Task F1); phần chuẩn hoá thay `bn0` còn chờ B2 (xem
+[ADR-0018](ADR-0018-nap-mot-phan-checkpoint-panns.md))
+**Date:** 2026-09-23, cập nhật cùng ngày sau khi Codex xác minh trực tiếp
 
 ## Context
 
@@ -26,32 +28,46 @@ giao D1 cho Codex.
 
 ## Decision
 
-### 1. Nguồn checkpoint
+### 1. Nguồn checkpoint — đã xác minh thật (không còn suy từ tóm tắt tìm kiếm)
 
-Tìm thấy qua tra cứu công khai (WebSearch, 23/09/2026), **chưa tải/hash để xác
-minh trực tiếp trong repo này** — đánh dấu ⚠️ CẦN XÁC MINH cho từng mục:
+Bước đầu tìm qua WebSearch (23/09) chỉ là gợi ý hướng tra cứu, **không** dùng để
+báo cáo — đúng cảnh báo ban đầu của ADR này. Codex (Task F1) sau đó tải thật và
+đọc trực tiếp trang Zenodo, cho kết quả xác minh:
 
-| Mục | Giá trị | Trạng thái |
+| Mục | Giá trị đã xác minh | Nguồn |
 |---|---|---|
-| Tác giả gốc | Kong, Qiuqiang et al. — "PANNs: Large-Scale Pretrained Audio Neural Networks for Audio Pattern Recognition", IEEE/ACM TASLP 2020 | ⚠️ CẦN XÁC MINH số trang/DOI bài báo |
-| Repo chính thức | `github.com/qiuqiangkong/audioset_tagging_cnn` | ⚠️ CẦN XÁC MINH còn hoạt động, README khớp |
-| Kho lưu checkpoint | Zenodo, hai record xuất hiện trong tra cứu: `3576403` (tổng hợp mọi checkpoint PANNs) và `3987831` (dùng trong script tải của repo chính thức) | ⚠️ CẦN XÁC MINH record nào là bản chuẩn cho `Cnn14_mAP=0.431.pth` |
-| File cần | `Cnn14_mAP=0.431.pth` — clip-level CNN14, 64 mel, 32 kHz, khớp `logmel_panns_v1` | ⚠️ CẦN XÁC MINH tên file và SHA-256 thật sau khi tải |
-| License | CC-BY-4.0 (theo trang Zenodo) | ⚠️ CẦN XÁC MINH đọc trực tiếp trang bản quyền, không suy từ tóm tắt tìm kiếm |
+| Record Zenodo | `3576403` | đọc trực tiếp trang, không phải `3987831` như tìm kiếm ban đầu nêu hai khả năng |
+| File | `Cnn14_mAP=0.431.pth` | cùng trên |
+| Kích thước | 1,365,409,299 B (1.4 GB) | tải thật |
+| MD5 | `595633ac2d1cac7ef04ebf70e2fee4e4` — **khớp** MD5 công bố trên trang | so trực tiếp |
+| SHA-256 | `7f0ea3a7ad9622f7bdc22439a750e04efdc1641bc4c930ff8727bb92d3141a69` | tính từ file đã tải |
+| **License** | **`not recorded`** — trường Rights trên record Zenodo **để trống** | đọc trực tiếp, Codex chủ động không suy diễn |
 
-**Không dùng các con số trên để báo cáo trong luận văn cho tới khi Task F1 (bên
-dưới) tải và xác minh SHA-256 thật.** Đây đúng tinh thần CLAUDE.md §5: không bịa
-trích dẫn, đánh dấu rõ khi chưa xác minh.
+**Sửa một sai sót của phiên bản đầu ADR này:** bản nháp ban đầu ghi "CC-BY-4.0
+(theo trang Zenodo)" dựa trên tóm tắt WebSearch — tóm tắt đó **sai**. Trang
+Zenodo thật để trống trường Rights. Đây là ví dụ cụ thể vì sao CLAUDE.md §5 cấm
+dùng tóm tắt tìm kiếm để báo cáo: tóm tắt có thể tự tin nêu một license không
+tồn tại trên nguồn thật.
 
-### 2. Tương thích license
+Repo mã nguồn chính thức (`github.com/qiuqiangkong/audioset_tagging_cnn`) có
+file `LICENSE.MIT` ở gốc — nhưng đó là license cho **mã nguồn**, không có tuyên
+bố tường minh rằng nó áp dụng cho **file trọng số** phân phối qua Zenodo. Hai
+tài sản khác nhau, không tự động cùng license.
 
-CC-BY-4.0 (checkpoint) chỉ cần ghi công, không có điều khoản ShareAlike — không
-xung đột với `CC-BY-NC-SA-4.0` của DataSEC/DataSED (ADR-0001). Hai license áp
-lên hai tài sản khác nhau (trọng số vs dữ liệu) nên không cộng dồn điều khoản,
-nhưng **checkpoint đã fine-tune tiếp trên DataSEC/DataSED thì sản phẩm phái sinh
-đó thừa hưởng NC-SA của dữ liệu** — không được công bố checkpoint đã fine-tune
-với license permissive hơn NC-SA. Ghi vào [DATA_PLAN.md §2](../DATA_PLAN.md)
-khi có checkpoint fine-tune thật.
+### 2. License chưa xác định → xử lý thận trọng, không giả định permissive
+
+Vì Zenodo không ghi license cho trọng số, **không giả định CC-BY hay MIT áp
+dụng cho checkpoint**. Xử lý theo nguyên tắc an toàn nhất:
+
+- Dùng checkpoint cho **mục đích nghiên cứu/nội bộ** (huấn luyện, đo trong luận
+  văn) — đây là cách sử dụng phổ biến, ít tranh cãi nhất với các checkpoint học
+  thuật công bố không kèm license tường minh.
+- **Không** công bố lại chính file checkpoint gốc, và **không** công bố
+  checkpoint đã fine-tune tiếp trên DataSEC/DataSED kèm license permissive hơn
+  `CC-BY-NC-SA-4.0` của dữ liệu (ADR-0001) — giữ nguyên tắc thận trọng nhất
+  trong hai giới hạn (dữ liệu NC-SA, trọng số gốc không rõ license).
+- Nếu cần công bố checkpoint cùng khóa luận, liên hệ tác giả gốc xin phép tường
+  minh trước — không suy diễn từ MIT của repo mã nguồn.
 
 ### 3. Nếu không tải được / license không khớp: nhánh dự phòng
 
@@ -66,20 +82,11 @@ Thay vào đó:
 
 ## Nghiệm thu
 
-Task F1 (giao Codex, xem `docs/AGENT_SYNC.md`):
-
-```bash
-curl -fsSL -o /tmp/panns_checkpoint.pth "<URL xác minh được ở bước 1>"
-sha256sum /tmp/panns_checkpoint.pth
-```
-
-Ghi SHA-256 thật, kích thước byte thật, và license đọc trực tiếp từ trang nguồn
-vào `docs/measurements/panns_checkpoint_20260923.md`. Cập nhật ADR này từ
-**Proposed** thành **Accepted** sau khi ba mục ⚠️ đầu được xác minh.
-
-`PannsCNN14Encoder.load_local_checkpoint` đã có sẵn (`ml/models/panns.py`) và
-nhận `strict=True` mặc định — kiểm tra checkpoint có đúng 6 khối kênh
-`(64, 128, 256, 512, 1024, 2048)` khớp cấu hình mặc định của lớp trước khi nạp.
+Đã đạt — artifact tại `docs/measurements/panns_checkpoint_20260923.md`, sinh bởi
+`scripts.report_panns_checkpoint`. Việc nạp trọng số **không** dùng
+`PannsCNN14Encoder.load_local_checkpoint` (dành cho checkpoint tự repo lưu) —
+checkpoint gốc khác cấu trúc, xem [ADR-0018](ADR-0018-nap-mot-phan-checkpoint-panns.md)
+cho cách nạp đúng (`load_audioset_pretrained`, chỉ transplant `conv_block1…6`).
 
 ## Consequences
 
@@ -104,7 +111,10 @@ nhận `strict=True` mặc định — kiểm tra checkpoint có đúng 6 khối
 
 ## Evidence cần kiểm lại
 
-- [ ] SHA-256 checkpoint thật sau khi tải (Task F1).
-- [ ] Record Zenodo chính xác (3576403 hay 3987831) — có thể cả hai trỏ cùng
-      file vật lý, cần xác nhận bằng hash trùng nhau.
-- [ ] Đọc trực tiếp trang license Zenodo, không suy từ kết quả tìm kiếm tóm tắt.
+- [x] SHA-256 checkpoint thật — `7f0ea3a7ad9622f7bdc22439a750e04efdc1641bc4c930ff8727bb92d3141a69` (Codex, F1).
+- [x] Record Zenodo chính xác — `3576403`, MD5 khớp trang.
+- [x] License đọc trực tiếp — **không ghi trên Zenodo**, không phải CC-BY-4.0 như
+      bản nháp đầu suy từ WebSearch.
+- [ ] Chuẩn hoá thay `bn0` — chờ thống kê train DataSEC từ B2 (ADR-0018 §3).
+- [ ] Nếu cần công bố checkpoint đã fine-tune: liên hệ tác giả xác nhận license
+      tường minh cho trọng số, không chỉ mã nguồn.

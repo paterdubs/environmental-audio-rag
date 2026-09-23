@@ -1,196 +1,157 @@
-"""Generate docs/data_inventory.md from committed manifests.
-
-Usage:
-    python -m scripts.report_data_inventory
-"""
+"""Generate the data inventory from frozen manifests and split assignments."""
 
 from __future__ import annotations
 
-import json
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pandas as pd
+
+from ml.dataops.datasec_labels import labels_by_file_id
+from ml.taxonomy import load_taxonomy
+
 ROOT = Path(__file__).resolve().parents[1]
 MANIFESTS = ROOT / "data" / "manifests"
-REFERENCE = ROOT / "data" / "reference"
+SPLITS = ROOT / "data" / "splits"
 OUTPUT = ROOT / "docs" / "data_inventory.md"
+TAXONOMY = ROOT / "ml" / "configs" / "taxonomy.yaml"
+SPLIT_ORDER = ("train", "validation", "test", "not_in_split")
 
 
-def load(path: Path) -> dict | None:
-    if not path.exists():
-        return None
-    return json.loads(path.read_text(encoding="utf-8"))
+def format_hours(seconds: float) -> str:
+    return f"{seconds / 3600:.3f}"
 
 
-def licence_of(dataset: str) -> tuple[str, str]:
-    matches = sorted(REFERENCE.glob(f"zenodo_{dataset}_*.json"))
-    if not matches:
-        return "(not recorded)", "(not recorded)"
-    metadata = json.loads(matches[-1].read_text(encoding="utf-8"))["metadata"]
-    licence = metadata.get("license") or {}
-    return str(licence.get("id", "(not recorded)")), str(metadata.get("doi", "(not recorded)"))
-
-
-def archive_section(dataset: str, audit: dict) -> list[str]:
-    licence, doi = licence_of(dataset)
-    return [
-        "",
-        f"### `{dataset}` — archive",
-        "",
-        "| Trường | Giá trị |",
-        "|---|---:|",
-        f"| Record DOI | `{doi}` |",
-        f"| License | `{licence}` |",
-        f"| Archive | `{audit['archive_name']}` |",
-        f"| Bytes | {audit['bytes_actual']:,} |",
-        f"| MD5 | `{audit['md5_actual']}` |",
-        f"| MD5 khớp contract | {audit['md5_match']} |",
-        f"| ZIP entries | {audit['entries']:,} |",
-        f"| File audio | {audit['audio_files']:,} |",
-        f"| Giải nén (GiB) | {audit['uncompressed_bytes'] / 2**30:.2f} |",
-        f"| Bảng annotation | {len(audit['annotation_files'])} |",
-        f"| LICENSE/README trong archive | {len(audit['documentation_files'])} |",
-        f"| Coarse label trong layout | {audit['coarse_labels']} |",
-        f"| Subclass label trong layout | {audit['subclass_labels']} |",
-        f"| Nhãn ngoài taxonomy | {len(audit['unmapped_labels'])} |",
-        f"| **Verdict** | **{audit['verdict']}** |",
-    ]
-
-
-def class_distribution(audit: dict) -> list[str]:
-    labels = audit["labels"]
-    if not labels:
-        return []
-    total = sum(node["files"] for node in labels)
-    ranked = sorted(labels, key=lambda node: -node["files"])
-    lines = [
-        "",
-        f"### `{audit['dataset']}` — phân bố lớp",
-        "",
-        "| Coarse class | Files | Share | Subclass (files) |",
-        "|---|---:|---:|---|",
-    ]
-    for node in ranked:
-        subs = node["subclasses"]
-        rendered = ", ".join(f"`{k}` {v}" for k, v in subs.items()) if subs else "—"
-        share = 100 * node["files"] / total
-        lines.append(
-            f"| `{node['canonical_class_id']}` | {node['files']:,} "
-            f"| {share:.1f}% | {rendered} |"
-        )
-    lines.append(f"| **Tổng** | **{total:,}** | 100% | |")
-
-    biggest, smallest = ranked[0], ranked[-1]
-    top2 = ranked[0]["files"] + ranked[1]["files"]
-    subs = [
-        (count, f"{node['canonical_class_id']}/{name}")
-        for node in labels
-        for name, count in node["subclasses"].items()
-    ]
-    lines.extend(
-        [
-            "",
-            "**Chỉ số lệch lớp:**",
-            "",
-            f"- Lớn nhất: `{biggest['canonical_class_id']}` {biggest['files']:,} "
-            f"({100 * biggest['files'] / total:.1f}%)",
-            f"- Nhỏ nhất: `{smallest['canonical_class_id']}` {smallest['files']:,} "
-            f"({100 * smallest['files'] / total:.1f}%)",
-            f"- Tỉ lệ lệch coarse: **{biggest['files'] / smallest['files']:.1f} : 1**",
-            f"- Hai lớp lớn nhất chiếm: **{100 * top2 / total:.1f}%**",
-        ]
+def datasec_by_class() -> pd.DataFrame:
+    inventory = pd.read_csv(MANIFESTS / "datasec_inventory.csv")
+    assignments = pd.read_csv(SPLITS / "datasec_classification.csv")
+    labels = labels_by_file_id(MANIFESTS / "datasec_inventory.csv", load_taxonomy(TAXONOMY))
+    inventory["class_id"] = inventory["file_id"].map(lambda file_id: labels[str(file_id)][0])
+    merged = inventory.merge(
+        assignments[["file_id", "split"]], on="file_id", how="left", validate="one_to_one"
     )
-    if subs:
-        low = sorted(v for v, _ in subs if v < 25)
-        names = [name for value, name in sorted(subs) if value < 25]
-        lines.append(f"- Subclass: {len(subs)} node, nhỏ nhất {min(subs)[0]} file")
-        if names:
-            lines.append(
-                f"- **Subclass dưới 25 file ({len(low)}):** "
-                + ", ".join(f"`{name}`" for name in names)
-            )
+    merged["split"] = merged["split"].fillna("not_in_split")
+    rows: list[dict[str, str | int]] = []
+    for class_id, group in merged.groupby("class_id", sort=True):
+        row: dict[str, str | int] = {
+            "class_id": class_id,
+            "files": len(group),
+            "hours": format_hours(float(group["duration_s"].sum())),
+        }
+        for split in SPLIT_ORDER:
+            subset = group[group["split"] == split]
+            row[split] = f"{len(subset)} / {format_hours(float(subset['duration_s'].sum()))}"
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def datased_by_class() -> pd.DataFrame:
+    recordings = pd.read_csv(MANIFESTS / "datased_recordings.csv")
+    assignments = pd.read_csv(SPLITS / "datased_polyphonic.csv")
+    events = pd.read_csv(ROOT / "data" / "annotations" / "datased_polyphonic_events.csv")
+    merged = recordings.merge(
+        assignments[["recording_id", "split"]], on="recording_id", validate="one_to_one"
+    )
+    if len(merged) != len(recordings):
+        raise ValueError("DataSED inventory and frozen split do not have identical recording IDs.")
+    coverage = (
+        events[["recording_id", "class_id"]]
+        .drop_duplicates()
+        .merge(merged, on="recording_id", validate="many_to_one")
+    )
+    rows: list[dict[str, str | int]] = []
+    for class_id, group in coverage.groupby("class_id", sort=True):
+        row: dict[str, str | int] = {
+            "class_id": class_id,
+            "recordings": len(group),
+            "coverage_hours": format_hours(float(group["duration_s"].sum())),
+        }
+        for split in SPLIT_ORDER:
+            subset = group[group["split"] == split]
+            row[split] = f"{len(subset)} / {format_hours(float(subset['duration_s'].sum()))}"
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def split_totals(
+    recordings: pd.DataFrame, assignments: pd.DataFrame, id_column: str
+) -> pd.DataFrame:
+    merged = recordings.merge(
+        assignments[[id_column, "split"]], on=id_column, how="left", validate="one_to_one"
+    )
+    merged["split"] = merged["split"].fillna("not_in_split")
+    totals = (
+        merged.groupby("split", sort=False)
+        .agg(files=(id_column, "size"), duration_s=("duration_s", "sum"))
+        .reindex(SPLIT_ORDER)
+        .reset_index()
+    )
+    totals["hours"] = totals.pop("duration_s").map(format_hours)
+    return totals
+
+
+def table(frame: pd.DataFrame) -> list[str]:
+    columns = list(frame.columns)
+    lines = ["| " + " | ".join(columns) + " |", "|" + "|".join("---:" for _ in columns) + "|"]
+    for row in frame.itertuples(index=False, name=None):
+        lines.append("| " + " | ".join(str(value) for value in row) + " |")
     return lines
 
 
-def audio_section(dataset: str, summary: dict) -> list[str]:
-    duplicates = summary.get("exact_duplicate_groups", [])
-    return [
-        "",
-        f"### `{dataset}` — inventory audio",
-        "",
-        "| Trường | Giá trị |",
-        "|---|---:|",
-        f"| File | {summary['files']:,} |",
-        f"| Tổng thời lượng (giờ) | {summary['hours']:.4f} |",
-        f"| Bytes | {summary['bytes']:,} |",
-        f"| Sample rate | {summary['sample_rates']} |",
-        f"| Channels | {summary['channels']} |",
-        f"| Nhóm exact duplicate (T1) | {len(duplicates)} |",
-    ]
-
-
 def main() -> None:
+    datasec_inventory = pd.read_csv(MANIFESTS / "datasec_inventory.csv")
+    datased_recordings = pd.read_csv(MANIFESTS / "datased_recordings.csv")
+    datasec_splits = pd.read_csv(SPLITS / "datasec_classification.csv")
+    datased_splits = pd.read_csv(SPLITS / "datased_polyphonic.csv")
+    datasec, datased = datasec_by_class(), datased_by_class()
     lines = [
-        "# data_inventory.md — Inventory dữ liệu",
+        "# Data inventory",
         "",
-        "> **Sinh tự động** bởi `python -m scripts.report_data_inventory` từ",
-        "> `data/manifests/` và `data/reference/`. **Không sửa số bằng tay.**",
+        "> Generated by `python -m scripts.report_data_inventory` from inventories and frozen split CSVs.",  # noqa: E501
+        "> Do not edit numeric values by hand.",
         "",
-        f"- Sinh lúc: `{datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%SZ')}`",
+        f"- Generated: `{datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%SZ')}`",
+        "- Units in class tables: `files / hours`; hours are decoded recording duration.",
+        "",
+        "## DataSEC classification",
+        "",
+        "| class_id | files | hours | train (files / hours) | validation (files / hours) | test (files / hours) |",  # noqa: E501
+        "|---|---:|---:|---:|---:|---:|",
     ]
-
-    audits = {}
-    for dataset in ("datasec", "datased"):
-        audit = load(MANIFESTS / f"{dataset}_archive_audit.json")
-        if audit:
-            audits[dataset] = audit
-    if audits:
-        first = next(iter(audits.values()))
-        lines.append(f"- Taxonomy: `{first['taxonomy_version']}` / `{first['taxonomy_sha256']}`")
-
-    lines.append("")
-    lines.append("## 1. Archive")
-    for dataset, audit in audits.items():
-        lines.extend(archive_section(dataset, audit))
-
-    lines.append("")
-    lines.append("## 2. Phân bố lớp")
-    for audit in audits.values():
-        lines.extend(class_distribution(audit))
-    if not any(a["labels"] for a in audits.values()):
-        lines.append("")
-        lines.append("Chưa có dataset nào mã hóa nhãn trong cây thư mục.")
-
-    lines.append("")
-    lines.append("## 3. Inventory audio")
-    found = False
-    for dataset in ("datasec", "datased"):
-        summary = load(MANIFESTS / f"{dataset}_inventory_summary.json")
-        if summary:
-            lines.extend(audio_section(dataset, summary))
-            found = True
-        else:
-            lines.extend(
-                [
-                    "",
-                    f"### `{dataset}` — inventory audio",
-                    "",
-                    "○ Chưa giải nén, nên chưa có duration, sample rate hay hash từng file.",
-                ]
-            )
-    if not found:
-        lines.append("")
-        lines.append("○ Chưa có inventory nào.")
-
+    for row in datasec.itertuples(index=False):
+        lines.append(
+            f"| `{row.class_id}` | {row.files} | {row.hours} | {row.train} | {row.validation} | {row.test} |"  # noqa: E501
+        )
     lines.extend(
         [
             "",
-            "## 4. Ranh giới",
+            "### DataSEC totals",
             "",
-            "Archive audit chỉ đọc central directory của ZIP: nó xác nhận toàn vẹn,",
-            "số file audio và độ phủ tên nhãn. Nó **không** mở file audio nào, nên",
-            "không nói gì về sample rate, duration, khả năng decode, tính hợp lệ của",
-            "annotation hay duplicate. Những mục đó thuộc cổng D1–D3.",
+            *table(split_totals(datasec_inventory, datasec_splits, "file_id")),
+        ]
+    )
+    lines.extend(
+        [
+            "",
+            "## DataSED polyphonic coverage",
+            "",
+            "A recording with multiple labels appears once for each covered class, so coverage hours",  # noqa: E501
+            "are not additive across rows. This is recording coverage, not annotated event duration.",  # noqa: E501
+            "",
+            "| class_id | recordings | coverage_hours | train (files / hours) | validation (files / hours) | test (files / hours) |",  # noqa: E501
+            "|---|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for row in datased.itertuples(index=False):
+        lines.append(
+            f"| `{row.class_id}` | {row.recordings} | {row.coverage_hours} | {row.train} | {row.validation} | {row.test} |"  # noqa: E501
+        )
+    lines.extend(
+        [
+            "",
+            "### DataSED totals",
+            "",
+            *table(split_totals(datased_recordings, datased_splits, "recording_id")),
             "",
         ]
     )

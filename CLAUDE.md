@@ -149,7 +149,7 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Kiểm 5 (D4) theo corpus | benchmark giữ nghĩa cũ; pretraining hỏi "clip đã loại có vắng mặt" | [0013](docs/decisions/ADR-0013-kiem-5-theo-corpus.md) | Dùng chung sẽ pass rỗng — DataSEC không có dev/test cần bảo vệ |
 | Checkpoint AudioSet — phạm vi nạp | Chỉ transplant `conv_block1…6`, **không** faithful full CNN14 | [0018](docs/decisions/ADR-0018-nap-mot-phan-checkpoint-panns.md) | Checkpoint gốc có `spectrogram_extractor/bn0/fc1/fc_audioset` mà encoder repo không có — viết lại toàn bộ sẽ đổi input pipeline ở tuần 2/8 |
 | Giao thức ECE (D5) | Chỉ head coarse; temperature scaling, T chọn trên dev; 15 bin; 2 số trước/sau | [0017](docs/decisions/ADR-0017-hieu-chuan-ece-datasec.md) | Head subclass có lớp n_test<25 làm ECE ra nhiễu; DataSED không phải phân loại đơn nhãn |
-| Checkpoint AudioSet | Zenodo, **Proposed** — chưa xác minh hash/license thật | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
+| Checkpoint AudioSet | Zenodo `3576403`, SHA-256 xác minh; **license `not recorded`** — xử lý như chưa rõ, không giả định permissive | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
 | Hierarchical head DataSEC | Một encoder, 2 head tuyến tính, consistency loss = -log(khối lượng xác suất đúng gia đình) | [0016](docs/decisions/ADR-0016-hierarchical-head-consistency-loss.md) | CE 28-way một mình không phạt lệch gia đình coarse |
 | Temporal head CNN14 | interpolate(nearest) phục hồi T; độ phân giải thật vẫn ở khối 1.28s | [0014](docs/decisions/ADR-0014-doi-chieu-do-phan-giai-thoi-gian-cnn14.md) | Cắm CNN14 thẳng vào SED head sẽ vỡ shape loss so với target 50fps |
 | Ngưỡng cohesion | **sim ≥ 0.93**, trên mức dương tính giả đã đo 0.9205 | [0012](docs/decisions/ADR-0012-nguong-cohesion.md) | Ở 0.85 chaining tạo khối 315 file mật độ 0.024, lệch tỉ lệ split 5 điểm |
@@ -722,7 +722,29 @@ số — kiến trúc không còn là việc của Codex.
 Test 257 → **265 pass**, ruff sạch. Board thêm F1 (checkpoint) và G1
 (data_inventory.md — số thuần, an toàn cho Codex).
 
-### 2026-09-23 (tiếp) — Codex bắt được lỗ hổng kiến trúc lớn nhất phiên này
+### 2026-09-23 (tiếp) — Kiểm độc lập báo cáo Codex; sửa một sai sót của chính mình
+
+Codex báo B1, A4, G1, và phần tải/remap checkpoint của F1 đã xong. Kiểm độc lập
+thay vì tin ngay: chạy lại `pytest -q` (267 pass) và `tests/test_panns.py`
+riêng (5/5 pass, gồm 2 test remap mới); tính tay 75,493,452/81,853,340 khớp
+đúng "92.2301%" đã báo; đối chiếu `docs/data_inventory.md` với
+`datasec_split_20260923.md` — chênh lệch từng lớp cộng dồn đúng **130**, khớp
+khít số clip bị loại đã biết từ trước. Không tìm thấy số nào bịa hay sai.
+
+**Codex sửa đúng một sai sót của tôi.** ADR-0015 (viết trước đó cùng ngày) ghi
+license checkpoint là "CC-BY-4.0 (theo trang Zenodo)" — dựa trên tóm tắt
+WebSearch, không đọc trực tiếp trang. Codex tải thật, đọc trực tiếp, và trường
+Rights trên Zenodo `3576403` **để trống** — không phải CC-BY-4.0. Đã sửa
+ADR-0015: xoá khẳng định sai, ghi `not recorded`, và đổi cách xử lý thành thận
+trọng nhất (chỉ dùng nghiên cứu/nội bộ, không công bố lại checkpoint hay bản
+fine-tune với license lỏng hơn NC-SA của dữ liệu). Đây đúng ví dụ cụ thể cho
+quy tắc CLAUDE.md §5 "không dùng tóm tắt tìm kiếm để báo cáo" — tóm tắt tự tin
+nêu một license không tồn tại trên nguồn thật.
+
+F1 còn lại đúng một việc: chuẩn hoá thay `bn0` cần thống kê train DataSEC, chờ
+B2. Không đánh ✅ non — Codex giữ đúng kỷ luật "chưa có artifact thì chưa xong".
+
+
 
 Codex nhận F1 (tải checkpoint AudioSet), xác minh đúng nguồn (Zenodo `3576403`,
 `Cnn14_mAP=0.431.pth`, MD5 `595633ac2d1cac7ef04ebf70e2fee4e4`, 1.4 GB) rồi

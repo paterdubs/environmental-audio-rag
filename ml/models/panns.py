@@ -6,6 +6,7 @@ can be supplied explicitly with :meth:`load_local_checkpoint`.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -32,6 +33,37 @@ class PannsConfig:
             raise ValueError("window_seconds and batch_size must be positive")
         if self.gradient_accumulation_steps <= 0 or self.max_vram_gb <= 0:
             raise ValueError("accumulation steps and max_vram_gb must be positive")
+
+
+@dataclass(frozen=True)
+class PretrainedLoadReport:
+    """Evidence for the convolutional-block portion loaded from AudioSet."""
+
+    checkpoint_tensors: int
+    checkpoint_parameters: int
+    transplanted_tensors: int
+    transplanted_parameters: int
+
+    @property
+    def parameter_fraction(self) -> float:
+        return self.transplanted_parameters / self.checkpoint_parameters
+
+
+_PANN_KEY = re.compile(r"^conv_block([1-6])\.(conv[12]|bn[12])\.(.+)$")
+_LAYER_FOR_PANN = {"conv1": 0, "bn1": 1, "conv2": 3, "bn2": 4}
+
+
+def remap_audioset_state_dict(state: dict[str, Tensor]) -> dict[str, Tensor]:
+    """Map official CNN14 convolutional-block keys to this encoder's blocks only."""
+    remapped: dict[str, Tensor] = {}
+    for key, value in state.items():
+        match = _PANN_KEY.fullmatch(key)
+        if match is None:
+            continue
+        block, layer, suffix = match.groups()
+        target = f"{int(block) - 1}.layers.{_LAYER_FOR_PANN[layer]}.{suffix}"
+        remapped[target] = value
+    return remapped
 
 
 def safe_batch_size(window_seconds: float, *, max_vram_gb: float = 8.0) -> int:
@@ -115,6 +147,27 @@ class PannsCNN14Encoder(nn.Module):
         if not isinstance(state, dict):
             raise ValueError("checkpoint must contain a state-dict or model_state")
         self.load_state_dict(state, strict=strict)
+
+    def load_audioset_pretrained(self, path: str | Path) -> PretrainedLoadReport:
+        """Strictly load only remapped official CNN14 convolutional-block tensors."""
+        # The official 2020 PANNs pickle contains NumPy reconstruction metadata,
+        # which PyTorch 2.6 rejects under weights_only. This loader is only for
+        # the verified official checkpoint; load_local_checkpoint remains safe.
+        checkpoint = torch.load(Path(path), map_location="cpu", weights_only=False)
+        state = checkpoint.get("model", checkpoint)
+        if not isinstance(state, dict) or not all(
+            isinstance(key, str) and isinstance(value, Tensor) for key, value in state.items()
+        ):
+            raise ValueError("checkpoint must contain a tensor state-dict or model state-dict")
+        remapped = remap_audioset_state_dict(state)
+        # Strict here makes a missing or shape-mismatched transferred tensor fail loudly.
+        self.blocks.load_state_dict(remapped, strict=True)
+        return PretrainedLoadReport(
+            checkpoint_tensors=len(state),
+            checkpoint_parameters=sum(value.numel() for value in state.values()),
+            transplanted_tensors=len(remapped),
+            transplanted_parameters=sum(value.numel() for value in remapped.values()),
+        )
 
 
 class PannsAudioClassifier(nn.Module):
