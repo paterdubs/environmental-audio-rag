@@ -55,13 +55,24 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật:** 23/09/2026, sau D1 (train E1 = DataSEC classifier, checkpoint AudioSet).
+**Cập nhật:** 23/09/2026, sau D1–D6 + E1–E4 (tất cả xong) và pipeline W3.4–W4.4
+(prediction NPZ → threshold sweep → event-based F1/PSDS) đã verify thật.
 
 **Cổng dữ liệu D3/D4 đã đóng** (`data-v1.0`). **Split DataSEC đã đóng băng**
-(70/15/15). **D1 đã chạy thật với checkpoint AudioSet đúng, số đã khoá**
-(`git.dirty=false`, commit `38c3b7c`): coarse macro-F1 test **0.8467**. Đang
-chờ: D2–D6 (seed reproducibility, per-class report, tune consistency loss,
-ECE, ablation).
+(70/15/15). **D1–D6 xong toàn bộ** (số D1 chính thức: coarse macro-F1 test
+**0.8467**, `git.dirty=false`, commit `38c3b7c`; D4 chọn λ_cons=0.5, trùng khít
+D1 — bằng chứng chéo tái lập). **E1–E4 xong** (nợ kỹ thuật đã đóng). **Nền tảng
+W3–W4 (dự bị trước, nhóm G/H) đã verify chạy thật end-to-end** trên một run
+SED smoke-test (không phải kết quả nghiên cứu — chỉ kiểm wiring): lưu logit
+thô → quét ngưỡng (global + per-class) → đóng băng `postproc.json` →
+event-based F1 + PSDS-1/2 + bootstrap CI + phân tích lỗi. Trong quá trình đó
+sửa 4 lỗi thật (2 lỗi thư viện numpy2/thiết kế PSDS, 1 lỗi thiếu field, 1 lỗi
+hiệu năng 20x) — chi tiết ở `docs/AGENT_SYNC.md` §5 và ADR-0020.
+
+**Việc thật còn thiếu để trả lời RQ1:** chưa có nhánh B/C nào từng chạy —
+`scripts/train_sed.py` mới chỉ hỗ trợ nhánh A (scratch). ADR-0020 đã đặc tả
+đầy đủ `--encoder {audio,panns}` + `--audioset-checkpoint`/`--datasec-checkpoint`
+nhưng **chưa triển khai** trong code.
 
 ### Đã có ✅
 
@@ -104,6 +115,17 @@ ECE, ablation).
 | **Checkpoint AudioSet đã xác minh** | Zenodo `3576403`, SHA-256 `7f0ea3a7ad9622f7…`, 92.2301% tham số transplant vào `PannsCNN14Encoder` |
 | **D1 — train E1 (DataSEC classifier, nhánh C bước giữa)** | Test coarse macro-F1 **0.8467**, subclass macro-F1 all/n≥10 **0.6266/0.8453**, parent-consistency **0.9526**; `ml/runs/classifier_datasec_20260923T121808Z` |
 | `data_inventory.md` | Sinh tự động từ manifest + split đóng băng |
+| **D2 seed reproducibility** | 2 run 12 epoch cùng seed → SHA-256 `best.pt` giống hệt nhau |
+| **D3 per-class report** | `scripts/report_per_class_metrics.py`, 22 coarse + 28 subclass từ checkpoint D1 |
+| **D4 consistency sweep** | λ_cons=0.5 chọn qua guardrail+parent-consistency; test trùng khít D1 |
+| **D5 ECE calibration** | T=1.5681 (dev-only); ECE test trước/sau 0.0332→0.0564 (báo trung thực, không ép đẹp) |
+| **D6 sampler ablation** | balanced vs uniform; balanced giữ mặc định (ADR-0002 §4, kết luận đã ghi) |
+| **E1–E4 nợ kỹ thuật** | Ngưỡng dedup ngắn, fmax tần số cao, phân bố clip <1s, baseline random parent-consistency — cả 4 đóng |
+| **F2 chuẩn hoá DataSED** | Train-only z-score cho `logmel_panns_v1`, sẵn cho nhánh B |
+| **G2 prediction NPZ** | `collect_predictions()` trong `ml/training/sed.py`, wire vào `train_sed.py`, verify thật trên nhánh A |
+| **H1 eval deps** | `sed_eval`+`psds_eval` cài, pin, **2 bug thật đã sửa** (numpy2 trong `psds_eval`, `float(namedtuple)` trong code mình) |
+| **H2 threshold+eval pipeline** | `scripts/sweep_threshold.py` + `scripts/evaluate_run.py` chạy thật end-to-end, **2 bug thật + 1 bug hiệu năng (20x) đã sửa** |
+| **H3 event store** | Docker Compose + `pgvector/pgvector:pg16`, migration chạy thật, pgvector xác nhận hoạt động |
 
 ### Đang làm / chưa nghiệm thu ◐
 
@@ -112,28 +134,26 @@ ECE, ablation).
 | Split DataSED | **Đã đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
 | Cổng D3/D4 | **Xong, cả hai split đã đóng băng.** |
 | Tài liệu | `RELATED_WORK.md` còn chờ (cần trích dẫn — rủi ro bịa, ưu tiên thấp); `data_inventory.md` đã xong |
-| D2–D6 | Chưa làm: seed reproducibility, per-class report, tune `λ_cons`, ECE, ablation sampler |
-| W4–W6 nền tảng | Đã có code/test fixture; chưa chạy metric thật, PostgreSQL, embedding hay prediction thật |
-| W3 nền tảng | Chưa có logits/checkpoint thật; threshold và duration prior chưa được hiệu chuẩn trên split freeze |
+| Nhánh SED B/C | ADR-0020 đã đặc tả đầy đủ, **chưa triển khai** trong `train_sed.py` |
+| W6 (event store, RAG) | Migration + pgvector chạy được (H3); chưa nạp dữ liệu thật, chưa có embedding/retrieval |
 
 ### Chưa có ○
 
-Transfer DataSEC→DataSED (nhánh B/C fine-tune trên DataSED) · post-processing
-hiệu chuẩn · event-based F1 / PSDS · grounded caption · RAG / retrieval ·
+Transfer DataSEC→DataSED thật (nhánh B/C fine-tune trên DataSED, code ADR-0020
+chưa triển khai) · grounded caption · RAG / retrieval (nạp dữ liệu thật) ·
 API / inference / frontend.
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **D2** — chứng minh seed đủ: train 2 lần cùng seed, so checkpoint hash.
-2. **D3** — bảng per-class macro-F1 + hỗ trợ từ run D1 đã có, 4 subclass
-   low-support báo số tuyệt đối.
-3. **D4** — quét `λ_cons` trên dev, chọn theo parent-consistency + subclass
-   macro-F1 (n≥10), báo hai số macro-F1.
-4. **D5** — ECE calibration head coarse, temperature scaling trên dev.
-5. **D6** — ablation class-balanced vs uniform sampling.
-6. Chạy lại D1 trên tree sạch (sau khi commit) để có số khoá chính thức.
-7. Sau D1–D6: chuyển sang fine-tune SED trên DataSED (nhánh B/C), so với
-   baseline nhánh A đã có (frame macro-F1 0.359448) — trả lời RQ1 (`C − B`).
+1. **Triển khai ADR-0020** trong `train_sed.py`: `--encoder {audio,panns}` +
+   `--audioset-checkpoint`/`--datasec-checkpoint`, cùng cửa sổ 10s/5s.
+2. Chạy thật nhánh B (AudioSet→DataSED) và nhánh C (AudioSet→DataSEC→DataSED).
+3. Dùng pipeline đã verify (G2/H2): lưu prediction → `sweep_threshold` →
+   `evaluate_run` cho cả ba nhánh, cùng split/seed/budget.
+4. Tính `C − B` (RQ1) và `C − A` (tổng lợi ích pretraining, dán nhãn riêng).
+5. Ablation A2 (global vs per-class θ) — dữ liệu ablation đã có sẵn trong
+   `threshold_ablation.json` mỗi lần chạy `sweep_threshold`, chỉ cần tổng hợp.
+6. Sau SED: chuyển sang W5 (grounded caption) và W6 (RAG, hạ tầng H3 đã sẵn).
 
 ---
 
@@ -321,6 +341,62 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-23 (tiếp) — D1–D6/E1–E4 xong toàn bộ; verify pipeline W3.4–W4.4 thật, sửa 4 lỗi
+
+Trong lúc Codex đóng nốt D4/D6/E1–E4 (đều xong, đã verify độc lập: D4 chọn
+λ_cons=0.5 qua guardrail, trùng khít số D1 — bằng chứng chéo tái lập tốt),
+làm song song hai task chuẩn bị trước cho W3–W4 (G2, H1–H3) rồi **verify bằng
+cách chạy thật**, không chỉ đọc code:
+
+1. **G2** — `collect_predictions()` trong `ml/training/sed.py`, wire vào
+   `train_sed.py` để ghi `predictions/{dev,test}.npz`. Verify: train nhánh A
+   thật 1 epoch, load lại NPZ, khớp 137/142 recording đúng split.
+
+2. **H1** — cài `sed_eval`/`psds_eval` (chưa từng được pin dù code báo lỗi nói
+   vậy), smoke-test runtime thật thay vì chỉ `pip install`. Tìm và sửa 2 lỗi
+   thật: `psds_eval` 0.5.3 gọi `int(np.argwhere(...))` — numpy 2.x không cho
+   `int()` mảng `ndim>0` dù `size==1`, vỡ ở **mọi** lần chạy PSDS thật vì
+   `max_efpr=100` luôn ngoài phạm vi FPR quan sát (không phải lỗi fixture, lặp
+   lại giống hệt trên 3 fixture độc lập trước khi kết luận là lỗi thư viện).
+   Vá bằng bản sao trung thực của `_auc`, chỉ đổi `.item()`. Bug thứ hai: code
+   tự viết `psds_score()` gọi `float(namedtuple)` — luôn `TypeError`, chưa
+   từng chạy thật từ lúc viết.
+
+3. **H3** — bật Docker daemon, `docker compose up` thật với
+   `pgvector/pgvector:pg16`, chạy `001_event_store.sql` qua container, xác
+   nhận `pgvector` hoạt động bằng insert vector 1024-dim + truy vấn cosine
+   distance — không dừng ở "tạo bảng được".
+
+4. **H2** — viết `scripts/sweep_threshold.py` + `scripts/evaluate_run.py`.
+   Smoke-test end-to-end thật (không phải unit test cô lập) lộ ra 2 lỗi thiết
+   kế nữa: `event_based_f1` **chưa từng được test với >1 recording** —
+   `sed_eval.EventBasedMetrics.evaluate()` raise `ValueError` khi một lời gọi
+   trộn nhiều file (mọi test trước đó chỉ dùng fixture 1 recording); và PSDS
+   ban đầu chỉ dùng **đúng một** operating point (θ đã đóng băng cho
+   event-based F1) thay vì quét cả dải như evaluation_protocol §3.1 đòi hỏi
+   ("hiệu năng trên toàn dải operating point") — sửa bằng cách quét lại
+   `DEFAULT_THRESHOLD_GRID`.
+
+   **Một phát hiện hiệu năng đáng kể**, tìm bằng đo trực tiếp thay vì đoán:
+   `sweep_per_class_thresholds` (code cũ, đã test từ trước) gọi
+   `process_recordings` xử lý **cả 21 lớp** ở mỗi lần thử một ngưỡng, dù 20
+   lớp còn lại đã bị suppress về threshold=1.0. Đo: 4.26 giây/lần × 399 lần
+   (21 lớp × 19 ngưỡng) ≈ **30 phút** cho một sweep duy nhất. Thêm tham số
+   `only_classes` vào `probabilities_to_events`/`process_recordings` để chỉ
+   tính đúng lớp đang quét — xác nhận bằng test kết quả giống hệt trước/sau,
+   giảm còn 0.225 giây/lần (**20×**). Sweep thật sau đó chạy xong **6 phút 33
+   giây** thay vì phải chờ hơn một giờ.
+
+**Bài học lặp lại của phiên này:** cả bốn lỗi trên đều là code **chưa từng
+được chạy thật** (chỉ có test cô lập hoặc chưa cài dependency) — đúng mẫu hình
+đã thấy ở `train_classifier.py` (ADR-0019), checkpoint quên `--checkpoint`, và
+namespace `dev`/`validation`. Smoke-test end-to-end trên dữ liệu thật, dù chỉ
+1 epoch CPU, tiếp tục là cách rẻ nhất để bắt lỗi trước khi giao Codex chạy thật
+trên nhánh B/C.
+
+Test suite 285 → **314 pass**, ruff sạch. Không commit số giả — run smoke-test
+throwaway đã xoá sau khi verify.
 
 ### 2026-09-23 (tiếp) — Chuẩn bị trước kiến trúc SED nhánh B/C (W3), trước khi D-series xong
 
