@@ -16,6 +16,7 @@ from scripts.report_duplicates import (
     decision_section,
     group_stats,
     read_json,
+    short_clip_class_section,
 )
 
 AUDIT = {
@@ -143,6 +144,25 @@ def test_coverage_section_computes_tier3_reach() -> None:
 
     assert "| `datasec` | 5048 | 464 | 90.8% |" in text
     assert "| `datased` | 717 | 0 | 100.0% |" in text
+
+
+def test_short_clip_class_section_reports_absolute_count_against_its_own_class() -> None:
+    text = "\n".join(
+        short_clip_class_section(
+            {"unreachable_by_tier3": {"datasec": ["datasec:a", "datasec:b"]}},
+            {
+                "datasec:a": ["bells"],
+                "datasec:b": ["birds"],
+                "datasec:c": ["bells"],
+                "datasec:d": ["bells"],
+            },
+            ("bells", "birds"),
+        )
+    )
+
+    assert "giao với nhãn DataSEC là **2** file" in text
+    assert "| `bells` | 1 / 3 |" in text
+    assert "| `birds` | 1 / 1 |" in text
 
 
 def test_build_report_contains_every_required_section() -> None:

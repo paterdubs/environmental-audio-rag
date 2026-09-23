@@ -12,8 +12,10 @@ import torch
 from sklearn.metrics import f1_score
 
 from ml.datasets.datasec import DataSECLabelSpace
-from ml.models import HierarchicalAudioClassifier, PannsCNN14Encoder
+from ml.models import HierarchicalAudioClassifier, PannsCNN14Encoder, build_family_mask
 from ml.taxonomy import load_taxonomy
+from ml.training.classification import hierarchical_metrics
+from ml.training.common import write_json
 from scripts.train_classifier import ROOT, build_loaders, load_rows, supported_subclass_ids
 
 LOW_SUPPORT_THRESHOLD = 10
@@ -25,6 +27,16 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--device", default="cuda")
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=ROOT / "docs" / "measurements" / "per_class_metrics_datasec_20260923.md",
+    )
+    parser.add_argument(
+        "--record-test",
+        action="store_true",
+        help="Evaluate this frozen checkpoint once and persist its test metrics.",
+    )
     return parser.parse_args()
 
 
@@ -174,6 +186,26 @@ def validate_locked_metrics(
         raise SystemExit(f"Per-class metrics disagree with frozen D1 metrics: {mismatches}")
 
 
+def metrics_from_predictions(
+    coarse_target: np.ndarray,
+    coarse_prediction: np.ndarray,
+    subclass_target: np.ndarray,
+    subclass_prediction: np.ndarray,
+    *,
+    supported_ids: list[int],
+    family_mask: torch.Tensor,
+) -> dict[str, float | int]:
+    """Derive the frozen-checkpoint test metrics from the sole inference pass."""
+    return hierarchical_metrics(
+        coarse_target,
+        coarse_prediction,
+        subclass_target,
+        subclass_prediction,
+        supported_subclass_ids=set(supported_ids),
+        family_mask=family_mask,
+    )
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
@@ -225,8 +257,25 @@ def main() -> None:
     supported_rows = [
         row for row in subclass_supported if int(row["support"]) >= LOW_SUPPORT_THRESHOLD
     ]
-    expected_metrics = json.loads((run_dir / "metrics.json").read_text(encoding="utf-8"))["test"]
-    validate_locked_metrics(expected_metrics, coarse, subclass_all, supported_rows)
+    family_mask = build_family_mask(taxonomy, label_space.coarse_ids, label_space.subclass_ids)
+    observed_metrics = metrics_from_predictions(
+        coarse_target,
+        coarse_prediction,
+        subclass_target,
+        subclass_prediction,
+        supported_ids=manifest["supported_subclass_ids"],
+        family_mask=family_mask,
+    )
+    metrics_path = run_dir / "metrics.json"
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    if "test" in metrics:
+        validate_locked_metrics(metrics["test"], coarse, subclass_all, supported_rows)
+    elif not args.record_test:
+        raise SystemExit("Run has no test metrics; pass --record-test after dev-only selection")
+    else:
+        # Chỉ ghi sau khi caller đã khoá lambda bằng validation; không để script âm thầm mở test.
+        metrics["test"] = observed_metrics
+        write_json(metrics_path, metrics)
     report = render_report(
         run_dir=run_dir,
         checkpoint_sha256=manifest["config"]["checkpoint_sha256"],
@@ -234,7 +283,8 @@ def main() -> None:
         subclass_all=subclass_all,
         subclass_supported=supported_rows,
     )
-    output = ROOT / "docs" / "measurements" / "per_class_metrics_datasec_20260923.md"
+    output = args.output.resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(report, encoding="utf-8")
     print(f"report: {output}")
 

@@ -18,7 +18,9 @@ from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
+import yaml
 
+from ml.dataops.datasec_labels import labels_by_file_id
 from ml.dataops.dedup_run import (
     FileEntry,
     Signature,
@@ -46,7 +48,18 @@ from ml.dataops.duplicates import (
     split_cohesion_pairs,
     within_dataset_exclusions,
 )
-from ml.dataops.fingerprint import FingerprintConfig, best_alignment
+from ml.dataops.fingerprint import FingerprintConfig, best_alignment, fingerprint, load_pcm
+from ml.dataops.fmax_separation import (
+    FmaxStudyConfig,
+    describe_scores,
+    exceeds_global_negative_guard,
+    mean_spectral_centroids,
+    pair_scores,
+    sample_valid_cross_class_pairs,
+    standardize_selected,
+    top_centroid_classes,
+)
+from ml.taxonomy import load_taxonomy
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFESTS = ROOT / "data" / "manifests"
@@ -54,6 +67,14 @@ INTERIM = ROOT / "data" / "interim" / "dedup"
 STANDARDIZER_CACHE = INTERIM / "standardizer.npz"
 PAIR_CACHE = INTERIM / "pair_matches.csv"
 DATASETS = ("datasec", "datased")
+SHORT_CALIBRATION_CONFIG = ROOT / "ml" / "configs" / "short_duplicate_calibration.yaml"
+SHORT_CALIBRATION_ARTIFACT = INTERIM / "short_threshold_calibration.json"
+SHORT_CALIBRATION_REPORT = (
+    ROOT / "docs" / "measurements" / "short_duplicate_calibration_20260923.md"
+)
+FMAX_STUDY_CONFIG = ROOT / "ml" / "configs" / "fmax_separation.yaml"
+FMAX_STUDY_ARTIFACT = INTERIM / "fmax_high_frequency_separation_20260923.json"
+FMAX_STUDY_REPORT = ROOT / "docs" / "measurements" / "fmax_high_frequency_separation_20260923.md"
 
 
 def load_entries(dataset: str) -> list[FileEntry]:
@@ -151,6 +172,347 @@ def command_calibrate(sample_pairs: int, seed: int) -> None:
         f" / {negative.size}"
         f" | >= {thresholds.duplicate_min}: {report['negative_above_duplicate_min']}"
     )
+
+
+def load_short_calibration_config(path: Path) -> dict:
+    """Read the fully locked E1 protocol instead of inferring its pair choices."""
+    config = yaml.safe_load(path.read_text(encoding="utf-8"))
+    required = {
+        "durations_s",
+        "sample_pairs",
+        "seed",
+        "short_duplicate_min",
+        "positive_cross_dataset_pairs",
+    }
+    if not isinstance(config, dict) or required.difference(config):
+        raise ValueError(f"Invalid short calibration config: {path}")
+    return config
+
+
+def require_short_calibration_caches() -> None:
+    """Refuse to decode audio: E1 must assess the exact cached standardized signatures."""
+    required = [STANDARDIZER_CACHE, *(INTERIM / f"{name}_signatures.npz" for name in DATASETS)]
+    missing = [str(path) for path in required if not path.exists()]
+    if missing:
+        raise SystemExit(f"Missing cached signatures for E1: {missing}")
+
+
+def cropped_similarity(
+    left: np.ndarray, right: np.ndarray, duration_s: float, config: FingerprintConfig
+) -> float | None:
+    """Compare matching leading windows; None means a pair cannot evidence this duration."""
+    frames = config.frames_for_seconds(duration_s)
+    match = best_alignment(left[:frames], right[:frames], config, min_overlap_s=duration_s)
+    return None if match.overlap_frames == 0 else float(match.similarity)
+
+
+def short_negative_distribution(
+    entries: list[FileEntry],
+    signatures: dict[str, Signature],
+    *,
+    duration_s: float,
+    config: FingerprintConfig,
+    sample_pairs: int,
+    seed: int,
+) -> np.ndarray:
+    """Sample exactly the requested valid cross-label negatives from cached matrices."""
+    generator = np.random.default_rng(seed)
+    scores: list[float] = []
+    attempts = 0
+    while len(scores) < sample_pairs and attempts < sample_pairs * 50:
+        attempts += 1
+        left, right = (entries[index] for index in generator.integers(0, len(entries), 2))
+        if left.file_id == right.file_id or left.label == right.label:
+            continue
+        similarity = cropped_similarity(
+            signatures[left.file_id].fingerprint,
+            signatures[right.file_id].fingerprint,
+            duration_s,
+            config,
+        )
+        if similarity is not None:
+            scores.append(similarity)
+    if len(scores) != sample_pairs:
+        raise RuntimeError(
+            f"Only sampled {len(scores)}/{sample_pairs} valid negatives at {duration_s}s"
+        )
+    return np.asarray(scores, dtype=np.float64)
+
+
+def confirmed_short_positive_pairs(
+    entries: dict[str, list[FileEntry]], protocol: dict
+) -> tuple[list[tuple[str, str]], int]:
+    """Collect all T1 positives plus the two known cross-dataset duplicate pairs."""
+    known_ids = {entry.file_id for items in entries.values() for entry in items}
+    tier1 = [
+        (match.left_file_id, match.right_file_id)
+        for items in entries.values()
+        for match in tier1_matches(items)
+    ]
+    cross = [
+        (str(item["left"]), str(item["right"]))
+        for item in protocol["positive_cross_dataset_pairs"]
+    ]
+    missing = {file_id for pair in cross for file_id in pair}.difference(known_ids)
+    if missing:
+        raise ValueError(f"Configured cross-dataset positives do not exist: {sorted(missing)}")
+    return tier1 + cross, len(tier1)
+
+
+def short_calibration_report(report: dict) -> str:
+    """Render the E1 evidence from the JSON artifact, never transcribed measurements."""
+    lines = [
+        "# Short-duplicate threshold calibration",
+        "",
+        "> Generated by `scripts.find_duplicates calibrate-short` from cached standardized "
+        "fingerprints; no audio was decoded.",
+        "",
+        f"- Fingerprint config SHA-256: `{report['fingerprint_sha256']}`",
+        f"- Standardizer SHA-256: `{report['standardizer_sha256']}`",
+        f"- Positives: {report['positive_pairs']['total']} "
+        f"({report['positive_pairs']['tier1']} T1 + "
+        f"{report['positive_pairs']['cross_dataset']} known cross-dataset)",
+        f"- Negatives: {report['sample_pairs']} cached DataSEC cross-label pairs per duration; "
+        f"seed {report['seed']}",
+        "",
+        "| Duration (s) | Frames | Positive min | Negative max | `0.99` separated? |",
+        "|---:|---:|---:|---:|---|",
+    ]
+    for duration, result in report["durations"].items():
+        lines.append(
+            f"| {float(duration):.1f} | {result['frames']} | {result['positive_min']:.6f} | "
+            f"{result['negative_max']:.6f} | "
+            f"{'yes' if result['separated_at_threshold'] else 'no'} |"
+        )
+    decision = "kept" if report["keep_short_duplicate_min"] else "not changed automatically"
+    lines += [
+        "",
+        f"**Decision:** `short_duplicate_min = {report['short_duplicate_min']:.2f}` is {decision}. "
+        "A failed duration requires an ADR; this command never changes the gate threshold.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def command_calibrate_short(config_path: Path = SHORT_CALIBRATION_CONFIG) -> None:
+    """Run E1 sensitivity/false-positive evidence without changing D3 verdicts."""
+    protocol = load_short_calibration_config(config_path)
+    require_short_calibration_caches()
+    entries = {dataset: load_entries(dataset) for dataset in DATASETS}
+    _, signatures, standardizer_sha = load_standardized(entries)
+    prior = json.loads((INTERIM / "threshold_calibration.json").read_text(encoding="utf-8"))
+    if prior["standardizer_sha256"] != standardizer_sha:
+        raise RuntimeError("Cached standardizer differs from the threshold-calibration artifact")
+    fingerprint_config = FingerprintConfig()
+    positives, tier1_count = confirmed_short_positive_pairs(entries, protocol)
+    durations: dict[str, dict] = {}
+    threshold = float(protocol["short_duplicate_min"])
+    for duration in (float(value) for value in protocol["durations_s"]):
+        positive_scores = [
+            cropped_similarity(
+                signatures[left].fingerprint,
+                signatures[right].fingerprint,
+                duration,
+                fingerprint_config,
+            )
+            for left, right in positives
+        ]
+        if any(score is None for score in positive_scores):
+            raise RuntimeError(f"A confirmed positive cannot support {duration}s")
+        negative_scores = short_negative_distribution(
+            entries["datasec"],
+            signatures,
+            duration_s=duration,
+            config=fingerprint_config,
+            sample_pairs=int(protocol["sample_pairs"]),
+            seed=int(protocol["seed"]),
+        )
+        positive_min = float(min(score for score in positive_scores if score is not None))
+        negative_max = float(negative_scores.max())
+        durations[f"{duration:.1f}"] = {
+            "frames": fingerprint_config.frames_for_seconds(duration),
+            "positive_count": len(positive_scores),
+            "positive_min": positive_min,
+            "negative_count": int(negative_scores.size),
+            "negative_max": negative_max,
+            "separated_at_threshold": negative_max < threshold <= positive_min,
+        }
+    report = {
+        "fingerprint_sha256": fingerprint_config.checksum,
+        "standardizer_sha256": standardizer_sha,
+        "seed": int(protocol["seed"]),
+        "sample_pairs": int(protocol["sample_pairs"]),
+        "short_duplicate_min": threshold,
+        "positive_pairs": {
+            "tier1": tier1_count,
+            "cross_dataset": len(positives) - tier1_count,
+            "total": len(positives),
+        },
+        "durations": durations,
+        "keep_short_duplicate_min": all(
+            item["separated_at_threshold"] for item in durations.values()
+        ),
+    }
+    _write_json(SHORT_CALIBRATION_ARTIFACT, report)
+    SHORT_CALIBRATION_REPORT.parent.mkdir(parents=True, exist_ok=True)
+    SHORT_CALIBRATION_REPORT.write_text(short_calibration_report(report), encoding="utf-8")
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+
+
+def load_fmax_study_config(path: Path) -> FmaxStudyConfig:
+    """Load every E2 sampling and decision constant from its locked YAML config."""
+    payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+    required = {
+        "sample_per_class",
+        "top_classes",
+        "cross_class_pairs",
+        "seed",
+        "fmax_values",
+        "global_negative_max",
+        "allowed_excess",
+    }
+    if not isinstance(payload, dict) or required.difference(payload):
+        raise ValueError(f"Invalid fmax study config: {path}")
+    values = tuple(float(value) for value in payload["fmax_values"])
+    if len(values) != 2:
+        raise ValueError("E2 requires exactly two fmax values")
+    return FmaxStudyConfig(
+        sample_per_class=int(payload["sample_per_class"]),
+        top_classes=int(payload["top_classes"]),
+        cross_class_pairs=int(payload["cross_class_pairs"]),
+        seed=int(payload["seed"]),
+        fmax_values=(values[0], values[1]),
+        global_negative_max=float(payload["global_negative_max"]),
+        allowed_excess=float(payload["allowed_excess"]),
+    )
+
+
+def fmax_study_report(report: dict) -> str:
+    """Render the E2 evidence including its pre-registered global-negative guard."""
+    lines = [
+        "# fmax high-frequency separation study",
+        "",
+        "> Generated by `scripts.find_duplicates study-fmax`. High-frequency classes were "
+        "selected by measured spectral centroid, not by a pre-chosen label name.",
+        "",
+        "## Spectral-centroid selection",
+        "",
+        "| Coarse class | Mean centroid (Hz) | Sampled clips |",
+        "|---|---:|---:|",
+    ]
+    lines.extend(
+        f"| `{item['class_id']}` | {item['centroid_hz']:.2f} | {item['samples']} |"
+        for item in report["top_classes"]
+    )
+    lines += [
+        "",
+        "## Cross-class T3 similarity (2,000 fixed pairs)",
+        "",
+        "| fmax / standardization | Mean | p99 | Max |",
+        "|---|---:|---:|---:|",
+    ]
+    for name, values in report["similarities"].items():
+        lines.append(
+            f"| {name} | {values['mean']:.6f} | {values['p99']:.6f} | {values['max']:.6f} |"
+        )
+    limit = report["global_negative_max"] + report["allowed_excess"]
+    conclusion = "exceeds" if report["fmax7000_exceeds_guard"] else "does not exceed"
+    lines += [
+        "",
+        "## Guard for the deployed fmax=7000 fingerprint",
+        "",
+        f"The cached-global fmax=7000 p99/max {conclusion} the locked limit "
+        f"**{limit:.6f}** (= global negative max {report['global_negative_max']:.6f} + 0.01).",
+        "If it exceeds, this is a documented limitation; the command does not change `fmax`.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def command_study_fmax(config_path: Path = FMAX_STUDY_CONFIG) -> None:
+    """Measure whether removing 7–8 kHz weakens T3 separation for selected classes."""
+    study = load_fmax_study_config(config_path)
+    entries = {dataset: load_entries(dataset) for dataset in DATASETS}
+    raw, standardized, standardizer_sha = load_standardized(entries)
+    config_7000 = FingerprintConfig(fmax=study.fmax_values[0])
+    config_8000 = FingerprintConfig(fmax=study.fmax_values[1])
+    prior = json.loads((INTERIM / "threshold_calibration.json").read_text(encoding="utf-8"))
+    if prior["fingerprint_sha256"] != config_7000.checksum:
+        raise RuntimeError("The cached raw signatures are not the configured fmax=7000 fingerprint")
+    taxonomy = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
+    labels = labels_by_file_id(MANIFESTS / "datasec_inventory.csv", taxonomy)
+    by_class = {class_id: [] for class_id in taxonomy.class_ids}
+    for entry in entries["datasec"]:
+        if entry.file_id not in labels:
+            raise RuntimeError(f"DataSEC inventory label missing: {entry.file_id}")
+        by_class[labels[entry.file_id][0]].append(entry)
+    centroids, samples = mean_spectral_centroids(
+        by_class, sample_per_class=study.sample_per_class, seed=study.seed
+    )
+    top_classes = top_centroid_classes(centroids, study.top_classes)
+    selected = {class_id: samples[class_id] for class_id in top_classes}
+    selected_entries = [entry for values in selected.values() for entry in values]
+    raw_7000 = {entry.file_id: raw[entry.file_id].fingerprint for entry in selected_entries}
+    thresholds = DuplicateThresholds()
+    pairs = sample_valid_cross_class_pairs(
+        selected,
+        raw_7000,
+        count=study.cross_class_pairs,
+        config=config_7000,
+        thresholds=thresholds,
+        seed=study.seed,
+    )
+    cached_global = {
+        entry.file_id: standardized[entry.file_id].fingerprint for entry in selected_entries
+    }
+    cached_global_scores = pair_scores(
+        pairs, cached_global, config=config_7000, thresholds=thresholds
+    )
+    selected_7000, selected_7000_sha = standardize_selected(raw_7000)
+    selected_7000_scores = pair_scores(
+        pairs, selected_7000, config=config_7000, thresholds=thresholds
+    )
+    raw_8000 = {
+        entry.file_id: fingerprint(load_pcm(entry.path), config_8000) for entry in selected_entries
+    }
+    selected_8000, selected_8000_sha = standardize_selected(raw_8000)
+    selected_8000_scores = pair_scores(
+        pairs, selected_8000, config=config_8000, thresholds=thresholds
+    )
+    cached_summary = describe_scores(cached_global_scores)
+    report = {
+        "seed": study.seed,
+        "sample_per_class": study.sample_per_class,
+        "pair_count": len(pairs),
+        "fingerprint_sha256": {"fmax7000": config_7000.checksum, "fmax8000": config_8000.checksum},
+        "cached_standardizer_sha256": standardizer_sha,
+        "selected_standardizer_sha256": {
+            "fmax7000": selected_7000_sha,
+            "fmax8000": selected_8000_sha,
+        },
+        "top_classes": [
+            {
+                "class_id": class_id,
+                "centroid_hz": centroids[class_id],
+                "samples": len(samples[class_id]),
+            }
+            for class_id in top_classes
+        ],
+        "similarities": {
+            "fmax7000 cached-global z-score": cached_summary,
+            "fmax7000 selected-sample z-score": describe_scores(selected_7000_scores),
+            "fmax8000 selected-sample z-score": describe_scores(selected_8000_scores),
+        },
+        "global_negative_max": study.global_negative_max,
+        "allowed_excess": study.allowed_excess,
+        "fmax7000_exceeds_guard": exceeds_global_negative_guard(
+            cached_summary,
+            global_max=study.global_negative_max,
+            allowed_excess=study.allowed_excess,
+        ),
+    }
+    _write_json(FMAX_STUDY_ARTIFACT, report)
+    FMAX_STUDY_REPORT.parent.mkdir(parents=True, exist_ok=True)
+    FMAX_STUDY_REPORT.write_text(fmax_study_report(report), encoding="utf-8")
+    print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
 def _describe(values: np.ndarray, label: str) -> dict:
@@ -416,9 +778,20 @@ def _write_json(path: Path, payload: dict) -> None:
 
 
 def main() -> None:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "action", choices=["signatures", "calibrate", "detect", "regroup", "cohesion"]
+        "action",
+        choices=[
+            "signatures",
+            "calibrate",
+            "calibrate-short",
+            "study-fmax",
+            "detect",
+            "regroup",
+            "cohesion",
+        ],
     )
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--sample-pairs", type=int, default=5_000)
@@ -427,12 +800,14 @@ def main() -> None:
     parser.add_argument("--review-min", type=float, default=0.85)
     parser.add_argument("--cohesion-min", type=float, default=COHESION_MIN_SIMILARITY)
     args = parser.parse_args()
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-
     if args.action == "signatures":
         command_signatures(args.workers)
     elif args.action == "calibrate":
         command_calibrate(args.sample_pairs, args.seed)
+    elif args.action == "calibrate-short":
+        command_calibrate_short()
+    elif args.action == "study-fmax":
+        command_study_fmax()
     elif args.action == "cohesion":
         command_cohesion(args.cohesion_min)
     elif args.action == "regroup":

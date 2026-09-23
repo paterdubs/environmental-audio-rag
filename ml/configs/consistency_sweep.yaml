@@ -1,0 +1,3 @@
+coarse_guardrail_drop: 0.02
+parent_consistency_tie: 0.005
+default_consistency_weight: 0.5

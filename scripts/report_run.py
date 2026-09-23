@@ -4,13 +4,28 @@ import argparse
 import json
 from pathlib import Path
 
+from ml.evaluation.random_parent_baseline import write_datased_random_parent_baseline
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate a Markdown measurement from a run")
-    parser.add_argument("run", type=Path)
+    parser.add_argument("run", type=Path, nargs="?")
+    parser.add_argument("--random-baseline", choices=("datased",))
     args = parser.parse_args()
+    if args.random_baseline:
+        if args.run:
+            parser.error("run is not accepted with --random-baseline")
+        baseline = write_datased_random_parent_baseline(
+            ROOT / "data" / "annotations" / "datased_polyphonic_events.csv",
+            ROOT / "ml" / "configs" / "taxonomy.yaml",
+            ROOT / "docs" / "measurements" / "parent_consistency_random_baseline_20260923.md",
+        )
+        print(f"parent-consistency baseline: {baseline.value:.6f}")
+        return
+    if args.run is None:
+        parser.error("run is required unless --random-baseline is selected")
     run = args.run.resolve()
     manifest = json.loads((run / "manifest.json").read_text(encoding="utf-8"))
     metrics = json.loads((run / "metrics.json").read_text(encoding="utf-8"))

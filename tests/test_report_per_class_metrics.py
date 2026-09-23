@@ -3,8 +3,14 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
+import torch
 
-from scripts.report_per_class_metrics import class_rows, render_report, validate_locked_metrics
+from scripts.report_per_class_metrics import (
+    class_rows,
+    metrics_from_predictions,
+    render_report,
+    validate_locked_metrics,
+)
 
 
 def test_class_rows_preserve_requested_order_and_count_exact_hits() -> None:
@@ -57,3 +63,18 @@ def test_locked_metrics_use_only_supported_rows_for_supported_macro() -> None:
         all_nodes,
         supported,
     )
+
+
+def test_metrics_come_from_the_single_collected_prediction_pass() -> None:
+    metrics = metrics_from_predictions(
+        np.asarray([0, 1]),
+        np.asarray([0, 1]),
+        np.asarray([0, 1]),
+        np.asarray([0, 1]),
+        supported_ids=[0, 1],
+        family_mask=torch.eye(2),
+    )
+
+    assert metrics["coarse_macro_f1"] == 1.0
+    assert metrics["subclass_macro_f1_all"] == 1.0
+    assert metrics["parent_consistency_rate"] == 1.0

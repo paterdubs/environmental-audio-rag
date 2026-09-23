@@ -1,0 +1,9 @@
+durations_s: [1.0, 1.5, 2.0, 2.5]
+sample_pairs: 5000
+seed: 20260922
+short_duplicate_min: 0.99
+positive_cross_dataset_pairs:
+  - left: datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0046.wav
+    right: datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0233.wav
+  - left: datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0067.wav
+    right: datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0211.wav

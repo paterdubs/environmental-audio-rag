@@ -1,0 +1,7 @@
+sample_per_class: 30
+top_classes: 5
+cross_class_pairs: 2000
+seed: 20260922
+fmax_values: [7000.0, 8000.0]
+global_negative_max: 0.9204514026641846
+allowed_excess: 0.01
