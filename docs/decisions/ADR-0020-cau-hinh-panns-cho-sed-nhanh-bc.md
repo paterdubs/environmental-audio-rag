@@ -100,6 +100,38 @@ Thêm vào `manifest.config`: `encoder_type` (`audio`/`panns`), `feature_set`,
 `contracts/run_manifest.schema.json` — theo đúng tiền lệ D1 (`config` là
 mapping tự do).
 
+### 6. Lưu prediction NPZ (PLAN.md task 3.4) — vá cùng lúc, không phải việc riêng
+
+Rà tiếp một bước sau train thì thấy `ml/evaluation/predictions.py` đã có contract
+`PredictionArtifact`/`save_predictions` đầy đủ (schema `prediction-artifact-v1`,
+test pass từ tuần trước — nhật ký "W3: prediction, post-processing"), và
+`create_run_directory` đã tạo sẵn thư mục con `predictions/` cho **mọi** run —
+nhưng **chưa ai từng ghi gì vào đó**. Xác nhận: cả hai run `sed_polyphonic_*`
+(nhánh A) đã train xong tuần trước có `predictions/` rỗng.
+
+Nguyên nhân gốc: `SedFeatureDataset.__getitem__` trả về `(features, target,
+valid)` — **không có `recording_id`/`start_frame`** dù `SedWindow` (dataclass
+nội bộ) có đủ hai trường này. `run_epoch` (`ml/training/sed.py`) vì vậy chỉ
+tính được metric tổng hợp, không thể ghép logits về đúng recording/thời điểm.
+Đây là chặn cho **cả ba nhánh**, không riêng B/C — nên vá một lần, không phải
+việc lặp lại mỗi nhánh.
+
+**Quyết định:** không đổi chữ ký `__getitem__` (sẽ vỡ `collate_fn` mặc định vì
+`recording_id` là `str`, khó ghép batch cùng tensor). Thay vào đó, thêm hàm mới
+`collect_predictions(model, loader, device, frame_rate) -> PredictionArtifact`
+trong `ml/training/sed.py`, đọc trực tiếp `loader.dataset.windows` theo **đúng
+thứ tự index** (chỉ hợp lệ khi `shuffle=False` — đúng thực trạng của
+`validation`/`test` loader trong `train_sed.py`, không hợp lệ cho `train`
+loader, không cần thiết cho `train`). `frame_offsets_s = start_frame /
+frame_rate`. Gọi hàm này trong `--evaluate-test` (và thêm việc lưu cho
+`validation` nếu W3.6 quét threshold trên dev cần logits dev — có, theo PLAN.md
+3.6) — ghi cả `predictions/validation.npz` và `predictions/test.npz`.
+
+**Guard bắt buộc:** raise rõ nếu `isinstance(loader.sampler, ...)` không phải
+sequential hoặc `shuffle=True` được truyền nhầm cho loader dùng để dump
+prediction — sai thứ tự sẽ ghép logits sai recording một cách im lặng, đúng
+lớp lỗi mà `check_leakage`/registry đã nhiều lần bắt được trong dự án này.
+
 ## Consequences
 
 ### Tích cực
