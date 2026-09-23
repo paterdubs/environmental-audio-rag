@@ -71,6 +71,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--consistency-weight", type=float, default=0.5)
     parser.add_argument("--subclass-weight", type=float, default=1.0)
+    parser.add_argument(
+        "--sampler",
+        choices=("balanced", "uniform"),
+        default="balanced",
+        help="D6 (ADR-0002 §4): so class-balanced (mặc định) với uniform sampling.",
+    )
     return parser.parse_args()
 
 
@@ -110,8 +116,17 @@ def supported_subclass_ids(rows: pd.DataFrame, label_space: DataSECLabelSpace) -
 
 
 def build_loaders(
-    rows: pd.DataFrame, label_space: DataSECLabelSpace, *, batch_size: int
+    rows: pd.DataFrame,
+    label_space: DataSECLabelSpace,
+    *,
+    batch_size: int,
+    sampler_mode: str = "balanced",
 ) -> dict[str, DataLoader]:
+    """`sampler_mode="balanced"` (mặc định, ADR-0002 §4) hoặc `"uniform"` — D6
+    so hai chế độ này để định lượng ảnh hưởng của class-balanced sampling.
+    """
+    if sampler_mode not in {"balanced", "uniform"}:
+        raise ValueError(f"sampler_mode phải là 'balanced' hoặc 'uniform', nhận {sampler_mode!r}")
     feature_root = ROOT / "data" / "features" / "datasec" / FEATURE_SET
     loaders: dict[str, DataLoader] = {}
     for split in ("train", "validation", "test"):
@@ -122,8 +137,9 @@ def build_loaders(
             subset, feature_root=feature_root, label_space=label_space,
             frames=FRAMES, random_crop=split == "train",
         )
+        use_sampler = split == "train" and sampler_mode == "balanced"
         sampler = make_class_balanced_sampler(dataset, level="coarse", seed=20260922) \
-            if split == "train" else None
+            if use_sampler else None
         loaders[split] = DataLoader(
             dataset,
             batch_size=batch_size,
@@ -149,7 +165,9 @@ def main() -> None:
         epochs=args.epochs, batch_size=args.batch_size,
         learning_rate=args.learning_rate, seed=args.seed, frames=FRAMES,
     )
-    loaders = build_loaders(rows, label_space, batch_size=config.batch_size)
+    loaders = build_loaders(
+        rows, label_space, batch_size=config.batch_size, sampler_mode=args.sampler
+    )
     supported = supported_subclass_ids(rows, label_space)
     family_mask = build_family_mask(taxonomy, label_space.coarse_ids, label_space.subclass_ids)
 
@@ -185,6 +203,7 @@ def main() -> None:
                 checkpoint_report.parameter_fraction if checkpoint_report else None
             ),
             "normalization_path": str(normalization_path) if normalization_path.exists() else None,
+            "sampler_mode": args.sampler,
         },
         "class_ids": list(label_space.coarse_ids),
         "primary_metric": "coarse_macro_f1",
