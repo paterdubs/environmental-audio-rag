@@ -101,7 +101,7 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 | A5 | `check_leakage datasec` — 5 kiểm, chứng minh **không rỗng** bằng phá thử | Claude | `scripts/check_leakage.py` | A2 | ✅ |
 | A6 | `freeze_split datasec` — dùng `require_exclusion_policy` đã có (ADR-0010 §3) | Claude | `scripts/freeze_split.py` | A5 | ✅ |
 | B1 | `extract_features` nhận `logmel_panns_v1` + `datasec` | Codex | `scripts/extract_features.py` | — | ✅ |
-| B2 | Trích `logmel_panns_v1` cho 5,048 + 717 file (32 kHz). Đo thời gian, dung lượng → §5 | Codex | `data/features/` | B1 | 🔒 codex 16:15 |
+| B2 | Trích `logmel_panns_v1` cho 5,048 + 717 file (32 kHz). Đo thời gian, dung lượng → §5 | Codex | `data/features/` | B1 | ✅ |
 | B3 | Kiểm feature: shape, frame rate, không NaN, checksum config vào manifest | Codex | `tests/` | B2 | TODO |
 | B4 | So `logmel_v1` vs `logmel_panns_v1` trên 5 file — khác biệt đúng kỳ vọng, không phải lỗi resample | Codex | `docs/measurements/` | B2 | TODO |
 | C1 | `load_classifier_encoder` nhận CNN14 + đối chiếu độ phân giải thời gian (ADR-0014) | Claude | `ml/models/audio.py`, `ml/models/panns.py` | — | ✅ |
@@ -123,6 +123,8 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 ---
 
 ## 4. Nhật ký — append-only
+
+[18:12] codex B2 — trích đủ `logmel_panns_v1`: DataSEC 5,048 và DataSED 717 (32 kHz); manifest/config hash khớp · `python -m scripts.extract_features {datasec,datased} --feature-set logmel_panns_v1`; `pytest -q`: 267 pass, `ruff check .`: pass
 
 [16:15] codex F1 — checkpoint MD5 khớp, nạp strict 72 tensor conv / 75,493,452 tham số (92.2301%); chặn ở chuẩn hoá thay `bn0` vì cần feature B2 · `python -m scripts.report_panns_checkpoint`; `pytest -q tests/test_panns.py`: 5 pass; ruff: pass
 
@@ -174,6 +176,7 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 | Dữ kiện | Giá trị | Nguồn | Ai đo |
 |---|---|---|---|
+| Feature `logmel_panns_v1` | DataSEC **5,048** / 1,093,515,136 B / 113.477 s; DataSED **717** / 861,134,464 B / 133.532 s; config SHA-256 `bbf5188f…abffa` | `data/features/*/logmel_panns_v1`, 2 manifest CSV/JSON | Codex |
 | DataSEC sample rate | 44.1 kHz, 5,048/5,048 | `datasec_inventory_summary.json` | Claude |
 | DataSEC cụm cohesion lớn nhất | **326 file (6.5%)** | `split_cohesion_pairs.csv` | Claude |
 | DataSED cụm cohesion lớn nhất | 4 file (0.6%) | cùng trên | Claude |
