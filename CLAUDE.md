@@ -723,6 +723,23 @@ số — kiến trúc không còn là việc của Codex.
 Test 257 → **265 pass**, ruff sạch. Board thêm F1 (checkpoint) và G1
 (data_inventory.md — số thuần, an toàn cho Codex).
 
+### 2026-09-23 (tiếp) — C2 đo VRAM: `safe_batch_size` sai lệch ~12 lần so với thật
+
+`safe_batch_size` viết từ scaffold ban đầu (chưa đo, chỉ suy đoán) dự đoán
+batch **2** cho cửa sổ 10 giây trên GPU 8 GB. Codex đo thật trên RTX 3070
+Laptop (8.59 GB): batch **24** ở 10 giây chỉ tốn 5.895 GB; batch 32 tốn
+7.739 GB — sát trần nhưng vẫn dưới. Chọn 24 (không phải 32) làm chính sách mới
+để còn đệm cho overhead hệ thống. Sai lệch ~12 lần cho thấy suy đoán ban đầu
+quá dè dặt tới mức làm hỏng throughput train nếu không đo lại trước W2. C3
+(gradient accumulation khi batch < 4) đúng đắn xác định **không áp dụng** —
+tiền đề kích hoạt nó không còn đúng sau khi batch thật lớn hơn nhiều.
+
+B4 cũng lộ một khoảng trống: DataSEC chưa từng có `logmel_v1` (chỉ DataSED có
+cả hai bộ đặc trưng). Quyết định chuyển B4 sang so sánh trên DataSED thay vì
+trích thêm `logmel_v1` cho DataSEC — ADR-0019 vừa loại bỏ hẳn nhánh
+`AudioClassifier` từng là lý do duy nhất cần đặc trưng đó cho DataSEC, nên
+trích thêm sẽ là công vô ích.
+
 ### 2026-09-23 (tiếp) — D1 suýt bị giao cho một script chết từ đầu dự án
 
 Người dùng hỏi "đang làm gì" — nhân đó rà lại đường D1 trước khi Codex chạm
