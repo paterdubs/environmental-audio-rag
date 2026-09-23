@@ -147,6 +147,8 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Tỉ lệ split DataSED | **60/20/20**, không phải 70/15/15 | [0008](docs/decisions/ADR-0008-ti-le-split-datased.md) | ADR-0003 lập luận trên dev 142 = 60/20/20; code và candidate đều vậy |
 | Ngưỡng T3 theo overlap | 0.95/0.85 khi overlap ≥ 3 s; **0.99, không review** khi ngắn hơn | [0009](docs/decisions/ADR-0009-nguong-phu-thuoc-overlap.md) | 95.5% cặp có overlap đúng 1 s — nhiễu của phép so 16.6M cặp |
 | Kiểm 5 (D4) theo corpus | benchmark giữ nghĩa cũ; pretraining hỏi "clip đã loại có vắng mặt" | [0013](docs/decisions/ADR-0013-kiem-5-theo-corpus.md) | Dùng chung sẽ pass rỗng — DataSEC không có dev/test cần bảo vệ |
+| Checkpoint AudioSet — phạm vi nạp | Chỉ transplant `conv_block1…6`, **không** faithful full CNN14 | [0018](docs/decisions/ADR-0018-nap-mot-phan-checkpoint-panns.md) | Checkpoint gốc có `spectrogram_extractor/bn0/fc1/fc_audioset` mà encoder repo không có — viết lại toàn bộ sẽ đổi input pipeline ở tuần 2/8 |
+| Giao thức ECE (D5) | Chỉ head coarse; temperature scaling, T chọn trên dev; 15 bin; 2 số trước/sau | [0017](docs/decisions/ADR-0017-hieu-chuan-ece-datasec.md) | Head subclass có lớp n_test<25 làm ECE ra nhiễu; DataSED không phải phân loại đơn nhãn |
 | Checkpoint AudioSet | Zenodo, **Proposed** — chưa xác minh hash/license thật | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
 | Hierarchical head DataSEC | Một encoder, 2 head tuyến tính, consistency loss = -log(khối lượng xác suất đúng gia đình) | [0016](docs/decisions/ADR-0016-hierarchical-head-consistency-loss.md) | CE 28-way một mình không phạt lệch gia đình coarse |
 | Temporal head CNN14 | interpolate(nearest) phục hồi T; độ phân giải thật vẫn ở khối 1.28s | [0014](docs/decisions/ADR-0014-doi-chieu-do-phan-giai-thoi-gian-cnn14.md) | Cắm CNN14 thẳng vào SED head sẽ vỡ shape loss so với target 50fps |
@@ -719,6 +721,48 @@ số — kiến trúc không còn là việc của Codex.
 
 Test 257 → **265 pass**, ruff sạch. Board thêm F1 (checkpoint) và G1
 (data_inventory.md — số thuần, an toàn cho Codex).
+
+### 2026-09-23 (tiếp) — Codex bắt được lỗ hổng kiến trúc lớn nhất phiên này
+
+Codex nhận F1 (tải checkpoint AudioSet), xác minh đúng nguồn (Zenodo `3576403`,
+`Cnn14_mAP=0.431.pth`, MD5 `595633ac2d1cac7ef04ebf70e2fee4e4`, 1.4 GB) rồi
+**dừng lại thay vì tải xong và load `strict=False` cho qua**: checkpoint gốc có
+`spectrogram_extractor`, `logmel_extractor`, `bn0`, `conv_block1…6`, `fc1`,
+`fc_audioset`; `PannsCNN14Encoder` trong repo chỉ có `blocks.0…5`. Không phải
+lệch tên khoá — là khác kiến trúc ở phạm vi rộng hơn hẳn một khối, và
+`strict=True` như F1 yêu cầu ban đầu **không thể** thoả.
+
+Đây đúng tinh thần giao thức: "một task bị Codex bác bỏ có lý do kèm số đo là
+một task thành công". Nếu Codex tự ý nới `strict=False`, checkpoint sẽ nạp một
+phần ngẫu nhiên (bao nhiêu tuỳ khớp tên khoá tình cờ), và nhánh B/C sẽ mang một
+encoder không ai biết chính xác đã pretrain bao nhiêu — âm thầm làm hỏng RQ1 mà
+không có dấu hiệu lỗi nào.
+
+**Quyết định:** không viết lại thành faithful full CNN14 (đổi input toàn bộ
+pipeline từ log-mel sang waveform thô, chi phí không tương xứng ở tuần 2/8).
+Chỉ transplant `conv_block1…6` vào `blocks.0…5` — ánh xạ khoá tường minh,
+`strict=True` áp trên **tập con đã remap** chứ không phải cả checkpoint, báo %
+tham số transplant thật thay vì giả định. `bn0` bị bỏ có chủ đích, thay bằng
+chuẩn hoá thống kê trên tập train DataSEC — ghi rõ đây là xấp xỉ, không phải
+tương đương, trong Hạn chế. → ADR-0018.
+
+Kết quả: F1 dùng lại đúng phần tải dở (24,649,728 B, resume bằng `curl -C -`),
+kèm hướng dẫn dừng đúng lúc nếu vẫn không tải xong (fallback đổi tên nhánh đã
+định sẵn ở ADR-0015 §3, không âm thầm gọi CNN14-scratch là B/C).
+
+### 2026-09-23 (tiếp) — D5 (ECE) chốt đặc tả trước khi Codex chạm tới
+
+Rà tiếp hàng đợi trong lúc Codex làm B1 (song song, không giẫm file): D5 chỉ
+ghi "ECE calibration + reliability diagram" — cùng dạng thiếu đặc tả từng chặn
+D4 trước ADR-0016. Chốt trước khi thành điểm nghẽn: chỉ hiệu chuẩn head
+**coarse** trên DataSEC (subclass có 4 lớp n_test<25 làm ECE ra nhiễu; DataSED
+là bài toán đa nhãn theo frame, không khớp ECE cổ điển). Phương pháp temperature
+scaling — một tham số, không đổi thứ hạng dự đoán, $T$ chọn trên **dev** rồi
+khoá, áp một lần lên test đúng kỷ luật ADR-0003. Báo **hai** ECE (trước/sau),
+không tự chỉnh $T$ để ép số giảm nếu hiệu chuẩn không giúp gì. → ADR-0017.
+
+Không viết code cho việc này — đúng nguyên tắc mới ở `AGENT_SYNC.md` §0: Claude
+ra đặc tả, Codex triển khai toàn bộ D5.
 
 ### 2026-09-23 (chốt) — Đóng băng split, rà soát toàn bộ
 
