@@ -58,10 +58,10 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 **Cập nhật:** 23/09/2026, sau D1 (train E1 = DataSEC classifier, checkpoint AudioSet).
 
 **Cổng dữ liệu D3/D4 đã đóng** (`data-v1.0`). **Split DataSEC đã đóng băng**
-(70/15/15). **D1 đã chạy thật với checkpoint AudioSet đúng**, kết quả tốt
-(coarse macro-F1 test 0.8467) nhưng git dirty lúc chạy — cần chạy lại một lần
-trên tree sạch để có số khoá chính thức. Đang chờ: D2–D6 (seed reproducibility,
-per-class report, tune consistency loss, ECE, ablation).
+(70/15/15). **D1 đã chạy thật với checkpoint AudioSet đúng, số đã khoá**
+(`git.dirty=false`, commit `38c3b7c`): coarse macro-F1 test **0.8467**. Đang
+chờ: D2–D6 (seed reproducibility, per-class report, tune consistency loss,
+ECE, ablation).
 
 ### Đã có ✅
 
@@ -102,7 +102,7 @@ per-class report, tune consistency loss, ECE, ablation).
 | **Split DataSEC đóng băng** | 3,434/744/740 = 69.8/15.1/15.1; 50/50 nhãn (22 coarse+28 subclass) phủ cả 3 split; sha256 `e8d3099010ac2937…` |
 | **`logmel_panns_v1` đã trích** | DataSEC 5,048 + DataSED 717 file, 32 kHz, config sha256 `bbf5188f…` |
 | **Checkpoint AudioSet đã xác minh** | Zenodo `3576403`, SHA-256 `7f0ea3a7ad9622f7…`, 92.2301% tham số transplant vào `PannsCNN14Encoder` |
-| **D1 — train E1 (DataSEC classifier, nhánh C bước giữa)** | Test coarse macro-F1 **0.8467**, subclass macro-F1 all/n≥10 **0.6266/0.8453**, parent-consistency **0.9526**; `ml/runs/classifier_datasec_20260923T120538Z` |
+| **D1 — train E1 (DataSEC classifier, nhánh C bước giữa)** | Test coarse macro-F1 **0.8467**, subclass macro-F1 all/n≥10 **0.6266/0.8453**, parent-consistency **0.9526**; `ml/runs/classifier_datasec_20260923T121808Z` |
 | `data_inventory.md` | Sinh tự động từ manifest + split đóng băng |
 
 ### Đang làm / chưa nghiệm thu ◐
@@ -112,7 +112,6 @@ per-class report, tune consistency loss, ECE, ablation).
 | Split DataSED | **Đã đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
 | Cổng D3/D4 | **Xong, cả hai split đã đóng băng.** |
 | Tài liệu | `RELATED_WORK.md` còn chờ (cần trích dẫn — rủi ro bịa, ưu tiên thấp); `data_inventory.md` đã xong |
-| D1 số khoá chính thức | Đã chạy thật (git dirty) — cần chạy lại một lần trên tree sạch sau commit |
 | D2–D6 | Chưa làm: seed reproducibility, per-class report, tune `λ_cons`, ECE, ablation sampler |
 | W4–W6 nền tảng | Đã có code/test fixture; chưa chạy metric thật, PostgreSQL, embedding hay prediction thật |
 | W3 nền tảng | Chưa có logits/checkpoint thật; threshold và duration prior chưa được hiệu chuẩn trên split freeze |
@@ -772,7 +771,7 @@ run sai, chạy lại với `artifacts/checkpoints/Cnn14_mAP=0.431.pth` (SHA-256
 khớp đúng F1). Một epoch với checkpoint đúng đã vượt cả 12 epoch scratch:
 validation coarse macro-F1 0.590 so với 0.487.
 
-**Kết quả D1 cuối** (`ml/runs/classifier_datasec_20260923T120538Z`, 12 epoch,
+**Kết quả D1 cuối** (`ml/runs/classifier_datasec_20260923T121808Z`, 12 epoch,
 checkpoint AudioSet, 92.2301% tham số transplant):
 
 | Metric (test) | Giá trị |
@@ -782,9 +781,14 @@ checkpoint AudioSet, 92.2301% tham số transplant):
 | subclass macro-F1 (n≥10, 5 node) | **0.8453** |
 | parent-consistency rate | 0.9526 |
 
-⚠️ Run này chạy khi `git dirty=true` (nhiều thay đổi chưa commit trong phiên) —
-số trên là thăm dò đủ tin cậy để tiếp tục D2–D6, nhưng cần chạy lại một lần
-trên tree sạch sau khi commit để có số "khoá" chính thức cho báo cáo cuối.
+Run đầu tiên có `git.dirty=true` (nhiều thay đổi chưa commit trong phiên) nên
+chỉ coi là thăm dò. Sau khi commit (`38c3b7c`), chạy lại đúng cùng lệnh trên
+tree sạch: **số ra giống hệt bit-for-bit** — cùng seed `20260922`,
+`cudnn.deterministic=True` (đặt trong `seed_everything`), không có nguồn
+ngẫu nhiên nào lọt ra ngoài kiểm soát. Đây là bằng chứng gián tiếp cho D2
+(seed reproducibility), dù D2 với tư cách một task riêng (train hai lần độc
+lập, so checkpoint hash) vẫn chưa chạy. Run `classifier_datasec_20260923T121808Z`
+(`git.dirty=false`) là số **khoá chính thức**.
 
 Thêm `scripts/report_classifier_run.py` in lại đúng số từ
 `manifest.json`/`metrics.json`/`history.json`, không tính toán lại.

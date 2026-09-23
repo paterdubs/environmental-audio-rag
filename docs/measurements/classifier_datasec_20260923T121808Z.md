@@ -1,6 +1,6 @@
-# Run huấn luyện DataSEC — `classifier_datasec_20260923T120538Z`
+# Run huấn luyện DataSEC — `classifier_datasec_20260923T121808Z`
 
-> Sinh bởi `scripts.report_classifier_run ml\runs\classifier_datasec_20260923T120538Z`. Không sửa số bằng tay.
+> Sinh bởi `scripts.report_classifier_run ml\runs\classifier_datasec_20260923T121808Z`. Không sửa số bằng tay.
 
 - Nạp checkpoint AudioSet — đây là bước giữa của **nhánh C** (ADR-0002).
 - Checkpoint: `artifacts/checkpoints/Cnn14_mAP=0.431.pth`
@@ -9,7 +9,7 @@
 - Split SHA-256: `e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a`
 - Taxonomy SHA-256: `67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a`
 - Seed: `20260922`
-- Git dirty lúc chạy: `True` — ⚠️ số dưới đây là thăm dò, không phải số khoá cuối. Chạy lại trên tree sạch sau khi commit để có số chính thức.
+- Git dirty lúc chạy: `False`
 - Số item: train=3434, validation=744, test=740
 - Best checkpoint: epoch 12/12 (validation coarse_macro_f1 = 0.8230)
 
