@@ -53,6 +53,35 @@ Không viết lại. Nó đã có số đo và đóng vai trò nhánh A.
 Sampling nghịch đảo tần suất lớp, hoặc loss weighting tương đương. Ablation A6 so
 với uniform sampling để định lượng ảnh hưởng.
 
+**Kết quả D6 (2026-09-23), cùng config/split/checkpoint, chỉ đổi sampler:**
+
+| Sampler | coarse macro-F1 | subclass macro-F1 (tất cả) | subclass macro-F1 (n≥10) |
+|---|---:|---:|---:|
+| balanced (mặc định) | 0.846632 | **0.626574** | 0.845347 |
+| uniform | **0.851950** | 0.558946 | **0.874077** |
+
+Nguồn: `classifier_datasec_20260923T{132031,132834}Z/metrics.json`.
+
+**Kết quả không đơn giản như dự đoán ban đầu** ("uniform sẽ chuyên biệt phân biệt
+`voices`/`music`, làm hại các lớp hiếm"). Trên **coarse**, uniform còn tốt hơn nhẹ
+(+0.005) — không đủ để kết luận balanced sampling *cần thiết* cho mục tiêu coarse.
+Trên **subclass**, kết quả **trái chiều theo tập lớp**: uniform tệ hơn hẳn khi tính
+trên toàn bộ 28 subclass (−0.068, đúng hướng dự đoán — lớp subclass hiếm bị bỏ
+rơi), nhưng lại **tốt hơn** trên 5 subclass đủ mẫu kiểm (n≥10) (+0.029).
+
+**Quyết định: giữ balanced làm mặc định**, không đổi theo kết quả uniform tốt hơn
+ở hai trong ba số. Lý do không phải "balanced thắng nhiều số hơn" (nó không) mà
+vì **mục tiêu chính của bước pretraining DataSEC không phải tối đa một con số cụ
+thể của chính DataSEC** — nó là tạo một encoder tổng quát cho nhánh C (fine-tune
+tiếp trên DataSED). Balanced sampling đảm bảo encoder được huấn luyện đều tay
+trên toàn bộ 22 coarse + 28 subclass thay vì bị chi phối bởi `voices`+`music`
+(57.5% dữ liệu, Context ở trên) — một encoder overfit vào phân biệt nói/nhạc có
+thể tình cờ được đúng vài con số DataSEC-nội-bộ tốt hơn nhưng biểu diễn học được
+kém tổng quát hơn cho các lớp âm thanh môi trường khác mà DataSED cần. Số liệu
+D6 không đủ mạnh (một seed, chưa có CI) để đảo ngược một quyết định thiết kế đã
+có lý do độc lập từ Context — ghi nhận là **quan sát**, không phải bằng chứng
+đủ để thay đổi lựa chọn kiến trúc.
+
 ### 5. Ba nhánh dùng cùng training budget
 
 Cùng split, cùng seed set, cùng số epoch × batch, cùng scheduler. Post-processing
