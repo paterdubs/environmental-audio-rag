@@ -114,6 +114,9 @@ def main() -> None:
         "class_ids": class_ids,
         "taxonomy_sha256": taxonomy.checksum,
         "split_sha256": sha256_file(splits_path),
+        "data_manifest_sha256": sha256_file(
+            ROOT / "data" / "annotations" / "datased_polyphonic_events.csv"
+        ),
         "pretrained_classifier": (
             str(args.pretrained_classifier) if args.pretrained_classifier else None
         ),

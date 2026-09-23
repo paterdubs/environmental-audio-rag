@@ -12,6 +12,7 @@ from typing import Any
 
 import numpy as np
 
+from ml.evaluation.predictions import PredictionArtifact
 from ml.postprocessing.events import DurationPrior, process_recordings
 from ml.taxonomy import Taxonomy, load_taxonomy
 
@@ -56,6 +57,26 @@ def _bounds(event: Mapping[str, Any]) -> tuple[float, float]:
 def _odd_width(value: float) -> int:
     rounded = max(1, int(math.floor(value + 0.5)))
     return rounded if rounded % 2 else rounded + 1
+
+
+def stack_predictions_by_recording(artifact: PredictionArtifact) -> dict[str, np.ndarray]:
+    """Turn a window-indexed `PredictionArtifact` into `process_recordings`'s
+    expected `{recording_id: [frames, classes]}` sigmoid-probability mapping.
+
+    `SedFeatureDataset` builds windows recording-by-recording in increasing
+    `start_frame` order (H2, ADR-0020 §6), and `collect_predictions` preserves
+    that order verbatim — so grouping by first-seen order and concatenating is
+    correct without re-sorting. `mask` trims the zero-padded suffix that the
+    last (partial) window of a recording carries.
+    """
+    probabilities = 1.0 / (1.0 + np.exp(-artifact.logits.astype(np.float64)))
+    chunks: dict[str, list[np.ndarray]] = defaultdict(list)
+    for window_index, recording_id in enumerate(artifact.recording_ids):
+        valid = artifact.mask[window_index]
+        chunks[str(recording_id)].append(probabilities[window_index][valid])
+    return {
+        recording_id: np.concatenate(windows, axis=0) for recording_id, windows in chunks.items()
+    }
 
 
 def derive_duration_priors(
@@ -183,6 +204,11 @@ def sweep_per_class_thresholds(
                 thresholds=candidate,
                 priors=priors,
                 frame_rate=frame_rate,
+                # Every other class is suppressed via theta=1.0 above and would
+                # yield empty output anyway — skip computing it. Cuts a real
+                # 21-class sweep from ~4.3s/call to a fraction of that (H2,
+                # 2026-09-23: this loop is 21 x len(grid) calls).
+                only_classes=frozenset({class_id}),
             )
             class_scores[theta] = float(score_fn(events, class_id))
         thresholds[class_id], _ = _best(list(class_scores.items()))

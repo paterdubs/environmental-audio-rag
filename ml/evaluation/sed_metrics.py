@@ -69,14 +69,15 @@ def _patch_psds_eval_for_numpy2() -> None:
     psds_module.PSDSEval._auc = staticmethod(fixed_auc)
 
 
-def _events_by_recording(events: Mapping[str, Iterable[Mapping[str, Any]]]) -> list[dict]:
+def _events_for_recording(
+    events: Mapping[str, Iterable[Mapping[str, Any]]], recording_id: str
+) -> list[dict]:
     rows = []
-    for recording_id, recording_events in events.items():
-        for event in recording_events:
-            row = dict(event)
-            row.setdefault("filename", recording_id)
-            row.setdefault("event_label", row.get("class_id"))
-            rows.append(row)
+    for event in events.get(recording_id, []):
+        row = dict(event)
+        row.setdefault("filename", recording_id)
+        row.setdefault("event_label", row.get("class_id"))
+        rows.append(row)
     return rows
 
 
@@ -88,7 +89,24 @@ def event_based_f1(
     t_collar: float = 0.2,
     percentage_of_length: float = 0.2,
 ) -> dict[str, Any]:
-    """Evaluate event F1 through :mod:`sed_eval` with the locked protocol."""
+    """Evaluate event F1 through :mod:`sed_eval` with the locked protocol.
+
+    ``sed_eval.sound_event.EventBasedMetrics.evaluate`` accumulates internal
+    state and must be called **once per recording** — passing a mixed list
+    spanning multiple files raises ``ValueError`` (H2, 2026-09-23; every
+    previous test here used a single-recording fixture, so this path was never
+    exercised end-to-end until sweeping thresholds on a real multi-recording
+    dev set). Recordings present in only one of `reference`/`estimate` still
+    need one `.evaluate()` call each (with an empty list on the other side) so
+    a recording with false positives but no reference events — or vice versa —
+    is counted, not silently skipped. A recording empty on **both** sides
+    contributes zero events either way, so it is skipped entirely — verified
+    empirically to produce byte-identical `results()` with/without it (H2,
+    2026-09-23). This matters in practice: threshold sweeps call this once per
+    (class, grid value) pair, and most recordings have events for only a few
+    of the 21 classes — skipping the empty pairs is the difference between a
+    per-class sweep touching ~137 recordings vs. only the handful that matter.
+    """
     try:
         import sed_eval
     except ImportError as exc:
@@ -100,10 +118,14 @@ def event_based_f1(
         t_collar=t_collar,
         percentage_of_length=percentage_of_length,
     )
-    metric.evaluate(
-        reference_event_list=_events_by_recording(reference),
-        estimated_event_list=_events_by_recording(estimate),
-    )
+    for recording_id in sorted(set(reference) | set(estimate)):
+        reference_events = _events_for_recording(reference, recording_id)
+        estimated_events = _events_for_recording(estimate, recording_id)
+        if not reference_events and not estimated_events:
+            continue
+        metric.evaluate(
+            reference_event_list=reference_events, estimated_event_list=estimated_events
+        )
     result = metric.results()
     return {
         "f_measure": result["overall"].get("f_measure", {}),

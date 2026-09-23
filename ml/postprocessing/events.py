@@ -112,11 +112,27 @@ def probabilities_to_events(
     thresholds: Mapping[str, float],
     priors: Mapping[str, DurationPrior],
     frame_rate: float,
+    only_classes: frozenset[str] | None = None,
 ) -> list[PostprocessedEvent]:
-    """Apply median filter, threshold, gap merging, then minimum duration."""
+    """Apply median filter, threshold, gap merging, then minimum duration.
+
+    `only_classes` restricts the (expensive — median filter over every frame)
+    per-class work to a subset, for callers that already know every other
+    class is suppressed for this call. This changes nothing about the classes
+    that ARE processed (each column is independent); it only skips redundant
+    work for the rest. Default (`None`) processes every class, identical to
+    the original behaviour — added after `sweep_per_class_thresholds` (W3.6)
+    was measured at ~4.3s per call over a full test recording set purely from
+    reprocessing 20 suppressed classes to search **one**: 21 classes x 19
+    threshold values = 399 calls, each doing all 21 classes' median filter for
+    a candidate that suppresses 20 of them via `theta=1.0` — ~30 min total for
+    output that is otherwise entirely thrown away (H2, 2026-09-23).
+    """
     values = _validate_inputs(probabilities, class_ids, thresholds, priors, frame_rate)
     events: list[PostprocessedEvent] = []
     for class_index, class_id in enumerate(class_ids):
+        if only_classes is not None and class_id not in only_classes:
+            continue
         prior = priors[class_id]
         filtered = _median_filter(values[:, class_index], prior.median_w)
         runs = _active_runs(filtered >= float(thresholds[class_id]))
@@ -144,8 +160,12 @@ def process_recordings(
     thresholds: Mapping[str, float],
     priors: Mapping[str, DurationPrior],
     frame_rate: float,
+    only_classes: frozenset[str] | None = None,
 ) -> dict[str, list[dict[str, str | float]]]:
-    """Post-process multiple recordings into sed_eval-compatible event rows."""
+    """Post-process multiple recordings into sed_eval-compatible event rows.
+
+    See `probabilities_to_events` for `only_classes`.
+    """
     return {
         recording_id: [
             event.as_dict()
@@ -156,6 +176,7 @@ def process_recordings(
                 thresholds=thresholds,
                 priors=priors,
                 frame_rate=frame_rate,
+                only_classes=only_classes,
             )
         ]
         for recording_id, probabilities in probabilities_by_recording.items()

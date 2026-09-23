@@ -86,6 +86,47 @@ def test_event_based_f1_runs_end_to_end_with_real_sed_eval():
     assert set(result["per_class"]) == {"bird", "car"}
 
 
+def test_event_based_f1_accepts_multiple_recordings():
+    """H2 (2026-09-23): sed_eval.EventBasedMetrics.evaluate() raises ValueError
+    when given events spanning more than one file in a single call — every
+    prior test here used a single recording, so this regressed silently until
+    a real multi-recording dev set (threshold sweep) hit it. Also covers a
+    recording present in only one of reference/estimate (r3: false positive
+    with no reference; r2 estimate omitted entirely)."""
+    refs = {
+        "r1": [event("bird", 0, 10)],
+        "r2": [event("car", 5, 8)],
+        "r3": [],
+    }
+    preds = {
+        "r1": [event("bird", 0, 9)],
+        "r3": [event("bird", 20, 21)],
+    }
+    result = event_based_f1(refs, preds, event_label_list=["bird", "car"])
+    # r1 bird matches, r2 car is missed (deletion), r3 bird is a false alarm
+    # (insertion) -- correct only if all three recordings were actually pooled.
+    assert result["overall"]["f_measure"]["precision"] == pytest.approx(0.5)
+    assert result["overall"]["f_measure"]["recall"] == pytest.approx(0.5)
+    assert result["overall"]["error_rate"]["deletion_rate"] == pytest.approx(0.5)
+    assert result["overall"]["error_rate"]["insertion_rate"] == pytest.approx(0.5)
+
+
+def test_event_based_f1_ignores_recordings_empty_on_both_sides():
+    """Performance guard (H2): threshold sweeps call this once per (class, grid
+    value) pair, so skipping recordings with nothing on either side matters at
+    scale. Locks that skipping them changes nothing about the result."""
+    refs_with_empty = {"r1": [event("bird", 0, 10)], "r_empty": []}
+    preds_with_empty = {"r1": [event("bird", 0, 9)], "r_empty": []}
+    refs_without_empty = {"r1": [event("bird", 0, 10)]}
+    preds_without_empty = {"r1": [event("bird", 0, 9)]}
+
+    with_empty = event_based_f1(refs_with_empty, preds_with_empty, event_label_list=["bird"])
+    without_empty = event_based_f1(
+        refs_without_empty, preds_without_empty, event_label_list=["bird"]
+    )
+    assert with_empty["overall"] == without_empty["overall"]
+
+
 @pytest.mark.parametrize(
     "scenario",
     [

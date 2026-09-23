@@ -3,6 +3,7 @@
 from ml.postprocessing.calibration import (
     build_postproc_artifact,
     derive_duration_priors,
+    stack_predictions_by_recording,
     sweep_global_threshold,
     sweep_per_class_thresholds,
     validate_postproc_artifact,
@@ -22,6 +23,7 @@ __all__ = [
     "derive_duration_priors",
     "probabilities_to_events",
     "process_recordings",
+    "stack_predictions_by_recording",
     "sweep_global_threshold",
     "sweep_per_class_thresholds",
     "validate_postproc_artifact",

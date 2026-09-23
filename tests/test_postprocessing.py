@@ -5,11 +5,13 @@ import numpy as np
 import pytest
 from jsonschema import Draft202012Validator
 
+from ml.evaluation.predictions import PredictionArtifact
 from ml.postprocessing import (
     DurationPrior,
     build_postproc_artifact,
     derive_duration_priors,
     probabilities_to_events,
+    stack_predictions_by_recording,
     sweep_global_threshold,
     sweep_per_class_thresholds,
     validate_postproc_artifact,
@@ -39,6 +41,69 @@ def _train_events() -> dict[str, list[dict[str, float | str]]]:
             ]
         )
     return {"datased:S-train": events}
+
+
+def test_stack_predictions_by_recording_concatenates_windows_and_trims_padding():
+    """H2: two windows for r1 (second one padded), one window for r2."""
+    n_classes = len(CLASS_IDS)
+    logits = np.zeros((3, 4, n_classes), dtype=np.float32)
+    logits[0] = 10.0  # r1, window 0: fully valid, sigmoid(10) ~ 1
+    logits[1, :2] = -10.0  # r1, window 1: only first 2 frames valid, sigmoid(-10) ~ 0
+    logits[2] = 5.0  # r2, window 0: fully valid
+    mask = np.array(
+        [[True, True, True, True], [True, True, False, False], [True, True, True, True]]
+    )
+    artifact = PredictionArtifact(
+        logits=logits,
+        targets=np.zeros_like(logits, dtype=np.uint8),
+        recording_ids=np.array(["r1", "r1", "r2"]),
+        frame_offsets_s=np.array([0.0, 4.0, 0.0]),
+        mask=mask,
+        class_ids=CLASS_IDS,
+        split="dev",
+        model_version="sed-v1.0",
+        frame_hop_s=0.02,
+        taxonomy_sha256=TAXONOMY.checksum,
+    )
+
+    stacked = stack_predictions_by_recording(artifact)
+
+    assert set(stacked) == {"r1", "r2"}
+    assert stacked["r1"].shape == (6, n_classes)  # 4 (window 0) + 2 valid (window 1)
+    assert stacked["r2"].shape == (4, n_classes)
+    assert np.all(stacked["r1"][:4] > 0.99)  # sigmoid(10)
+    assert np.all(stacked["r1"][4:6] < 0.01)  # sigmoid(-10), padding excluded
+    assert np.allclose(stacked["r2"], 1.0 / (1.0 + np.exp(-5.0)))
+
+
+def test_only_classes_produces_identical_output_to_filtering_after_the_fact():
+    """H2 performance fix (2026-09-23): `sweep_per_class_thresholds` was
+    measured at ~4.3s per call (399 calls in a real sweep, ~30 min total)
+    purely from reprocessing 20 always-suppressed classes per candidate.
+    `only_classes` skips that work — this locks that the class actually being
+    computed gets byte-identical output whether or not the other 20 columns
+    are also processed, since each class's median filter/run detection is
+    column-independent."""
+    rng = np.random.default_rng(20260923)
+    probabilities = rng.random((200, len(CLASS_IDS))).astype(np.float32)
+    priors = _priors()
+    thresholds = dict.fromkeys(CLASS_IDS, 0.5)
+    target = CLASS_IDS[3]
+
+    full = probabilities_to_events(
+        probabilities, recording_id="r1", class_ids=CLASS_IDS,
+        thresholds=thresholds, priors=priors, frame_rate=10.0,
+    )
+    full_for_target = [event for event in full if event.class_id == target]
+
+    restricted = probabilities_to_events(
+        probabilities, recording_id="r1", class_ids=CLASS_IDS,
+        thresholds=thresholds, priors=priors, frame_rate=10.0,
+        only_classes=frozenset({target}),
+    )
+
+    assert restricted == full_for_target
+    assert {event.class_id for event in restricted} <= {target}
 
 
 def test_probabilities_to_events_applies_filter_gap_merge_and_minimum_duration():
