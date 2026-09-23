@@ -43,6 +43,7 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 | [docs/taxonomy.md](docs/taxonomy.md) | 22 lớp nghĩa là gì, ranh giới ở đâu | Khi làm việc với nhãn hoặc caption |
 | [docs/annotation_guideline.md](docs/annotation_guideline.md) | Quy ước xử lý nhãn | Khi viết parser nhãn |
 | [docs/evaluation_protocol.md](docs/evaluation_protocol.md) | *Số nào có nghĩa, số đó KHÔNG nói gì* | **Trước khi báo cáo bất kỳ con số nào** |
+| **[docs/AGENT_SYNC.md](docs/AGENT_SYNC.md)** | *Agent kia đang làm gì, đã đo được gì* | **Mỗi phiên có 2 agent, đọc TRƯỚC khi code** |
 | [docs/STATUS.md](docs/STATUS.md) | Snapshot đã đối soát, bằng chứng, giới hạn | Khi cần số liệu hiện hành |
 | [docs/TRAINING_OPS_PLAN.md](docs/TRAINING_OPS_PLAN.md) | Tracking, kiểm tra, phân tích lỗi | Trước lần train mới |
 | [docs/RELATED_WORK.md](docs/RELATED_WORK.md) | Văn liệu và mức xác minh | Khi viết Chương 2 |
