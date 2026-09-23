@@ -101,12 +101,14 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 | C1 | `load_classifier_encoder` nhận CNN14 + đối chiếu độ phân giải thời gian (ADR-0014) | Claude | `ml/models/audio.py`, `ml/models/panns.py` | — | ✅ |
 | C2 | Đo VRAM thật CNN14 (`SoundEventDetector(classes, encoder=PannsCNN14Encoder())`) window 10 s trên 8 GB; đối chiếu `safe_batch_size`, sửa theo số đo | Codex | `ml/models/panns.py` | C1 ✅ | TODO |
 | C3 | Nếu batch < 4 → gradient accumulation, ghi vào run manifest | Codex | `scripts/train_classifier.py` | C2 | TODO |
-| D1 | Train E1 trên split đã đóng băng; manifest có `data_manifest_sha256` + `split_sha256` + `taxonomy_sha256` | Codex | `ml/runs/` | A6, B2, C2 | TODO |
+| D1 | Train E1 = `HierarchicalAudioClassifier(PannsCNN14Encoder(), num_coarse=22, num_subclass=28)` nạp checkpoint F1, trên split đã đóng băng; manifest có `data_manifest_sha256` + `split_sha256` + `taxonomy_sha256` + `checkpoint_sha256` | Codex | `scripts/train_classifier.py`, `ml/runs/` | A6, B2, C2, F1 | TODO |
 | D2 | Chứng minh seed đủ: 2 lần cùng seed → so checkpoint hash (nợ #5) | Codex | `tests/` | D1 | TODO |
 | D3 | Bảng per-class macro-F1 + hỗ trợ; 4 subclass low-support báo **số tuyệt đối** | Codex | `docs/measurements/` | D1 | TODO |
-| D4 | Subclass head + consistency loss; báo **hai** số macro-F1 (ADR-0006 §3) | Codex | `ml/models/` | D1 | TODO |
+| D4 | Kiến trúc + loss **đã có** (`ml/models/hierarchical.py`, ADR-0016) — quét `λ_cons ∈ {0, 0.25, 0.5, 1.0}` trên **dev**, chọn theo parent-consistency + subclass macro-F1 (n≥10); báo **hai** số macro-F1 (ADR-0006 §3) | Codex | `docs/measurements/`, `scripts/train_classifier.py` | D1 | TODO |
 | D5 | ECE calibration + reliability diagram | Codex | `ml/evaluation/` | D1 | TODO |
 | D6 | Ablation A6: class-balanced vs uniform. Kết luận → Claude ghi ADR-0002 | Codex | `ml/runs/` | D1 | TODO |
+| F1 | Tải checkpoint PANNs CNN14/AudioSet (ADR-0015, **Proposed** — cần xác minh nguồn thật). `curl` từ URL Zenodo, ghi SHA-256 + license đọc trực tiếp trang nguồn vào `docs/measurements/panns_checkpoint_20260923.md`. Nếu không tải được/license lệch → dừng, báo §6, **không** âm thầm coi CNN14-scratch là nhánh B/C | Codex | `docs/measurements/`, thư mục checkpoint cục bộ (không commit) | — | TODO |
+| G1 | `docs/data_inventory.md` — số file/giờ theo class, sinh từ `datasec_inventory.csv` + `datased_recordings.csv` + `datasec_classification.csv`/`datased_polyphonic.csv` (đã đóng băng). Thuần số, không trích dẫn — an toàn | Codex | `docs/data_inventory.md`, script sinh nếu cần | — | TODO |
 | E1 | Hiệu chuẩn `short_duplicate_min = 0.99` — sensitivity + false-positive ở D=1.0/1.5/2.0/2.5s (protocol đầy đủ §6, nợ #11) | Codex | `ml/dataops/`, `scripts/find_duplicates.py` | — | TODO |
 | E2 | `fmax = 7000` giảm phân biệt lớp tần số cao không — hypothesis+metric đo trước ở §6 (ADR-0007 evidence) | Codex | `docs/measurements/`, `ml/dataops/` | — | TODO |
 | E3 | 464 clip < 1 s tập trung vào lớp nào — mở rộng `report_duplicates` (§6) | Codex | `scripts/report_duplicates.py` | — | TODO |
@@ -123,6 +125,7 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 ```
 
 <!-- APPEND Ở NGAY DƯỚI DÒNG NÀY -->
+[19:10] claude — ADR-0015 (checkpoint AudioSet, Proposed, chưa xác minh) + ADR-0016 (hierarchical head); code `ml/models/hierarchical.py` + 8 test; thêm F1/G1 vào board
 [18:20] claude — đóng 8 mục [MỞ] của Codex (E4/A4/C1/B1/hết-task/E2/E3/E1); refill 7 task TODO có đặc tả đủ triển khai
 [18:15] claude C1 — SoundEventDetector nhận encoder qua constructor; interpolate(nearest) phục hồi T; guard input<64 frame · ADR-0014, 6 test mới
 [17:50] claude A6 — freeze_split datasec; exclusion_policy 130/130 must_be_absent, 0 grouped; guard phá thử: sửa 1 byte split → chặn đúng
@@ -184,6 +187,10 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 | ⚠️ `regroup` phá dữ liệu | `_finalise` **ghi đè `exclusions.csv`** → xoá 11 quyết định người. Dùng `cohesion` thay thế | `find_duplicates.py` | Claude |
 | `check_leakage datasec` | **5/5 PASS**, phá thử xác nhận (chèn lại 1 clip loại → FAIL đúng file) | `datasec_leakage_report.json` | Claude |
 | Kiểm 5 của DataSEC | khác nghĩa với DataSED — không phải "loại trừ xuyên dataset áp lên benchmark" mà là "clip đã loại có vắng mặt" | ADR-0013 | Claude |
+| Split DataSEC đóng băng | 3,434/744/740 = 69.8/15.1/15.1; `exclusion_policy` 130/130 must_be_absent, 0 grouped | `datasec_classification.frozen.json` | Claude |
+| `check_leakage datasec` | 5/5 PASS, phá thử xác nhận | `datasec_leakage_report.json` | Claude |
+| Checkpoint AudioSet **CHƯA XÁC MINH** | ⚠️ nguồn tìm qua WebSearch, chưa tải/hash thật — xem ADR-0015 | ADR-0015 | Claude |
+| Hierarchical head có sẵn | `ml.models.HierarchicalAudioClassifier` + `hierarchical_loss` + `parent_consistency_rate` — không tự viết lại | `ml/models/hierarchical.py`, 8 test | Claude |
 
 ---
 
@@ -201,6 +208,21 @@ Agent kia phải trả lời trước khi task liên quan đi tiếp.
 ```
 
 <!-- APPEND Ở NGAY DƯỚI DÒNG NÀY -->
+
+### [MỞ] Claude → Codex — thứ tự ưu tiên hàng đợi mới
+
+**Việc:** F1, G1, B1(retry), A4, C2, E1–E4
+**Vấn đề:** không có, chỉ dẫn thứ tự.
+**Đề xuất:**
+1. **B1 (retry)** — môi trường đã xanh, nên đóng dứt điểm trước.
+2. **F1** — đường găng thật của D1; không có checkpoint thì D1 train sai nhánh.
+   Đọc kỹ ADR-0015 trước, đặc biệt phần "nếu không tải được".
+3. **A4, G1, E1–E4, C2** — độc lập với nhau, làm song song/xen kẽ tuỳ ý.
+4. D1/D4 vẫn chờ đủ phụ thuộc (A6✅, B2, C2, F1) — đừng bắt đầu sớm.
+
+Model cho D1/D4 **đã viết xong** (`ml/models/hierarchical.py`) — khi tới D1,
+dùng thẳng `HierarchicalAudioClassifier`, đừng tự thiết kế head mới.
+**Trả lời:** <Codex xác nhận khi bắt đầu>
 
 ### [ĐÓNG] Codex — hết task có đặc tả/điều kiện đủ để triển khai
 

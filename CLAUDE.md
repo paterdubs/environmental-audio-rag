@@ -147,6 +147,8 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Tỉ lệ split DataSED | **60/20/20**, không phải 70/15/15 | [0008](docs/decisions/ADR-0008-ti-le-split-datased.md) | ADR-0003 lập luận trên dev 142 = 60/20/20; code và candidate đều vậy |
 | Ngưỡng T3 theo overlap | 0.95/0.85 khi overlap ≥ 3 s; **0.99, không review** khi ngắn hơn | [0009](docs/decisions/ADR-0009-nguong-phu-thuoc-overlap.md) | 95.5% cặp có overlap đúng 1 s — nhiễu của phép so 16.6M cặp |
 | Kiểm 5 (D4) theo corpus | benchmark giữ nghĩa cũ; pretraining hỏi "clip đã loại có vắng mặt" | [0013](docs/decisions/ADR-0013-kiem-5-theo-corpus.md) | Dùng chung sẽ pass rỗng — DataSEC không có dev/test cần bảo vệ |
+| Checkpoint AudioSet | Zenodo, **Proposed** — chưa xác minh hash/license thật | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
+| Hierarchical head DataSEC | Một encoder, 2 head tuyến tính, consistency loss = -log(khối lượng xác suất đúng gia đình) | [0016](docs/decisions/ADR-0016-hierarchical-head-consistency-loss.md) | CE 28-way một mình không phạt lệch gia đình coarse |
 | Temporal head CNN14 | interpolate(nearest) phục hồi T; độ phân giải thật vẫn ở khối 1.28s | [0014](docs/decisions/ADR-0014-doi-chieu-do-phan-giai-thoi-gian-cnn14.md) | Cắm CNN14 thẳng vào SED head sẽ vỡ shape loss so với target 50fps |
 | Ngưỡng cohesion | **sim ≥ 0.93**, trên mức dương tính giả đã đo 0.9205 | [0012](docs/decisions/ADR-0012-nguong-cohesion.md) | Ở 0.85 chaining tạo khối 315 file mật độ 0.024, lệch tỉ lệ split 5 điểm |
 | Nguồn nhãn DataSEC | Cây thư mục, module **torch-free** `ml/dataops/datasec_labels.py` | [0011](docs/decisions/ADR-0011-nhan-va-do-phu-lop-datasec.md) | Không có file annotation; cổng dữ liệu không được phụ thuộc torch |
@@ -686,6 +688,37 @@ negative ngắn để hiệu chuẩn — chỉ đo positive không đủ xác nh
 (công thức đóng $k_c/28$ cho baseline parent-consistency). Refill 7 task TODO.
 
 Test 245 → **257 pass**, ruff sạch. `data-v1.0` không bị động tới.
+
+### 2026-09-23 (tiếp) — Hai lỗ hổng kế hoạch phát hiện trước khi giao D1
+
+Trước khi để Codex chạy D1 (train E1), rà lại ADR-0002 thì thấy hai chỗ thiếu.
+
+**Không có task nào lấy checkpoint AudioSet.** ADR-0002 định nghĩa nhánh B/C
+đều khởi tạo từ "PANNs CNN14 (AudioSet)", nhưng `ml/models/panns.py` ghi rõ
+không tự tải checkpoint, và chưa ai giao việc lấy nó. Nếu D1 chạy thẳng
+`PannsCNN14Encoder()` (khởi tạo ngẫu nhiên) rồi train trên DataSEC, kết quả
+không phải nhánh C như thiết kế — RQ1 (`C − B`) sẽ so sánh nhầm thứ. Tra cứu
+qua WebSearch tìm được nguồn (Kong et al. 2020, Zenodo, CC-BY-4.0) nhưng
+**chưa tải/hash để xác minh** — ghi `⚠️ CẦN XÁC MINH` cho từng mục, trạng thái
+ADR **Proposed** chứ không phải Accepted, và giao Task F1 cho Codex tải + xác
+minh thật, kèm hướng xử lý nếu không tải được (đổi tên nhánh, không âm thầm
+coi CNN14-scratch là nhánh B/C). → ADR-0015.
+
+**D4 chưa có kiến trúc, chỉ có mô tả một câu.** "Subclass head + consistency
+loss" chưa trả lời: hai head chia sẻ gì, consistency loss tính công thức nào.
+Viết `ml/models/hierarchical.py`: một encoder dùng chung, hai head tuyến tính
+(22-way coarse, 28-way subclass); consistency loss ép **tổng khối lượng xác
+suất** subclass rơi đúng gia đình coarse (không phải chỉ đúng subclass) —
+tương ứng trực tiếp với metric "parent-consistency rate" đã định nghĩa ở
+ADR-0006 §2, mà CE 28-way một mình không tối ưu cho. 12 lớp coarse không
+subclass được loại khỏi cả subclass loss lẫn consistency loss bằng cùng một
+mask. → ADR-0016, 8 test pass.
+
+D4 trên board giờ thu hẹp đúng phạm vi còn lại: quét `λ_cons` trên dev và báo
+số — kiến trúc không còn là việc của Codex.
+
+Test 257 → **265 pass**, ruff sạch. Board thêm F1 (checkpoint) và G1
+(data_inventory.md — số thuần, an toàn cho Codex).
 
 ### 2026-09-23 (chốt) — Đóng băng split, rà soát toàn bộ
 
