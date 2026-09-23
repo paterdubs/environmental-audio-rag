@@ -1,0 +1,220 @@
+group_id,file_id,datasets,tiers,min_similarity,cross_dataset,needs_review
+dup-0001,datasec:DATASEC/Bells/Bells-0024.wav,datasec,T3,0.959055,false,false
+dup-0001,datasec:DATASEC/Bells/Bells-0025.wav,datasec,T3,0.959055,false,false
+dup-0002,datasec:DATASEC/Cat fights and moans/Cat fights and moans-0011.wav,datasec,T3,0.951757,false,false
+dup-0002,datasec:DATASEC/Cat fights and moans/Cat fights and moans-0014.wav,datasec,T3,0.951757,false,false
+dup-0002,datasec:DATASEC/Cat fights and moans/Cat fights and moans-0037.wav,datasec,T3,0.951757,false,false
+dup-0003,datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0023.wav,datasec,T3,0.955640,false,false
+dup-0003,datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0024.wav,datasec,T3,0.955640,false,false
+dup-0004,datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0049.wav,datasec,T3,0.957025,false,false
+dup-0004,datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0050.wav,datasec,T3,0.957025,false,false
+dup-0004,datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0051.wav,datasec,T3,0.957025,false,false
+dup-0004,datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0052.wav,datasec,T3,0.957025,false,false
+dup-0005,datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0016.wav,datasec,T3,1.000000,false,false
+dup-0005,datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0017.wav,datasec,T3,1.000000,false,false
+dup-0006,datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0035.wav,datasec,T1|T2|T3,0.958379,false,false
+dup-0006,datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0040.wav,datasec,T1|T2|T3,0.958379,false,false
+dup-0006,datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0050.wav,datasec,T1|T2|T3,0.958379,false,false
+dup-0007,datasec:DATASEC/Crows seagulls and magpies/Magpies/Magpies-0003.wav,datasec,T3,1.000000,false,false
+dup-0007,datasec:DATASEC/Crows seagulls and magpies/Magpies/Magpies-0004.wav,datasec,T3,1.000000,false,false
+dup-0008,datasec:DATASEC/Crows seagulls and magpies/Magpies/Magpies-0008.wav,datasec,T3,1.000000,false,false
+dup-0008,datasec:DATASEC/Crows seagulls and magpies/Magpies/Magpies-0009.wav,datasec,T3,1.000000,false,false
+dup-0009,datasec:DATASEC/Crows seagulls and magpies/Seagulls/Seagulls-0007.wav,datasec,T3,0.969591,false,false
+dup-0009,datasec:DATASEC/Crows seagulls and magpies/Seagulls/Seagulls-0008.wav,datasec,T3,0.969591,false,false
+dup-0009,datasec:DATASEC/Crows seagulls and magpies/Seagulls/Seagulls-0011.wav,datasec,T3,0.969591,false,false
+dup-0009,datasec:DATASEC/Crows seagulls and magpies/Seagulls/Seagulls-0014.wav,datasec,T3,0.969591,false,false
+dup-0010,datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0021.wav,datasec,T3,0.958839,false,false
+dup-0010,datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0064.wav,datasec,T3,0.958839,false,false
+dup-0011,datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0022.wav,datasec,T3,0.967750,false,false
+dup-0011,datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0046.wav,datasec,T3,0.967750,false,false
+dup-0011,datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0066.wav,datasec,T3,0.967750,false,false
+dup-0012,datasec:DATASEC/Glass breaking/Glass breaking-0023.wav,datasec,T3,0.962894,false,false
+dup-0012,datasec:DATASEC/Glass breaking/Glass breaking-0081.wav,datasec,T3,0.962894,false,false
+dup-0013,datasec:DATASEC/Glass breaking/Glass breaking-0027.wav,datasec,T3,0.950493,false,false
+dup-0013,datasec:DATASEC/Glass breaking/Glass breaking-0028.wav,datasec,T3,0.950493,false,false
+dup-0013,datasec:DATASEC/Glass breaking/Glass breaking-0029.wav,datasec,T3,0.950493,false,false
+dup-0014,datasec:DATASEC/Glass breaking/Glass breaking-0034.wav,datasec,T3,0.958448,false,false
+dup-0014,datasec:DATASEC/Glass breaking/Glass breaking-0036.wav,datasec,T3,0.958448,false,false
+dup-0015,datasec:DATASEC/Glass breaking/Glass breaking-0045.wav,datasec,T3,0.963996,false,false
+dup-0015,datasec:DATASEC/Glass breaking/Glass breaking-0047.wav,datasec,T3,0.963996,false,false
+dup-0016,datasec:DATASEC/Glass breaking/Glass breaking-0044.wav,datasec,T3,0.959552,false,false
+dup-0016,datasec:DATASEC/Glass breaking/Glass breaking-0055.wav,datasec,T3,0.959552,false,false
+dup-0016,datasec:DATASEC/Glass breaking/Glass breaking-0066.wav,datasec,T3,0.959552,false,false
+dup-0016,datasec:DATASEC/Glass breaking/Glass breaking-0077.wav,datasec,T3,0.959552,false,false
+dup-0017,datasec:DATASEC/Glass breaking/Glass breaking-0054.wav,datasec,T3,0.963094,false,false
+dup-0017,datasec:DATASEC/Glass breaking/Glass breaking-0056.wav,datasec,T3,0.963094,false,false
+dup-0017,datasec:DATASEC/Glass breaking/Glass breaking-0057.wav,datasec,T3,0.963094,false,false
+dup-0017,datasec:DATASEC/Glass breaking/Glass breaking-0058.wav,datasec,T3,0.963094,false,false
+dup-0017,datasec:DATASEC/Glass breaking/Glass breaking-0059.wav,datasec,T3,0.963094,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0061.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0062.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0063.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0064.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0065.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0067.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0068.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0069.wav,datasec,T3,0.953398,false,false
+dup-0018,datasec:DATASEC/Glass breaking/Glass breaking-0070.wav,datasec,T3,0.953398,false,false
+dup-0019,datasec:DATASEC/Glass breaking/Glass breaking-0072.wav,datasec,T3,0.955103,false,false
+dup-0019,datasec:DATASEC/Glass breaking/Glass breaking-0073.wav,datasec,T3,0.955103,false,false
+dup-0019,datasec:DATASEC/Glass breaking/Glass breaking-0074.wav,datasec,T3,0.955103,false,false
+dup-0019,datasec:DATASEC/Glass breaking/Glass breaking-0075.wav,datasec,T3,0.955103,false,false
+dup-0019,datasec:DATASEC/Glass breaking/Glass breaking-0076.wav,datasec,T3,0.955103,false,false
+dup-0020,datasec:DATASEC/Glass breaking/Glass breaking-0089.wav,datasec,T3,0.978859,false,false
+dup-0020,datasec:DATASEC/Glass breaking/Glass breaking-0093.wav,datasec,T3,0.978859,false,false
+dup-0021,datasec:DATASEC/Glass breaking/Glass breaking-0097.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0021,datasec:DATASEC/Glass breaking/Glass breaking-0098.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0022,datasec:DATASEC/Horn/Horn-0024.wav,datasec,T3,0.990065,false,false
+dup-0022,datasec:DATASEC/Horn/Horn-0055.wav,datasec,T3,0.990065,false,false
+dup-0023,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0002.wav,datasec,T3,0.999994,false,false
+dup-0023,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0039.wav,datasec,T3,0.999994,false,false
+dup-0024,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0003.wav,datasec,T3,0.999997,false,false
+dup-0024,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0055.wav,datasec,T3,0.999997,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0008.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0009.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0010.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0011.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0012.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0013.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0014.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0015.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0016.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0017.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0018.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0019.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0020.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0021.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0022.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0023.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0024.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0025.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0026.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0027.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0028.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0029.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0030.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0031.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0032.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0033.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0034.wav,datasec,T3,0.955984,false,false
+dup-0025,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0035.wav,datasec,T3,0.955984,false,false
+dup-0026,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0073.wav,datasec,T3,0.973785,false,false
+dup-0026,datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0074.wav,datasec,T3,0.973785,false,false
+dup-0027,datasec:DATASEC/Music/Music-0399.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0027,datasec:DATASEC/Music/Music-0400.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0028,datasec:DATASEC/Music/Music-0440.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0028,datasec:DATASEC/Music/Music-0446.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0029,datasec:DATASEC/Music/Music-0477.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0029,datasec:DATASEC/Music/Music-0479.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0030,datasec:DATASEC/Music/Music-0534.wav,datasec,T3,0.998677,false,false
+dup-0030,datasec:DATASEC/Music/Music-0552.wav,datasec,T3,0.998677,false,false
+dup-0031,datasec:DATASEC/Music/Music-0535.wav,datasec,T3,0.999987,false,false
+dup-0031,datasec:DATASEC/Music/Music-0554.wav,datasec,T3,0.999987,false,false
+dup-0032,datasec:DATASEC/Music/Music-0536.wav,datasec,T3,0.998118,false,false
+dup-0032,datasec:DATASEC/Music/Music-0555.wav,datasec,T3,0.998118,false,false
+dup-0033,datasec:DATASEC/Music/Music-0537.wav,datasec,T3,0.999889,false,false
+dup-0033,datasec:DATASEC/Music/Music-0558.wav,datasec,T3,0.999889,false,false
+dup-0034,datasec:DATASEC/Music/Music-0538.wav,datasec,T3,0.999344,false,false
+dup-0034,datasec:DATASEC/Music/Music-0560.wav,datasec,T3,0.999344,false,false
+dup-0035,datasec:DATASEC/Music/Music-0539.wav,datasec,T3,0.999395,false,false
+dup-0035,datasec:DATASEC/Music/Music-0562.wav,datasec,T3,0.999395,false,false
+dup-0036,datasec:DATASEC/Music/Music-0540.wav,datasec,T3,0.999666,false,false
+dup-0036,datasec:DATASEC/Music/Music-0565.wav,datasec,T3,0.999666,false,false
+dup-0037,datasec:DATASEC/Music/Music-0541.wav,datasec,T3,0.999817,false,false
+dup-0037,datasec:DATASEC/Music/Music-0567.wav,datasec,T3,0.999817,false,false
+dup-0038,datasec:DATASEC/Music/Music-0543.wav,datasec,T3,0.999452,false,false
+dup-0038,datasec:DATASEC/Music/Music-0568.wav,datasec,T3,0.999452,false,false
+dup-0039,datasec:DATASEC/Music/Music-0544.wav,datasec,T3,0.999775,false,false
+dup-0039,datasec:DATASEC/Music/Music-0569.wav,datasec,T3,0.999775,false,false
+dup-0040,datasec:DATASEC/Music/Music-0545.wav,datasec,T3,0.994301,false,false
+dup-0040,datasec:DATASEC/Music/Music-0570.wav,datasec,T3,0.994301,false,false
+dup-0041,datasec:DATASEC/Music/Music-0546.wav,datasec,T3,0.999048,false,false
+dup-0041,datasec:DATASEC/Music/Music-0571.wav,datasec,T3,0.999048,false,false
+dup-0042,datasec:DATASEC/Music/Music-0547.wav,datasec,T3,0.999667,false,false
+dup-0042,datasec:DATASEC/Music/Music-0572.wav,datasec,T3,0.999667,false,false
+dup-0043,datasec:DATASEC/Music/Music-0634.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0043,datasec:DATASEC/Music/Music-0694.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0044,datasec:DATASEC/Music/Music-0640.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0044,datasec:DATASEC/Music/Music-0661.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0045,datasec:DATASEC/Music/Music-0641.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0045,datasec:DATASEC/Music/Music-0662.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0046,datasec:DATASEC/Music/Music-0642.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0046,datasec:DATASEC/Music/Music-0663.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0047,datasec:DATASEC/Music/Music-0643.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0047,datasec:DATASEC/Music/Music-0664.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0048,datasec:DATASEC/Music/Music-0644.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0048,datasec:DATASEC/Music/Music-0665.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0049,datasec:DATASEC/Music/Music-0645.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0049,datasec:DATASEC/Music/Music-0666.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0050,datasec:DATASEC/Music/Music-0658.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0050,datasec:DATASEC/Music/Music-0918.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0051,datasec:DATASEC/Music/Music-0717.wav,datasec,T3,0.957525,false,false
+dup-0051,datasec:DATASEC/Music/Music-0724.wav,datasec,T3,0.957525,false,false
+dup-0052,datasec:DATASEC/Music/Music-0754.wav,datasec,T3,0.966866,false,false
+dup-0052,datasec:DATASEC/Music/Music-0759.wav,datasec,T3,0.966866,false,false
+dup-0053,datasec:DATASEC/Music/Music-0756.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0053,datasec:DATASEC/Music/Music-0762.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0054,datasec:DATASEC/Music/Music-0758.wav,datasec,T3,0.973003,false,false
+dup-0054,datasec:DATASEC/Music/Music-0761.wav,datasec,T3,0.973003,false,false
+dup-0055,datasec:DATASEC/Music/Music-0769.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0055,datasec:DATASEC/Music/Music-0773.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0056,datasec:DATASEC/Music/Music-0789.wav,datasec,T3,0.959566,false,false
+dup-0056,datasec:DATASEC/Music/Music-0792.wav,datasec,T3,0.959566,false,false
+dup-0057,datasec:DATASEC/Music/Music-0805.wav,datasec,T3,0.957330,false,false
+dup-0057,datasec:DATASEC/Music/Music-0856.wav,datasec,T3,0.957330,false,false
+dup-0058,datasec:DATASEC/Music/Music-0875.wav,datasec,T3,0.980078,false,false
+dup-0058,datasec:DATASEC/Music/Music-0876.wav,datasec,T3,0.980078,false,false
+dup-0059,datasec:DATASEC/Music/Music-0883.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0059,datasec:DATASEC/Music/Music-0884.wav,datasec,T1|T2|T3,1.000000,false,false
+dup-0060,datasec:DATASEC/Sirens and alarms/Alarms/Alarms-0009.wav,datasec,T3,0.987228,false,false
+dup-0060,datasec:DATASEC/Sirens and alarms/Alarms/Alarms-0010.wav,datasec,T3,0.987228,false,false
+dup-0061,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0002.wav,datasec,T3,0.973376,false,false
+dup-0061,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0003.wav,datasec,T3,0.973376,false,false
+dup-0061,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0008.wav,datasec,T3,0.973376,false,false
+dup-0062,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0031.wav,datasec,T3,0.977457,false,false
+dup-0062,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0061.wav,datasec,T3,0.977457,false,false
+dup-0063,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0046.wav,datasec|datased,T3,1.000000,true,false
+dup-0063,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0233.wav,datasec|datased,T3,1.000000,true,false
+dup-0064,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0056.wav,datasec,T3,0.999996,false,false
+dup-0064,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0058.wav,datasec,T3,0.999996,false,false
+dup-0065,datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0067.wav,datasec|datased,T3,1.000000,true,false
+dup-0065,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0211.wav,datasec|datased,T3,1.000000,true,false
+dup-0066,datasec:DATASEC/Train/Train-0012.wav,datasec|datased,T3,0.954846,true,false
+dup-0066,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0213.wav,datasec|datased,T3,0.954846,true,false
+dup-0067,datasec:DATASEC/Vacuum cleaner fan and hairdryer/vacuum cleaner/vacuum cleaner-0011.wav,datasec,T3,0.999941,false,false
+dup-0067,datasec:DATASEC/Vacuum cleaner fan and hairdryer/vacuum cleaner/vacuum cleaner-0018.wav,datasec,T3,0.999941,false,false
+dup-0068,datasec:DATASEC/Vehicle pass-by/truck pass-by/truck pass-by-0037.wav,datasec,T3,0.999998,false,false
+dup-0068,datasec:DATASEC/Vehicle pass-by/truck pass-by/truck pass-by-0038.wav,datasec,T3,0.999998,false,false
+dup-0069,datasec:DATASEC/Workshop/grinder/grinder-0011.wav,datasec,T3,0.983617,false,false
+dup-0069,datasec:DATASEC/Workshop/grinder/grinder-0021.wav,datasec,T3,0.983617,false,false
+dup-0069,datasec:DATASEC/Workshop/grinder/grinder-0022.wav,datasec,T3,0.983617,false,false
+dup-0070,datasec:DATASEC/Workshop/grinder/grinder-0031.wav,datasec,T3,1.000000,false,false
+dup-0070,datasec:DATASEC/Workshop/grinder/grinder-0032.wav,datasec,T3,1.000000,false,false
+dup-0071,datasec:DATASEC/Workshop/jackhammer/jackhammer-0013.wav,datasec,T3,0.953534,false,false
+dup-0071,datasec:DATASEC/Workshop/jackhammer/jackhammer-0057.wav,datasec,T3,0.953534,false,false
+dup-0072,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0062.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0072,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0198.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0073,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0108.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0073,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0589.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0074,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0114.wav,datased,T3,0.999829,false,false
+dup-0074,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0132.wav,datased,T3,0.999829,false,false
+dup-0075,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0124.wav,datased,T3,0.982286,false,false
+dup-0075,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0181.wav,datased,T3,0.982286,false,false
+dup-0076,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0131.wav,datased,T3,0.999988,false,false
+dup-0076,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0442.wav,datased,T3,0.999988,false,false
+dup-0077,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0155.wav,datased,T3,0.999982,false,false
+dup-0077,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0492.wav,datased,T3,0.999982,false,false
+dup-0078,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0158.wav,datased,T3,0.999986,false,false
+dup-0078,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0493.wav,datased,T3,0.999986,false,false
+dup-0079,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0289.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0079,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0500.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0080,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0397.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0080,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0585.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0081,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0569.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0081,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0572.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0082,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0570.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0082,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0571.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0083,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0083,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0084,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0621.wav,datased,T1|T2|T3,1.000000,false,false
+dup-0084,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0623.wav,datased,T1|T2|T3,1.000000,false,false

@@ -117,6 +117,28 @@ Dùng `sed_eval`, **không tự viết lại**.
 | Offset collar hiệu dụng | $\max(0.2\text{ s},\ 0.2 \cdot L_{ref})$ | Sai 1 s trên event 2 s khác hẳn trên event 60 s |
 | Averaging | **macro** | Q2 |
 
+> ⚠️ **Collar 0.2 s chặt hơn độ chính xác của chính nhãn** — đo được 23/09/2026,
+> [`annotation_consistency_20260923.md`](measurements/annotation_consistency_20260923.md).
+>
+> DataSED chứa 8 cặp recording **byte-identical** được chú giải độc lập hai lần.
+> Trên cùng một audio:
+>
+> | | |
+> |---|---:|
+> | Biên nằm trong collar 0.2 s | **67 / 94** |
+> | Lệch biên lớn nhất | **12.72 s** (`S-0289` / `S-0500`) |
+> | Cặp bất đồng về lớp hoặc số event | **2 / 8** |
+>
+> Ba hệ quả bắt buộc khi báo cáo:
+>
+> 1. Sai số của model nhỏ hơn mức bất đồng này **không phân biệt được với nhiễu
+>    nhãn**. Không tuyên bố cải thiện ở mức đó.
+> 2. Phần Hạn chế phải nêu con số này kèm cỡ mẫu (8 cặp), để người đọc tự định cỡ.
+> 3. Hai cặp bất đồng lớp là **bằng chứng trực tiếp** về cặp dễ nhầm, lấy từ
+>    ground truth chứ không từ ma trận nhầm của model:
+>    `lawn_mower_brush_cutter_olive_shaker` ↔ `propeller_aircrafts`, và
+>    `vacuum_cleaner_fan_hairdryer` ↔ `lawn_mower_brush_cutter_olive_shaker`.
+
 ### 3.3 Cấu hình PSDS — hai scenario đóng băng
 
 Dùng `psds_eval`. Hai scenario phải khai trong config **trước** test.

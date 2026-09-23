@@ -1,0 +1,37 @@
+{
+  "dataset": "datased",
+  "label_mode": "polyphonic",
+  "frozen_at": "2026-09-23T05:03:29Z",
+  "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+  "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+  "config": {
+    "train": 0.6,
+    "validation": 0.2,
+    "test": 0.2,
+    "seed": 20260922
+  },
+  "items": {
+    "test": 142,
+    "train": 438,
+    "validation": 137
+  },
+  "leakage_groups": {
+    "source": "content_sha256 + duplicate_groups.csv + split_cohesion_pairs.csv",
+    "groups": 687,
+    "largest": 4,
+    "size_histogram": {
+      "1": 661,
+      "2": 23,
+      "3": 2,
+      "4": 1
+    }
+  },
+  "gates": {
+    "d4_passed": true,
+    "dedup_available": true,
+    "fingerprint_sha256": "9ba3f754bb70f1e2175d872188c6207da8c0f0b690690ac5cc686d8f7c502906",
+    "standardizer_sha256": "298c4f0f2fa886088371a506ef59c85f944c3b1b55505e4a62bb8b6bce131e7e",
+    "alarm_band": "minor",
+    "leaked_pretraining_clips": 11
+  }
+}

@@ -308,9 +308,18 @@ lại. Không phải ngược lại.
 | **T2** | Cùng nội dung, khác container/encode | SHA-256 trên **PCM đã decode + resample 16 kHz mono** | Khớp tuyệt đối | ○ |
 | **T3** | Cùng nguồn, khác đoạn cắt hoặc xử lý | Fingerprint phổ + so khớp | Xem 7.3 | ○ |
 
-**T2 tồn tại vì T1 không đủ:** cùng một bản ghi lưu WAV 16-bit và WAV 24-bit có
-SHA-256 khác nhau nhưng nội dung âm thanh giống hệt. DataSEC 16 kHz và DataSED
-44.1 kHz càng làm T1 vô dụng cho so sánh xuyên dataset.
+**T2 tồn tại vì T1 không đủ:** cùng một bản ghi lưu ở hai container khác nhau,
+hoặc khác metadata, cho SHA-256 khác nhau dù nội dung âm thanh giống hệt.
+
+> ⚠️ **Hai câu ở bản đầu của mục này đã được sửa sau khi đo** (xem
+> [ADR-0007](decisions/ADR-0007-fingerprint-va-luat-dedup.md)):
+>
+> 1. Bản đầu ghi "DataSEC 16 kHz và DataSED 44.1 kHz". Sai:
+>    `datasec_inventory_summary.json` cho thấy **5,048/5,048 file DataSEC ở
+>    44.1 kHz, mono** — hai dataset cùng tần số lấy mẫu.
+> 2. Bản đầu lấy ví dụ 16-bit/24-bit để biện minh cho T2. Đo được là T2 **không**
+>    bắt được trường hợp đó: 49.5% mẫu lệch đúng 1 LSB, lệch hệ thống ở tầng
+>    libsndfile. Việc đó do **T3** lo (cosine 1.000 cho cặp 24-bit/16-bit).
 
 ### 7.3 T3 — fingerprint âm học
 
@@ -318,6 +327,8 @@ SHA-256 khác nhau nhưng nội dung âm thanh giống hệt. DataSEC 16 kHz và
 1. Chuẩn hóa: 16 kHz mono, peak-normalize
 2. Chia frame 1 s, hop 0.5 s
 3. Với mỗi frame: MFCC 20 chiều + delta → vector 40 chiều
+   (chi tiết triển khai — bỏ C0, delta lấy trị tuyệt đối, `fmax = 7000` —
+   xem [ADR-0007](decisions/ADR-0007-fingerprint-va-luat-dedup.md))
 4. Fingerprint file = chuỗi vector đã chuẩn hóa L2
 5. So khớp hai file: trượt cửa sổ, tính cosine similarity trung bình
    trên đoạn chồng lấp dài nhất
@@ -326,13 +337,27 @@ SHA-256 khác nhau nhưng nội dung âm thanh giống hệt. DataSEC 16 kHz và
 | Quyết định | Điều kiện |
 |---|---|
 | `duplicate` | similarity ≥ 0.95 **và** đoạn chồng lấp ≥ 3 s |
+| `review` (file ngắn) | đoạn chồng lấp < 3 s: **không bao giờ** tự động `duplicate` — ADR-0007 §6 |
 | `review` | 0.85 ≤ similarity < 0.95 **và** đoạn chồng lấp ≥ 3 s |
 | `distinct` | Còn lại |
 
-> ⚠️ Ngưỡng 0.95/0.85 là **điểm khởi đầu cần hiệu chuẩn**, không phải hằng số có
-> cơ sở. Cách hiệu chuẩn: lấy 8 nhóm T1 đã biết của DataSED làm positive, lấy
-> cặp ngẫu nhiên khác lớp làm negative, chọn ngưỡng tách hai phân bố. Kết quả
-> hiệu chuẩn phải ghi vào `docs/measurements/`.
+> ✅ **Đã hiệu chuẩn 23/09/2026** — `data/interim/dedup/threshold_calibration.json`.
+> Positive: 24 cặp T1 byte-identical (16 nhóm DataSEC + 8 nhóm DataSED).
+> Negative: 5,000 cặp ngẫu nhiên khác nhãn.
+>
+> | | Giá trị |
+> |---|---:|
+> | positive min | **1.0000** |
+> | negative max | 0.9205 |
+> | negative p99.9 | 0.8692 |
+> | negative ≥ 0.85 | 11 / 5,000 (0.22%) |
+> | negative ≥ 0.95 | **0 / 5,000** |
+> | tách được | **có** |
+>
+> **Kết luận: giữ 0.95/0.85.** Nhưng hai phân bố chỉ tách sau khi thêm chuẩn hoá
+> z-score theo thống kê corpus. Với fingerprint như đặc tả chữ nghĩa, chính cặp
+> ngưỡng này cho **52.6% dương tính giả** và negative max (0.983) còn cao hơn
+> positive min. Xem [ADR-0007 §9](decisions/ADR-0007-fingerprint-va-luat-dedup.md).
 
 `review` **không** được tự động xử lý. Người xem, quyết định, ghi vào
 `exclusions.csv` với `decided_by: human:<tên>`.
@@ -386,7 +411,7 @@ Với mỗi duplicate group G:
 | | DataSEC | DataSED |
 |---|---|---|
 | Đơn vị split | Duplicate/content group | **Recording group** |
-| Tỉ lệ | 70/15/15 | 70/15/15 |
+| Tỉ lệ | 70/15/15 | **60/20/20** ([ADR-0008](decisions/ADR-0008-ti-le-split-datased.md)) |
 | Phương pháp | Stratify coarse (+subclass nếu đủ mẫu) | Iterative multilabel stratification |
 | Seed | 20260922 | 20260922 |
 | Hiện trạng | ○ | ◐ candidate 435/142/140 |
@@ -406,6 +431,12 @@ thuộc đúng một group và raise nếu vi phạm — đó là hàng rào ch�
 buộc recording đổi split.
 
 ### 8.3 DataSEC — vấn đề low-support
+
+> DataSEC dùng 70/15/15 còn DataSED dùng 60/20/20. Hai dataset, hai kích thước,
+> hai lập luận riêng ([ADR-0008](decisions/ADR-0008-ti-le-split-datased.md)).
+> "Một quy tắc split duy nhất" ở bảng dưới nói về nội bộ DataSEC, không phải về
+> cả dự án. Báo cáo phải nêu rõ điều này thay vì để người đọc tự phát hiện.
+
 
 Split 70/15/15 trên 4 subclass nhỏ nhất:
 

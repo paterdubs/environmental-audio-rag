@@ -1,0 +1,36 @@
+left_file_id,right_file_id,tier,similarity,overlap_s,verdict
+datasec:DATASEC/Train/Train-0031.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0241.wav,T3,0.947392,8.500,review
+datasec:DATASEC/Train/Train-0015.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0215.wav,T3,0.937870,14.000,review
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0044.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0315.wav,T3,0.915241,40.500,review
+datasec:DATASEC/Sirens and alarms/Alarms/Alarms-0003.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0632.wav,T3,0.913344,10.000,review
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0030.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0319.wav,T3,0.908990,5.000,review
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0047.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0309.wav,T3,0.900706,3.500,review
+datasec:DATASEC/Music/Music-0087.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.889941,3.000,review
+datasec:DATASEC/Music/Music-0087.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.889941,3.000,review
+datasec:DATASEC/Music/Music-0198.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.889461,4.000,review
+datasec:DATASEC/Music/Music-0198.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.889461,4.000,review
+datasec:DATASEC/Propeller aircrafts/Helicopters/Helicopters-0050.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0594.wav,T3,0.878291,10.500,review
+datasec:DATASEC/Music/Music-0120.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.874637,4.000,review
+datasec:DATASEC/Music/Music-0120.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.874637,4.000,review
+datasec:DATASEC/Music/Music-0168.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.874439,3.000,review
+datasec:DATASEC/Music/Music-0168.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.874439,3.000,review
+datasec:DATASEC/Music/Music-0835.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.873928,3.000,review
+datasec:DATASEC/Music/Music-0835.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.873928,3.000,review
+datasec:DATASEC/Music/Music-0125.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.872075,5.000,review
+datasec:DATASEC/Music/Music-0125.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.872075,5.000,review
+datasec:DATASEC/Vacuum cleaner fan and hairdryer/fan/fan-0013.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0323.wav,T3,0.869424,5.000,review
+datasec:DATASEC/Wind turbine/Wind turbine-0007.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0717.wav,T3,0.868997,25.500,review
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0046.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0237.wav,T3,0.866231,30.000,review
+datasec:DATASEC/Thunder fireworks and gunshot/Fireworks/Fireworks-0056.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.860712,3.000,review
+datasec:DATASEC/Thunder fireworks and gunshot/Fireworks/Fireworks-0056.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.860712,3.000,review
+datasec:DATASEC/Music/Music-0891.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.860154,3.000,review
+datasec:DATASEC/Music/Music-0891.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.860154,3.000,review
+datasec:DATASEC/Music/Music-0125.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0661.wav,T3,0.860101,11.000,review
+datasec:DATASEC/Thunder fireworks and gunshot/Fireworks/Fireworks-0037.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0089.wav,T3,0.859639,3.000,review
+datasec:DATASEC/Propeller aircrafts/Helicopters/Helicopters-0058.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0594.wav,T3,0.859012,15.000,review
+datasec:DATASEC/Workshop/drill/drill-0004.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0323.wav,T3,0.857685,3.000,review
+datasec:DATASEC/Music/Music-0178.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.854668,4.000,review
+datasec:DATASEC/Music/Music-0178.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.854668,4.000,review
+datasec:DATASEC/Music/Music-0234.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0606.wav,T3,0.852411,3.000,review
+datasec:DATASEC/Music/Music-0234.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,T3,0.852411,3.000,review
+datasec:DATASEC/Train/Train-0056.wav,datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0210.wav,T3,0.850270,3.500,review

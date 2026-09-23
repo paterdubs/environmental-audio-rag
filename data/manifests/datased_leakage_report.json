@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "number": 1,
+      "name": "Group không nằm ở hai split",
+      "passed": true,
+      "violation_count": 0,
+      "violations": [],
+      "violations_truncated": 0,
+      "note": ""
+    },
+    {
+      "number": 2,
+      "name": "SHA-256 không nằm ở hai split",
+      "passed": true,
+      "violation_count": 0,
+      "violations": [],
+      "violations_truncated": 0,
+      "note": ""
+    },
+    {
+      "number": 3,
+      "name": "Nhóm trùng lặp không xuyên split",
+      "passed": true,
+      "violation_count": 0,
+      "violations": [],
+      "violations_truncated": 0,
+      "note": ""
+    },
+    {
+      "number": 4,
+      "name": "Mọi class có mặt ở mọi split",
+      "passed": true,
+      "violation_count": 0,
+      "violations": [],
+      "violations_truncated": 0,
+      "note": ""
+    },
+    {
+      "number": 5,
+      "name": "Clip pretraining trùng dev/test đã bị loại",
+      "passed": true,
+      "violation_count": 0,
+      "violations": [],
+      "violations_truncated": 0,
+      "note": ""
+    }
+  ],
+  "dataset": "datased",
+  "label_mode": "polyphonic",
+  "dedup_available": true
+}

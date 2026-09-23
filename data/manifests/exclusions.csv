@@ -1,0 +1,144 @@
+file_id,group_id,reason_code,decided_by
+datasec:DATASEC/Bells/Bells-0025.wav,dup-0001,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Cat fights and moans/Cat fights and moans-0014.wav,dup-0002,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Cat fights and moans/Cat fights and moans-0037.wav,dup-0002,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0024.wav,dup-0003,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0050.wav,dup-0004,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0051.wav,dup-0004,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Cicadas and crickets/Cicadas/Cicadas-0052.wav,dup-0004,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0017.wav,dup-0005,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0040.wav,dup-0006,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0050.wav,dup-0006,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Magpies/Magpies-0004.wav,dup-0007,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Magpies/Magpies-0009.wav,dup-0008,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Seagulls/Seagulls-0008.wav,dup-0009,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Seagulls/Seagulls-0011.wav,dup-0009,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Crows seagulls and magpies/Seagulls/Seagulls-0014.wav,dup-0009,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0046.wav,dup-0011,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0064.wav,dup-0010,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Dog barkings and howlings/Dog barkings and howlings-0066.wav,dup-0011,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0028.wav,dup-0013,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0029.wav,dup-0013,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0036.wav,dup-0014,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0047.wav,dup-0015,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0055.wav,dup-0016,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0056.wav,dup-0017,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0057.wav,dup-0017,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0058.wav,dup-0017,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0059.wav,dup-0017,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0062.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0063.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0064.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0065.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0066.wav,dup-0016,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0067.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0068.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0069.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0070.wav,dup-0018,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0073.wav,dup-0019,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0074.wav,dup-0019,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0075.wav,dup-0019,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0076.wav,dup-0019,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0077.wav,dup-0016,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0081.wav,dup-0012,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0093.wav,dup-0020,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Glass breaking/Glass breaking-0098.wav,dup-0021,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Horn/Horn-0055.wav,dup-0022,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0009.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0010.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0011.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0012.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0013.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0014.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0015.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0016.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0017.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0018.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0019.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0020.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0021.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0022.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0023.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0024.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0025.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0026.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0027.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0028.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0029.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0030.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0031.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0032.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0033.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0034.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0035.wav,dup-0025,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0039.wav,dup-0023,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0055.wav,dup-0024,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Lawn mower brush cutter and olive shaker/Brush cutter/Brush cutter-0074.wav,dup-0026,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0400.wav,dup-0027,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0446.wav,dup-0028,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0479.wav,dup-0029,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0552.wav,dup-0030,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0554.wav,dup-0031,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0555.wav,dup-0032,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0558.wav,dup-0033,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0560.wav,dup-0034,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0562.wav,dup-0035,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0565.wav,dup-0036,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0567.wav,dup-0037,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0568.wav,dup-0038,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0569.wav,dup-0039,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0570.wav,dup-0040,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0571.wav,dup-0041,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0572.wav,dup-0042,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0661.wav,dup-0044,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0662.wav,dup-0045,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0663.wav,dup-0046,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0664.wav,dup-0047,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0665.wav,dup-0048,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0666.wav,dup-0049,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0694.wav,dup-0043,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0724.wav,dup-0051,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0759.wav,dup-0052,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0761.wav,dup-0054,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0762.wav,dup-0053,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0773.wav,dup-0055,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0792.wav,dup-0056,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0856.wav,dup-0057,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0876.wav,dup-0058,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0884.wav,dup-0059,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Music/Music-0918.wav,dup-0050,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Propeller aircrafts/Helicopters/Helicopters-0050.wav,rev-011,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Propeller aircrafts/Helicopters/Helicopters-0058.wav,rev-029,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Sirens and alarms/Alarms/Alarms-0003.wav,rev-004,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Sirens and alarms/Alarms/Alarms-0010.wav,dup-0060,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0003.wav,dup-0061,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0008.wav,dup-0061,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0030.wav,rev-005,exclude_cross_dataset_unsure,human:patphh
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0044.wav,rev-003,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0046.wav,rev-022,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0047.wav,rev-006,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0058.wav,dup-0064,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Sirens and alarms/Sirens/Sirens-0061.wav,dup-0062,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Train/Train-0015.wav,rev-002,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Train/Train-0031.wav,rev-001,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Train/Train-0056.wav,rev-035,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Vacuum cleaner fan and hairdryer/vacuum cleaner/vacuum cleaner-0018.wav,dup-0067,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Vehicle pass-by/truck pass-by/truck pass-by-0038.wav,dup-0068,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Wind turbine/Wind turbine-0007.wav,rev-021,exclude_cross_dataset_leak,human:patphh
+datasec:DATASEC/Workshop/grinder/grinder-0021.wav,dup-0069,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Workshop/grinder/grinder-0022.wav,dup-0069,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Workshop/grinder/grinder-0032.wav,dup-0070,exclude_duplicate,rule:within_dataset_representative
+datasec:DATASEC/Workshop/jackhammer/jackhammer-0057.wav,dup-0071,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0132.wav,dup-0074,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0181.wav,dup-0075,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0198.wav,dup-0072,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0442.wav,dup-0076,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0492.wav,dup-0077,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0493.wav,dup-0078,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0500.wav,dup-0079,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0571.wav,dup-0082,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0572.wav,dup-0081,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0585.wav,dup-0080,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0589.wav,dup-0073,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0622.wav,dup-0083,exclude_duplicate,rule:within_dataset_representative
+datased:DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0623.wav,dup-0084,exclude_duplicate,rule:within_dataset_representative

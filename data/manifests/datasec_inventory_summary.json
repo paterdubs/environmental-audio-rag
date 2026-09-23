@@ -1,0 +1,78 @@
+{
+  "dataset": "datasec",
+  "files": 5048,
+  "hours": 23.708236703199802,
+  "bytes": 7528061430,
+  "sample_rates": {
+    "44100": 5048
+  },
+  "channels": {
+    "1": 5048
+  },
+  "exact_duplicate_groups": [
+    [
+      "datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0035.wav",
+      "datasec:DATASEC/Crows seagulls and magpies/Crows/Crows-0050.wav"
+    ],
+    [
+      "datasec:DATASEC/Glass breaking/Glass breaking-0097.wav",
+      "datasec:DATASEC/Glass breaking/Glass breaking-0098.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0399.wav",
+      "datasec:DATASEC/Music/Music-0400.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0440.wav",
+      "datasec:DATASEC/Music/Music-0446.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0477.wav",
+      "datasec:DATASEC/Music/Music-0479.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0634.wav",
+      "datasec:DATASEC/Music/Music-0694.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0640.wav",
+      "datasec:DATASEC/Music/Music-0661.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0641.wav",
+      "datasec:DATASEC/Music/Music-0662.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0642.wav",
+      "datasec:DATASEC/Music/Music-0663.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0643.wav",
+      "datasec:DATASEC/Music/Music-0664.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0644.wav",
+      "datasec:DATASEC/Music/Music-0665.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0645.wav",
+      "datasec:DATASEC/Music/Music-0666.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0658.wav",
+      "datasec:DATASEC/Music/Music-0918.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0756.wav",
+      "datasec:DATASEC/Music/Music-0762.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0769.wav",
+      "datasec:DATASEC/Music/Music-0773.wav"
+    ],
+    [
+      "datasec:DATASEC/Music/Music-0883.wav",
+      "datasec:DATASEC/Music/Music-0884.wav"
+    ]
+  ]
+}
