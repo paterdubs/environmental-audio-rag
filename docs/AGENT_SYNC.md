@@ -10,13 +10,19 @@
 
 | | Claude Code | Codex |
 |---|---|---|
-| Vai | **Agent chính** | **Agent thực thi** |
+| Vai | **Agent chính** — lên kế hoạch, suy luận hướng | **Agent thực thi** — khối lượng việc chính |
 | Quyết định kiến trúc, viết ADR | ✅ | ❌ (đề xuất, không tự quyết) |
 | Chia task, đặt nghiệm thu | ✅ | ❌ |
-| Viết code theo đặc tả đã chốt | ✅ | ✅ (phần lớn) |
-| Chạy thí nghiệm dài, trích feature | ✅ | ✅ |
+| Viết code | Chỉ khi **không tách được** khỏi quyết định kiến trúc (đặc tả xong là chạy luôn để không giao một thiết kế chưa kiểm) | ✅ **phần lớn khối lượng** |
+| Chạy thí nghiệm dài, trích feature, train | ❌ (giao Codex) | ✅ |
 | Suy luận, phân tích, gỡ lỗi, nêu vấn đề | ✅ **bắt buộc** | ✅ **bắt buộc** |
 | Sửa `CLAUDE.md`, `PLAN.md`, `docs/decisions/` | ✅ | ❌ |
+
+**Chủ ý phân bổ: Codex làm nhiều task hơn hẳn Claude.** Claude ưu tiên viết đặc
+tả đủ chi tiết để Codex tự triển khai được, thay vì tự code trước. Ngoại lệ duy
+nhất là khi một quyết định kiến trúc chỉ kiểm được bằng cách viết luôn (ví dụ
+ADR-0014 phải sửa `SoundEventDetector` để đo shape thật) — khi đó Claude làm
+gọn phần lõi rồi trả phần còn lại (đo VRAM, tune, mở rộng) cho Codex.
 
 **Codex không phải máy gõ code.** Codex phải phản biện khi đặc tả sai, và
 **dừng lại báo** thay vì làm theo một yêu cầu mà mình đo được là hỏng. Một task
