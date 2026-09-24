@@ -105,6 +105,9 @@ def main() -> None:
         "ordered_by_d_min_s": ordered_classes,
     }
 
+    n_zero_filtered = sum(1 for cid in class_ids if (per_class[cid]["filtered"] or 0.0) == 0.0)
+    weak_baseline = n_zero_filtered >= len(class_ids) // 2
+
     destination = args.output or (
         ROOT / "docs" / "measurements" / f"{args.run_dir.name}_median_filter_ablation_A3.md"
     )
@@ -115,10 +118,15 @@ def main() -> None:
         "duration prior khác giữ nguyên từ `postproc.json` đã đóng băng; chỉ "
         "`median_w` đổi (1 = không lọc). Không sửa artifact chính thức.",
         "",
-        "⚠️ Nếu run này là nhánh A (scratch, dò đường): hầu hết lớp có F1 gần 0 vì "
-        "model gần như chưa học được — kết luận từ ablation này **chưa đại diện**, "
-        "chạy lại trên nhánh B/C (đã pretrain) trước khi kết luận trong báo cáo cuối.",
-        "",
+    ]
+    if weak_baseline:
+        lines += [
+            f"⚠️ **{n_zero_filtered}/{len(class_ids)} lớp có F1=0** ở cấu hình chính "
+            "thức — model chưa học đủ để ablation này có tín hiệu đại diện. Chạy lại "
+            "trên một nhánh mạnh hơn trước khi kết luận trong báo cáo cuối.",
+            "",
+        ]
+    lines += [
         "## Tổng hợp (test, đa lớp đồng thời)",
         "",
         "| Cấu hình | Event F1 |",

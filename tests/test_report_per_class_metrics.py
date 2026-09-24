@@ -29,7 +29,8 @@ def test_class_rows_preserve_requested_order_and_count_exact_hits() -> None:
 def test_render_report_hides_low_support_f1() -> None:
     report = render_report(
         run_dir=Path("ml/runs/example"),
-        checkpoint_sha256="a" * 64,
+        best_checkpoint_sha256="a" * 64,
+        source_checkpoint_sha256="b" * 64,
         coarse=[{"class_id": "coarse", "support": 12, "correct": 10, "f1": 0.8}],
         subclass_all=[
             {"class_id": "supported", "support": 10, "correct": 8, "f1": 0.8},
@@ -41,6 +42,8 @@ def test_render_report_hides_low_support_f1() -> None:
     )
 
     low_section = report.split("## Low-support subclass nodes", maxsplit=1)[1]
+    assert "Best checkpoint SHA-256: `" + "a" * 64 + "`" in report
+    assert "Source checkpoint SHA-256: `" + "b" * 64 + "`" in report
     assert "`small` | 2 / 3" in low_section
     assert "0.600000" not in low_section
 

@@ -2,7 +2,7 @@
 
 > Sinh bởi `scripts.report_median_filter_ablation ml\runs\sed_polyphonic_20260923T173234Z`. θ và duration prior khác giữ nguyên từ `postproc.json` đã đóng băng; chỉ `median_w` đổi (1 = không lọc). Không sửa artifact chính thức.
 
-⚠️ Nếu run này là nhánh A (scratch, dò đường): hầu hết lớp có F1 gần 0 vì model gần như chưa học được — kết luận từ ablation này **chưa đại diện**, chạy lại trên nhánh B/C (đã pretrain) trước khi kết luận trong báo cáo cuối.
+⚠️ **12/21 lớp có F1=0** ở cấu hình chính thức — model chưa học đủ để ablation này có tín hiệu đại diện. Chạy lại trên một nhánh mạnh hơn trước khi kết luận trong báo cáo cuối.
 
 ## Tổng hợp (test, đa lớp đồng thời)
 

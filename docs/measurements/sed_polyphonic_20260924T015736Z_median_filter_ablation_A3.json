@@ -1,0 +1,140 @@
+{
+  "run": "ml\\runs\\sed_polyphonic_20260924T015736Z",
+  "overall": {
+    "filtered": 0.04792746113989638,
+    "unfiltered": 0.044444444444444446
+  },
+  "overall_delta_filtered_minus_unfiltered": 0.0034830166954519307,
+  "per_class": {
+    "bells": {
+      "filtered": 0.23255813953488372,
+      "unfiltered": 0.23255813953488372
+    },
+    "birds": {
+      "filtered": 0.015267175572519083,
+      "unfiltered": 0.015151515151515152
+    },
+    "cat_fights_and_moans": {
+      "filtered": 0.13333333333333333,
+      "unfiltered": 0.125
+    },
+    "chicken_coop": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "cicadas_and_crickets": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "crows_seagulls_magpies": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "dog_barkings_and_howlings": {
+      "filtered": 0.09523809523809525,
+      "unfiltered": 0.09523809523809525
+    },
+    "glass_breaking": {
+      "filtered": 0.12244897959183673,
+      "unfiltered": 0.12244897959183673
+    },
+    "horn": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "jet_aircrafts": {
+      "filtered": 0.03571428571428571,
+      "unfiltered": 0.0
+    },
+    "lawn_mower_brush_cutter_olive_shaker": {
+      "filtered": 0.038461538461538464,
+      "unfiltered": 0.038461538461538464
+    },
+    "music": {
+      "filtered": 0.1038961038961039,
+      "unfiltered": 0.07692307692307691
+    },
+    "propeller_aircrafts": {
+      "filtered": 0.04081632653061224,
+      "unfiltered": 0.04081632653061224
+    },
+    "sirens_and_alarms": {
+      "filtered": 0.03571428571428571,
+      "unfiltered": 0.03571428571428571
+    },
+    "thunder_fireworks_gunshot": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "train": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "vacuum_cleaner_fan_hairdryer": {
+      "filtered": 0.11428571428571428,
+      "unfiltered": 0.1111111111111111
+    },
+    "vehicle_idling": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "vehicle_pass_by": {
+      "filtered": 0.0,
+      "unfiltered": 0.0
+    },
+    "voices": {
+      "filtered": 0.09523809523809525,
+      "unfiltered": 0.09523809523809525
+    },
+    "workshop": {
+      "filtered": 0.14583333333333334,
+      "unfiltered": 0.1443298969072165
+    }
+  },
+  "per_class_d_min_s": {
+    "bells": 2.4775000000000027,
+    "birds": 1.0449999999999982,
+    "cat_fights_and_moans": 1.4779999999999993,
+    "chicken_coop": 1.0449999999999986,
+    "cicadas_and_crickets": 1.3094999999999997,
+    "crows_seagulls_magpies": 0.7545000000000028,
+    "dog_barkings_and_howlings": 0.7944999999999993,
+    "glass_breaking": 0.8880000000000022,
+    "horn": 0.6239999999999991,
+    "jet_aircrafts": 3.579,
+    "lawn_mower_brush_cutter_olive_shaker": 2.424499999999997,
+    "music": 3.1435000000000053,
+    "propeller_aircrafts": 12.763499999999999,
+    "sirens_and_alarms": 2.34,
+    "thunder_fireworks_gunshot": 1.112000000000004,
+    "train": 9.44,
+    "vacuum_cleaner_fan_hairdryer": 5.755,
+    "vehicle_idling": 2.509999999999998,
+    "vehicle_pass_by": 2.861999999999998,
+    "voices": 0.8199999999999994,
+    "workshop": 1.601500000000001
+  },
+  "ordered_by_d_min_s": [
+    "horn",
+    "crows_seagulls_magpies",
+    "dog_barkings_and_howlings",
+    "voices",
+    "glass_breaking",
+    "birds",
+    "chicken_coop",
+    "thunder_fireworks_gunshot",
+    "cicadas_and_crickets",
+    "cat_fights_and_moans",
+    "workshop",
+    "sirens_and_alarms",
+    "lawn_mower_brush_cutter_olive_shaker",
+    "bells",
+    "vehicle_idling",
+    "vehicle_pass_by",
+    "music",
+    "jet_aircrafts",
+    "vacuum_cleaner_fan_hairdryer",
+    "train",
+    "propeller_aircrafts"
+  ]
+}

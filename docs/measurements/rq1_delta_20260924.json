@@ -1,0 +1,61 @@
+{
+  "branches": {
+    "A": {
+      "run_id": "sed_polyphonic_20260923T173234Z",
+      "weight_source": "scratch",
+      "git_dirty": false,
+      "event_f1": 0.022044088176352707,
+      "event_f1_ci": {
+        "estimate": 0.022044088176352707,
+        "lower": 0.012688917711715153,
+        "upper": 0.032531111526002986,
+        "confidence": 0.95,
+        "n_recordings": 142
+      },
+      "psds_1": 0.1819677020957745,
+      "psds_2": 0.4474627446092521
+    },
+    "B": {
+      "run_id": "sed_polyphonic_20260924T015736Z",
+      "weight_source": "audioset",
+      "git_dirty": true,
+      "event_f1": 0.04792746113989638,
+      "event_f1_ci": {
+        "estimate": 0.04792746113989638,
+        "lower": 0.028851986335216896,
+        "upper": 0.07085853261880272,
+        "confidence": 0.95,
+        "n_recordings": 142
+      },
+      "psds_1": 0.21324792631992373,
+      "psds_2": 0.6690356001566355
+    },
+    "C": {
+      "run_id": "sed_polyphonic_20260924T021958Z",
+      "weight_source": "datasec:ml\\runs\\classifier_datasec_20260923T121808Z\\checkpoints\\best.pt",
+      "git_dirty": true,
+      "event_f1": 0.056786703601108025,
+      "event_f1_ci": {
+        "estimate": 0.056786703601108025,
+        "lower": 0.03757656533131195,
+        "upper": 0.0779463373627309,
+        "confidence": 0.95,
+        "n_recordings": 142
+      },
+      "psds_1": 0.2512112922614834,
+      "psds_2": 0.6289608008557744
+    }
+  },
+  "delta_c_minus_b_RQ1": {
+    "event_f1": 0.008859242461211649,
+    "psds_1": 0.03796336594155969,
+    "psds_2": -0.04007479930086111
+  },
+  "delta_c_minus_a_total_pretraining_benefit": {
+    "event_f1": 0.03474261542475532,
+    "psds_1": 0.06924359016570891,
+    "psds_2": 0.18149805624652232
+  },
+  "any_run_dirty": true,
+  "locked": false
+}

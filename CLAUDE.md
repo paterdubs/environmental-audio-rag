@@ -55,24 +55,48 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật:** 23/09/2026, sau D1–D6 + E1–E4 (tất cả xong) và pipeline W3.4–W4.4
-(prediction NPZ → threshold sweep → event-based F1/PSDS) đã verify thật.
+**Cập nhật:** 24/09/2026 — **RQ1 có câu trả lời thăm dò đầu tiên.** Cả ba nhánh
+SED (A/B/C, ADR-0002) đã train thật 8 epoch GPU và đánh giá đầy đủ
+(event-based F1, PSDS-1/2, bootstrap CI). `scripts.report_rq1_delta`:
+
+| | Nhánh A (scratch) | Nhánh B (AudioSet) | Nhánh C (AudioSet→DataSEC) |
+|---|---:|---:|---:|
+| event-based F1 | 0.0220 | 0.0479 | 0.0568 |
+| PSDS-1 | 0.1820 | 0.2132 | 0.2512 |
+| PSDS-2 | 0.4475 | 0.6690 | 0.6290 |
+
+`Δ = C − B` (RQ1): event-F1 **+0.0089**, PSDS-1 **+0.0380**, PSDS-2 **−0.0401**.
+⚠️ **Thăm dò, chưa khoá chính thức**: nhánh B/C `git.dirty=true`, 1 seed mỗi
+nhánh, chưa qua D2-style seed-reproducibility check (task I7, chưa làm). PSDS-2
+đi ngược hướng hai metric còn lại — chưa kết luận, cần seed thứ hai trước khi
+diễn giải.
 
 **Cổng dữ liệu D3/D4 đã đóng** (`data-v1.0`). **Split DataSEC đã đóng băng**
 (70/15/15). **D1–D6 xong toàn bộ** (số D1 chính thức: coarse macro-F1 test
 **0.8467**, `git.dirty=false`, commit `38c3b7c`; D4 chọn λ_cons=0.5, trùng khít
-D1 — bằng chứng chéo tái lập). **E1–E4 xong** (nợ kỹ thuật đã đóng). **Nền tảng
-W3–W4 (dự bị trước, nhóm G/H) đã verify chạy thật end-to-end** trên một run
-SED smoke-test (không phải kết quả nghiên cứu — chỉ kiểm wiring): lưu logit
-thô → quét ngưỡng (global + per-class) → đóng băng `postproc.json` →
-event-based F1 + PSDS-1/2 + bootstrap CI + phân tích lỗi. Trong quá trình đó
-sửa 4 lỗi thật (2 lỗi thư viện numpy2/thiết kế PSDS, 1 lỗi thiếu field, 1 lỗi
-hiệu năng 20x) — chi tiết ở `docs/AGENT_SYNC.md` §5 và ADR-0020.
+D1 — bằng chứng chéo tái lập). **E1–E4 xong** (nợ kỹ thuật đã đóng).
 
-**Việc thật còn thiếu để trả lời RQ1:** chưa có nhánh B/C nào từng chạy —
-`scripts/train_sed.py` mới chỉ hỗ trợ nhánh A (scratch). ADR-0020 đã đặc tả
-đầy đủ `--encoder {audio,panns}` + `--audioset-checkpoint`/`--datasec-checkpoint`
-nhưng **chưa triển khai** trong code.
+**Pipeline W3–W4 (G2/H1/H2) đã verify chạy thật end-to-end**, không chỉ trên
+smoke-test mà trên cả 3 nhánh thật: lưu logit thô → quét ngưỡng (global +
+per-class) → đóng băng `postproc.json` → event-based F1 + PSDS-1/2 + bootstrap
+CI + phân tích lỗi. Sửa 4 lỗi thật trong lúc verify (2 lỗi thư viện
+numpy2/thiết kế PSDS, 1 lỗi thiếu field, 1 lỗi hiệu năng 20x) — chi tiết ở
+`docs/AGENT_SYNC.md` §5 và ADR-0020.
+
+**Ablation A2 (global vs per-class θ) lặp lại được trên cả A và B**: per-class
+overfit dev rõ rệt và **tăng theo sức mạnh model** — nhánh A yếu dev→test
+−66%, nhánh B mạnh hơn dev→test **−38.7%** (global chỉ −1.3% cả hai nhánh).
+Đây là vấn đề thiết kế thật (21 bậc tự do fit trên dev 142 recording,
+evaluation_protocol §2.4), không phải triệu chứng riêng của một baseline yếu
+— phải ghi vào Hạn chế của báo cáo cuối, không thay đổi `postproc.json` để
+"sửa". Ablation A3 (median filter) không cho kết luận rõ ràng theo hướng nào
+trên cả hai nhánh.
+
+**W5 (grounded caption) đã verify wiring thật trên cả nhánh A và B** (không
+phải kết quả nghiên cứu, chỉ kiểm code chạy đúng trên dữ liệu thật thay vì
+fixture 1-event): 0/284 recording lệch bất biến G1-G3. Bắt được 1 bug thật
+trong lúc verify: `ml/evaluation/grounding.py::_temporal_order` collapse
+onset khi một lớp lặp lại trong timeline — đã sửa.
 
 ### Đã có ✅
 
@@ -126,6 +150,13 @@ nhưng **chưa triển khai** trong code.
 | **H1 eval deps** | `sed_eval`+`psds_eval` cài, pin, **2 bug thật đã sửa** (numpy2 trong `psds_eval`, `float(namedtuple)` trong code mình) |
 | **H2 threshold+eval pipeline** | `scripts/sweep_threshold.py` + `scripts/evaluate_run.py` chạy thật end-to-end, **2 bug thật + 1 bug hiệu năng (20x) đã sửa** |
 | **H3 event store** | Docker Compose + `pgvector/pgvector:pg16`, migration chạy thật, pgvector xác nhận hoạt động |
+| **Nhánh A SED chính thức** | `sed_polyphonic_20260923T173234Z`, `git.dirty=false`. Event-F1 **0.0220**, PSDS-1/2 **0.1820/0.4475** |
+| **Nhánh B SED thật (I1+I3)** | `sed_polyphonic_20260924T015736Z`. Test frame macro-F1 **0.5850**; event-F1 **0.0479**, PSDS-1/2 **0.2132/0.6690** |
+| **Nhánh C SED thật (I2+I4)** | `sed_polyphonic_20260924T021958Z`. Test frame macro-F1 **0.5947**; event-F1 **0.0568**, PSDS-1/2 **0.2512/0.6290** |
+| **RQ1 thăm dò (I5)** | `Δ=C−B`: +0.0089/+0.0380/−0.0401; `Δ=C−A`: +0.0347/+0.0692/+0.1815. Chưa khoá (B/C dirty, 1 seed) |
+| **Ablation A2 lặp lại trên A+B** | Per-class overfit dev tăng theo sức mạnh model (A −66%, B −38.7%); global ổn định (~−1 đến −18%) |
+| **Ablation A3 trên A+B** | Không kết luận rõ hướng nào; caveat "model yếu" giờ tính động theo % lớp F1=0, không hardcode theo tên nhánh |
+| **W5 wiring verify (J2/J4/J5)** | 284 recording thật (A+B), 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
 
 ### Đang làm / chưa nghiệm thu ◐
 
@@ -134,26 +165,30 @@ nhưng **chưa triển khai** trong code.
 | Split DataSED | **Đã đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
 | Cổng D3/D4 | **Xong, cả hai split đã đóng băng.** |
 | Tài liệu | `RELATED_WORK.md` còn chờ (cần trích dẫn — rủi ro bịa, ưu tiên thấp); `data_inventory.md` đã xong |
-| Nhánh SED B/C | ADR-0020 đã đặc tả đầy đủ, **chưa triển khai** trong `train_sed.py` |
+| RQ1 khoá chính thức | Cần: (1) chạy lại B/C trên tree sạch (`git.dirty=false`), (2) seed thứ hai (I7) để đo biến thiên trước khi diễn giải PSDS-2 đi ngược hướng |
+| Ablation A2/A3 trên nhánh C | Đã làm A+B, chưa chạy cho C (không gấp, script sẵn sàng: `report_threshold_ablation.py`/`report_median_filter_ablation.py`) |
 | W6 (event store, RAG) | Migration + pgvector chạy được (H3); chưa nạp dữ liệu thật, chưa có embedding/retrieval |
 
 ### Chưa có ○
 
-Transfer DataSEC→DataSED thật (nhánh B/C fine-tune trên DataSED, code ADR-0020
-chưa triển khai) · grounded caption · RAG / retrieval (nạp dữ liệu thật) ·
-API / inference / frontend.
+RQ1 khoá chính thức (đang thăm dò) · caption thật (unconstrained/constrained
+đối chứng, W5 5.6-5.8 — wiring đã verify ở J2/J4/J5) · RAG / retrieval (nạp dữ
+liệu thật, cần chọn LLM/embedding cho unconstrained caption) · API / inference
+/ frontend.
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **Triển khai ADR-0020** trong `train_sed.py`: `--encoder {audio,panns}` +
-   `--audioset-checkpoint`/`--datasec-checkpoint`, cùng cửa sổ 10s/5s.
-2. Chạy thật nhánh B (AudioSet→DataSED) và nhánh C (AudioSet→DataSEC→DataSED).
-3. Dùng pipeline đã verify (G2/H2): lưu prediction → `sweep_threshold` →
-   `evaluate_run` cho cả ba nhánh, cùng split/seed/budget.
-4. Tính `C − B` (RQ1) và `C − A` (tổng lợi ích pretraining, dán nhãn riêng).
-5. Ablation A2 (global vs per-class θ) — dữ liệu ablation đã có sẵn trong
-   `threshold_ablation.json` mỗi lần chạy `sweep_threshold`, chỉ cần tổng hợp.
-6. Sau SED: chuyển sang W5 (grounded caption) và W6 (RAG, hạ tầng H3 đã sẵn).
+1. **Khoá RQ1 chính thức**: chạy lại nhánh B/C trên tree sạch (`git.dirty=false`),
+   rồi seed thứ hai (I7) để có bằng chứng biến thiên trước khi diễn giải PSDS-2
+   (hiện đi ngược hướng event-F1/PSDS-1).
+2. Ablation A2/A3 cho nhánh C (script sẵn, chỉ cần chạy) — hoàn chỉnh bộ ba
+   A/B/C cho Hạn chế của báo cáo cuối.
+3. W5 5.6-5.8: nhánh unconstrained (đối chứng, cần chọn LLM) và constrained
+   thật, đánh giá oracle — wiring canonicalize→caption→grounding→document đã
+   verify chạy đúng trên dữ liệu thật (J2/J4/J5), chỉ còn phần sinh caption
+   không ràng buộc.
+4. W6: nạp event thật vào pgvector (H3 đã có hạ tầng), chọn embedding (BGE-M3,
+   ADR-0004), xây retrieval + query set thật.
 
 ---
 
@@ -341,6 +376,51 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-24 (tiếp) — RQ1 có câu trả lời thăm dò đầu tiên; ablation A2 xác nhận lặp lại trên model mạnh hơn
+
+Codex train xong nhánh B (I1) và C (I2) thật trên GPU, cả hai 8 epoch. Nhận I3
+(đánh giá nhánh B) vì lúc đó Codex đang bận I2 — không tranh chấp file
+(`ml/runs/sed_polyphonic_20260924T015736Z` không ai khác chạm tới):
+`sweep_threshold` + `evaluate_run`, ra event-F1 **0.0479**, PSDS-1/2
+**0.2132/0.6690**. Codex tự chạy I4 (nhánh C: event-F1 0.0568, PSDS-1/2
+0.2512/0.6290) và I6 (sửa nhãn sai checkpoint hash đã treo từ hôm qua) song
+song, không giẫm chân.
+
+Khi cả I3 và I4 đều có `evaluation.json`, chạy `scripts.report_rq1_delta` —
+**Codex cũng tự chạy độc lập cùng lúc, hai kết quả khớp bit-for-bit** (script
+deterministic, đọc thẳng artifact có sẵn): `Δ = C − B` (RQ1) = event-F1
+**+0.0089**, PSDS-1 **+0.0380**, PSDS-2 **−0.0401**. Hướng event-F1/PSDS-1
+đúng kỳ vọng ADR-0002 (pretraining DataSEC giúp thêm so với chỉ AudioSet);
+PSDS-2 đi ngược hướng — chưa kết luận, cần seed thứ hai (I7) trước khi diễn
+giải, và cả B/C đều `git.dirty=true` nên đây vẫn là **số thăm dò**.
+
+Tận dụng nhánh B (`ml/runs/` không xung đột), lặp lại ba script tự viết hôm
+qua (J1/J2/J3/J4) trên nhánh B — mục đích: kiểm xem các phát hiện trên nhánh A
+(baseline yếu, 12/21 lớp F1=0) có phải chỉ là triệu chứng của một model chưa
+học được gì, hay là vấn đề thiết kế thật sẽ còn tồn tại trên model tốt hơn.
+
+**Kết quả quan trọng nhất: ablation A2 (global vs per-class θ) không những lặp
+lại trên nhánh B mà còn RÕ HƠN.** Nhánh A (yếu): per-class dev→test −66%,
+global −18%. Nhánh B (mạnh hơn nhiều, event-F1 gấp đôi): per-class dev→test
+**−38.7%**, global chỉ **−1.3%**. Per-class overfit dev không giảm đi khi
+model tốt hơn — nếu có gì thì khoảng cách tuyệt đối còn tệ hơn. Đây là bằng
+chứng hai điểm dữ liệu độc lập cho đúng cảnh báo của evaluation_protocol §2.4
+(21 bậc tự do fit trên dev 142 recording): phải ghi vào Hạn chế của báo cáo
+cuối như một giới hạn cấu trúc của phương pháp, không phải một chi tiết vụn
+của nhánh A.
+
+Ablation A3 (median filter) trên nhánh B không cho kết luận rõ hướng nào (Δ
+tổng hợp dương nhẹ, giống nhánh A) — nhân đó sửa luôn một khiếm khuyết nhỏ đã
+gieo từ hôm qua: caveat "nếu run này là nhánh A" trong
+`report_median_filter_ablation.py` là text tĩnh gắn cứng theo tên nhánh; giờ
+tính động theo tỷ lệ lớp thật có F1=0, đúng với bất kỳ run nào được truyền vào.
+
+W5 wiring verify (J2/J4) chạy thêm trên nhánh B: 0/142 anomaly, cùng kết quả
+sạch như nhánh A — cộng dồn 284 recording thật đã verify không lỗi.
+
+Test suite 336 → **337 pass** (Codex thêm 1 test cho I6), ruff sạch. Board
+(`AGENT_SYNC.md`) và trạng thái §3 của file này cập nhật đầy đủ ba nhánh + RQ1.
 
 ### 2026-09-24 — Trong lúc Codex train nhánh B/C (I1-I7), làm song song A2 + verify W5 thật; sửa 1 bug thật ở grounding
 

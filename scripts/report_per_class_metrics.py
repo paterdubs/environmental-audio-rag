@@ -15,7 +15,7 @@ from ml.datasets.datasec import DataSECLabelSpace
 from ml.models import HierarchicalAudioClassifier, PannsCNN14Encoder, build_family_mask
 from ml.taxonomy import load_taxonomy
 from ml.training.classification import hierarchical_metrics
-from ml.training.common import write_json
+from ml.training.common import sha256_file, write_json
 from scripts.train_classifier import ROOT, build_loaders, load_rows, supported_subclass_ids
 
 LOW_SUPPORT_THRESHOLD = 10
@@ -122,7 +122,8 @@ def collect_test_predictions(
 def render_report(
     *,
     run_dir: Path,
-    checkpoint_sha256: str,
+    best_checkpoint_sha256: str,
+    source_checkpoint_sha256: str | None,
     coarse: list[dict[str, int | float | str]],
     subclass_all: list[dict[str, int | float | str]],
     subclass_supported: list[dict[str, int | float | str]],
@@ -136,7 +137,8 @@ def render_report(
         "inference pass.",
         "",
         f"- Run: `{run_dir.name}`",
-        f"- Best checkpoint SHA-256: `{checkpoint_sha256}`",
+        f"- Best checkpoint SHA-256: `{best_checkpoint_sha256}`",
+        f"- Source checkpoint SHA-256: `{source_checkpoint_sha256}`",
         "- Test was not used to choose a model or hyperparameter.",
         "",
         "## Macro-F1",
@@ -278,7 +280,8 @@ def main() -> None:
         write_json(metrics_path, metrics)
     report = render_report(
         run_dir=run_dir,
-        checkpoint_sha256=manifest["config"]["checkpoint_sha256"],
+        best_checkpoint_sha256=sha256_file(checkpoint_path),
+        source_checkpoint_sha256=manifest["config"].get("checkpoint_sha256"),
         coarse=coarse,
         subclass_all=subclass_all,
         subclass_supported=supported_rows,
