@@ -378,9 +378,21 @@ việc **không cần GPU**, không chạm file Codex đang giữ:
 Đây là bug thứ 5 trong chuỗi "code chỉ có test fixture cô lập, chưa từng chạy
 trên dữ liệu thật" của tuần này (sau 4 lỗi ở G2/H1/H2) — cùng nguyên nhân gốc:
 fixture tối giản (1 event) không đại diện cho input thật (polyphonic, nhiều
-event cùng lớp). Test suite 314 → **332 pass**, ruff sạch. Không đụng GPU,
+event cùng lớp). Test suite 314 → 332 pass, ruff sạch. Không đụng GPU,
 không đụng file `ml/runs/`, `scripts/train_sed.py`,
 `scripts/{sweep_threshold,evaluate_run}.py` mà Codex đang chạy song song.
+
+**Tiếp** — J3: ablation A3 (ADR-0003: "median filter có làm mất event ngắn
+như `glass_breaking` không?"). So `median_w` đóng băng vs `median_w=1` (không
+lọc) trên test nhánh A, giữ nguyên θ/duration prior khác. Kết quả: tổng hợp
+lọc nhỉnh hơn (+0.0025); `glass_breaking` cụ thể — lọc **tốt hơn** hẳn (0.0556
+vs 0.0227), ngược lại lo ngại ban đầu của ADR-0003. Nhưng nhánh A quá yếu (đa
+số 21 lớp có F1=0 vì mới scratch 8 epoch) nên kết luận **chưa đại diện** — ghi
+rõ trong report, phải chạy lại trên B/C trước khi đưa vào báo cáo cuối.
+
+Trong lúc đó Codex báo I1 (nhánh B) xong thật: `sed_polyphonic_20260924T015736Z`,
+`complete=true`, test frame macro-F1 **0.5850** — đúng hướng kỳ vọng so với
+nhánh A scratch. Test suite 332 → **336 pass**, ruff sạch.
 
 ### 2026-09-23 (tiếp) — D1–D6/E1–E4 xong toàn bộ; verify pipeline W3.4–W4.4 thật, sửa 4 lỗi
 
