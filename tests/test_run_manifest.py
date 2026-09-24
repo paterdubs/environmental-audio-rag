@@ -135,6 +135,25 @@ def test_final_measurement_policy_rejects_ineligible_run(change: dict, message: 
         validate_run_manifest(manifest, for_final_measurement=True)
 
 
+@pytest.mark.parametrize(
+    "path",
+    ["C:/tmp/dev.npz", "C:\\tmp\\dev.npz", "/tmp/dev.npz", "\\\\server\\share\\dev.npz",
+     "../dev.npz", "predictions/../../dev.npz", ""],
+)
+def test_prediction_path_must_be_relative_on_every_os(path: str) -> None:
+    """`Path.is_absolute()` follows the host OS: `C:/x` is relative on Linux and
+    `/x` is relative on Windows. Manifests travel between both (CI runs Linux),
+    so either convention's absolute form must be rejected everywhere."""
+    with pytest.raises(ManifestValidationError, match="relative"):
+        attach_prediction(make_manifest(), split="dev", path=path, sha256=SHA)
+
+
+@pytest.mark.parametrize("path", ["predictions/dev.npz", "predictions\\dev.npz", "dev.npz"])
+def test_prediction_path_accepts_portable_relative_paths(path: str) -> None:
+    updated = attach_prediction(make_manifest(), split="dev", path=path, sha256=SHA)
+    assert updated["predictions"]["dev"]["sha256"] == SHA
+
+
 def test_prediction_reference_rejects_test_typo_and_absolute_path() -> None:
     with pytest.raises(ManifestValidationError, match="split"):
         attach_prediction(make_manifest(), split="validation", path="x.npz", sha256=SHA)

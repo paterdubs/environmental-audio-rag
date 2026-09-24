@@ -12,7 +12,7 @@ import math
 import re
 from collections.abc import Mapping
 from copy import deepcopy
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
 MANIFEST_VERSION = 2
@@ -39,15 +39,29 @@ def sha256_json(value: object) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _is_portable_relative(value: str | Path) -> bool:
+    """True only for a relative path that stays relative on every OS.
+
+    `Path.is_absolute()` follows the host: on Linux `C:/x` is relative, on Windows
+    `/x` is relative (no drive). Manifests move between both, so reject a path that
+    is absolute, drive-qualified or rooted under either convention.
+    """
+    text = str(value)
+    if not text:
+        return False
+    windows, posix = PureWindowsPath(text), PurePosixPath(text.replace("\\", "/"))
+    if windows.drive or windows.root or posix.is_absolute():
+        return False
+    return ".." not in windows.parts and ".." not in posix.parts
+
+
 def prediction_reference(path: str | Path, sha256: str) -> dict[str, str]:
     """Build a portable reference to an immutable prediction artifact."""
 
-    candidate = Path(path)
-    normalized = candidate.as_posix()
-    if not str(path) or candidate.is_absolute() or ".." in candidate.parts:
+    if not _is_portable_relative(path):
         raise ManifestValidationError("prediction path must be relative to the run directory")
     _require_sha256("prediction sha256", sha256)
-    return {"path": normalized, "sha256": sha256}
+    return {"path": Path(path).as_posix(), "sha256": sha256}
 
 
 def build_run_manifest(
@@ -138,10 +152,9 @@ def complete_run(
 ) -> dict[str, Any]:
     """Return a completed copy; interrupted runs remain incomplete by default."""
 
-    candidate = Path(best_checkpoint)
-    checkpoint = candidate.as_posix()
-    if not str(best_checkpoint) or candidate.is_absolute() or ".." in candidate.parts:
+    if not _is_portable_relative(best_checkpoint):
         raise ManifestValidationError("best_checkpoint must be relative to the run directory")
+    checkpoint = Path(best_checkpoint).as_posix()
     updated = deepcopy(dict(manifest))
     updated.update(
         complete=True,
