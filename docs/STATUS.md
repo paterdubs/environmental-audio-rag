@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
 **Cập nhật:** 2026-09-24, sau khi chốt RQ1 (ADR-0021)
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 366 pass, ruff sạch
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 376 pass (Windows), 355 pass (Linux CI), ruff sạch
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -43,7 +43,7 @@
 | Caption có căn cứ (W5) | ◐ template + metric G1–G3 verify trên 426 recording thật; chưa có nhánh LLM đối chứng | [*_caption_wiring_test.md](measurements/) |
 | Event store + RAG (W6) | ◐ PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding | `docker-compose.yml`, `db/migrations/` |
 | API / frontend (W7) | ○ | — |
-| CI | ◐ `ci.yml` có sẵn; **chưa từng chạy trên GitHub** (chưa có remote). Clone sạch: 345 pass, 1 skip | `.github/workflows/ci.yml` |
+| CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
 
 ---
 

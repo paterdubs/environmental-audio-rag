@@ -193,7 +193,6 @@ test, không phải dev (không được tuning trên test).
 | W5 (caption) | Template + metric G1–G3 đã verify trên 426 recording thật; thiếu nhánh không ràng buộc (cần chọn LLM), nhánh ràng buộc, đánh giá oracle + end-to-end |
 | W6 (event store, RAG) | PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding BGE-M3, chưa retrieval |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
-| CI | `ci.yml` chưa từng chạy trên GitHub (repo chưa có remote) |
 
 ### Chưa có ○
 

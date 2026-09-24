@@ -11,7 +11,7 @@
 
 | Tuần | Ngày | Trọng tâm | Trạng thái |
 |---|---|---|---|
-| W1 | 22–28/09 | Cổng dữ liệu D1–D4 + tài liệu | ✅ (CI chưa chạy trên GitHub) |
+| W1 | 22–28/09 | Cổng dữ liệu D1–D4 + tài liệu | ✅ |
 | W2 | 29/09–05/10 | DataSEC classifier + PANNs | ✅ làm sớm |
 | W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.6, 4.7 |
@@ -78,10 +78,8 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 - [x] Báo cáo dedup xuyên dataset trong `docs/measurements/dedup_20260923.md`
 - [x] Split freeze (`datased_polyphonic.frozen.json`), SHA-256 `d2924a5e45c2b271…`, 5 kiểm leakage pass
 - [x] Tag `data-v1.0` (`git tag -n`: "cổng dữ liệu D1–D4 đã đóng")
-- [ ] CI xanh — **chưa thể xác nhận**: repo không có remote (`git remote -v` rỗng), nên
-      `.github/workflows/ci.yml` chưa từng chạy trên GitHub. Chỉ có bằng chứng cục bộ
-      (`pytest -q` + `ruff check .` xanh trên máy). Không tự thêm remote/push — cần
-      quyết định của người dùng.
+- [x] CI xanh trên GitHub Actions (`de4acc1`). Lần chạy đầu đỏ: kiểm đường dẫn tương đối
+      trong manifest phụ thuộc hệ điều hành (`Path.is_absolute`) — đã sửa, có test cho cả hai quy ước.
 
 > ⚠️ **Nếu D3 phát hiện trùng lặp > 5%**, RQ1 phải đổi cách diễn giải ngay tuần
 > này, không để tới W3. Xem [DATA_PLAN §7.6](DATA_PLAN.md).
@@ -285,7 +283,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | 11 | `short_duplicate_min = 0.99` chọn từ hình dạng phân bố, chưa hiệu chuẩn trên positive đoạn ngắn | TRUNG BÌNH | W2 |
 | ~~12~~ | ~~1,731 ràng buộc cohesion kéo theo cụm lớn~~ — **đóng 23/09**: DataSED cụm lớn nhất 4 (0.6%); DataSEC có cụm 326 (6.5%), cần theo dõi ở W2 | THẤP | ✅ |
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |
-| ~~9~~ | ~~Chưa có CI~~ — **đóng 23/09**: `.github/workflows/ci.yml` (chạy cục bộ; chưa có remote nên chưa từng chạy trên GitHub, xem `docs/PLAN.md` §Nghiệm thu W1) | — | ✅ |
+| ~~9~~ | ~~Chưa có CI~~ — **đóng 24/09**: `.github/workflows/ci.yml` xanh trên GitHub Actions | — | ✅ |
 | ~~10~~ | ~~`contracts/*.schema.json` chưa tồn tại~~ — **đóng 23/09**: 8 schema Draft 2020-12 trong `contracts/` | — | ✅ |
 | ~~14~~ | ~~RQ1 chưa đủ run để kết luận~~ — **đóng 24/09** (K1–K5, ADR-0021): 5 run/nhánh, chính 7 run sạch p=0.479/0.767/0.425, độ nhạy 10 run p=0.917/0.268/0.718 → RQ1 âm tính, báo cáo như vậy | — | ✅ |
 | ~~15~~ | ~~RQ1 chưa khoá chính thức~~ — **đóng 24/09** (I8): B/C chạy lại trên tree sạch `5bf1cf7`, `rq1_delta_official_20260924.md` | — | ✅ |
