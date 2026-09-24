@@ -274,19 +274,21 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 
 | # | Hạng mục | Mức | Hạn |
 |---:|---|---|---|
-| 1 | `git.revision` của baseline là `"HEAD"`, `dirty: true` — **không tái lập được** | CAO | W3 (train lại) |
+| ~~1~~ | ~~`git.revision` của baseline là `"HEAD"`, `dirty: true`~~ — **đóng 24/09**: nhánh A SED (`sed_polyphonic_20260923T173234Z`) và D1 classifier chạy trên tree sạch, `git.revision` là hash thật, `dirty=false` | — | ✅ |
 | ~~2~~ | ~~`find_duplicates` và `check_leakage` chưa có~~ — **đóng 23/09** | — | ✅ |
-| 3 | Chưa lưu logit thô → mỗi lần đổi θ phải chạy lại inference | CAO | W3 |
-| 4 | Manifest thiếu `data_manifest_sha256` và `postproc` | TRUNG BÌNH | W3 |
-| 5 | Chưa chứng minh đã seed torch/numpy/python đầy đủ | TRUNG BÌNH | W2 |
+| ~~3~~ | ~~Chưa lưu logit thô~~ — **đóng 23/09** (G2): `predictions/{dev,test}.npz` mọi run SED | — | ✅ |
+| ~~4~~ | ~~Manifest thiếu `data_manifest_sha256` và `postproc`~~ — **đóng 23/09** (G2/H2): `data_manifest_sha256` trong `manifest.json`, `postproc.json` schema riêng (`contracts/postproc.schema.json`) | — | ✅ |
+| 5 | Seed reproducibility: **classifier đã chứng minh** (D2, 2 run 12-epoch cùng seed → `best.pt` giống hệt bit-for-bit). **SED chưa test cùng-seed** — I7 (24/09) chỉ đo biến thiên giữa 2 seed KHÁC NHAU (0 và 1), là câu hỏi bổ sung chứ không thay thế; chưa chạy lại đúng cùng seed 2 lần cho nhánh SED nào | TRUNG BÌNH | W3 |
 | 6 | `RELATED_WORK.md` còn `⚠️ CẦN XÁC MINH`, chưa có DOI | TRUNG BÌNH | W8 |
 | ~~7~~ | ~~Ngưỡng T3 0.95/0.85 chưa hiệu chuẩn~~ — **đóng 23/09**: giữ 0.95/0.85, `threshold_calibration.json` | — | ✅ |
 | 8 | Percentile 5/50 cho duration prior chưa có cơ sở thực nghiệm | THẤP | W3 |
 | 11 | `short_duplicate_min = 0.99` chọn từ hình dạng phân bố, chưa hiệu chuẩn trên positive đoạn ngắn | TRUNG BÌNH | W2 |
 | ~~12~~ | ~~1,731 ràng buộc cohesion kéo theo cụm lớn~~ — **đóng 23/09**: DataSED cụm lớn nhất 4 (0.6%); DataSEC có cụm 326 (6.5%), cần theo dõi ở W2 | THẤP | ✅ |
-| 13 | 35 cặp xuyên dataset ở dải review chưa có quyết định người | **CHẶN** | W1 |
-| 9 | Chưa có CI | TRUNG BÌNH | W1 |
-| 10 | `contracts/*.schema.json` chưa tồn tại | TRUNG BÌNH | W1 |
+| ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |
+| ~~9~~ | ~~Chưa có CI~~ — **đóng 23/09**: `.github/workflows/ci.yml` (chạy cục bộ; chưa có remote nên chưa từng chạy trên GitHub, xem `docs/PLAN.md` §Nghiệm thu W1) | — | ✅ |
+| ~~10~~ | ~~`contracts/*.schema.json` chưa tồn tại~~ — **đóng 23/09**: 8 schema Draft 2020-12 trong `contracts/` | — | ✅ |
+| 14 | **RQ1 PSDS-1/PSDS-2 chưa phân biệt được với nhiễu seed** — Δ=C−B vượt biến thiên seed chỉ 1.32×/1.11× (so với event-based F1 8.2×). Không thể khẳng định là tín hiệu thật với 2 seed/nhánh | **CHẶN** kết luận RQ1 trên PSDS | W4 |
+| 15 | RQ1 chưa khoá chính thức — nhánh B/C hiện tại đều `git.dirty=true` (task I8, giao Codex) | **CHẶN** | W3 |
 
 ---
 
