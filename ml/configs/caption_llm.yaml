@@ -1,0 +1,21 @@
+# LLM cho nhánh caption unconstrained/constrained (RQ2) — ADR-0022.
+# Hai nhánh dùng CHUNG file này: cùng model, cùng prompt, cùng tham số sinh.
+# Khác biệt duy nhất giữa hai nhánh là grammar lúc decode.
+model:
+  name: Qwen3.5-9B
+  repo: bartowski/Qwen_Qwen3.5-9B-GGUF
+  file: Qwen_Qwen3.5-9B-Q4_K_M.gguf
+  local_path: artifacts/llm/Qwen_Qwen3.5-9B-Q4_K_M.gguf
+  sha256: d784ce9eda1a5a7b51e8f705a9e6310844bf4f173654d115823c775fdea56d43
+runtime:
+  name: llama.cpp
+  build: b11158
+  # -np 1: một slot, tránh batching chéo request làm đổi kết quả greedy.
+  server_args: ["-ngl", "99", "-c", "4096", "-np", "1", "--jinja"]
+  endpoint: http://127.0.0.1:8081
+generation:
+  temperature: 0.0
+  seed: 20260922
+  max_tokens: 256
+  enable_thinking: false
+  timeout_s: 300

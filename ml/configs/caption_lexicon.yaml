@@ -1,0 +1,116 @@
+# Lexicon đo grounding của caption (C2) — ADR-0022 §3.
+#
+# Nhận diện "nguồn âm được nhắc" trong caption tự do. Tên nhãn gốc (source_label)
+# và class_id luôn được thêm tự động từ taxonomy; file này chỉ chứa phần mở rộng.
+#
+# Bốn loại cụm từ:
+#   class           — diễn đạt lại cả lớp.
+#   specific        — gọi tên subclass/loài cụ thể của một lớp GỘP; vẫn được tính là
+#                     nhắc lớp đó (có bằng chứng lớp), nhưng đếm riêng thành
+#                     over_specific_rate vì vượt mức mơ hồ của bằng chứng (SYSTEM §6.4).
+#   families        — cụm mơ hồ giữa nhiều lớp; được tính là có căn cứ nếu BẤT KỲ lớp
+#                     nào trong nhóm có trong timeline (xử theo hướng có lợi cho nhánh
+#                     unconstrained → Δ RQ2 là cận dưới).
+#   out_of_taxonomy — nguồn âm ngoài 22 lớp: không timeline nào hỗ trợ được, luôn là
+#                     hallucination.
+#
+# context_terms: bối cảnh/không khí suy diễn (G3 "bối cảnh"), báo riêng thành
+# context_term_rate, KHÔNG gộp vào lexicon cấm FORBIDDEN_TERMS (nguy hiểm/tội phạm).
+#
+# Quy trình (ADR-0022 §3): chỉ mở rộng dựa trên caption split DEV; đóng băng SHA-256
+# trước khi sinh caption test. Mọi cụm viết thường; khớp theo ranh giới từ.
+version: caption-lexicon-v2
+
+class:
+  bells: [bell, bells, bell ringing, ringing bells, chime, chimes, church bells]
+  birds: [bird, birds, birdsong, birdsongs, bird song, bird songs, bird call, bird calls,
+          birdcall, birdcalls, songbird, songbirds]
+  cat_fights_and_moans: [cat, cats, cat fight, cat fights, fighting cats, meow, meows,
+                         meowing, yowling]
+  chicken_coop: [chicken, chickens, hen, hens, rooster, roosters, poultry, clucking, coop]
+  cicadas_and_crickets: [insect, insects, insect chorus, buzzing insects]
+  crows_seagulls_magpies: []
+  dog_barkings_and_howlings: [dog, dogs, barking, barking dog, barking dogs, dog barking,
+                              bark, barks, howl, howls, howling]
+  glass_breaking: [breaking glass, glass shattering, shattering glass, shattered glass,
+                   glass]
+  horn: [horns, honk, honks, honking, car horn, car horns, vehicle horn]
+  jet_aircrafts: [jet, jets, jet aircraft, jet plane, jet planes, jet engine, jet engines,
+                  jet airliner]
+  lawn_mower_brush_cutter_olive_shaker: [garden machinery, garden equipment, lawn equipment,
+                                         lawn maintenance, lawn care]
+  music: [musical, song, songs, melody, melodies, tune, tunes]
+  propeller_aircrafts: [propeller aircraft, propeller plane, propeller planes,
+                        propeller-driven aircraft, prop plane, prop planes]
+  sirens_and_alarms: []
+  thunder_fireworks_gunshot: [impulsive sound, impulsive sounds, bang, bangs, explosion,
+                              explosions, blast, blasts]
+  train: [trains, railway, locomotive, rail traffic]
+  vacuum_cleaner_fan_hairdryer: [household appliance, household appliances]
+  vehicle_idling: [idling vehicle, idling vehicles, idling car, idling cars, idling engine,
+                   idling engines, engine idling, vehicle idling, idle engine, idling, idle,
+                   idles]
+  vehicle_pass_by: [passing vehicle, passing vehicles, passing car, passing cars,
+                    vehicle passing, vehicles passing, car passing, cars passing,
+                    passing traffic, vehicle pass-by, car pass-by]
+  voices: [voice, human voice, human voices, speech, talking, people talking, conversation,
+           conversations, speaking]
+  wind_turbine: [wind turbines]
+  # "hammering" và "tool" từ dev ("hammering and tool clatter") — âm thanh xưởng.
+  workshop: [power tool, power tools, workshop tools, tool, tools, hammering]
+
+specific:
+  cicadas_and_crickets: [cicada, cicadas, cricket, crickets]
+  crows_seagulls_magpies: [crow, crows, seagull, seagulls, gull, gulls, magpie, magpies]
+  lawn_mower_brush_cutter_olive_shaker: [lawn mower, lawn mowers, lawnmower, lawnmowers,
+                                         mower, mowers, mowing, brush cutter, brush cutters,
+                                         strimmer, string trimmer, trimmer, olive shaker,
+                                         olive shakers]
+  propeller_aircrafts: [helicopter, helicopters, rotor, rotors]
+  sirens_and_alarms: [siren, sirens, alarm, alarms]
+  thunder_fireworks_gunshot: [thunder, thunderclap, thunderclaps, fireworks, firework, gunshot, gunshots,
+                              gunfire, gun shot, gun shots]
+  vacuum_cleaner_fan_hairdryer: [vacuum cleaner, vacuum cleaners, vacuum, fan, fans,
+                                 hairdryer, hairdryers, hair dryer, hair dryers,
+                                 blow dryer]
+  vehicle_idling: [idling truck, idling trucks, idling motorbike, idling motorcycle]
+  vehicle_pass_by: [passing truck, passing trucks, passing motorbike, passing motorcycle,
+                    truck passing, motorbike passing, motorcycle passing]
+  workshop: [drill, drills, drilling, grinder, grinders, grinding, jackhammer, jackhammers,
+             saws, sawing, air compressor, compressor, compressors]
+
+families:
+  - classes: [jet_aircrafts, propeller_aircrafts]
+    phrases: [aircraft, aircrafts, airplane, airplanes, aeroplane, aeroplanes, plane,
+              planes, aviation, overflight, flyover]
+  - classes: [vehicle_idling, vehicle_pass_by]
+    phrases: [vehicle, vehicles, car, cars, truck, trucks, motorbike, motorbikes,
+              motorcycle, motorcycles, traffic, road traffic, vehicle traffic]
+  - classes: [music, voices]
+    phrases: [singing, singer, singers, vocals, choir]
+  # Các nhóm dưới bổ sung sau audit dev (ADR-0022 §3 bước 2).
+  - classes: [workshop, lawn_mower_brush_cutter_olive_shaker, vacuum_cleaner_fan_hairdryer]
+    phrases: [machinery, machine, machines, mechanical noise, mechanical noises]
+  - classes: [jet_aircrafts, propeller_aircrafts, vehicle_idling, vehicle_pass_by,
+              lawn_mower_brush_cutter_olive_shaker]
+    phrases: [engine, engines, engine noise, motor, motors]
+  - classes: [birds, cicadas_and_crickets, crows_seagulls_magpies]
+    phrases: [chirping, chirp, chirps, chirrup]
+  - classes: [bells, sirens_and_alarms]
+    phrases: [ringing]
+  - classes: [thunder_fireworks_gunshot, jet_aircrafts]
+    phrases: [boom, booms]
+
+# Bỏ có chủ đích: "saw" (quá khứ của "see"), "stream" ("a stream of traffic").
+# "machinery"/"hammering" từng đặt ở đây — sai: là âm thanh máy/xưởng (audit dev).
+out_of_taxonomy: [wind, rain, rainfall, water, river, waves, footsteps, children,
+                  child, baby, crowd, applause, frog, frogs, leaves, rustling, construction,
+                  typing, door, doors, cow, cows, sheep, horse, horses]
+
+# "silence/quiet/silent": hệ thống chỉ biết không có event trong 21 lớp, không biết
+# có im lặng (SYSTEM §6.6) → khẳng định im lặng là suy diễn ngoài bằng chứng.
+context_terms: [urban, city, suburban, rural, countryside, park, street, neighborhood,
+                neighbourhood, residential, forest, woodland, farm, airport, highway,
+                construction site, festival, celebration, party, peaceful, tranquil,
+                serene, calm, busy, bustling, lively, chaotic, idyllic, outdoor, outdoors,
+                nature, natural, roadside, silence, silent, quiet, stillness]
