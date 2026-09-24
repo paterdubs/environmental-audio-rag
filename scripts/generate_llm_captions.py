@@ -1,9 +1,15 @@
-"""W5 5.6 — sinh caption unconstrained (nhánh đối chứng RQ2) bằng LLM cục bộ.
+"""W5 5.6/5.7 — sinh caption RQ2 (unconstrained / constrained) bằng LLM cục bộ.
 
     # Khởi động server trước (xem ADR-0022, ml/configs/caption_llm.yaml):
     artifacts/llm/llama.cpp-b11158/llama-server.exe -m artifacts/llm/<gguf> \\
         -ngl 99 -c 4096 -np 1 --jinja --port 8081
     .venv/Scripts/python.exe -m scripts.generate_llm_captions ml/runs/<sed_run> --split dev
+    .venv/Scripts/python.exe -m scripts.generate_llm_captions ml/runs/<sed_run> \\
+        --branch constrained --split dev
+
+Hai nhánh cùng model, cùng prompt, cùng tham số sinh; constrained chỉ thêm grammar
+(ADR-0023). Nếu nhánh kia đã sinh cho cùng split, timeline dựng lại phải trùng khít
+timeline đã lưu của nó — lệch thì dừng.
 
 Mỗi lần chạy sinh CẢ HAI mức trên cùng một tập recording (evaluation_protocol §8.1):
 `oracle` (timeline = ground truth DataSED) và `e2e` (timeline = SED prediction đã
@@ -11,8 +17,8 @@ Mỗi lần chạy sinh CẢ HAI mức trên cùng một tập recording (evalua
 đóng băng, và lexicon chỉ được mở rộng trên caption dev (ADR-0022 §3). Vì vậy
 `--split test` bị chặn trừ khi truyền đúng SHA-256 của lexicon hiện tại.
 
-Output bất biến, trong `<run>/captions/`: `unconstrained_<split>.jsonl` (một dòng
-mỗi recording × mức) + `unconstrained_<split>.meta.json` (provenance).
+Output bất biến, trong `<run>/captions/`: `<branch>_<split>.jsonl` (một dòng mỗi
+recording × mức) + `<branch>_<split>.meta.json` (provenance).
 """
 
 from __future__ import annotations
@@ -27,6 +33,7 @@ from typing import Any
 
 import pandas as pd
 
+from ml.captioning.constrained import ConstrainedLLMCaptioner
 from ml.captioning.lexicon import CaptionLexicon
 from ml.captioning.llm import (
     PROMPT_VERSION,
@@ -45,11 +52,13 @@ from scripts.report_threshold_ablation import priors_from_postproc
 
 ROOT = Path(__file__).resolve().parents[1]
 LEVELS = ("oracle", "e2e")
+BRANCHES = {"unconstrained": UnconstrainedLLMCaptioner, "constrained": ConstrainedLLMCaptioner}
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
+    parser.add_argument("--branch", choices=tuple(BRANCHES), default="unconstrained")
     parser.add_argument("--split", choices=("dev", "test"), default="dev")
     parser.add_argument("--config", type=Path, default=ROOT / "ml/configs/caption_llm.yaml")
     parser.add_argument("--frozen-lexicon-sha256", default=None)
@@ -118,6 +127,32 @@ def oracle_timelines(
     }
 
 
+def check_same_timelines(
+    out_dir: Path, split: str, branch: str, by_level: dict[str, dict[str, dict[str, Any]]]
+) -> list[str]:
+    """RQ2 needs every branch on the SAME timelines (evaluation_protocol §8.2).
+
+    If another branch was already generated for this split, its stored
+    timelines must equal the ones just rebuilt — otherwise postproc or
+    annotations drifted in between and the branches are not comparable.
+    """
+    compared = []
+    for other in BRANCHES:
+        path = out_dir / f"{other}_{split}.jsonl"
+        if other == branch or not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            row = json.loads(line)
+            rebuilt = by_level[row["level"]].get(row["recording_id"])
+            if rebuilt is not None and rebuilt != row["timeline"]:
+                raise SystemExit(
+                    f"timeline {row['recording_id']}/{row['level']} khác với {path.name} — "
+                    "hai nhánh không còn cùng đầu vào"
+                )
+        compared.append(path.name)
+    return compared
+
+
 def server_model_path(endpoint: str) -> str:
     with urllib.request.urlopen(endpoint + "/props", timeout=10) as response:
         return str(json.load(response).get("model_path", ""))
@@ -135,7 +170,7 @@ def main() -> None:
     if not manifest.get("complete"):
         raise SystemExit(f"{args.run_dir} chưa hoàn tất")
     out_dir = args.run_dir / "captions"
-    out_path = out_dir / f"unconstrained_{args.split}.jsonl"
+    out_path = out_dir / f"{args.branch}_{args.split}.jsonl"
     if out_path.exists() and args.limit is None:
         raise SystemExit(f"{out_path} đã tồn tại — output bất biến, không ghi đè")
 
@@ -151,10 +186,10 @@ def main() -> None:
     recordings = pd.read_csv(ROOT / "data/manifests/datased_recordings.csv")
     durations = dict(zip(recordings["recording_id"], recordings["duration_s"], strict=True))
     by_level["oracle"] = oracle_timelines(recording_ids, durations, taxonomy)
+    compared = check_same_timelines(out_dir, args.split, args.branch, by_level)
 
-    captioner = UnconstrainedLLMCaptioner(
-        HttpChatTransport(config.endpoint, config.timeout_s), config
-    )
+    transport = HttpChatTransport(config.endpoint, config.timeout_s)
+    captioner = BRANCHES[args.branch](transport, config)
     rows: list[dict[str, Any]] = []
     started = time.perf_counter()
     for rid in recording_ids:
@@ -165,13 +200,15 @@ def main() -> None:
     wall_s = time.perf_counter() - started
 
     if args.limit is not None:
-        out_path = out_dir / f"unconstrained_{args.split}.smoke.jsonl"
+        out_path = out_dir / f"{args.branch}_{args.split}.smoke.jsonl"
     out_dir.mkdir(exist_ok=True)
     out_path.write_text(
         "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows), encoding="utf-8"
     )
     truncated = sum(r["caption"]["generation"]["finish_reason"] == "length" for r in rows)
     meta = {
+        "branch": args.branch, "captioner_version": captioner.version,
+        "timelines_identical_to": compared,
         "sed_run": args.run_dir.name, "split": args.split, "levels": list(LEVELS),
         "n_recordings": len(recording_ids), "n_captions": len(rows),
         "n_truncated": truncated, "wall_clock_s": round(wall_s, 1),

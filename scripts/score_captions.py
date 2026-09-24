@@ -4,10 +4,11 @@
     .venv/Scripts/python.exe -m scripts.score_captions ml/runs/<sed_run> --split test \\
         --frozen-lexicon-sha256 <sha>
 
-Đọc `<run>/captions/unconstrained_<split>.jsonl` (bất biến, do
-`scripts.generate_llm_captions` sinh), chấm lại bằng lexicon hiện tại, và chấm
+Đọc mọi `<run>/captions/{unconstrained,constrained}_<split>.jsonl` có mặt (bất
+biến, do `scripts.generate_llm_captions` sinh), chấm bằng lexicon hiện tại, và chấm
 luôn nhánh template trên ĐÚNG các timeline đó (cùng input — evaluation_protocol
-§8.2). Chấm test đòi lexicon đã đóng băng (ADR-0022 §3).
+§8.2; timeline lệch giữa hai nhánh thì dừng). Chấm test đòi lexicon đã đóng băng
+(ADR-0022 §3). Audit chỉ đọc caption unconstrained.
 
 `--audit` (chỉ cho dev): liệt kê từ nằm ngoài mọi mention, theo tần suất — vật
 liệu để người rà xem lexicon còn sót cách diễn đạt nguồn âm nào.
@@ -31,7 +32,8 @@ from ml.taxonomy import load_taxonomy
 from scripts.generate_llm_captions import check_test_gate
 
 ROOT = Path(__file__).resolve().parents[1]
-METRICS = ("hallucination_rate", "omission_rate", "temporal_order_accuracy",
+LLM_BRANCHES = ("unconstrained", "constrained")
+METRICS =("hallucination_rate", "omission_rate", "temporal_order_accuracy",
            "forbidden_term_rate", "over_specific_rate", "context_term_rate",
            "evidence_coverage", "n_mentions")
 STOPWORDS = frozenset(
@@ -78,25 +80,37 @@ def main() -> None:
     if args.audit and args.split != "dev":
         raise SystemExit("--audit chỉ cho dev: mở rộng lexicon bằng caption test = tuning test")
 
-    source = args.run_dir / "captions" / f"unconstrained_{args.split}.jsonl"
-    rows = [json.loads(line) for line in source.read_text(encoding="utf-8").splitlines()]
+    sources = [args.run_dir / "captions" / f"{b}_{args.split}.jsonl" for b in LLM_BRANCHES]
+    sources = [path for path in sources if path.exists()]
+    if not sources:
+        raise SystemExit(f"không có caption nào cho split {args.split}")
     template = TemplateCaptioner(lexicon)
     scores: dict[tuple[str, str], list[GroundingMetrics]] = {}
     audit: Counter[str] = Counter()
-    for row in rows:
-        timeline, level = row["timeline"], row["level"]
-        scores.setdefault(("unconstrained", level), []).append(
-            evaluate_grounding(timeline, row["caption"], lexicon)
-        )
+    reference: dict[tuple[str, str], Any] = {}
+    for source in sources:
+        branch = source.stem.rsplit("_", 1)[0]
+        for line in source.read_text(encoding="utf-8").splitlines():
+            row = json.loads(line)
+            timeline, level = row["timeline"], row["level"]
+            key = (row["recording_id"], level)
+            if reference.setdefault(key, timeline) != timeline:
+                raise SystemExit(f"{source.name}: timeline {key} khác nhánh trước — không so được")
+            scores.setdefault((branch, level), []).append(
+                evaluate_grounding(timeline, row["caption"], lexicon)
+            )
+            if branch == "unconstrained":
+                audit.update(uncovered_words(row["caption"]["text"], lexicon))
+    for (_, level), timeline in sorted(reference.items()):
         scores.setdefault(("template", level), []).append(
             evaluate_grounding(timeline, template.caption(timeline), lexicon)
         )
-        audit.update(uncovered_words(row["caption"]["text"], lexicon))
 
     table = {f"{branch}/{level}": {"n": len(v), **summarise(v)}
              for (branch, level), v in sorted(scores.items())}
     result: dict[str, Any] = {
-        "run": args.run_dir.name, "split": args.split, "source": str(source),
+        "run": args.run_dir.name, "split": args.split,
+        "sources": [str(path) for path in sources],
         "lexicon_version": lexicon.version, "lexicon_sha256": lexicon.sha256(),
         "summary": table,
     }

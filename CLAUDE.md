@@ -187,6 +187,19 @@ test, không phải dev (không được tuning trên test).
 
 ### Đang làm / chưa nghiệm thu ◐
 
+> **BÀN GIAO 25/09 01:45 — đọc trước khi làm gì khác.**
+> 1. Lỗi ghép cửa sổ SED đã sửa (`7ada7d7`); **11 run đã quét θ + đánh giá lại**, mọi
+>    `docs/measurements` SED dẫn xuất đã sinh lại (chưa commit). Số trong §3 dưới đây,
+>    STATUS.md, README, ADR-0021 **còn là số CŨ** — phải cập nhật từ
+>    `rq1_multiseed*_20260924.md` mới, kiểm lại kết luận RQ1, khôi phục banner "ĐÃ BỊ
+>    BÁC BỎ" ở đầu `seed_variance_vs_rq1_delta.md` (bị ghi đè khi sinh lại), rồi commit.
+>    Bản sao số cũ: scratchpad phiên trước `old_eval/` (có thể đã mất — dùng `git show`).
+> 2. W5: unconstrained xong dev+test (`9218922`, `18bb18c`). Constrained (5.7, ADR-0023)
+>    code xong, **dev đã sinh, test CHƯA sinh** — chạy
+>    `generate_llm_captions <run B 054531Z> --branch constrained --split test
+>    --frozen-lexicon-sha256 6f5634bb…` rồi `score_captions … --split test`.
+> 3. Báo cáo Word gửi thầy đã lỗi thời số SED — **không** soạn lại khi chưa được yêu cầu.
+
 | Hạng mục | Còn thiếu |
 |---|---|
 | W4 | 4.6 `confusable_with` từ ma trận nhầm thật (taxonomy.md §8); 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
@@ -309,7 +322,7 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | SED class list | **21** class từ `taxonomy.polyphonic_class_ids` |
 | Run ID | `<task>_<YYYYMMDDTHHMMSSZ>` |
 | Model version | `<component>-v<major>.<minor>`, ví dụ `sed-v1.0` |
-| Commit | `<type>: <mô tả>` — feat, fix, refactor, docs, test, chore, exp |
+| Commit | `<type>: <mô tả>` — feat, fix, refactor, docs, test, chore, exp. **Thân bắt buộc** (từ 24/09): mục *Bối cảnh* · *Thay đổi* · *Kiểm chứng* · *Ảnh hưởng*, tiếng Việt có dấu; tách commit theo nhóm logic |
 | Nhánh | Hiện tại `master` |
 | Config | YAML trong `ml/configs/`, **không hardcode** hyperparameter |
 | Seed | 20260922 cho split và training |
