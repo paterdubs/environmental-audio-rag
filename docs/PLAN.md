@@ -278,7 +278,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~2~~ | ~~`find_duplicates` và `check_leakage` chưa có~~ — **đóng 23/09** | — | ✅ |
 | ~~3~~ | ~~Chưa lưu logit thô~~ — **đóng 23/09** (G2): `predictions/{dev,test}.npz` mọi run SED | — | ✅ |
 | ~~4~~ | ~~Manifest thiếu `data_manifest_sha256` và `postproc`~~ — **đóng 23/09** (G2/H2): `data_manifest_sha256` trong `manifest.json`, `postproc.json` schema riêng (`contracts/postproc.schema.json`) | — | ✅ |
-| 5 | Seed reproducibility: **classifier đã chứng minh** (D2, 2 run 12-epoch cùng seed → `best.pt` giống hệt bit-for-bit). **SED chưa test cùng-seed** — I7 (24/09) chỉ đo biến thiên giữa 2 seed KHÁC NHAU (0 và 1), là câu hỏi bổ sung chứ không thay thế; chưa chạy lại đúng cùng seed 2 lần cho nhánh SED nào | TRUNG BÌNH | W3 |
+| 5 | Seed reproducibility: classifier **tái lập bit-for-bit** (D2). **SED KHÔNG tái lập** cùng seed (24/09): code train không đổi, frame macro-F1 B 0.5850→0.5705, C 0.5947→0.5893. Nguyên nhân chưa xác minh. Hệ quả: mọi số SED phải báo mean±sd nhiều run, không báo 1 run | **CAO** | W3 |
 | 6 | `RELATED_WORK.md` còn `⚠️ CẦN XÁC MINH`, chưa có DOI | TRUNG BÌNH | W8 |
 | ~~7~~ | ~~Ngưỡng T3 0.95/0.85 chưa hiệu chuẩn~~ — **đóng 23/09**: giữ 0.95/0.85, `threshold_calibration.json` | — | ✅ |
 | 8 | **Ablation A5 (24/09) đo xong trên A/B/C.** `d_min` (percentile 5): phẳng, không cần đổi. `g_max` (percentile 50): tín hiệu nhất quán 3/3 nhánh cho thấy percentile 25 tốt hơn — **chưa đổi**, vì quan sát trên test, cần vòng chọn trên dev trước khi sửa ADR-0003. Xem `docs/measurements/*_duration_prior_ablation_A5.md` | TRUNG BÌNH | W3 |
@@ -287,8 +287,8 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |
 | ~~9~~ | ~~Chưa có CI~~ — **đóng 23/09**: `.github/workflows/ci.yml` (chạy cục bộ; chưa có remote nên chưa từng chạy trên GitHub, xem `docs/PLAN.md` §Nghiệm thu W1) | — | ✅ |
 | ~~10~~ | ~~`contracts/*.schema.json` chưa tồn tại~~ — **đóng 23/09**: 8 schema Draft 2020-12 trong `contracts/` | — | ✅ |
-| 14 | **RQ1 PSDS-1/PSDS-2 chưa phân biệt được với nhiễu seed** — Δ=C−B vượt biến thiên seed chỉ 1.32×/1.11× (so với event-based F1 8.2×). Không thể khẳng định là tín hiệu thật với 2 seed/nhánh | **CHẶN** kết luận RQ1 trên PSDS | W4 |
-| 15 | RQ1 chưa khoá chính thức — nhánh B/C hiện tại đều `git.dirty=true` (task I8, giao Codex) | **CHẶN** | W3 |
+| 14 | **RQ1: không đo được hiệu ứng DataSEC.** Run sạch cho C−B event-F1 **−0.0173** (đảo dấu so với 2 run trước). Gộp 3 run/nhánh: event-F1 B 0.0506±0.0055 vs C 0.0508±0.0097; PSDS-1/2 cũng trong khoảng nhiễu. Muốn kết luận chắc cần ≥5 run/nhánh hoặc chấp nhận kết quả âm tính | **CHẶN** kết luận RQ1 | W4 |
+| ~~15~~ | ~~RQ1 chưa khoá chính thức~~ — **đóng 24/09** (I8): B/C chạy lại trên tree sạch `5bf1cf7`, `rq1_delta_official_20260924.md` | — | ✅ |
 
 ---
 

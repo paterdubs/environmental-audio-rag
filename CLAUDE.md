@@ -55,35 +55,35 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật:** 24/09/2026 — **RQ1 có câu trả lời thăm dò đầu tiên.** Cả ba nhánh
-SED (A/B/C, ADR-0002) đã train thật 8 epoch GPU và đánh giá đầy đủ
-(event-based F1, PSDS-1/2, bootstrap CI). `scripts.report_rq1_delta`:
+**Cập nhật:** 24/09/2026 — **RQ1 chính thức (tree sạch, I8): KHÔNG đo được
+hiệu ứng của pretraining DataSEC.** Cả ba nhánh SED (A/B/C, ADR-0002) train 8
+epoch GPU, `git.dirty=false`, đánh giá đầy đủ (`rq1_delta_official_20260924.md`):
 
 | | Nhánh A (scratch) | Nhánh B (AudioSet) | Nhánh C (AudioSet→DataSEC) |
 |---|---:|---:|---:|
-| event-based F1 | 0.0220 | 0.0479 | 0.0568 |
-| PSDS-1 | 0.1820 | 0.2132 | 0.2512 |
-| PSDS-2 | 0.4475 | 0.6690 | 0.6290 |
+| event-based F1 | 0.0220 | 0.0569 | 0.0396 |
+| PSDS-1 | 0.1820 | 0.2444 | 0.2533 |
+| PSDS-2 | 0.4475 | 0.6442 | 0.6384 |
 
-`Δ = C − B` (RQ1): event-F1 **+0.0089**, PSDS-1 **+0.0380**, PSDS-2 **−0.0401**.
-⚠️ **Thăm dò, chưa khoá chính thức**: nhánh B/C `git.dirty=true`, 1 seed mỗi
-nhánh khi tính Δ này.
+`Δ = C − B` chính thức: event-F1 **−0.0173** — **đảo dấu** so với hai run thăm
+dò trước (+0.0089, cả hai seed). Gộp 3 run/nhánh (mean ± sd):
 
-**I7 (seed=1 cho B và C) đã xong, và cho một phát hiện quan trọng làm giảm độ
-tin cậy của hai trong ba metric.** So `scripts.report_seed_variance`: biến
-thiên giữa 2 seed đo được so với |Δ RQ1| —
+| Metric | B | C |
+|---|---:|---:|
+| event-based F1 | 0.0506 ± 0.0055 | 0.0508 ± 0.0097 |
+| PSDS-1 | 0.2332 ± 0.0173 | 0.2495 ± 0.0048 |
+| PSDS-2 | 0.6513 ± 0.0154 | 0.6442 ± 0.0188 |
 
-| Metric | Biến thiên seed (lớn nhất) | \|Δ RQ1\| | Tỷ lệ |
-|---|---:|---:|---:|
-| event-based F1 | 0.0011 | 0.0089 | **8.2×** — vượt rõ, có thể là tín hiệu |
-| PSDS-1 | 0.0287 | 0.0380 | **1.32×** — biên ~32%, quá mỏng để chắc chắn |
-| PSDS-2 | 0.0363 | 0.0401 | **1.11×** — biên ~11%, gần như không phân biệt được với nhiễu |
+**B ≈ C trên cả ba metric.** Kết luận chắc chắn duy nhất: pretraining nói chung
+(B/C so với A) giúp rõ rệt. Bước pretraining thêm trên DataSEC **không** tạo
+khác biệt đo được ở ngân sách 8 epoch. Nhận định "event-F1 vượt nhiễu 8.2×"
+(`seed_variance_vs_rq1_delta.md`) đã **bị bác bỏ** — chỉ 2 mẫu/nhánh đã đánh
+giá thấp nhiễu thật.
 
-**Chỉ event-based F1 có thể coi là tín hiệu thật.** PSDS-1 và PSDS-2 — hai
-trong ba metric chính của RQ1 — **không thể khẳng định** khác nhiễu giữa các
-lần chạy với chỉ 2 seed. Đây là hạn chế phải ghi nguyên văn vào báo cáo cuối,
-không diễn giải có lợi. Muốn thu hẹp cần thêm seed (3+ seed/nhánh) hoặc chấp
-nhận RQ1 chỉ kết luận được chắc chắn trên event-based F1.
+**Train SED không tất định cùng seed**: code train không đổi, cùng seed
+20260922, nhưng frame macro-F1 B 0.5850→0.5705, C 0.5947→0.5893. Classifier (D2)
+thì tái lập bit-for-bit. Mọi số SED từ nay phải báo mean ± sd nhiều run.
+
 
 **Cổng dữ liệu D3/D4 đã đóng** (`data-v1.0`). **Split DataSEC đã đóng băng**
 (70/15/15). **D1–D6 xong toàn bộ** (số D1 chính thức: coarse macro-F1 test
