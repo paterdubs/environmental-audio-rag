@@ -83,20 +83,25 @@ CI + phân tích lỗi. Sửa 4 lỗi thật trong lúc verify (2 lỗi thư vi�
 numpy2/thiết kế PSDS, 1 lỗi thiếu field, 1 lỗi hiệu năng 20x) — chi tiết ở
 `docs/AGENT_SYNC.md` §5 và ADR-0020.
 
-**Ablation A2 (global vs per-class θ) lặp lại được trên cả A và B**: per-class
-overfit dev rõ rệt và **tăng theo sức mạnh model** — nhánh A yếu dev→test
-−66%, nhánh B mạnh hơn dev→test **−38.7%** (global chỉ −1.3% cả hai nhánh).
-Đây là vấn đề thiết kế thật (21 bậc tự do fit trên dev 142 recording,
-evaluation_protocol §2.4), không phải triệu chứng riêng của một baseline yếu
-— phải ghi vào Hạn chế của báo cáo cuối, không thay đổi `postproc.json` để
-"sửa". Ablation A3 (median filter) không cho kết luận rõ ràng theo hướng nào
-trên cả hai nhánh.
+**Ablation A2/A3 xong cả bộ ba A/B/C — n=3, kết luận rõ ràng cho mỗi cái:**
 
-**W5 (grounded caption) đã verify wiring thật trên cả nhánh A và B** (không
+- **A2 (global vs per-class θ): overfit dev là vấn đề hệ thống, không phải
+  triệu chứng riêng của một baseline yếu.** Per-class dev→test: A **−66%**, B
+  **−38.7%**, C **−28.6%** — giảm dần theo sức mạnh model nhưng **không biến
+  mất**. Global luôn ổn định: A −18%, B −1.3%, C **+0.7%** (test còn tốt hơn
+  dev). Bằng chứng nhất quán trên 3 nhánh độc lập — phải ghi vào Hạn chế của
+  báo cáo cuối (evaluation_protocol §2.4: 21 bậc tự do fit trên dev 142
+  recording), không đổi `postproc.json` để "sửa".
+- **A3 (median filter): không kết luận rõ hướng nào.** Δ tổng hợp gần 0 và đổi
+  dấu giữa các nhánh: A +0.0025, B +0.0035, C **−0.0015**. `glass_breaking`
+  (lớp ADR-0003 nêu đích danh) chỉ bị ảnh hưởng ở nhánh A yếu; B/C đều Δ=0.0000
+  — median filter hiện tại không có tác động đáng kể theo hướng nào.
+
+**W5 (grounded caption) đã verify wiring thật trên cả ba nhánh A/B/C** (không
 phải kết quả nghiên cứu, chỉ kiểm code chạy đúng trên dữ liệu thật thay vì
-fixture 1-event): 0/284 recording lệch bất biến G1-G3. Bắt được 1 bug thật
-trong lúc verify: `ml/evaluation/grounding.py::_temporal_order` collapse
-onset khi một lớp lặp lại trong timeline — đã sửa.
+fixture 1-event): 0/426 recording lệch bất biến G1-G3, 0 lỗi `document_builder`.
+Bắt được 1 bug thật trong lúc verify: `ml/evaluation/grounding.py::_temporal_order`
+collapse onset khi một lớp lặp lại trong timeline — đã sửa.
 
 ### Đã có ✅
 
@@ -154,9 +159,9 @@ onset khi một lớp lặp lại trong timeline — đã sửa.
 | **Nhánh B SED thật (I1+I3)** | `sed_polyphonic_20260924T015736Z`. Test frame macro-F1 **0.5850**; event-F1 **0.0479**, PSDS-1/2 **0.2132/0.6690** |
 | **Nhánh C SED thật (I2+I4)** | `sed_polyphonic_20260924T021958Z`. Test frame macro-F1 **0.5947**; event-F1 **0.0568**, PSDS-1/2 **0.2512/0.6290** |
 | **RQ1 thăm dò (I5)** | `Δ=C−B`: +0.0089/+0.0380/−0.0401; `Δ=C−A`: +0.0347/+0.0692/+0.1815. Chưa khoá (B/C dirty, 1 seed) |
-| **Ablation A2 lặp lại trên A+B** | Per-class overfit dev tăng theo sức mạnh model (A −66%, B −38.7%); global ổn định (~−1 đến −18%) |
-| **Ablation A3 trên A+B** | Không kết luận rõ hướng nào; caveat "model yếu" giờ tính động theo % lớp F1=0, không hardcode theo tên nhánh |
-| **W5 wiring verify (J2/J4/J5)** | 284 recording thật (A+B), 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
+| **Ablation A2 xong bộ ba A/B/C** | Per-class overfit dev hệ thống, giảm dần theo sức mạnh model nhưng không biến mất: A −66%, B −38.7%, C −28.6%; global luôn ổn định (A −18%, B −1.3%, C +0.7%) |
+| **Ablation A3 xong bộ ba A/B/C** | Không kết luận rõ hướng nào (Δ gần 0, đổi dấu giữa nhánh: +0.0025/+0.0035/−0.0015); caveat tính động theo % lớp F1=0 thật |
+| **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
 
 ### Đang làm / chưa nghiệm thu ◐
 
@@ -165,8 +170,7 @@ onset khi một lớp lặp lại trong timeline — đã sửa.
 | Split DataSED | **Đã đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
 | Cổng D3/D4 | **Xong, cả hai split đã đóng băng.** |
 | Tài liệu | `RELATED_WORK.md` còn chờ (cần trích dẫn — rủi ro bịa, ưu tiên thấp); `data_inventory.md` đã xong |
-| RQ1 khoá chính thức | Cần: (1) chạy lại B/C trên tree sạch (`git.dirty=false`), (2) seed thứ hai (I7) để đo biến thiên trước khi diễn giải PSDS-2 đi ngược hướng |
-| Ablation A2/A3 trên nhánh C | Đã làm A+B, chưa chạy cho C (không gấp, script sẵn sàng: `report_threshold_ablation.py`/`report_median_filter_ablation.py`) |
+| RQ1 khoá chính thức | Cần: (1) chạy lại B/C trên tree sạch (`git.dirty=false`), (2) seed thứ hai (I7, Codex đang chạy) để đo biến thiên trước khi diễn giải PSDS-2 đi ngược hướng |
 | W6 (event store, RAG) | Migration + pgvector chạy được (H3); chưa nạp dữ liệu thật, chưa có embedding/retrieval |
 
 ### Chưa có ○
@@ -179,15 +183,13 @@ liệu thật, cần chọn LLM/embedding cho unconstrained caption) · API / in
 ### Việc tiếp theo — theo thứ tự
 
 1. **Khoá RQ1 chính thức**: chạy lại nhánh B/C trên tree sạch (`git.dirty=false`),
-   rồi seed thứ hai (I7) để có bằng chứng biến thiên trước khi diễn giải PSDS-2
-   (hiện đi ngược hướng event-F1/PSDS-1).
-2. Ablation A2/A3 cho nhánh C (script sẵn, chỉ cần chạy) — hoàn chỉnh bộ ba
-   A/B/C cho Hạn chế của báo cáo cuối.
-3. W5 5.6-5.8: nhánh unconstrained (đối chứng, cần chọn LLM) và constrained
+   rồi seed thứ hai (I7, Codex đang chạy) để có bằng chứng biến thiên trước khi
+   diễn giải PSDS-2 (hiện đi ngược hướng event-F1/PSDS-1).
+2. W5 5.6-5.8: nhánh unconstrained (đối chứng, cần chọn LLM) và constrained
    thật, đánh giá oracle — wiring canonicalize→caption→grounding→document đã
-   verify chạy đúng trên dữ liệu thật (J2/J4/J5), chỉ còn phần sinh caption
-   không ràng buộc.
-4. W6: nạp event thật vào pgvector (H3 đã có hạ tầng), chọn embedding (BGE-M3,
+   verify chạy đúng trên dữ liệu thật cả ba nhánh A/B/C (J2/J4/J5/J6), chỉ còn
+   phần sinh caption không ràng buộc.
+3. W6: nạp event thật vào pgvector (H3 đã có hạ tầng), chọn embedding (BGE-M3,
    ADR-0004), xây retrieval + query set thật.
 
 ---
@@ -421,6 +423,35 @@ sạch như nhánh A — cộng dồn 284 recording thật đã verify không l�
 
 Test suite 336 → **337 pass** (Codex thêm 1 test cho I6), ruff sạch. Board
 (`AGENT_SYNC.md`) và trạng thái §3 của file này cập nhật đầy đủ ba nhánh + RQ1.
+
+### 2026-09-24 (tiếp 2) — J6: hoàn tất bộ ba A/B/C cho ablation A2/A3, kết luận A2 giờ có n=3
+
+Trong lúc Codex chạy I7 (seed=1 cho B và C, khoá GPU), chạy nốt J1/J3/J2/J4 cho
+nhánh C — `sed_polyphonic_20260924T021958Z` đã có `postproc.json`/`evaluation.json`
+từ I4, không tranh chấp gì với I7 (chạy trên run mới, thư mục khác hẳn).
+
+**A2 giờ có bằng chứng từ 3 nhánh độc lập, không còn là quan sát của một mô
+hình:** per-class dev→test A −66% → B −38.7% → C **−28.6%** — giảm dần đúng
+hướng "model tốt hơn thì overfit đỡ hơn", nhưng **không về 0**. Global luôn ổn
+định và ở phía ngược lại: A −18% → B −1.3% → C **+0.7%** (test tốt hơn dev).
+Đây là bằng chứng đủ chắc để khẳng định: per-class θ có đóng góp overfit dev
+thật, mang tính hệ thống của thiết kế (21 bậc tự do trên 142 recording dev),
+không phải nhiễu của một run cụ thể — phải vào Hạn chế báo cáo cuối nguyên
+văn, không diễn giải thành "chỉ nhánh yếu mới bị".
+
+**A3 với n=3 lại cho kết luận ngược lại — không có hiệu ứng hệ thống nào:** Δ
+tổng hợp A +0.0025, B +0.0035, C **−0.0015** — quá nhỏ và đổi dấu, không đủ để
+khẳng định median filter giúp hay hại. `glass_breaking` (lớp ADR-0003 nêu đích
+danh) chỉ có hiệu ứng lớn ở nhánh A (model gần như đoán ngẫu nhiên); ở B/C
+median filter không đổi gì (Δ=0.0000) — giả thuyết hợp lý nhất: ở model tốt
+hơn, các đoạn dự đoán glass_breaking đã đủ dài để không bao giờ chạm điều kiện
+lọc, nên câu hỏi ban đầu của ADR-0003 hoá ra không áp dụng khi model đã học
+đủ tốt.
+
+Wiring verify (J2/J4) trên nhánh C: 0/142 anomaly, `document_builder` 0 lỗi —
+cộng dồn 426 recording thật qua cả ba nhánh không phát sinh lỗi mới. Test
+suite 337 → **338 pass**, ruff sạch. Không đụng GPU, không đụng run Codex
+đang dùng cho I7.
 
 ### 2026-09-24 — Trong lúc Codex train nhánh B/C (I1-I7), làm song song A2 + verify W5 thật; sửa 1 bug thật ở grounding
 

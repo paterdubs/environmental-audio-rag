@@ -1,0 +1,17 @@
+{
+  "run": "ml\\runs\\sed_polyphonic_20260924T021958Z",
+  "global_theta": 0.95,
+  "dev": {
+    "global": 0.06372881355932203,
+    "per_class": 0.07957870099473377
+  },
+  "test": {
+    "global": 0.07091055600322321,
+    "per_class": 0.056786703601108025
+  },
+  "dev_minus_test_gap": {
+    "global": -0.0071817424439011845,
+    "per_class": 0.022791997393625744
+  },
+  "per_class_worse_gap_than_global": true
+}
