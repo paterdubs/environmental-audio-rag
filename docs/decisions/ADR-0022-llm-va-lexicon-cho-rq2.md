@@ -103,6 +103,26 @@ Thay đổi do audit dev (ghi đủ để phản biện được):
 - **Không thêm** từ tả cách phát âm không nêu nguồn (rhythmic, rumble, roar, hum,
   drone, wail, clatter, buzzing) — không phải mention nguồn âm theo định nghĩa §8.3.
 
+### 5. Kết quả nhánh unconstrained trên test (một lần, lexicon đã đóng băng)
+
+| Mức | Halluc. | Omission | Temporal | Forbidden (G3) | Over-specific | Context |
+|---|---:|---:|---:|---:|---:|---:|
+| oracle | 0.0126 | 0.0124 | 0.9413 | 0.0070 | 0.1365 | 0.3239 |
+| e2e | 0.0038 | 0.0599 | 0.9025 | 0.0141 | 0.1856 | 0.4225 |
+
+Nguồn: `caption_grounding_sed_polyphonic_20260924T054531Z_test.md`. Audit thủ công
+(`caption_lexicon_audit_test_20260925.md`): **7/8** mention bị chấm "bịa" là dương
+tính giả của lexicon ("horn blast", "insect song", "birds singing"), 1/8 ranh giới
+→ hallucination nguồn âm thật **0–1 / ~730 mention**; hai cột Halluc. trên là cận
+trên. Lexicon không sửa sau audit.
+
+**Hệ quả cho RQ2:** với timeline làm đầu vào, LLM gần như không bịa nguồn âm — RQ2
+không thể thể hiện qua "hallucination nguồn âm" (hiệu ứng sàn). Khác biệt constrained
+vs unconstrained phải được đọc trên các chiều sinh tự do thực sự vi phạm: suy diễn
+bối cảnh (32–42% caption), gọi tên quá mức bằng chứng (14–19% mention), từ cấm G3
+(0.7–1.4%), thứ tự thời gian (0.90–0.94) và omission e2e (6%). Phải viết đúng như
+vậy trong Chương kết quả, không trình bày RQ2 như "giảm hallucination".
+
 ## Consequences
 
 ### Tích cực
