@@ -11,8 +11,11 @@
 | Tổng event | 1256 |
 | Event nhiều nhất trong 1 recording | 66 |
 | Recording lệch bất biến G1-G3 (kỳ vọng 0) | 0 |
+| `document_builder` lỗi (kỳ vọng 0) | 0 |
+| Polyphony lớn nhất quan sát được | 7 |
 
 Không có recording nào lệch bất biến hallucination=0/omission=0/coverage=1/forbidden=0/temporal_order=1 — pipeline canonicalize→caption→grounding chạy đúng trên dự đoán thật, kể cả recording nhiều event.
+`document_builder` (W6 6.3) chạy không lỗi trên mọi recording, kể cả polyphony tới 7 — fixture cũ chỉ có 2 event/1 mức polyphony.
 
 ## Ví dụ (ưu tiên recording nhiều event)
 

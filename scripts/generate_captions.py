@@ -10,6 +10,10 @@ sửa gì), canonicalize từng recording, sinh caption bằng `TemplateCaptione
 chạy `evaluate_grounding` — báo cáo bất kỳ recording nào không đạt hallucination=0/
 omission=0/coverage=1/forbidden=0 (kỳ vọng bằng constructon với captioner ràng
 buộc, nên lệch là dấu hiệu bug thật, không phải kết quả nghiên cứu).
+
+Tiện thể chạy luôn `ml/retrieval/document_builder.py` (W6 6.3) trên cùng
+timeline thật — fixture của nó cũng chỉ có 2 event, chưa từng thấy recording
+tới hàng chục event đồng thời.
 """
 
 from __future__ import annotations
@@ -26,6 +30,7 @@ from ml.evaluation.grounding import evaluate_grounding
 from ml.evaluation.predictions import load_predictions
 from ml.postprocessing import process_recordings, stack_predictions_by_recording
 from ml.postprocessing.calibration import validate_postproc_artifact
+from ml.retrieval.document_builder import build_document
 from ml.taxonomy import load_taxonomy
 from scripts.report_threshold_ablation import priors_from_postproc
 
@@ -77,6 +82,8 @@ def main() -> None:
 
     per_recording: list[dict[str, object]] = []
     anomalies: list[dict[str, object]] = []
+    document_failures: list[dict[str, object]] = []
+    polyphony_values: list[int] = []
     for recording_id in sorted(probabilities):
         duration_s = probabilities[recording_id].shape[0] / frame_rate
         events = estimate.get(recording_id, [])
@@ -102,10 +109,18 @@ def main() -> None:
         ):
             anomalies.append(record)
 
+        try:
+            document = build_document(caption["text"], timeline)
+        except Exception as exc:  # noqa: BLE001 -- wiring smoke test, report don't crash
+            document_failures.append({"recording_id": recording_id, "error": repr(exc)})
+        else:
+            polyphony_values.append(int(document["max_polyphony"]))
+
     n_recordings = len(per_recording)
     n_with_events = sum(1 for r in per_recording if r["n_events"] > 0)
     total_events = sum(r["n_events"] for r in per_recording)
     max_events = max((r["n_events"] for r in per_recording), default=0)
+    max_polyphony_observed = max(polyphony_values, default=0)
 
     result = {
         "run": str(args.run_dir),
@@ -116,6 +131,9 @@ def main() -> None:
         "max_events_single_recording": max_events,
         "n_anomalies": len(anomalies),
         "anomalies": anomalies,
+        "n_document_builder_failures": len(document_failures),
+        "document_builder_failures": document_failures,
+        "max_polyphony_observed": max_polyphony_observed,
     }
 
     destination = args.output or (
@@ -138,6 +156,8 @@ def main() -> None:
         f"| Tổng event | {total_events} |",
         f"| Event nhiều nhất trong 1 recording | {max_events} |",
         f"| Recording lệch bất biến G1-G3 (kỳ vọng 0) | {len(anomalies)} |",
+        f"| `document_builder` lỗi (kỳ vọng 0) | {len(document_failures)} |",
+        f"| Polyphony lớn nhất quan sát được | {max_polyphony_observed} |",
         "",
     ]
     if anomalies:
@@ -149,6 +169,15 @@ def main() -> None:
             "Không có recording nào lệch bất biến hallucination=0/omission=0/coverage=1/"
             "forbidden=0/temporal_order=1 — pipeline canonicalize→caption→grounding chạy "
             "đúng trên dự đoán thật, kể cả recording nhiều event."
+        )
+    if document_failures:
+        lines.append(
+            "⚠️ **`ml/retrieval/document_builder.py` lỗi trên dữ liệu thật** — xem `.json`."
+        )
+    else:
+        lines.append(
+            "`document_builder` (W6 6.3) chạy không lỗi trên mọi recording, kể cả polyphony "
+            f"tới {max_polyphony_observed} — fixture cũ chỉ có 2 event/1 mức polyphony."
         )
     lines += ["", "## Ví dụ (ưu tiên recording nhiều event)", ""]
     for record in sample:
