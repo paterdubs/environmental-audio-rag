@@ -141,7 +141,6 @@ test, không phải dev (không được tuning trên test).
 | DataSED dedup T1 | 8 nhóm exact duplicate |
 | Log-mel v1 | 717/717 file, 16 kHz, 64 mel, 50 fps |
 | SED baseline (dò đường) | frame macro-F1 test 0.359448 |
-| Test suite | 18 test pass, ruff sạch |
 | Dedup T1/T2/T3 | `ml/dataops/fingerprint.py` + `duplicates.py` + `dedup_run.py`; 44 test |
 | Hiệu chuẩn ngưỡng T3 | Giữ 0.95/0.85; positive min 1.0000, negative max 0.9205, 0/5,000 vượt 0.95 |
 | Leakage check D4 | `ml/dataops/leakage.py`; 5 kiểm §8.4; chặn chạy trước D3 |
@@ -155,7 +154,7 @@ test, không phải dev (không được tuning trên test).
 | **Duyệt tay 35 cặp** | Xong: 10 `duplicate` · 1 `unsure` · 24 `distinct`, `human:patphh` |
 | Rò rỉ cuối | **11 clip** / 5,048 = **0.2179%** → dải `minor`, **RQ1 vẫn hợp lệ** |
 | Độ nhất quán chú giải | 8 cặp byte-identical gán nhãn 2 lần: **67/94** biên trong collar 0.2 s; **2/8** bất đồng lớp |
-| Test suite | 218 test pass, ruff sạch |
+| Test suite | **366 pass**, ruff sạch; clone sạch (không có dữ liệu gitignore) 345 pass, 1 skip |
 | JSON Schema contracts | 6 schema Draft 2020-12; 13 test contract pass |
 | CI baseline | `.github/workflows/ci.yml`; guard `services/api` không import torch pass |
 | Tài liệu vận hành + annotation | `TRAINING_OPS_PLAN.md` và `annotation_guideline.md` đã cập nhật 23/09 |
@@ -190,32 +189,25 @@ test, không phải dev (không được tuning trên test).
 
 | Hạng mục | Còn thiếu |
 |---|---|
-| Split DataSED | **Đã đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
-| Cổng D3/D4 | **Xong, cả hai split đã đóng băng.** |
-| Tài liệu | `RELATED_WORK.md` còn chờ (cần trích dẫn — rủi ro bịa, ưu tiên thấp); `data_inventory.md` đã xong |
-| RQ1 khoá chính thức | I7 (seed=1) đã xong — event-F1 vượt rõ nhiễu seed (8.2×), nhưng PSDS-1/2 KHÔNG (1.32×/1.11×). Còn thiếu: chạy lại B/C trên tree sạch (`git.dirty=false`) trước khi coi bất kỳ số nào là chính thức |
-| W6 (event store, RAG) | Migration + pgvector chạy được (H3); chưa nạp dữ liệu thật, chưa có embedding/retrieval |
+| W4 | 4.6 `confusable_with` từ ma trận nhầm thật (taxonomy.md §8); 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
+| W5 (caption) | Template + metric G1–G3 đã verify trên 426 recording thật; thiếu nhánh không ràng buộc (cần chọn LLM), nhánh ràng buộc, đánh giá oracle + end-to-end |
+| W6 (event store, RAG) | PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding BGE-M3, chưa retrieval |
+| Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
+| CI | `ci.yml` chưa từng chạy trên GitHub (repo chưa có remote) |
 
 ### Chưa có ○
 
-RQ1 khoá chính thức (đang thăm dò; PSDS-1/2 chưa phân biệt được với nhiễu seed)
-· caption thật (unconstrained/constrained đối chứng, W5 5.6-5.8 — wiring đã
-verify ở J2/J4/J5/J6) · RAG / retrieval (nạp dữ liệu thật, cần chọn LLM/embedding
-cho unconstrained caption) · API / inference / frontend.
+Nhánh caption dùng LLM · retrieval thật · API / inference / frontend.
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **Khoá RQ1 chính thức**: chạy lại nhánh B/C trên tree sạch (`git.dirty=false`).
-   Diễn giải RQ1 phải nói rõ: chỉ event-based F1 có bằng chứng vượt nhiễu seed
-   (8.2×); PSDS-1/2 (1.32×/1.11×) không đủ chắc để khẳng định là tín hiệu thật
-   — đây là hạn chế thật, không phải việc cần "sửa" bằng cách chạy thêm cho ra
-   số đẹp hơn.
-2. W5 5.6-5.8: nhánh unconstrained (đối chứng, cần chọn LLM) và constrained
-   thật, đánh giá oracle — wiring canonicalize→caption→grounding→document đã
-   verify chạy đúng trên dữ liệu thật cả ba nhánh A/B/C (J2/J4/J5/J6), chỉ còn
-   phần sinh caption không ràng buộc.
-3. W6: nạp event thật vào pgvector (H3 đã có hạ tầng), chọn embedding (BGE-M3,
-   ADR-0004), xây retrieval + query set thật.
+1. **W5 — caption có căn cứ** (trọng tâm đóng góp mới, ADR-0021): chọn LLM cho
+   nhánh không ràng buộc (cần người dùng quyết), rồi nhánh ràng buộc và đánh giá
+   oracle + end-to-end trên **cùng** SED prediction đóng băng.
+2. **W6 — RAG**: nạp event thật vào pgvector, embedding BGE-M3 (ADR-0004),
+   retrieval + query set 100 câu.
+3. W4 còn lại: 4.6 (`confusable_with`), 4.7 (A4) — ưu tiên thấp hơn W5/W6.
+4. Tuỳ chọn: chọn lại `g_max` percentile trên **dev** theo gợi ý A5.
 
 ---
 
@@ -363,12 +355,24 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 
 # ==== Huấn luyện ====
 .venv/Scripts/python.exe -m scripts.train_classifier --epochs 30 --device cuda
-.venv/Scripts/python.exe -m scripts.train_sed --epochs 8 --batch-size 8 --device cuda --evaluate-test
+.venv/Scripts/python.exe -m scripts.train_sed --evaluate-test                        # nhánh A
+.venv/Scripts/python.exe -m scripts.train_sed --encoder panns --audioset-checkpoint "artifacts/checkpoints/Cnn14_mAP=0.431.pth" --evaluate-test   # nhánh B
+.venv/Scripts/python.exe -m scripts.train_sed --encoder panns --datasec-checkpoint ml/runs/<classifier_run>/checkpoints/best.pt --evaluate-test  # nhánh C
+# Số chính thức: chạy trên tree sạch (`git status --porcelain` rỗng — file untracked cũng tính là dirty)
 .venv/Scripts/python.exe -m scripts.report_run ml/runs/<run_id>
 
+# ==== Đánh giá SED (sau khi train) ====
+.venv/Scripts/python.exe -m scripts.sweep_threshold ml/runs/<run_id>    # θ trên dev → postproc.json
+.venv/Scripts/python.exe -m scripts.evaluate_run ml/runs/<run_id>       # test một lần
+.venv/Scripts/python.exe -m scripts.report_rq1_multiseed --branch-b <runs...> --branch-c <runs...>
+.venv/Scripts/python.exe -m scripts.report_branch_per_class --branch-b <runs...> --branch-c <runs...>
+.venv/Scripts/python.exe -m scripts.report_collar_sensitivity ml/runs/<run_id> [...]
+.venv/Scripts/python.exe -m scripts.report_threshold_ablation ml/runs/<run_id>      # A2
+.venv/Scripts/python.exe -m scripts.report_median_filter_ablation ml/runs/<run_id>  # A3
+.venv/Scripts/python.exe -m scripts.report_duration_prior_ablation ml/runs/<run_id> # A5
+.venv/Scripts/python.exe -m scripts.generate_captions ml/runs/<run_id>  # verify wiring W5
+
 # ==== Chưa triển khai ====
-# scripts.evaluate_run      — event-based F1, PSDS
-# scripts.sweep_threshold   — quét θ trên dev
 # scripts.build_retrieval_index
 # scripts.serve_demo
 ```
@@ -1116,7 +1120,7 @@ gọi `cross_entropy` khi `valid.any()`; thêm test khoá lại hành vi
 (`ml/models/hierarchical.py`, `tests/test_hierarchical.py`, 11/11 pass).
 
 Chạy full 12 epoch lần đầu **quên truyền `--checkpoint`** — đúng lỗi
-[ADR-0015](decisions/ADR-0015-checkpoint-audioset-panns.md) §3 cảnh báo trước:
+[ADR-0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) §3 cảnh báo trước:
 encoder khởi tạo ngẫu nhiên thay vì AudioSet, kết quả không phải nhánh C như
 ADR-0002 định nghĩa. Tự bắt được qua đọc lại `manifest.config.checkpoint_path`
 — thấy `null` thay vì đường dẫn thật — trước khi tin bất kỳ con số nào. Xoá

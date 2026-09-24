@@ -2,9 +2,10 @@
 
 Khóa luận Khoa học dữ liệu về phát hiện sự kiện âm thanh môi trường, sinh mô tả có căn cứ và truy xuất sự kiện bằng RAG.
 
-> **Trạng thái:** hai dataset đã tải và verify (MD5 khớp, license `cc-by-nc-sa-4.0`).
-> Taxonomy 22 lớp + 28 subclass đã xác minh từ archive. SED baseline đã chạy nhưng
-> là số dò đường, chưa phải kết quả. Cổng đang chặn: **D3 audit duplicate**.
+> **Trạng thái:** dữ liệu đã kiểm soát trùng lặp xuyên dataset và đóng băng split
+> (`data-v1.0`). Classifier DataSEC (coarse macro-F1 0.847) và SED ba nhánh A/B/C
+> đã train, đánh giá bằng event-based F1 + PSDS trên nhiều run. **RQ1 cho kết quả
+> âm tính** (ADR-0021). Caption có căn cứ và RAG đang phát triển.
 > Chi tiết có bằng chứng: [STATUS](docs/STATUS.md).
 
 ## 1. Bài toán
@@ -28,6 +29,11 @@ Hệ thống không tuyên bố phát hiện tội phạm, ý định, tình tr�
 2. Caption bị ràng buộc bởi event timeline giảm hallucination đến mức nào so với caption không ràng buộc?
 3. Kết hợp metadata filtering và semantic retrieval cải thiện Recall@k/MRR cho truy vấn sự kiện ra sao?
 4. Classifier phân cấp có tách được subclass DataSEC trong các coarse class gộp hay không?
+
+**Kết quả hiện tại cho câu 1:** pretraining trên AudioSet giúp rõ (event-based F1
+tăng hơn gấp đôi so với train từ đầu), nhưng pretraining **thêm** trên DataSEC không
+tạo khác biệt đo được (5 run/nhánh, Welch p = 0.42–0.77). Xem
+[ADR-0021](docs/decisions/ADR-0021-rq1-ket-qua-am-tinh.md).
 
 ## 3. Đóng góp dự kiến
 
@@ -119,6 +125,8 @@ metadata đã lưu trong `data/reference/`.
 python -m venv .venv
 .venv/Scripts/python.exe -m pip install -r requirements.txt
 .venv/Scripts/python.exe -m pip install -r requirements-torch.txt     --index-url https://download.pytorch.org/whl/cu128
+.venv/Scripts/python.exe -m pip install -r requirements-eval.txt      # sed_eval, psds_eval
+.venv/Scripts/python.exe -m pip install -r requirements-db.txt        # tùy chọn: event store
 
 .venv/Scripts/python.exe -m pytest -q
 .venv/Scripts/python.exe -m ruff check .

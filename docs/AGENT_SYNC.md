@@ -66,18 +66,19 @@ thoải mái.
 
 ---
 
-## 2. Trạng thái nền (cập nhật 23/09/2026)
+## 2. Trạng thái nền (cập nhật 24/09/2026)
 
-Cổng dữ liệu **đã đóng**, tag `data-v1.0`.
+Cổng dữ liệu **đã đóng**, tag `data-v1.0`. SED A/B/C xong, RQ1 chốt âm tính (ADR-0021).
 
 | | |
 |---|---|
 | Split DataSED | **đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
-| DataSEC | 5,048 file · 23.7082 h · **44.1 kHz** mono · **chưa có split** |
+| Split DataSEC | **đóng băng** 3,434/744/740 (130 clip loại) |
+| DataSEC | 5,048 file · 23.7082 h · **44.1 kHz** mono |
 | DataSED | 717 file · 18.6847 h · 44.1 kHz |
 | Rò rỉ xuyên dataset | 11 clip = 0.2179% → dải `minor`, RQ1 hợp lệ |
-| Exclusions | 143 dòng (132 luật nội bộ + 11 người quyết định) |
-| Test | 218 pass, ruff sạch |
+| SED | A 1 run · B 5 run · C 5 run (7 run sạch dùng cho phân tích chính) |
+| Test | 366 pass, ruff sạch |
 | Taxonomy sha256 | `67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a` |
 
 **Đọc bắt buộc trước khi code:** [CLAUDE.md](../CLAUDE.md) §4–§6,
@@ -150,6 +151,8 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 ---
 
 ## 4. Nhật ký — append-only
+
+[hôm nay] claude — rà soát trước khi push: clone sạch 345 pass/1 skip (skip = test cần manifest run thật, gitignore), không secret, blob lớn nhất 1.6 MB, repo 7.2 MB. Viết lại STATUS.md và README (đang ghi "cổng D3 chặn" từ 22/09), cập nhật PLAN.md (W1–W3 ✅, W4 ◐ thiếu 4.6/4.7), CLAUDE.md, §2 board
 
 [hôm nay] claude — review K2-sạch/K4/K5 của Codex: K2 khớp số Claude tự tính. K5: cột F1 theo bin KHÔNG diễn giải được (reference lọc theo bin, estimate giữ nguyên → precision giả thấp), chỉ recall có nghĩa. Thêm `scripts/report_collar_sensitivity.py` (chẩn đoán, không phải số chính thức): nới collar 0.2→1.0 s event-F1 tăng ~3×. Viết ADR-0021 chốt RQ1 âm tính
 

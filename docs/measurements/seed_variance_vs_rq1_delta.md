@@ -1,5 +1,7 @@
 # I7 — biến thiên giữa 2 seed, so với Δ RQ1 (C − B)
 
+> ⚠️ **ĐÃ BỊ BÁC BỎ (24/09).** Báo cáo này chỉ dùng 2 run/nhánh và đánh giá thấp nhiễu giữa các lần chạy. Dữ liệu 5 run/nhánh cho kết luận ngược lại — xem [ADR-0021](../decisions/ADR-0021-rq1-ket-qua-am-tinh.md). Giữ lại làm lịch sử, không trích dẫn.
+
 > Sinh bởi `scripts.report_seed_variance`. Không tính lại metric, chỉ đọc `evaluation.json` đã có của mỗi seed.
 
 ## Giá trị theo seed

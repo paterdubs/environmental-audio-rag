@@ -1,20 +1,22 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-23, sau các hạng mục W1 độc lập (contract, CI, tài liệu vận hành)
-**Git:** `3c80110` · **Taxonomy:** `0.1` / `67ca8a8c…`
+**Cập nhật:** 2026-09-24, sau khi chốt RQ1 (ADR-0021)
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 366 pass, ruff sạch
 
-> Đây là nguồn chân lý duy nhất về **phần đã chạy được**. Kiến trúc dự kiến nằm
-> trong [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này phải trỏ tới một artifact
-> kiểm chứng được.
+> Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
+> [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
+> chứng được — số liệu chi tiết ở [measurements/](measurements/).
 
 ---
 
-## 0. Cổng hiện tại
+## 0. Tóm tắt
 
-**D3 — audit duplicate.** DataSED exact duplicate (T1) đã xong. Còn thiếu:
-duplicate nội bộ DataSEC, T2/T3, và **duplicate xuyên DataSEC–DataSED**.
-
-Không freeze split, không chạy thí nghiệm transfer trước khi D3 xong.
+- **W1–W3 xong, W4 gần xong** (thiếu 4.6, 4.7). W5/W6 có nền tảng, chưa có kết quả.
+- **RQ1 âm tính:** pretraining thêm trên DataSEC **không** cải thiện SED so với chỉ
+  AudioSet (5 run/nhánh, không metric nào p < 0.05). Pretraining nói chung giúp rõ.
+- **Event-F1 thấp (~0.05)** chủ yếu do định vị thời gian thô; nới collar 0.2 → 1.0 s
+  tăng ~3×.
+- **Train SED không tất định cùng seed** → mọi số SED báo mean ± sd nhiều run.
 
 ---
 
@@ -22,181 +24,105 @@ Không freeze split, không chạy thí nghiệm transfer trước khi D3 xong.
 
 | Thành phần | Trạng thái | Bằng chứng |
 |---|---|---|
-| Scope | ✅ Đã chốt | [ADR-0001](decisions/ADR-0001-scope-and-datasets.md) |
-| Quyết định kiến trúc | ✅ 6 ADR | [decisions/](decisions/) |
-| Repository scaffold | ✅ | `c9ccbc6`, 98 file |
-| **Git baseline** | ✅ | `c9ccbc6`, `3c80110` — trước đó **chưa có commit nào** |
-| DataSED download + verify | ✅ | 4,510,378,259 B, MD5 `44e093f6…` |
-| **DataSEC download + verify** | ✅ | 6,414,663,316 B, MD5 `29fa9b8c…`, verify 10.3 s |
-| Archive audit (D0) | ✅ cả hai `pass` | [measurements/archive_audit_20260922.md](measurements/archive_audit_20260922.md) |
-| **Taxonomy xác minh từ archive** | ✅ | 22/22 coarse, 10/10 nhóm subclass, 0 unmapped |
-| DataSED inventory (D1) | ✅ | `datased_inventory_summary.json` |
-| DataSED annotation (D2) | ✅ | `datased_preparation_audit.json` |
-| DataSEC giải nén + inventory (D1) | ✅ | 5,048 WAV; `datasec_inventory_summary.json` |
-| Dedup T1 DataSED | ✅ | 8 nhóm exact duplicate |
-| **Dedup T2/T3 + xuyên dataset (D3)** | ○ | **Cổng đang chặn** |
-| Split DataSED | ◐ candidate | 435/142/140, chưa freeze |
-| Log-mel v1 | ✅ | 717/717 file |
-| SED baseline polyphonic | ◐ dò đường | frame macro-F1 test 0.359448 |
-| Event-based F1 / PSDS | ○ | Chưa có post-processing hiệu chuẩn |
-| DataSEC classifier | ○ | |
-| Transfer DataSEC → DataSED | ○ | Phụ thuộc D3 |
-| Grounded caption | ○ | Chỉ có contract [SYSTEM §6](SYSTEM.md) |
-| RAG / retrieval | ○ | Chỉ có thiết kế [SYSTEM §7](SYSTEM.md) |
-| API / inference / frontend | ○ | Chỉ có thư mục scaffold |
-| JSON Schema contracts | ✅ | 6 schema Draft 2020-12; `tests/test_contracts.py` (13 pass) |
-| CI | ✅ baseline | `.github/workflows/ci.yml`; guard `tests/test_api_boundaries.py` pass |
-| W2 nền tảng | ◐ | DataSEC loader/sampler, PANNs CNN14-compatible, `logmel_panns_v1`; chưa train |
-| W3 nền tảng | ◐ | Prediction NPZ contract, post-processing guards, run manifest v2; chưa có prediction thật |
-| W4–W6 nền tảng | ◐ | Metric/bootstrap/error harness, grounded caption fixtures, event-store/retrieval foundation; chưa chạy dữ liệu thật |
-| Test suite | ◐ | Targeted contracts + API boundary: 14 pass; full suite chờ fingerprint D3 và lỗi quyền `%TEMP%` của pytest |
+| Archive DataSEC / DataSED | ✅ MD5 khớp, `pass` | [archive_audit_20260922.md](measurements/archive_audit_20260922.md) |
+| Taxonomy xác minh từ archive | ✅ 22/22 coarse, 28 subclass, 0 unmapped | cùng trên |
+| Dedup T1/T2/T3, nội bộ + xuyên dataset (D3) | ✅ 3 cặp trùng xuyên dataset xác nhận | [dedup_20260923.md](measurements/dedup_20260923.md) |
+| Duyệt tay 35 cặp nghi vấn | ✅ 10 duplicate · 1 unsure · 24 distinct | [review_worksheet_20260923.md](measurements/review_worksheet_20260923.md) |
+| Rò rỉ xuyên dataset | ✅ 11 clip = 0.2179% → dải `minor` | `data/manifests/exclusions.csv` |
+| Split DataSED (D4) | ✅ đóng băng 438/137/142, tag `data-v1.0` | `data/splits/datased_polyphonic.frozen.json` |
+| Split DataSEC | ✅ đóng băng 3,434/744/740 | `data/splits/datasec_classification.frozen.json` |
+| Đặc trưng `logmel_v1`, `logmel_panns_v1` | ✅ 717 + 5,048 file | `data/manifests/*_logmel_*.csv` |
+| Checkpoint AudioSet CNN14 | ✅ SHA-256 xác minh, 92.23% tham số transplant | [panns_checkpoint_20260923.md](measurements/panns_checkpoint_20260923.md) |
+| Classifier DataSEC (D1) | ✅ coarse macro-F1 test **0.8467**, tái lập bit-for-bit (D2) | [per_class_metrics_datasec_20260923.md](measurements/per_class_metrics_datasec_20260923.md) |
+| SED ba nhánh A/B/C | ✅ 1 + 5 + 5 run | xem §2 |
+| Hậu xử lý + event-F1 + PSDS + bootstrap | ✅ chạy thật trên mọi run | `ml/runs/*/evaluation.json`, `*_eval.md` |
+| Ablation A2, A3, A5 (hậu xử lý) | ✅ trên cả A/B/C | xem §3 |
+| Phân tích theo lớp / độ dài / collar | ✅ | xem §2 |
+| 4.6 `confusable_with` từ ma trận nhầm thật | ○ | — |
+| 4.7 Ablation A4 `pos_weight` | ○ | — |
+| Caption có căn cứ (W5) | ◐ template + metric G1–G3 verify trên 426 recording thật; chưa có nhánh LLM đối chứng | [*_caption_wiring_test.md](measurements/) |
+| Event store + RAG (W6) | ◐ PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding | `docker-compose.yml`, `db/migrations/` |
+| API / frontend (W7) | ○ | — |
+| CI | ◐ `ci.yml` có sẵn; **chưa từng chạy trên GitHub** (chưa có remote). Clone sạch: 345 pass, 1 skip | `.github/workflows/ci.yml` |
 
 ---
 
-## 2. Artifact archive audit
+## 2. Kết quả SED
 
-Sinh bằng `python -m scripts.audit_archive` và `scripts.report_archive_audit`.
+### 2.1 Run chính thức (tree sạch, 1 run/nhánh)
 
-| Trường | DataSEC | DataSED |
-|---|---:|---:|
-| Record DOI | `10.5281/zenodo.17033970` | `10.5281/zenodo.15346092` |
-| License | `cc-by-nc-sa-4.0` | `cc-by-nc-sa-4.0` |
-| Archive bytes | 6,414,663,316 | 4,510,378,259 |
-| MD5 khớp | ✅ | ✅ |
-| ZIP entries | 5,099 | 722 |
-| Audio files | 5,048 | 717 |
-| Giải nén (GiB) | 7.01 | 5.55 |
-| Bảng annotation | 0 | 2 |
-| **LICENSE/README trong archive** | **0** | **0** |
-| Coarse label trong layout | 22 | 0 (nhãn ở CSV) |
-| Subclass label trong layout | 28 | 0 |
-| Nhãn ngoài taxonomy | 0 | 0 |
-| Verdict | `pass` | `pass` |
+| Metric (test, 142 recording) | A · scratch | B · AudioSet | C · AudioSet→DataSEC |
+|---|---:|---:|---:|
+| event-based F1 (collar 0.2 s) | 0.0220 | 0.0569 | 0.0396 |
+| PSDS-1 | 0.1820 | 0.2444 | 0.2533 |
+| PSDS-2 | 0.4475 | 0.6442 | 0.6384 |
 
----
+Run: A `sed_polyphonic_20260923T173234Z`, B `…20260924T054531Z`, C `…20260924T061000Z`.
 
-## 3. Artifact DataSED
+### 2.2 RQ1 trên nhiều run — kết luận chính thức ([ADR-0021](decisions/ADR-0021-rq1-ket-qua-am-tinh.md))
 
-- Inventory: 717 WAV, **18.6847 giờ**, 44,100 Hz (717/717), mono 716 / stereo 1.
-- Annotation: **4,034** polyphonic event / 21 class / 703 recording;
-  **4,309** monophonic event / 22 class / 717 recording.
-- **14 recording không có polyphonic target event** — giữ làm recording âm tính.
-- Exact duplicate (T1): **8 nhóm**, mỗi nhóm 2 recording.
-- Log-mel v1: 717/717 file, 16 kHz, 64 mel, hop 320 (50 fps), float16.
-- Candidate split SHA-256: `656c1851de7c22a5eb6b2c2dc2b20397ad1bce98b136c591b7fe68b88cd130b1`.
+| Metric | Chính: 7 run sạch (B n=3, C n=4) | Độ nhạy: 10 run (n=5/5) |
+|---|---|---|
+| event-based F1 | B 0.0526±0.0038 · C 0.0494±0.0070 · p=0.479 | p=0.917 |
+| PSDS-1 | B 0.2513±0.0077 · C 0.2541±0.0152 · p=0.767 | p=0.268 |
+| PSDS-2 | B 0.6443±0.0035 · C 0.6497±0.0113 · p=0.425 | p=0.718 |
 
-Parser giữ nguyên `raw_class_label`, gồm nhãn nguồn `Cat fight and moans` (số ít,
-khác DataSEC dùng số nhiều), rồi ánh xạ sang taxonomy `0.1`.
+Welch t-test hai phía. 3/10 run có `git.dirty=true` (B `015736Z`, `031616Z`; C
+`021958Z`) nên phân tích chính loại chúng. Nguồn:
+[rq1_multiseed_clean_20260924.md](measurements/rq1_multiseed_clean_20260924.md),
+[rq1_multiseed_20260924.md](measurements/rq1_multiseed_20260924.md).
 
----
+> ⚠️ [seed_variance_vs_rq1_delta.md](measurements/seed_variance_vs_rq1_delta.md) (2 run/nhánh)
+> kết luận event-F1 "vượt nhiễu 8.2×" — **đã bị bác bỏ** bởi dữ liệu 5 run.
 
-## 4. Artifact DataSEC
+### 2.3 Chẩn đoán vì sao event-F1 thấp
 
-Từ archive audit — **chưa giải nén**, nên chưa có duration, sample rate hay hash
-từng file.
+| Collar onset | 0.2 s (protocol) | 0.5 s | 1.0 s | 2.0 s |
+|---|---:|---:|---:|---:|
+| B run chính thức | 0.057 | 0.115 | 0.168 | 0.204 |
+| C run chính thức | 0.040 | 0.093 | 0.149 | 0.163 |
 
-- 5,048 WAV, 22 coarse class, 28 subclass.
-- Nhãn mã hóa bằng **cây thư mục**, không có bảng annotation.
-- Phân bố **lệch 38:1**: `voices` 1,900 (37.6%), `music` 1,001 (19.8%),
-  nhỏ nhất `cat_fights_and_moans` 50 (1.0%).
-- **`voices` + `music` = 57.5%** toàn dataset.
-- Bốn subclass dưới 25 file: `Crickets` 20, `Olive shaker` 20, `Magpies` 21,
-  `Lawn mower` 21.
+Chẩn đoán, không phải số chính thức ([collar_sensitivity_20260924.md](measurements/collar_sensitivity_20260924.md)).
+Định vị thời gian là nút thắt lớn (CNN14 ~1.28 s/khối, ADR-0014); ở collar 2 s vẫn
+~0.2 → còn lỗi nhận dạng lớp (nhầm lớp là loại lỗi nhiều nhất). Recall thấp ở mọi
+bin độ dài ([rq1_duration_polyphony_20260924.md](measurements/rq1_duration_polyphony_20260924.md);
+chỉ cột recall hợp lệ). Theo lớp: kết quả trộn, không lớp nào đủ tin cậy sau so sánh
+bội ([branch_per_class_clean_20260924.md](measurements/branch_per_class_clean_20260924.md)).
 
-Bảng đầy đủ: [SYSTEM §3.4](SYSTEM.md) · [measurements/archive_audit_20260922.md](measurements/archive_audit_20260922.md).
+### 2.4 Tính tái lập
+
+Train SED **không tất định** cùng seed và cùng code (frame macro-F1 B 0.5850 →
+0.5705). Classifier DataSEC tái lập bit-for-bit. Nguyên nhân chưa xác minh.
 
 ---
 
-## 5. Baseline SED — và bốn lý do nó chưa phải kết quả
+## 3. Ablation hậu xử lý (A/B/C)
 
-Run `sed_polyphonic_20260922T115340Z`, 8 epoch, batch 8, lr 1e-3, window 10 s,
-threshold cố định 0.5, seed 20260922:
-
-| Metric | Giá trị |
-|---|---:|
-| Best validation frame macro-F1 | 0.357305 |
-| **Test frame macro-F1** | **0.359448** |
-| Test frame macro average precision | 0.466312 |
-| Frame đánh giá | 671,570 |
-
-| # | Vì sao chưa phải kết quả báo cáo |
-|---:|---|
-| 1 | **Frame-level**, không phải event-based — không so được với bất kỳ paper nào |
-| 2 | Threshold **0.5 cố định**, chưa hiệu chuẩn per-class, trong khi `pos_weight` tới 50 |
-| 3 | Chạy trên split **candidate**, chưa qua D3/D4 |
-| 4 | `git.revision: "HEAD"`, `dirty: true` — **không tái lập chính xác được** |
-
-Per-class: [measurements/sed_polyphonic_20260922T115340Z.md](measurements/sed_polyphonic_20260922T115340Z.md).
-Thấp nhất: `crows_seagulls_magpies` 0.134646, `horn` 0.134842.
-Cao nhất: `cicadas_and_crickets` 0.676579.
+| Ablation | Kết quả | Kết luận |
+|---|---|---|
+| A2 · θ per-class vs global | Per-class dev→test −66% / −39% / −29%; global ổn định | Overfit dev có hệ thống — vào Hạn chế |
+| A3 · median filter | Δ +0.0025 / +0.0035 / −0.0015 | Không tác động rõ |
+| A5 · percentile duration prior | `g_max` percentile 25 tốt hơn cả 3 nhánh; 75 tệ hơn cả 3 | Ứng viên chọn lại trên **dev**; ADR-0003 chưa đổi |
 
 ---
 
-## 6. Ba phát hiện của Phase 1 làm đổi thiết kế
+## 4. Dữ liệu
 
-### 6.1 Imbalance 38:1 → cần class-balanced sampling
+| | DataSEC | DataSED |
+|---|---|---|
+| Nội dung | 5,048 clip · 23.7082 h · 44.1 kHz mono | 717 recording · 18.6847 h · 44.1 kHz |
+| Nhãn | 22 coarse + 28 subclass (cây thư mục) | 4,034 event polyphonic / 21 lớp, có onset/offset |
+| Split | 3,434 / 744 / 740 (130 clip bị loại) | 438 / 137 / 142 |
+| License | CC-BY-NC-SA-4.0 | CC-BY-NC-SA-4.0 |
 
-`voices` + `music` chiếm 57.5% DataSEC, và đây là hai lớp ít liên quan nhất tới
-đánh giá tiếng ồn môi trường. Pretraining với sampling đồng nhất sẽ cho một
-encoder chuyên phân biệt nói với nhạc, làm RQ1 đo sai thứ.
-
-→ [ADR-0002](decisions/ADR-0002-encoder-va-nhanh-transfer.md) yêu cầu
-class-balanced sampling; ablation A6 định lượng ảnh hưởng.
-
-### 6.2 Bốn subclass có test 3–4 mẫu → metric vô nghĩa
-
-Một mẫu sai làm F1 nhảy 25–33 điểm phần trăm.
-
-→ [ADR-0006](decisions/ADR-0006-danh-gia-subclass.md) và
-[evaluation_protocol §4](evaluation_protocol.md): báo số tuyệt đối, không báo tỷ lệ.
-
-### 6.3 Không archive nào chứa LICENSE/README
-
-License `cc-by-nc-sa-4.0` chỉ lấy được từ Zenodo record metadata. Thành phần
-**SA** nghĩa là checkpoint nếu công bố phải cùng license, không được MIT/Apache.
-
-→ Đã sửa [DATA_PLAN §2–§3](DATA_PLAN.md) vốn giả định sai rằng archive có LICENSE.
+Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 
 ---
 
-## 7. Rủi ro R1 nâng lên mức CAO
+## 5. Việc còn lại
 
-Hai dataset do **cùng 6 tác giả** công bố (Fredianelli, Artuso, Pompei, Licitra,
-Iannace, Akbaba), cùng miền đo ngoài trời, cách nhau 4 tháng.
-
-Nếu một phần DataSEC được cắt từ chính recording của DataSED, thì "pretrain rồi
-fine-tune" trở thành "train trên test set", và Δ transfer của RQ1 là leakage chứ
-không phải transfer.
-
-Cổng D3 vì vậy không phải thủ tục hình thức. Ngưỡng báo động và cách xử lý:
-[DATA_PLAN §7.6](DATA_PLAN.md).
-
----
-
-## 8. Blocker còn lại — theo thứ tự
-
-1. **`scripts.find_duplicates`** — T1/T2/T3, nội bộ và xuyên dataset. Chặn D3.
-2. **`scripts.check_leakage`** — 5 kiểm của [DATA_PLAN §8.4](DATA_PLAN.md). Chặn D4.
-3. Giải nén + inventory DataSEC (D1).
-4. Freeze split sau D3, ghi SHA-256 mới (D4).
-5. Train DataSEC classifier (E1) và ba nhánh SED (E2/E3).
-6. Post-processing hiệu chuẩn, event-based F1, PSDS (E4).
-
----
-
-## 9. Tài liệu
-
-| File | Dòng | Trạng thái |
-|---|---:|---|
-| [SYSTEM.md](SYSTEM.md) | 1,584 | ✅ viết lại 22/09 |
-| [DATA_PLAN.md](DATA_PLAN.md) | 578 | ✅ viết lại 22/09 |
-| [taxonomy.md](taxonomy.md) | 554 | ✅ viết lại 22/09 |
-| [PLAN.md](PLAN.md) | ~300 | ✅ viết lại 22/09 |
-| [evaluation_protocol.md](evaluation_protocol.md) | 389 | ✅ viết lại 22/09 |
-| [CLAUDE.md](../CLAUDE.md) | ~330 | ✅ mới 22/09 |
-| [decisions/](decisions/) | 6 ADR | ✅ ADR-0002…0006 mới 22/09 |
-| [TRAINING_OPS_PLAN.md](TRAINING_OPS_PLAN.md) | 305 | ✅ cập nhật 23/09 |
-| [annotation_guideline.md](annotation_guideline.md) | 291 | ✅ cập nhật 23/09 |
-| [RELATED_WORK.md](RELATED_WORK.md) | 61 | ○ chờ viết lại |
-| [data_inventory.md](data_inventory.md) | 29 | ○ chờ sinh lại từ manifest |
-| `contracts/*.schema.json` | 6/6 | ✅ Draft 2020-12, có test |
+1. W4: 4.6 (`confusable_with`), 4.7 (A4 `pos_weight`), bootstrap CI cho số trung bình nhiều run.
+2. W5: nhánh caption không ràng buộc (cần chọn LLM), nhánh ràng buộc, đánh giá oracle + end-to-end.
+3. W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark.
+4. W7: API, giao diện.
+5. Cân nhắc chọn lại `g_max` percentile trên dev (A5).

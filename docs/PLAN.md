@@ -11,12 +11,12 @@
 
 | Tuần | Ngày | Trọng tâm | Trạng thái |
 |---|---|---|---|
-| W1 | 22–28/09 | Cổng dữ liệu D1–D4 + tài liệu | ◐ đang chạy |
-| W2 | 29/09–05/10 | DataSEC classifier + PANNs | ○ |
-| W3 | 06–12/10 | SED ba nhánh + post-processing | ○ |
-| W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ○ |
-| W5 | 20–26/10 | Grounded caption + metric hallucination | ○ |
-| W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ○ |
+| W1 | 22–28/09 | Cổng dữ liệu D1–D4 + tài liệu | ✅ (CI chưa chạy trên GitHub) |
+| W2 | 29/09–05/10 | DataSEC classifier + PANNs | ✅ làm sớm |
+| W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
+| W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.6, 4.7 |
+| W5 | 20–26/10 | Grounded caption + metric hallucination | ◐ nền tảng |
+| W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ◐ nền tảng |
 | W7 | 03–09/11 | API + frontend + test một lần | ○ |
 | W8 | 10–16/11 | Buffer: viết báo cáo, vá lỗ hổng | ○ |
 
@@ -63,13 +63,13 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 | 1.3 | Git init + baseline commit | 0.5 h | ✅ |
 | 1.4 | Viết lại SYSTEM/taxonomy/DATA_PLAN/evaluation_protocol | 6 h | ✅ |
 | 1.5 | CLAUDE.md + 5 ADR | 3 h | ✅ |
-| 1.6 | PLAN + STATUS + docs còn lại | 2 h | ◐ |
+| 1.6 | PLAN + STATUS + docs còn lại | 2 h | ✅ |
 | 1.7 | **`scripts.find_duplicates` (T1/T2/T3)** | 6 h | ✅ |
 | 1.8 | **Chạy dedup, mở cổng D3** | 3 h | ✅ |
 | 1.9 | Giải nén + inventory DataSEC (D1) | 2 h | ✅ |
 | 1.10 | `scripts.check_leakage` + freeze split (D4) | 4 h | ✅ |
-| 1.11 | JSON Schema contracts + test | 3 h | ○ |
-| 1.12 | CI baseline (ruff + pytest + guard api/torch) | 2 h | ○ |
+| 1.11 | JSON Schema contracts + test | 3 h | ✅ |
+| 1.12 | CI baseline (ruff + pytest + guard api/torch) | 2 h | ✅ |
 
 ### Nghiệm thu W1
 
@@ -105,11 +105,11 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 ### Nghiệm thu W2
 
-- [ ] Classifier coarse có macro-F1 + per-class table + run manifest hợp lệ
-- [ ] Subclass head báo **hai** con số macro-F1 theo [ADR-0006](decisions/ADR-0006-danh-gia-subclass.md)
-- [ ] 4 subclass low-support báo bằng số tuyệt đối
-- [ ] PANNs chạy được trong 8 GB, ghi rõ batch size khả thi
-- [ ] A6 có kết quả, kết luận ghi vào ADR-0002
+- [x] Classifier coarse có macro-F1 + per-class table + run manifest hợp lệ (0.8467, D1/D3)
+- [x] Subclass head báo **hai** con số macro-F1 theo [ADR-0006](decisions/ADR-0006-danh-gia-subclass.md) (0.6266 / 0.8453)
+- [x] 4 subclass low-support báo bằng số tuyệt đối
+- [x] PANNs chạy được trong 8 GB, ghi rõ batch size khả thi (24 @ 10 s)
+- [x] A6 có kết quả, kết luận ghi vào ADR-0002 (giữ balanced)
 
 ---
 
@@ -132,10 +132,10 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 ### Nghiệm thu W3
 
-- [ ] Ba nhánh cùng split, cùng budget, cùng seed set
-- [ ] `postproc.json` đóng băng, hiệu chuẩn đúng nguồn ([ADR-0003](decisions/ADR-0003-threshold-va-post-processing.md))
-- [ ] Logit thô lưu được, quét lại θ không cần train lại
-- [ ] **Δ = C − B** tính được, kèm ghi chú kết quả D3
+- [x] Ba nhánh cùng split, cùng budget, cùng seed set (B/C 5 seed; A 1 seed)
+- [x] `postproc.json` đóng băng, hiệu chuẩn đúng nguồn ([ADR-0003](decisions/ADR-0003-threshold-va-post-processing.md))
+- [x] Logit thô lưu được, quét lại θ không cần train lại
+- [x] **Δ = C − B** tính được, kèm ghi chú kết quả D3 — âm tính, [ADR-0021](decisions/ADR-0021-rq1-ket-qua-am-tinh.md)
 
 ---
 
@@ -156,11 +156,11 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 ### Nghiệm thu W4
 
-- [ ] Event-based F1 và PSDS-1/PSDS-2 cho cả ba nhánh
-- [ ] CI bootstrap theo recording cho mọi số chính
-- [ ] Bảng phân tích lỗi per-class
-- [ ] [taxonomy.md §8](taxonomy.md) cập nhật bằng cặp nhầm thật, kèm số lượt
-- [ ] Nếu không đủ ngân sách cho 3 seed: ghi rõ và **không** tuyên bố Δ nhỏ có ý nghĩa
+- [x] Event-based F1 và PSDS-1/PSDS-2 cho cả ba nhánh
+- [ ] CI bootstrap theo recording cho mọi số chính — **có cho từng run; chưa có cho số trung bình nhiều run** (hiện báo mean ± sd)
+- [x] Bảng phân tích lỗi per-class (`branch_per_class_*`, `error_totals` trong `evaluation.json`)
+- [ ] [taxonomy.md §8](taxonomy.md) cập nhật bằng cặp nhầm thật, kèm số lượt — **task 4.6, chưa làm**
+- [x] Nếu không đủ ngân sách cho 3 seed: ghi rõ và **không** tuyên bố Δ nhỏ có ý nghĩa (5 seed, Welch t-test)
 
 ---
 
