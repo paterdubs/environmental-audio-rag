@@ -6,7 +6,7 @@
 
 | Chế độ | Dev F1 | Test F1 | Dev − Test |
 |---|---:|---:|---:|
-| Global (θ=0.95) | 0.0637 | 0.0709 | -0.0072 |
-| Per-class | 0.0796 | 0.0568 | +0.0228 |
+| Global (θ=0.95) | 0.0753 | 0.0735 | +0.0018 |
+| Per-class | 0.0883 | 0.0518 | +0.0364 |
 
 **Dấu hiệu overfit dev**: per-class tụt mạnh hơn global từ dev sang test (evaluation_protocol.md §2.4) — 21 bậc tự do fit trên dev. Ghi vào Hạn chế của báo cáo SED, không tự ý đổi lại `postproc.json`.

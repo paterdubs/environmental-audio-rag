@@ -1,21 +1,21 @@
 {
   "run": "ml\\runs\\sed_polyphonic_20260924T015736Z",
   "overall": {
-    "filtered": 0.04792746113989638,
-    "unfiltered": 0.044444444444444446
+    "filtered": 0.06164874551971326,
+    "unfiltered": 0.059030217849613494
   },
-  "overall_delta_filtered_minus_unfiltered": 0.0034830166954519307,
+  "overall_delta_filtered_minus_unfiltered": 0.0026185276700997698,
   "per_class": {
     "bells": {
       "filtered": 0.23255813953488372,
       "unfiltered": 0.23255813953488372
     },
     "birds": {
-      "filtered": 0.015267175572519083,
-      "unfiltered": 0.015151515151515152
+      "filtered": 0.015748031496062992,
+      "unfiltered": 0.015625
     },
     "cat_fights_and_moans": {
-      "filtered": 0.13333333333333333,
+      "filtered": 0.125,
       "unfiltered": 0.125
     },
     "chicken_coop": {
@@ -23,32 +23,32 @@
       "unfiltered": 0.0
     },
     "cicadas_and_crickets": {
-      "filtered": 0.0,
-      "unfiltered": 0.0
+      "filtered": 0.02127659574468085,
+      "unfiltered": 0.02127659574468085
     },
     "crows_seagulls_magpies": {
       "filtered": 0.0,
       "unfiltered": 0.0
     },
     "dog_barkings_and_howlings": {
-      "filtered": 0.09523809523809525,
-      "unfiltered": 0.09523809523809525
+      "filtered": 0.13333333333333333,
+      "unfiltered": 0.13333333333333333
     },
     "glass_breaking": {
-      "filtered": 0.12244897959183673,
-      "unfiltered": 0.12244897959183673
+      "filtered": 0.20833333333333331,
+      "unfiltered": 0.20833333333333331
     },
     "horn": {
       "filtered": 0.0,
       "unfiltered": 0.0
     },
     "jet_aircrafts": {
-      "filtered": 0.03571428571428571,
-      "unfiltered": 0.0
+      "filtered": 0.03636363636363636,
+      "unfiltered": 0.031746031746031744
     },
     "lawn_mower_brush_cutter_olive_shaker": {
-      "filtered": 0.038461538461538464,
-      "unfiltered": 0.038461538461538464
+      "filtered": 0.0,
+      "unfiltered": 0.0
     },
     "music": {
       "filtered": 0.1038961038961039,
@@ -56,19 +56,19 @@
     },
     "propeller_aircrafts": {
       "filtered": 0.04081632653061224,
-      "unfiltered": 0.04081632653061224
+      "unfiltered": 0.03773584905660377
     },
     "sirens_and_alarms": {
-      "filtered": 0.03571428571428571,
-      "unfiltered": 0.03571428571428571
+      "filtered": 0.03448275862068965,
+      "unfiltered": 0.03448275862068965
     },
     "thunder_fireworks_gunshot": {
       "filtered": 0.0,
       "unfiltered": 0.0
     },
     "train": {
-      "filtered": 0.0,
-      "unfiltered": 0.0
+      "filtered": 0.03508771929824562,
+      "unfiltered": 0.03225806451612904
     },
     "vacuum_cleaner_fan_hairdryer": {
       "filtered": 0.11428571428571428,
@@ -83,12 +83,12 @@
       "unfiltered": 0.0
     },
     "voices": {
-      "filtered": 0.09523809523809525,
-      "unfiltered": 0.09523809523809525
+      "filtered": 0.1565217391304348,
+      "unfiltered": 0.1565217391304348
     },
     "workshop": {
-      "filtered": 0.14583333333333334,
-      "unfiltered": 0.1443298969072165
+      "filtered": 0.15053763440860216,
+      "unfiltered": 0.14893617021276598
     }
   },
   "per_class_d_min_s": {

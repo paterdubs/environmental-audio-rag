@@ -9,23 +9,23 @@
 | | Nhánh A (scratch) | Nhánh B (AudioSet) | Nhánh C (AudioSet→DataSEC) |
 |---|---:|---:|---:|
 | run_id | `sed_polyphonic_20260923T173234Z` | `sed_polyphonic_20260924T054531Z` | `sed_polyphonic_20260924T061000Z` |
-| event-based F1 | 0.0220 | 0.0569 | 0.0396 |
-| PSDS-1 | 0.1820 | 0.2444 | 0.2533 |
-| PSDS-2 | 0.4475 | 0.6442 | 0.6384 |
+| event-based F1 | 0.0360 | 0.0621 | 0.0472 |
+| PSDS-1 | 0.2059 | 0.2818 | 0.2873 |
+| PSDS-2 | 0.4514 | 0.6456 | 0.6462 |
 | git.dirty | False | False | False |
 
 ## Δ = C − B — **câu trả lời RQ1** (đóng góp riêng của pretraining DataSEC)
 
 | Metric | Δ |
 |---|---:|
-| event-based F1 | -0.0173 |
-| PSDS-1 | +0.0089 |
-| PSDS-2 | -0.0058 |
+| event-based F1 | -0.0149 |
+| PSDS-1 | +0.0055 |
+| PSDS-2 | +0.0006 |
 
 ## Δ = C − A — tổng lợi ích pretraining (KHÔNG phải RQ1, ADR-0002)
 
 | Metric | Δ |
 |---|---:|
-| event-based F1 | +0.0175 |
-| PSDS-1 | +0.0713 |
-| PSDS-2 | +0.1909 |
+| event-based F1 | +0.0112 |
+| PSDS-1 | +0.0814 |
+| PSDS-2 | +0.1948 |

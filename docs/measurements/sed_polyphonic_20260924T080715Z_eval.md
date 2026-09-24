@@ -6,26 +6,26 @@
 
 | Metric | Giá trị |
 |---|---:|
-| F1 | 0.0506 |
-| Precision | 0.0434 |
-| Recall | 0.0608 |
-| Bootstrap 95% CI (theo recording, n=142) | [0.0357, 0.0674] |
+| F1 | 0.0546 |
+| Precision | 0.0472 |
+| Recall | 0.0649 |
+| Bootstrap 95% CI (theo recording, n=142) | [0.0382, 0.0729] |
 
 ## PSDS
 
 | Scenario | Giá trị |
 |---|---:|
-| psds_1 | 0.2431 |
-| psds_2 | 0.6460 |
+| psds_1 | 0.2824 |
+| psds_2 | 0.6557 |
 
 ## Phân tích lỗi (mô tả, không thay thế event-based F1)
 
 | Loại | Số lượt |
 |---|---:|
-| confusion | 529 |
-| deletion | 158 |
-| fragmentation | 9 |
-| insertion | 150 |
-| merging | 86 |
+| confusion | 555 |
+| deletion | 162 |
+| fragmentation | 5 |
+| insertion | 106 |
+| merging | 84 |
 
-Số event tham chiếu: 740 · dự đoán: 1038
+Số event tham chiếu: 740 · dự đoán: 1017

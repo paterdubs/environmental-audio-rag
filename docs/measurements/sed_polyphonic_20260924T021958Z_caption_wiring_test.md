@@ -7,9 +7,9 @@
 | | |
 |---|---:|
 | Recording | 142 |
-| Recording có ≥1 event | 139 |
-| Tổng event | 704 |
-| Event nhiều nhất trong 1 recording | 18 |
+| Recording có ≥1 event | 141 |
+| Tổng event | 803 |
+| Event nhiều nhất trong 1 recording | 21 |
 | Recording lệch bất biến G1-G3 (kỳ vọng 0) | 0 |
 | `document_builder` lỗi (kỳ vọng 0) | 0 |
 | Polyphony lớn nhất quan sát được | 5 |
@@ -19,6 +19,6 @@ Không có recording nào lệch bất biến hallucination=0/omission=0/coverag
 
 ## Ví dụ (ưu tiên recording nhiều event)
 
-- `S-0003` (6 event): A jet aircrafts is audible from 0.0 to 64.7 seconds. A train is audible from 4.5 to 20.0 seconds. A voices is audible from 28.0 to 44.6 seconds. A vehicle idling is audible from 35.3 to 40.0 seconds. A voices is audible from 68.7 to 96.8 seconds. A music is audible from 88.3 to 100.0 seconds.
-- `S-0007` (2 event): A train is audible from 0.0 to 20.0 seconds. A vehicle pass by is audible from 6.1 to 12.0 seconds.
-- `S-0008` (12 event): A voices is audible from 0.0 to 3.0 seconds. A train is audible from 5.1 to 50.0 seconds. A vehicle idling is audible from 16.7 to 19.3 seconds. A voices is audible from 17.3 to 40.6 seconds. A impulsive sound resembling thunder, fireworks, or a gunshot is audible from 19.6 to 40.2 seconds. A glass breaking is audible from 20.0 to 22.1 seconds. A glass breaking is audible from 25.0 to 30.0 seconds. A workshop is audible from 27.3 to 30.0 seconds. A glass breaking is audible from 35.5 to 37.4 seconds. A glass breaking is audible from 48.1 to 50.0 seconds. A impulsive sound resembling thunder, fireworks, or a gunshot is audible from 48.7 to 50.0 seconds. A horn is audible from 48.9 to 50.0 seconds.
+- `S-0003` (8 event): A vehicle pass by is audible from 0.0 to 10.3 seconds. A jet aircrafts is audible from 0.0 to 64.7 seconds. A train is audible from 4.5 to 20.0 seconds. A voices is audible from 28.0 to 44.3 seconds. A vehicle pass by is audible from 29.4 to 70.0 seconds. A vehicle idling is audible from 35.3 to 40.0 seconds. A voices is audible from 69.0 to 92.4 seconds. A music is audible from 88.2 to 95.7 seconds.
+- `S-0007` (2 event): A train is audible from 0.0 to 16.8 seconds. A vehicle pass by is audible from 0.0 to 16.8 seconds.
+- `S-0008` (12 event): A voices is audible from 0.0 to 2.7 seconds. A vehicle pass by is audible from 0.0 to 20.0 seconds. A train is audible from 5.1 to 46.9 seconds. A vehicle idling is audible from 16.7 to 19.3 seconds. A voices is audible from 17.4 to 37.5 seconds. A glass breaking is audible from 17.8 to 30.6 seconds. A impulsive sound resembling thunder, fireworks, or a gunshot is audible from 19.6 to 40.0 seconds. A workshop is audible from 27.3 to 30.0 seconds. A glass breaking is audible from 34.0 to 46.9 seconds. A vehicle pass by is audible from 39.4 to 46.9 seconds. A impulsive sound resembling thunder, fireworks, or a gunshot is audible from 45.5 to 46.9 seconds. A horn is audible from 45.8 to 46.9 seconds.

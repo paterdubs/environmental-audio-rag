@@ -1,10 +1,10 @@
 {
   "run": "ml\\runs\\sed_polyphonic_20260924T021958Z",
   "overall": {
-    "filtered": 0.056786703601108025,
-    "unfiltered": 0.058305084745762716
+    "filtered": 0.05184705119896306,
+    "unfiltered": 0.05319822672577581
   },
-  "overall_delta_filtered_minus_unfiltered": -0.0015183811446546902,
+  "overall_delta_filtered_minus_unfiltered": -0.0013511755268127493,
   "per_class": {
     "bells": {
       "filtered": 0.04878048780487805,
@@ -19,24 +19,24 @@
       "unfiltered": 0.13333333333333333
     },
     "chicken_coop": {
-      "filtered": 0.1818181818181818,
-      "unfiltered": 0.17910447761194032
+      "filtered": 0.15151515151515152,
+      "unfiltered": 0.14925373134328357
     },
     "cicadas_and_crickets": {
-      "filtered": 0.10526315789473682,
-      "unfiltered": 0.10526315789473682
+      "filtered": 0.039603960396039604,
+      "unfiltered": 0.039603960396039604
     },
     "crows_seagulls_magpies": {
-      "filtered": 0.048780487804878044,
-      "unfiltered": 0.048780487804878044
+      "filtered": 0.05128205128205127,
+      "unfiltered": 0.05128205128205127
     },
     "dog_barkings_and_howlings": {
-      "filtered": 0.033898305084745756,
-      "unfiltered": 0.033898305084745756
+      "filtered": 0.07142857142857141,
+      "unfiltered": 0.07142857142857141
     },
     "glass_breaking": {
-      "filtered": 0.02631578947368421,
-      "unfiltered": 0.02631578947368421
+      "filtered": 0.0,
+      "unfiltered": 0.0
     },
     "horn": {
       "filtered": 0.0,
@@ -47,48 +47,48 @@
       "unfiltered": 0.0
     },
     "lawn_mower_brush_cutter_olive_shaker": {
-      "filtered": 0.1016949152542373,
-      "unfiltered": 0.10344827586206898
+      "filtered": 0.10344827586206898,
+      "unfiltered": 0.10526315789473684
     },
     "music": {
-      "filtered": 0.09523809523809525,
-      "unfiltered": 0.09230769230769231
+      "filtered": 0.0967741935483871,
+      "unfiltered": 0.09375
     },
     "propeller_aircrafts": {
-      "filtered": 0.06666666666666667,
-      "unfiltered": 0.0967741935483871
+      "filtered": 0.06779661016949153,
+      "unfiltered": 0.09836065573770493
     },
     "sirens_and_alarms": {
-      "filtered": 0.0689655172413793,
-      "unfiltered": 0.0689655172413793
+      "filtered": 0.03773584905660378,
+      "unfiltered": 0.03773584905660378
     },
     "thunder_fireworks_gunshot": {
       "filtered": 0.0,
       "unfiltered": 0.0
     },
     "train": {
-      "filtered": 0.0,
-      "unfiltered": 0.0
+      "filtered": 0.03508771929824562,
+      "unfiltered": 0.03278688524590164
     },
     "vacuum_cleaner_fan_hairdryer": {
-      "filtered": 0.05405405405405405,
-      "unfiltered": 0.05405405405405405
+      "filtered": 0.1111111111111111,
+      "unfiltered": 0.1081081081081081
     },
     "vehicle_idling": {
       "filtered": 0.0,
       "unfiltered": 0.0
     },
     "vehicle_pass_by": {
-      "filtered": 0.0196078431372549,
-      "unfiltered": 0.019230769230769232
+      "filtered": 0.0,
+      "unfiltered": 0.0
     },
     "voices": {
-      "filtered": 0.10937499999999999,
-      "unfiltered": 0.10937499999999999
+      "filtered": 0.14173228346456695,
+      "unfiltered": 0.140625
     },
     "workshop": {
-      "filtered": 0.09523809523809525,
-      "unfiltered": 0.11428571428571427
+      "filtered": 0.11538461538461538,
+      "unfiltered": 0.1346153846153846
     }
   },
   "per_class_d_min_s": {

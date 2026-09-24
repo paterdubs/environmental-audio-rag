@@ -189,11 +189,10 @@ test, không phải dev (không được tuning trên test).
 
 > **BÀN GIAO 25/09 01:45 — đọc trước khi làm gì khác.**
 > 1. Lỗi ghép cửa sổ SED đã sửa (`7ada7d7`); **11 run đã quét θ + đánh giá lại**, mọi
->    `docs/measurements` SED dẫn xuất đã sinh lại (chưa commit). Số trong §3 dưới đây,
+>    `docs/measurements` SED dẫn xuất đã sinh lại và commit. **RQ1 vẫn âm tính** (7 run
+>    sạch: event-F1 p=0.234, PSDS-1 p=0.913, PSDS-2 p=0.181). Số trong §3 dưới đây,
 >    STATUS.md, README, ADR-0021 **còn là số CŨ** — phải cập nhật từ
->    `rq1_multiseed*_20260924.md` mới, kiểm lại kết luận RQ1, khôi phục banner "ĐÃ BỊ
->    BÁC BỎ" ở đầu `seed_variance_vs_rq1_delta.md` (bị ghi đè khi sinh lại), rồi commit.
->    Bản sao số cũ: scratchpad phiên trước `old_eval/` (có thể đã mất — dùng `git show`).
+>    `rq1_multiseed*_20260924.md`. Số cũ tra bằng `git show 18bb18c:docs/measurements/…`.
 > 2. W5: unconstrained xong dev+test (`9218922`, `18bb18c`). Constrained (5.7, ADR-0023)
 >    code xong, **dev đã sinh, test CHƯA sinh** — chạy
 >    `generate_llm_captions <run B 054531Z> --branch constrained --split test
