@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.report_rq1_multiseed import load_metrics, summarize, welch_tests
+from scripts.report_rq1_multiseed import is_dirty, load_metrics, summarize, welch_tests
 
 
 def write_run(path: Path, complete: bool = True, **values: float) -> None:
@@ -31,6 +31,16 @@ def test_rejects_incomplete_or_missing_evaluation(tmp_path: Path) -> None:
     (missing / "manifest.json").write_text(json.dumps({"complete": True}), encoding="utf-8")
     with pytest.raises(SystemExit, match="evaluation.json"):
         load_metrics(missing)
+
+
+def test_dirty_provenance_is_reported_but_not_rejected(tmp_path: Path) -> None:
+    run = tmp_path / "dirty"
+    write_run(run)
+    (run / "manifest.json").write_text(
+        json.dumps({"complete": True, "git": {"dirty": True}}), encoding="utf-8"
+    )
+    assert is_dirty(run)
+    assert load_metrics(run)["event_f1"] == pytest.approx(0.1)
 
 
 def test_welch_is_two_sided_and_finite() -> None:

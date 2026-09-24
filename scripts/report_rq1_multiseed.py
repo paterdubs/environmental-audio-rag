@@ -34,6 +34,12 @@ def load_metrics(run_dir: Path) -> dict[str, float]:
     }
 
 
+def is_dirty(run_dir: Path) -> bool:
+    """Read provenance without excluding dirty runs from the statistical sample."""
+    manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
+    return bool(manifest.get("git", {}).get("dirty", False))
+
+
 def summarize(runs: list[dict[str, float]]) -> dict[str, dict[str, float | int]]:
     if not runs:
         raise ValueError("at least one run is required")
@@ -90,13 +96,25 @@ def main() -> None:
     }
     if args.branch_a:
         loaded["A"] = [load_metrics(path) for path in args.branch_a]
+    paths = {"B": args.branch_b, "C": args.branch_c}
+    if args.branch_a:
+        paths["A"] = args.branch_a
     summaries = {branch: summarize(runs) for branch, runs in loaded.items()}
     tests = welch_tests(loaded["B"], loaded["C"])
     deltas = {
         metric: summaries["C"][metric]["mean"] - summaries["B"][metric]["mean"]
         for metric in METRICS
     }
-    result = {"branches": summaries, "delta_mean_c_minus_b": deltas, "welch": tests}
+    dirty_runs = {
+        branch: [str(path) for path in branch_paths if is_dirty(path)]
+        for branch, branch_paths in paths.items()
+    }
+    result = {
+        "branches": summaries,
+        "delta_mean_c_minus_b": deltas,
+        "welch": tests,
+        "dirty_runs_included": dirty_runs,
+    }
     destination = args.output or ROOT / "docs" / "measurements" / (
         f"rq1_multiseed_{datetime.now(UTC).strftime('%Y%m%d')}.md"
     )
@@ -122,6 +140,13 @@ def main() -> None:
     lines += ["", "## Welch t-test (C vs B)", "", "| Metric | t | p |", "|---|---:|---:|"]
     lines.extend(f"| {LABELS[m]} | {tests[m]['t']:.12g} | {tests[m]['p']:.12g} |" for m in METRICS)
     lines += ["", "Không gọi là có ý nghĩa thống kê khi p ≥ 0.05."]
+    dirty = [path for branch in dirty_runs.values() for path in branch]
+    if dirty:
+        lines += [
+            "",
+            "⚠️ Các run `git.dirty=true` vẫn được giữ trong phép tính (không loại):",
+            *[f"- `{path}`" for path in dirty],
+        ]
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text("\n".join(lines), encoding="utf-8")
     destination.with_suffix(".json").write_text(
