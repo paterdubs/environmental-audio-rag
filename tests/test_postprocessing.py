@@ -172,6 +172,45 @@ def test_duration_priors_are_train_only_and_cover_polyphonic_taxonomy():
         )
 
 
+def test_duration_prior_percentiles_are_configurable_and_bounded():
+    """Nợ kỹ thuật #8: percentile 5/50 were picked without empirical backing —
+    exposed as parameters so an ablation can sweep alternatives through this
+    exact function. Defaults must stay 5/50 (locked by the test above)."""
+    priors_p0 = derive_duration_priors(
+        _train_events(),
+        class_ids=CLASS_IDS,
+        frame_rate=50.0,
+        source_split="train",
+        d_min_percentile=0.0,
+    )
+    priors_p100 = derive_duration_priors(
+        _train_events(),
+        class_ids=CLASS_IDS,
+        frame_rate=50.0,
+        source_split="train",
+        d_min_percentile=100.0,
+    )
+    assert priors_p0["bells"].d_min_s == pytest.approx(1.0)
+    assert priors_p100["bells"].d_min_s == pytest.approx(2.0)
+
+    with pytest.raises(ValueError, match="d_min_percentile"):
+        derive_duration_priors(
+            _train_events(),
+            class_ids=CLASS_IDS,
+            frame_rate=50.0,
+            source_split="train",
+            d_min_percentile=101.0,
+        )
+    with pytest.raises(ValueError, match="g_max_percentile"):
+        derive_duration_priors(
+            _train_events(),
+            class_ids=CLASS_IDS,
+            frame_rate=50.0,
+            source_split="train",
+            g_max_percentile=-1.0,
+        )
+
+
 def test_threshold_sweeps_are_dev_only_and_deterministic():
     probabilities = np.zeros((2, len(CLASS_IDS)), dtype=np.float32)
     probabilities[0, :] = 0.6

@@ -1,0 +1,49 @@
+{
+  "run": "ml\\runs\\sed_polyphonic_20260924T021958Z",
+  "baseline_event_f1": 0.056786703601108025,
+  "spread_max_minus_min": 0.026258802666803083,
+  "rows": [
+    {
+      "sweep": "d_min_percentile",
+      "d_min_percentile": 1.0,
+      "g_max_percentile": 50.0,
+      "is_baseline": false,
+      "event_f1": 0.05338541666666667
+    },
+    {
+      "sweep": "d_min_percentile",
+      "d_min_percentile": 5.0,
+      "g_max_percentile": 50.0,
+      "is_baseline": true,
+      "event_f1": 0.056786703601108025
+    },
+    {
+      "sweep": "d_min_percentile",
+      "d_min_percentile": 10.0,
+      "g_max_percentile": 50.0,
+      "is_baseline": false,
+      "event_f1": 0.057430007178750894
+    },
+    {
+      "sweep": "d_min_percentile",
+      "d_min_percentile": 25.0,
+      "g_max_percentile": 50.0,
+      "is_baseline": false,
+      "event_f1": 0.05673758865248227
+    },
+    {
+      "sweep": "g_max_percentile",
+      "d_min_percentile": 5.0,
+      "g_max_percentile": 25.0,
+      "is_baseline": false,
+      "event_f1": 0.06165703275529866
+    },
+    {
+      "sweep": "g_max_percentile",
+      "d_min_percentile": 5.0,
+      "g_max_percentile": 75.0,
+      "is_baseline": false,
+      "event_f1": 0.035398230088495575
+    }
+  ]
+}

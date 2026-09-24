@@ -117,6 +117,13 @@ fixture 1-event): 0/426 recording lệch bất biến G1-G3, 0 lỗi `document_b
 Bắt được 1 bug thật trong lúc verify: `ml/evaluation/grounding.py::_temporal_order`
 collapse onset khi một lớp lặp lại trong timeline — đã sửa.
 
+**Ablation A5 (duration prior percentile, nợ kỹ thuật #8) xong trên cả A/B/C.**
+`d_min_s` (percentile 5): phẳng, không cần đổi. `g_max_s` (percentile 50): tín
+hiệu **nhất quán 3/3 nhánh** cho thấy percentile 25 tốt hơn (F1 tăng cả ba
+nhánh), percentile 75 tệ hơn hẳn (F1 giảm cả ba nhánh) — ứng viên thật cho một
+vòng chọn lại trên dev, nhưng **chưa đổi ADR-0003** vì quan sát này đến từ
+test, không phải dev (không được tuning trên test).
+
 ### Đã có ✅
 
 | Hạng mục | Bằng chứng |
@@ -176,6 +183,7 @@ collapse onset khi một lớp lặp lại trong timeline — đã sửa.
 | **Ablation A2 xong bộ ba A/B/C** | Per-class overfit dev hệ thống, giảm dần theo sức mạnh model nhưng không biến mất: A −66%, B −38.7%, C −28.6%; global luôn ổn định (A −18%, B −1.3%, C +0.7%) |
 | **Ablation A3 xong bộ ba A/B/C** | Không kết luận rõ hướng nào (Δ gần 0, đổi dấu giữa nhánh: +0.0025/+0.0035/−0.0015); caveat tính động theo % lớp F1=0 thật |
 | **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
+| **Ablation A5 xong bộ ba A/B/C (nợ kỹ thuật #8)** | d_min percentile phẳng; g_max percentile 25 tốt hơn nhất quán 3/3 nhánh, 75 tệ hơn nhất quán 3/3 — ứng viên thật cho hiệu chuẩn lại trên dev, chưa đổi ADR-0003 |
 
 ### Đang làm / chưa nghiệm thu ◐
 
@@ -439,6 +447,44 @@ sạch như nhánh A — cộng dồn 284 recording thật đã verify không l�
 
 Test suite 336 → **337 pass** (Codex thêm 1 test cho I6), ruff sạch. Board
 (`AGENT_SYNC.md`) và trạng thái §3 của file này cập nhật đầy đủ ba nhánh + RQ1.
+
+### 2026-09-24 (tiếp 4) — A5: ablation duration prior percentile, tín hiệu nhất quán 3/3 cho g_max
+
+Người dùng yêu cầu tiếp tục làm việc độc lập; chọn nợ kỹ thuật #8 (`PLAN.md`):
+percentile 5 (`d_min_s`) và 50 (`g_max_s`) trong ADR-0003 §3 được chọn không có
+cơ sở thực nghiệm.
+
+Thêm `d_min_percentile`/`g_max_percentile` làm tham số tùy chọn của
+`derive_duration_priors` (mặc định 5.0/50.0 — không đổi hành vi của
+`sweep_threshold.py`, khoá lại bằng test cũ vẫn pass nguyên) thay vì viết lại
+logic phần trăm vị riêng cho ablation. Viết
+`scripts/report_duration_prior_ablation.py`: giữ θ per-class cố định (đã đóng
+băng), suy lại prior với percentile khác trên **train**, đo event-based F1 trên
+**test** — cùng phạm vi thu hẹp có chủ ý như A3 (không quét lại θ cho mỗi tổ
+hợp, tốn kém hơn nhiều).
+
+**Tự bắt một lỗi khi viết test**: đặt tên hàm nội bộ là `test_event_f1` —
+pytest tự động thu thập nó như một test thật và crash khi gọi. Đổi tên thành
+`evaluate_test_f1`. Bài học lặp lại: bất kỳ tên bắt đầu bằng `test_` trong một
+module bị pytest quét đều là rủi ro, kể cả khi không phải trong thư mục
+`tests/`.
+
+Chạy trên cả ba nhánh A/B/C, kết quả:
+
+- **`d_min_s` (percentile 5): phẳng.** Đổi percentile trong [1, 25] chỉ lệch
+  F1 ±0.003–0.004 ở cả ba nhánh — không có lý do thực nghiệm để đổi.
+- **`g_max_s` (percentile 50): tín hiệu mạnh, nhất quán 3/3 nhánh.** Percentile
+  25 cải thiện F1 ở **cả ba** nhánh (+0.0010/+0.0128/+0.0049 cho A/B/C).
+  Percentile 75 làm giảm F1 rõ rệt ở **cả ba** nhánh (−0.0120/−0.0168/−0.0214).
+  Ba lần lặp lại cùng hướng trên ba mô hình độc lập là bằng chứng khá chắc đây
+  không phải nhiễu.
+
+**Không đổi ADR-0003.** Quan sát này đến từ **test**, và CLAUDE.md §5 cấm tuyệt
+đối tuning trên test. Ghi vào `PLAN.md` nợ kỹ thuật #8 như một ứng viên thật
+cho vòng chọn percentile trên **dev** trong tương lai — không tự ý sửa giá trị
+mặc định chỉ vì ablation post-hoc cho kết quả có lợi.
+
+Test suite 342 → **345 pass**, ruff sạch.
 
 ### 2026-09-24 (tiếp 3) — I7: seed=1 xong cho B/C, phát hiện PSDS-1/2 không phân biệt được với nhiễu seed
 

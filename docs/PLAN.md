@@ -281,7 +281,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | 5 | Seed reproducibility: **classifier đã chứng minh** (D2, 2 run 12-epoch cùng seed → `best.pt` giống hệt bit-for-bit). **SED chưa test cùng-seed** — I7 (24/09) chỉ đo biến thiên giữa 2 seed KHÁC NHAU (0 và 1), là câu hỏi bổ sung chứ không thay thế; chưa chạy lại đúng cùng seed 2 lần cho nhánh SED nào | TRUNG BÌNH | W3 |
 | 6 | `RELATED_WORK.md` còn `⚠️ CẦN XÁC MINH`, chưa có DOI | TRUNG BÌNH | W8 |
 | ~~7~~ | ~~Ngưỡng T3 0.95/0.85 chưa hiệu chuẩn~~ — **đóng 23/09**: giữ 0.95/0.85, `threshold_calibration.json` | — | ✅ |
-| 8 | Percentile 5/50 cho duration prior chưa có cơ sở thực nghiệm | THẤP | W3 |
+| 8 | **Ablation A5 (24/09) đo xong trên A/B/C.** `d_min` (percentile 5): phẳng, không cần đổi. `g_max` (percentile 50): tín hiệu nhất quán 3/3 nhánh cho thấy percentile 25 tốt hơn — **chưa đổi**, vì quan sát trên test, cần vòng chọn trên dev trước khi sửa ADR-0003. Xem `docs/measurements/*_duration_prior_ablation_A5.md` | TRUNG BÌNH | W3 |
 | 11 | `short_duplicate_min = 0.99` chọn từ hình dạng phân bố, chưa hiệu chuẩn trên positive đoạn ngắn | TRUNG BÌNH | W2 |
 | ~~12~~ | ~~1,731 ràng buộc cohesion kéo theo cụm lớn~~ — **đóng 23/09**: DataSED cụm lớn nhất 4 (0.6%); DataSEC có cụm 326 (6.5%), cần theo dõi ở W2 | THẤP | ✅ |
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |

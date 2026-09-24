@@ -86,13 +86,25 @@ def derive_duration_priors(
     frame_rate: float,
     source_split: str,
     taxonomy: Taxonomy | None = None,
+    d_min_percentile: float = 5.0,
+    g_max_percentile: float = 50.0,
 ) -> dict[str, DurationPrior]:
-    """Derive ADR-0003 priors from train annotations only."""
+    """Derive ADR-0003 priors from train annotations only.
+
+    `d_min_percentile`/`g_max_percentile` default to the values ADR-0003 §3
+    picked without empirical backing (nợ kỹ thuật #8) — exposed as parameters
+    so `scripts/report_duration_prior_ablation.py` can sweep alternatives
+    through this exact function instead of duplicating the percentile logic.
+    """
     if source_split != "train":
         raise ValueError("duration priors may only be derived from split='train'")
     _require_polyphonic_order(class_ids, taxonomy)
     if frame_rate <= 0:
         raise ValueError("frame_rate must be positive")
+    if not 0.0 <= d_min_percentile <= 100.0:
+        raise ValueError("d_min_percentile must be in [0, 100]")
+    if not 0.0 <= g_max_percentile <= 100.0:
+        raise ValueError("g_max_percentile must be in [0, 100]")
 
     durations: dict[str, list[float]] = defaultdict(list)
     gaps: dict[str, list[float]] = defaultdict(list)
@@ -118,9 +130,9 @@ def derive_duration_priors(
 
     priors = {}
     for class_id in class_ids:
-        d_min_s = float(np.percentile(durations[class_id], 5))
+        d_min_s = float(np.percentile(durations[class_id], d_min_percentile))
         class_gaps = gaps[class_id]
-        g_max_s = float(np.percentile(class_gaps, 50)) if class_gaps else 0.0
+        g_max_s = float(np.percentile(class_gaps, g_max_percentile)) if class_gaps else 0.0
         priors[class_id] = DurationPrior(
             median_w=_odd_width(d_min_s * frame_rate / 2),
             d_min_s=d_min_s,
