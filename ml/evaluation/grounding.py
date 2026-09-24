@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import asdict, dataclass
 from typing import Any
 
@@ -46,10 +47,27 @@ def evaluate_grounding(
 
 
 def _temporal_order(timeline: dict[str, Any], mentions: tuple[Any, ...]) -> float:
+    """Compare text mention order against event onset order.
+
+    A plain ``{class_id: onset}`` dict silently keeps only the LAST event's
+    onset when a class occurs more than once in the timeline — common in real
+    polyphonic predictions, never exercised by the single-event fixtures this
+    was written against. Each successive text mention of a class instead
+    claims the next-earliest still-unclaimed onset of that class, so repeated
+    classes are matched to distinct events rather than collapsed to one.
+    """
     if len(mentions) < 2:
         return 1.0
-    onset = {event["class_id"]: event["onset_s"] for event in timeline["events"]}
-    values = [onset.get(mention.class_id) for mention in mentions]
+    onsets_by_class: dict[str, list[float]] = defaultdict(list)
+    for event in sorted(timeline["events"], key=lambda item: item["onset_s"]):
+        onsets_by_class[event["class_id"]].append(event["onset_s"])
+    claimed: dict[str, int] = defaultdict(int)
+    values: list[float | None] = []
+    for mention in mentions:
+        pool = onsets_by_class.get(mention.class_id, [])
+        index = claimed[mention.class_id]
+        values.append(pool[index] if index < len(pool) else None)
+        claimed[mention.class_id] += 1
     if any(value is None for value in values):
         return 0.0
     pairs = [(values[i], values[j]) for i in range(len(values)) for j in range(i + 1, len(values))]

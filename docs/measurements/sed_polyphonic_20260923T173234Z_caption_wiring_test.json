@@ -1,0 +1,10 @@
+{
+  "run": "ml\\runs\\sed_polyphonic_20260923T173234Z",
+  "split": "test",
+  "n_recordings": 142,
+  "n_recordings_with_events": 142,
+  "total_events": 1256,
+  "max_events_single_recording": 66,
+  "n_anomalies": 0,
+  "anomalies": []
+}

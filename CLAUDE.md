@@ -342,6 +342,46 @@ Cuối mỗi block công việc:
 
 ## 10. Nhật ký tiến độ
 
+### 2026-09-24 — Trong lúc Codex train nhánh B/C (I1-I7), làm song song A2 + verify W5 thật; sửa 1 bug thật ở grounding
+
+Codex nhận I1-I7 (train + đánh giá nhánh B/C, tính RQ1). Trong lúc đó, làm hai
+việc **không cần GPU**, không chạm file Codex đang giữ:
+
+1. **J1 — Ablation A2 cho nhánh A** (evaluation_protocol §2.4).
+   `threshold_ablation.json` mới có θ của cả hai chế độ, chưa có F1 tổng hợp đa
+   lớp **đồng thời** cho per-class (H2 chỉ tối ưu từng lớp độc lập). Viết
+   `scripts/report_threshold_ablation.py`, dùng lại priors/θ đã đóng băng,
+   không sửa `postproc.json`. Kết quả trên nhánh A: **per-class overfit dev rõ
+   rệt** — dev→test global −18% (0.0456→0.0372), per-class −66%
+   (0.0644→0.0220). Đúng cảnh báo của §2.4; không đổi lại postproc chính thức,
+   chỉ ghi vào hạn chế.
+
+2. **J2 — verify wiring caption+grounding thật trên nhánh A** (chuẩn bị trước
+   W5, cùng mẫu hình G2/H1/H2/H3 tuần trước). Viết `scripts/generate_captions.py`
+   chạy pipeline `process_recordings` → `canonicalize_timeline` →
+   `TemplateCaptioner` → `evaluate_grounding` (G1-G3) trên **142 recording,
+   1,256 event thật** của test set nhánh A — thứ mà `test_captioning_foundation.py`
+   chưa từng làm (mọi fixture chỉ có đúng 1 event/timeline).
+
+   **Bắt được 1 bug thật ngay lần chạy đầu**: `_temporal_order` trong
+   `ml/evaluation/grounding.py` dùng `{class_id: onset}` — một dict thường,
+   nên khi một lớp xuất hiện ≥2 lần trong timeline (rất phổ biến ở dự đoán
+   polyphonic thật), chỉ onset của **lần xuất hiện cuối** sống sót, làm sai
+   `temporal_order_accuracy` cho mọi mention của lớp đó. **91/142 (64%)**
+   recording bị ảnh hưởng — precision/recall/coverage vẫn đúng 1.0, chỉ riêng
+   order sai. Sửa: mỗi mention văn bản claim onset **chưa bị claim, sớm nhất**
+   của đúng lớp theo thứ tự xuất hiện trong text, thay vì tra một giá trị duy
+   nhất theo lớp. Thêm 2 test khoá lại (lặp lớp đúng thứ tự phải ra 1.0; mention
+   nhiều hơn số event thật phải ra 0.0, không được "vô tình đúng"). Sau sửa:
+   0/142 anomaly.
+
+Đây là bug thứ 5 trong chuỗi "code chỉ có test fixture cô lập, chưa từng chạy
+trên dữ liệu thật" của tuần này (sau 4 lỗi ở G2/H1/H2) — cùng nguyên nhân gốc:
+fixture tối giản (1 event) không đại diện cho input thật (polyphonic, nhiều
+event cùng lớp). Test suite 314 → **332 pass**, ruff sạch. Không đụng GPU,
+không đụng file `ml/runs/`, `scripts/train_sed.py`,
+`scripts/{sweep_threshold,evaluate_run}.py` mà Codex đang chạy song song.
+
 ### 2026-09-23 (tiếp) — D1–D6/E1–E4 xong toàn bộ; verify pipeline W3.4–W4.4 thật, sửa 4 lỗi
 
 Trong lúc Codex đóng nốt D4/D6/E1–E4 (đều xong, đã verify độc lập: D4 chọn
