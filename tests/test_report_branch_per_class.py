@@ -30,6 +30,7 @@ def test_all_pairs_are_order_invariant_and_support_unequal_counts() -> None:
     assert forward["a"]["n_pairs_c_gt_b"] == reversed_order["a"]["n_pairs_c_gt_b"]
     assert forward["a"]["n_pairs"] == 15
     assert forward["a"]["n_pairs_c_gt_b"] == 9
+    assert isinstance(forward["a"]["n_pairs_c_gt_b"], int)
 
 
 def test_load_per_class_reads_nested_f_measure(tmp_path: Path) -> None:

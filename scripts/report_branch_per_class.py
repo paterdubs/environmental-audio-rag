@@ -48,7 +48,7 @@ def compare(
             "mean_b": b_mean,
             "mean_c": c_mean,
             "delta": delta,
-            "n_pairs_c_gt_b": sum(y > x for x, y in paired),
+            "n_pairs_c_gt_b": int(sum(y > x for x, y in paired)),
             "n_pairs": len(paired),
         }
     return result
