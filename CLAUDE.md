@@ -67,9 +67,23 @@ SED (A/B/C, ADR-0002) đã train thật 8 epoch GPU và đánh giá đầy đủ
 
 `Δ = C − B` (RQ1): event-F1 **+0.0089**, PSDS-1 **+0.0380**, PSDS-2 **−0.0401**.
 ⚠️ **Thăm dò, chưa khoá chính thức**: nhánh B/C `git.dirty=true`, 1 seed mỗi
-nhánh, chưa qua D2-style seed-reproducibility check (task I7, chưa làm). PSDS-2
-đi ngược hướng hai metric còn lại — chưa kết luận, cần seed thứ hai trước khi
-diễn giải.
+nhánh khi tính Δ này.
+
+**I7 (seed=1 cho B và C) đã xong, và cho một phát hiện quan trọng làm giảm độ
+tin cậy của hai trong ba metric.** So `scripts.report_seed_variance`: biến
+thiên giữa 2 seed đo được so với |Δ RQ1| —
+
+| Metric | Biến thiên seed (lớn nhất) | \|Δ RQ1\| | Tỷ lệ |
+|---|---:|---:|---:|
+| event-based F1 | 0.0011 | 0.0089 | **8.2×** — vượt rõ, có thể là tín hiệu |
+| PSDS-1 | 0.0287 | 0.0380 | **1.32×** — biên ~32%, quá mỏng để chắc chắn |
+| PSDS-2 | 0.0363 | 0.0401 | **1.11×** — biên ~11%, gần như không phân biệt được với nhiễu |
+
+**Chỉ event-based F1 có thể coi là tín hiệu thật.** PSDS-1 và PSDS-2 — hai
+trong ba metric chính của RQ1 — **không thể khẳng định** khác nhiễu giữa các
+lần chạy với chỉ 2 seed. Đây là hạn chế phải ghi nguyên văn vào báo cáo cuối,
+không diễn giải có lợi. Muốn thu hẹp cần thêm seed (3+ seed/nhánh) hoặc chấp
+nhận RQ1 chỉ kết luận được chắc chắn trên event-based F1.
 
 **Cổng dữ liệu D3/D4 đã đóng** (`data-v1.0`). **Split DataSEC đã đóng băng**
 (70/15/15). **D1–D6 xong toàn bộ** (số D1 chính thức: coarse macro-F1 test
@@ -170,21 +184,23 @@ collapse onset khi một lớp lặp lại trong timeline — đã sửa.
 | Split DataSED | **Đã đóng băng** 438/137/142, sha256 `d2924a5e45c2b271…` |
 | Cổng D3/D4 | **Xong, cả hai split đã đóng băng.** |
 | Tài liệu | `RELATED_WORK.md` còn chờ (cần trích dẫn — rủi ro bịa, ưu tiên thấp); `data_inventory.md` đã xong |
-| RQ1 khoá chính thức | Cần: (1) chạy lại B/C trên tree sạch (`git.dirty=false`), (2) seed thứ hai (I7, Codex đang chạy) để đo biến thiên trước khi diễn giải PSDS-2 đi ngược hướng |
+| RQ1 khoá chính thức | I7 (seed=1) đã xong — event-F1 vượt rõ nhiễu seed (8.2×), nhưng PSDS-1/2 KHÔNG (1.32×/1.11×). Còn thiếu: chạy lại B/C trên tree sạch (`git.dirty=false`) trước khi coi bất kỳ số nào là chính thức |
 | W6 (event store, RAG) | Migration + pgvector chạy được (H3); chưa nạp dữ liệu thật, chưa có embedding/retrieval |
 
 ### Chưa có ○
 
-RQ1 khoá chính thức (đang thăm dò) · caption thật (unconstrained/constrained
-đối chứng, W5 5.6-5.8 — wiring đã verify ở J2/J4/J5) · RAG / retrieval (nạp dữ
-liệu thật, cần chọn LLM/embedding cho unconstrained caption) · API / inference
-/ frontend.
+RQ1 khoá chính thức (đang thăm dò; PSDS-1/2 chưa phân biệt được với nhiễu seed)
+· caption thật (unconstrained/constrained đối chứng, W5 5.6-5.8 — wiring đã
+verify ở J2/J4/J5/J6) · RAG / retrieval (nạp dữ liệu thật, cần chọn LLM/embedding
+cho unconstrained caption) · API / inference / frontend.
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **Khoá RQ1 chính thức**: chạy lại nhánh B/C trên tree sạch (`git.dirty=false`),
-   rồi seed thứ hai (I7, Codex đang chạy) để có bằng chứng biến thiên trước khi
-   diễn giải PSDS-2 (hiện đi ngược hướng event-F1/PSDS-1).
+1. **Khoá RQ1 chính thức**: chạy lại nhánh B/C trên tree sạch (`git.dirty=false`).
+   Diễn giải RQ1 phải nói rõ: chỉ event-based F1 có bằng chứng vượt nhiễu seed
+   (8.2×); PSDS-1/2 (1.32×/1.11×) không đủ chắc để khẳng định là tín hiệu thật
+   — đây là hạn chế thật, không phải việc cần "sửa" bằng cách chạy thêm cho ra
+   số đẹp hơn.
 2. W5 5.6-5.8: nhánh unconstrained (đối chứng, cần chọn LLM) và constrained
    thật, đánh giá oracle — wiring canonicalize→caption→grounding→document đã
    verify chạy đúng trên dữ liệu thật cả ba nhánh A/B/C (J2/J4/J5/J6), chỉ còn
@@ -423,6 +439,37 @@ sạch như nhánh A — cộng dồn 284 recording thật đã verify không l�
 
 Test suite 336 → **337 pass** (Codex thêm 1 test cho I6), ruff sạch. Board
 (`AGENT_SYNC.md`) và trạng thái §3 của file này cập nhật đầy đủ ba nhánh + RQ1.
+
+### 2026-09-24 (tiếp 3) — I7: seed=1 xong cho B/C, phát hiện PSDS-1/2 không phân biệt được với nhiễu seed
+
+Codex train xong seed=1 cho cả nhánh B (`sed_polyphonic_20260924T031616Z`) và C
+(`sed_polyphonic_20260924T033537Z`). Chạy `sweep_threshold`+`evaluate_run` cho
+cả hai (CPU-only) trong lúc GPU rảnh giữa hai lượt train của Codex — cùng mẫu
+hình đã làm với I3.
+
+**Thay vì chỉ nhìn hai con số cạnh nhau**, viết `scripts/report_seed_variance.py`
+để so sánh có nguyên tắc: đo biến thiên giữa 2 seed trên mỗi nhánh, rồi hỏi
+"|Δ RQ1| có lớn hơn biến thiên đó không, và lớn hơn *bao nhiêu*" — một tỷ lệ,
+không phải chỉ đúng/sai nhị phân, vì lần đầu chạy binary check tất cả các
+metric đều "vượt" nhưng che mất việc PSDS-2 chỉ vượt 11% trong khi event-F1
+vượt 720%.
+
+**Kết quả, viết trung thực dù không có lợi:**
+
+| Metric | Biến thiên seed lớn nhất | \|Δ RQ1\| | Tỷ lệ |
+|---|---:|---:|---:|
+| event-based F1 | 0.0011 | 0.0089 | **8.2×** |
+| PSDS-1 | 0.0287 | 0.0380 | **1.32×** |
+| PSDS-2 | 0.0363 | 0.0401 | **1.11×** |
+
+Chỉ event-based F1 vượt biến thiên seed đủ xa để coi là tín hiệu. PSDS-1 và
+PSDS-2 — hai trong ba metric chính đã báo cáo cho RQ1 — có tỷ lệ quá gần 1 để
+khẳng định chắc chắn khác nhiễu giữa các lần chạy độc lập, dù cùng hướng "dương"
+với ADR-0002 kỳ vọng. Đây không phải lỗi cần sửa; là giới hạn thật của thiết kế
+2-seed, phải vào Hạn chế nguyên văn khi viết Chương kết quả — không được chọn
+diễn giải PSDS-1/2 như bằng chứng ủng hộ RQ1 mà bỏ qua biên độ mỏng này.
+
+Test suite 338 → **342 pass**, ruff sạch.
 
 ### 2026-09-24 (tiếp 2) — J6: hoàn tất bộ ba A/B/C cho ablation A2/A3, kết luận A2 giờ có n=3
 

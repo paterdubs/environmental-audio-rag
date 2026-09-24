@@ -1,0 +1,51 @@
+{
+  "run_b_seed0": "ml\\runs\\sed_polyphonic_20260924T015736Z",
+  "run_b_seed1": "ml\\runs\\sed_polyphonic_20260924T031616Z",
+  "run_c_seed0": "ml\\runs\\sed_polyphonic_20260924T021958Z",
+  "run_c_seed1": "ml\\runs\\sed_polyphonic_20260924T033537Z",
+  "b_seed0": {
+    "event_f1": 0.04792746113989638,
+    "psds_1": 0.21324792631992373,
+    "psds_2": 0.6690356001566355
+  },
+  "b_seed1": {
+    "event_f1": 0.04684684684684685,
+    "psds_1": 0.24193871202266004,
+    "psds_2": 0.6407629980424556
+  },
+  "c_seed0": {
+    "event_f1": 0.056786703601108025,
+    "psds_1": 0.2512112922614834,
+    "psds_2": 0.6289608008557744
+  },
+  "c_seed1": {
+    "event_f1": 0.05607476635514018,
+    "psds_1": 0.2441236036665415,
+    "psds_2": 0.6652251384027815
+  },
+  "seed_variance_b": {
+    "event_f1": 0.0010806142930495297,
+    "psds_1": 0.02869078570273631,
+    "psds_2": 0.028272602114179923
+  },
+  "seed_variance_c": {
+    "event_f1": 0.0007119372459678461,
+    "psds_1": 0.00708768859494191,
+    "psds_2": 0.036264337547007086
+  },
+  "delta_rq1_c_minus_b_seed0": {
+    "event_f1": 0.008859242461211649,
+    "psds_1": 0.03796336594155969,
+    "psds_2": -0.04007479930086111
+  },
+  "delta_exceeds_seed_variance": {
+    "event_f1": true,
+    "psds_1": true,
+    "psds_2": true
+  },
+  "margin_ratio_delta_over_max_seed_variance": {
+    "event_f1": 8.198339146718642,
+    "psds_1": 1.323190181506219,
+    "psds_2": 1.1050746273502106
+  }
+}
