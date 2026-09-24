@@ -114,7 +114,8 @@ Tác giả: Fredianelli L., Artuso F., Pompei G., Licitra G., Iannace G., Akbaba
 **Ràng buộc `SA` áp lên derivative:** feature, checkpoint và caption sinh từ dữ
 liệu này nếu công bố phải cùng CC-BY-NC-SA-4.0, **không** được MIT/Apache. Code
 pipeline là tác phẩm độc lập nên có thể license riêng. Chi tiết:
-[DATA_PLAN §3](docs/DATA_PLAN.md).
+[DATA_PLAN §3](docs/DATA_PLAN.md). Nhãn và metadata dẫn xuất có trong repo:
+[data/NOTICE.md](data/NOTICE.md).
 
 Không archive nào chứa LICENSE hay README — license chỉ lấy được từ Zenodo record
 metadata đã lưu trong `data/reference/`.
