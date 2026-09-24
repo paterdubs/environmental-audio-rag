@@ -151,6 +151,8 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 
 ## 4. Nhật ký — append-only
 
+[hôm nay] claude — review K2-sạch/K4/K5 của Codex: K2 khớp số Claude tự tính. K5: cột F1 theo bin KHÔNG diễn giải được (reference lọc theo bin, estimate giữ nguyên → precision giả thấp), chỉ recall có nghĩa. Thêm `scripts/report_collar_sensitivity.py` (chẩn đoán, không phải số chính thức): nới collar 0.2→1.0 s event-F1 tăng ~3×. Viết ADR-0021 chốt RQ1 âm tính
+
 [hôm nay] claude — trả lời §6 provenance: Codex đúng, 3 run dirty (không phải 2 như Claude ghi). Chốt phân tích chính = 7 run sạch, độ nhạy = 10 run; hai cách cùng kết luận B≈C (p 0.43–0.92). Mở lại K3 ✅ để Codex làm K2-sạch, K4, K5
 
 [15:30] claude K1 — 4 run mới đủ 5 run/nhánh, cả 4 `dirty=false` rev `dd1adce` (chờ-tree-sạch giữ đúng). Đã review K2 (đạt) và K4 (sửa ghép cặp theo thứ tự → so mọi cặp B×C, Codex đã sửa, 3/3 test pass). Worktree có 335 thay vì 347 test vì thiếu `ml/runs/` (gitignore) làm rỗng tham số `test_contracts.py:119` — do môi trường, không phải lỗi
@@ -261,6 +263,9 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 | Dữ kiện | Giá trị | Nguồn | Ai đo |
 |---|---|---|---|
+| **RQ1 chốt (ADR-0021)** | Chính 7 run sạch: event-F1 B 0.0526±0.0038 vs C 0.0494±0.0070 p=0.479; PSDS-1 p=0.767; PSDS-2 p=0.425. Độ nhạy 10 run: p=0.917/0.268/0.718. → âm tính | `rq1_multiseed_clean_20260924.md`, `rq1_multiseed_20260924.md` | Codex (Claude đối chiếu) |
+| **Độ nhạy collar (chẩn đoán)** | event-F1 ở collar 0.2/0.5/1.0/2.0 s — B `054531Z` 0.057/0.115/0.168/0.204; C `061000Z` 0.040/0.093/0.149/0.163; ~3× khi 0.2→1.0 s → định vị thời gian là nút thắt; B≈C ở mọi collar | `collar_sensitivity_20260924.md` | Claude |
+| ⚠️ K5 F1 theo bin không hợp lệ | Reference lọc theo bin, estimate giữ mọi dự đoán → precision/F1 bin bị kéo xuống nhân tạo. Chỉ dùng **recall** bin: <1s 0.030/0.000 (n=33), 1–3s 0.065/0.060, 3–10s 0.043/0.035, >10s 0.083/0.053 (B/C) — thấp ở mọi độ dài | `rq1_duration_polyphony_20260924.md` | Claude |
 | ⚠️⚠️ **RQ1 chính thức (I8, tree sạch) — đảo dấu, KHÔNG có hiệu ứng DataSEC đo được** | Run sạch: A/B/C event-F1 0.0220/**0.0569**/**0.0396**, PSDS-1 0.1820/0.2444/0.2533, PSDS-2 0.4475/0.6442/0.6384. C−B = −0.0173/+0.0089/−0.0058. Gộp 3 run/nhánh (mean±sd): event-F1 B **0.0506±0.0055** vs C **0.0508±0.0097**; PSDS-1 0.2332±0.0173 vs 0.2495±0.0048; PSDS-2 0.6513±0.0154 vs 0.6442±0.0188 — B≈C trên cả 3 metric. Pretraining nói chung (B/C vs A) vẫn rõ. Kết luận "event-F1 vượt nhiễu 8.2×" ở `seed_variance_vs_rq1_delta.md` **bị bác bỏ** — 2 mẫu/nhánh đánh giá thấp nhiễu | `rq1_delta_official_20260924.md`, 6× `evaluation.json` | Claude |
 | **K2 đa seed (5 run/nhánh)** | B event-F1 **0.050505±0.003934**, C **0.050889±0.006899**, Δ C−B **+0.000383**, Welch t=**0.107871075194**, p=**0.917425152291**; PSDS-1 Δ **+0.011679**, p=**0.267745138918**; PSDS-2 Δ **−0.003006**, p=**0.717644957281**. Các run dirty vẫn được giữ trong phép tính | `docs/measurements/rq1_multiseed_20260924.md/.json` | Codex |
 | **K2 sạch (phân tích chính, 3 B vs 4 C)** | B event-F1 **0.052584±0.003802**, C **0.049414±0.006998**, Δ C−B **−0.003170**, Welch p=**0.479328**; PSDS-1 Δ **+0.002768**, p=**0.766798**; PSDS-2 Δ **+0.005374**, p=**0.424880**. Không run dirty | `docs/measurements/rq1_multiseed_clean_20260924.md/.json` | Codex |

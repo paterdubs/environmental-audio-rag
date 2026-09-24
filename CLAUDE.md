@@ -65,20 +65,21 @@ epoch GPU, `git.dirty=false`, đánh giá đầy đủ (`rq1_delta_official_2026
 | PSDS-1 | 0.1820 | 0.2444 | 0.2533 |
 | PSDS-2 | 0.4475 | 0.6442 | 0.6384 |
 
-`Δ = C − B` chính thức: event-F1 **−0.0173** — **đảo dấu** so với hai run thăm
-dò trước (+0.0089, cả hai seed). Gộp 3 run/nhánh (mean ± sd):
+`Δ = C − B` của run chính thức đơn lẻ: event-F1 −0.0173 (đảo dấu so với run thăm dò).
+Kết luận chốt dựa trên nhiều run (ADR-0021), Welch t-test:
 
-| Metric | B | C |
-|---|---:|---:|
-| event-based F1 | 0.0506 ± 0.0055 | 0.0508 ± 0.0097 |
-| PSDS-1 | 0.2332 ± 0.0173 | 0.2495 ± 0.0048 |
-| PSDS-2 | 0.6513 ± 0.0154 | 0.6442 ± 0.0188 |
+| Metric | Chính: 7 run sạch (B n=3, C n=4) | Độ nhạy: 10 run (5/5) |
+|---|---|---|
+| event-based F1 | B 0.0526±0.0038 · C 0.0494±0.0070 · p=0.479 | B 0.0505 · C 0.0509 · p=0.917 |
+| PSDS-1 | B 0.2513 · C 0.2541 · p=0.767 | p=0.268 |
+| PSDS-2 | B 0.6443 · C 0.6497 · p=0.425 | p=0.718 |
 
-**B ≈ C trên cả ba metric.** Kết luận chắc chắn duy nhất: pretraining nói chung
-(B/C so với A) giúp rõ rệt. Bước pretraining thêm trên DataSEC **không** tạo
-khác biệt đo được ở ngân sách 8 epoch. Nhận định "event-F1 vượt nhiễu 8.2×"
-(`seed_variance_vs_rq1_delta.md`) đã **bị bác bỏ** — chỉ 2 mẫu/nhánh đã đánh
-giá thấp nhiễu thật.
+**RQ1 âm tính:** pretraining thêm trên DataSEC không tạo khác biệt đo được. Pretraining
+nói chung (B/C vs A) giúp rõ. Trọng tâm đóng góp chuyển sang C1/C2/C4 (ADR-0021).
+
+**Vì sao event-F1 thấp** (`collar_sensitivity_20260924.md`): nới collar onset 0.2 → 1.0 s
+làm event-F1 tăng ~3 lần (B 0.057 → 0.168) → định vị thời gian là nút thắt lớn (ADR-0014);
+ở collar 2 s vẫn chỉ ~0.2 → còn lỗi nhận dạng lớp (nhầm lớp là loại lỗi nhiều nhất).
 
 **Train SED không tất định cùng seed**: code train không đổi, cùng seed
 20260922, nhưng frame macro-F1 B 0.5850→0.5705, C 0.5947→0.5893. Classifier (D2)
@@ -239,6 +240,7 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Checkpoint AudioSet — phạm vi nạp | Chỉ transplant `conv_block1…6`, **không** faithful full CNN14 | [0018](docs/decisions/ADR-0018-nap-mot-phan-checkpoint-panns.md) | Checkpoint gốc có `spectrogram_extractor/bn0/fc1/fc_audioset` mà encoder repo không có — viết lại toàn bộ sẽ đổi input pipeline ở tuần 2/8 |
 | `scripts/train_classifier.py` viết lại | Bỏ hẳn `AudioClassifier`/`ClassificationFeatureDataset` cũ, dùng `HierarchicalAudioClassifier` + registry | [0019](docs/decisions/ADR-0019-viet-lai-train-classifier-datasec.md) | Script cũ đọc 2 file **chưa từng tồn tại** trong git — chưa bao giờ chạy được |
 | Giao thức ECE (D5) | Chỉ head coarse; temperature scaling, T chọn trên dev; 15 bin; 2 số trước/sau | [0017](docs/decisions/ADR-0017-hieu-chuan-ece-datasec.md) | Head subclass có lớp n_test<25 làm ECE ra nhiễu; DataSED không phải phân loại đơn nhãn |
+| RQ1 kết quả âm tính | Phân tích chính 7 run sạch, độ nhạy 10 run; báo mean±sd, không số đơn lẻ; trọng tâm sang C1/C2/C4 | [0021](docs/decisions/ADR-0021-rq1-ket-qua-am-tinh.md) | Train SED không tất định cùng seed; B≈C ở mọi cách chọn tập run (p 0.43–0.92) |
 | Cấu hình PANNs cho SED nhánh B/C | `--encoder {audio,panns}`; cùng cửa sổ 10s/5s theo giây; nhánh C không cần normalization riêng (đi kèm checkpoint D1) | [0020](docs/decisions/ADR-0020-cau-hinh-panns-cho-sed-nhanh-bc.md) | Nhánh C fine-tune tiếp từ trọng số đã quen chuẩn hoá DataSEC — tự tính lại theo DataSED sẽ đẩy input lệch phân bố đã pretrain |
 | Checkpoint AudioSet | Zenodo `3576403`, SHA-256 xác minh; **license `not recorded`** — xử lý như chưa rõ, không giả định permissive | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
 | Hierarchical head DataSEC | Một encoder, 2 head tuyến tính, consistency loss = -log(khối lượng xác suất đúng gia đình) | [0016](docs/decisions/ADR-0016-hierarchical-head-consistency-loss.md) | CE 28-way một mình không phạt lệch gia đình coarse |

@@ -287,7 +287,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |
 | ~~9~~ | ~~Chưa có CI~~ — **đóng 23/09**: `.github/workflows/ci.yml` (chạy cục bộ; chưa có remote nên chưa từng chạy trên GitHub, xem `docs/PLAN.md` §Nghiệm thu W1) | — | ✅ |
 | ~~10~~ | ~~`contracts/*.schema.json` chưa tồn tại~~ — **đóng 23/09**: 8 schema Draft 2020-12 trong `contracts/` | — | ✅ |
-| 14 | **RQ1: không đo được hiệu ứng DataSEC.** Run sạch cho C−B event-F1 **−0.0173** (đảo dấu so với 2 run trước). Gộp 3 run/nhánh: event-F1 B 0.0506±0.0055 vs C 0.0508±0.0097; PSDS-1/2 cũng trong khoảng nhiễu. Muốn kết luận chắc cần ≥5 run/nhánh hoặc chấp nhận kết quả âm tính | **CHẶN** kết luận RQ1 | W4 |
+| ~~14~~ | ~~RQ1 chưa đủ run để kết luận~~ — **đóng 24/09** (K1–K5, ADR-0021): 5 run/nhánh, chính 7 run sạch p=0.479/0.767/0.425, độ nhạy 10 run p=0.917/0.268/0.718 → RQ1 âm tính, báo cáo như vậy | — | ✅ |
 | ~~15~~ | ~~RQ1 chưa khoá chính thức~~ — **đóng 24/09** (I8): B/C chạy lại trên tree sạch `5bf1cf7`, `rq1_delta_official_20260924.md` | — | ✅ |
 
 ---
