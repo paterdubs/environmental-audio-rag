@@ -63,20 +63,38 @@ def stack_predictions_by_recording(artifact: PredictionArtifact) -> dict[str, np
     """Turn a window-indexed `PredictionArtifact` into `process_recordings`'s
     expected `{recording_id: [frames, classes]}` sigmoid-probability mapping.
 
-    `SedFeatureDataset` builds windows recording-by-recording in increasing
-    `start_frame` order (H2, ADR-0020 §6), and `collect_predictions` preserves
-    that order verbatim — so grouping by first-seen order and concatenating is
-    correct without re-sorting. `mask` trims the zero-padded suffix that the
-    last (partial) window of a recording carries.
+    Each window is placed at its own `frame_offsets_s`, never concatenated:
+    `SedFeatureDataset` end-aligns a recording's last window (start = total −
+    window), so it is fully valid and overlaps the previous one. Concatenation
+    (the original implementation, 2026-09-23 → 24) duplicated up to one window
+    of audio past the true end and shifted it late — found on W5 (ADR-0022).
+    Overlapping frames take the mean of the windows covering them; `mask`
+    still drops a zero-padded suffix when a recording is shorter than a window.
     """
     probabilities = 1.0 / (1.0 + np.exp(-artifact.logits.astype(np.float64)))
-    chunks: dict[str, list[np.ndarray]] = defaultdict(list)
+    placed: dict[str, list[tuple[int, np.ndarray]]] = defaultdict(list)
     for window_index, recording_id in enumerate(artifact.recording_ids):
-        valid = artifact.mask[window_index]
-        chunks[str(recording_id)].append(probabilities[window_index][valid])
+        start = int(round(float(artifact.frame_offsets_s[window_index]) / artifact.frame_hop_s))
+        valid = probabilities[window_index][artifact.mask[window_index]]
+        placed[str(recording_id)].append((start, valid))
     return {
-        recording_id: np.concatenate(windows, axis=0) for recording_id, windows in chunks.items()
+        recording_id: _overlap_mean(recording_id, windows)
+        for recording_id, windows in placed.items()
     }
+
+
+def _overlap_mean(recording_id: str, windows: list[tuple[int, np.ndarray]]) -> np.ndarray:
+    length = max(start + len(values) for start, values in windows)
+    total = np.zeros((length, windows[0][1].shape[1]), dtype=np.float64)
+    count = np.zeros(length, dtype=np.int64)
+    for start, values in windows:
+        total[start : start + len(values)] += values
+        count[start : start + len(values)] += 1
+    if not count.all():
+        raise ValueError(
+            f"{recording_id}: {int((count == 0).sum())} frame(s) not covered by any window (gap)"
+        )
+    return total / count[:, None]
 
 
 def derive_duration_priors(

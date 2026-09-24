@@ -57,7 +57,7 @@ def test_stack_predictions_by_recording_concatenates_windows_and_trims_padding()
         logits=logits,
         targets=np.zeros_like(logits, dtype=np.uint8),
         recording_ids=np.array(["r1", "r1", "r2"]),
-        frame_offsets_s=np.array([0.0, 4.0, 0.0]),
+        frame_offsets_s=np.array([0.0, 0.08, 0.0]),  # window 1 starts at frame 4
         mask=mask,
         class_ids=CLASS_IDS,
         split="dev",
@@ -74,6 +74,39 @@ def test_stack_predictions_by_recording_concatenates_windows_and_trims_padding()
     assert np.all(stacked["r1"][:4] > 0.99)  # sigmoid(10)
     assert np.all(stacked["r1"][4:6] < 0.01)  # sigmoid(-10), padding excluded
     assert np.allclose(stacked["r2"], 1.0 / (1.0 + np.exp(-5.0)))
+
+
+def _artifact(logits, offsets_s, mask, recording_ids) -> PredictionArtifact:
+    return PredictionArtifact(
+        logits=logits, targets=np.zeros_like(logits, dtype=np.uint8),
+        recording_ids=np.array(recording_ids), frame_offsets_s=np.array(offsets_s),
+        mask=mask, class_ids=CLASS_IDS, split="dev", model_version="sed-v1.0",
+        frame_hop_s=0.02, taxonomy_sha256=TAXONOMY.checksum,
+    )
+
+
+def test_stack_places_end_aligned_last_window_by_offset_not_by_concatenation():
+    """`SedFeatureDataset` end-aligns the last window (start = total - window), so
+    it is fully valid and OVERLAPS the previous one. Concatenating would make a
+    6-frame recording 8 frames long and push its tail 2 frames late."""
+    logits = np.zeros((2, 4, len(CLASS_IDS)), dtype=np.float32)
+    logits[0] = 10.0
+    logits[1] = -10.0
+    artifact = _artifact(logits, [0.0, 0.04], np.ones((2, 4), dtype=bool), ["r1", "r1"])
+
+    stacked = stack_predictions_by_recording(artifact)["r1"]
+
+    assert stacked.shape == (6, len(CLASS_IDS))
+    assert np.all(stacked[:2] > 0.99)  # window 0 only
+    assert np.allclose(stacked[2:4], 0.5, atol=1e-4)  # overlap: mean of both windows
+    assert np.all(stacked[4:] < 0.01)  # window 1 only, at its true position
+
+
+def test_stack_rejects_uncovered_frames():
+    logits = np.zeros((2, 4, len(CLASS_IDS)), dtype=np.float32)
+    artifact = _artifact(logits, [0.0, 0.12], np.ones((2, 4), dtype=bool), ["r1", "r1"])
+    with pytest.raises(ValueError, match="gap"):
+        stack_predictions_by_recording(artifact)
 
 
 def test_only_classes_produces_identical_output_to_filtering_after_the_fact():
