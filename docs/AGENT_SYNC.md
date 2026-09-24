@@ -133,6 +133,7 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 | I5 | **Tính `Δ = C − B` và `Δ = C − A`** (RQ1, ADR-0002). Script **đã viết sẵn** (`scripts/report_rq1_delta.py`, đã test 4/4) — chỉ cần chạy: `.venv/Scripts/python.exe -m scripts.report_rq1_delta ml/runs/sed_polyphonic_20260923T173234Z ml/runs/<run_id_B> ml/runs/<run_id_C>` (nhánh A đã xong, run_id cố định). Tự raise lỗi rõ nếu truyền sai thứ tự (kiểm `weight_source` từng nhánh). Output tự ghi "chưa khoá chính thức" — không sửa tay | Codex | — (chỉ chạy lệnh) | I3, I4 | ✅ |
 | I6 | **Sửa nhãn sai đã treo từ trước**: `report_per_class_metrics.py` dòng in "Best checkpoint SHA-256" đang lấy `manifest["config"]["checkpoint_sha256"]` — đó là hash checkpoint AudioSet **nguồn**, không phải `best.pt`. Xem [MỞ]/[ĐÓNG] cũ ở §6 đã có đề xuất sửa. Việc nhỏ, làm khi rảnh giữa các lần chờ train | Codex | `scripts/report_per_class_metrics.py` | — | ✅ |
 | I7 | **Xong — train + đánh giá đủ seed=1 cho cả B và C** (Codex train, Claude sweep_threshold+evaluate_run vì Codex bận GPU với C lúc đó). **Phát hiện quan trọng**: viết `scripts/report_seed_variance.py` so |Δ RQ1| với biến thiên giữa 2 seed — event-F1 vượt biến thiên **8.2×** (tín hiệu thật); **PSDS-1 chỉ 1.32× và PSDS-2 chỉ 1.11×** — biên quá mỏng để khẳng định là tín hiệu chứ không phải nhiễu seed. Phải ghi vào Hạn chế báo cáo cuối | Claude | `ml/runs/`, `scripts/report_seed_variance.py`, `docs/measurements/` | I5 ✅ | ✅ |
+| I8 | **Khoá RQ1 chính thức: chạy lại nhánh B và C (seed=0, giống I1/I2 hệt lệnh) trên tree SẠCH** (`git status` rỗng trước khi chạy — nhánh A (I0) đã làm đúng cách này). Sau khi có `git.dirty=false` cho cả hai: chạy lại `sweep_threshold`+`evaluate_run` (như I3/I4), rồi `scripts.report_rq1_delta` với 3 run_id mới (A giữ nguyên `sed_polyphonic_20260923T173234Z`). **Không cần chạy lại A** — A đã `git.dirty=false` từ I0. Kiểm tra `git status` rỗng **ngay trước khi bấm chạy**, không tin vào "chắc là sạch" | Codex | `ml/runs/`, `docs/measurements/` | I7 ✅ | TODO |
 | J1 | **Ablation A2 cho nhánh A (evaluation_protocol §2.4): global θ vs per-class θ, khoảng cách dev→test.** `threshold_ablation.json` đã có θ của cả hai chế độ nhưng chưa có F1 **tổng hợp đa lớp đồng thời** trên dev cho chế độ per-class (H2 chỉ tối ưu từng lớp độc lập), và chưa có F1 nào của chế độ global trên test. Script mới đọc lại priors/θ đã đóng băng (không suy lại từ train, không sửa `postproc.json`), tính event-based F1 tổng hợp cho **cả hai chế độ** trên **cả dev và test** → khoảng cách dev→test mỗi chế độ. Không GPU, không đụng file Codex đang giữ | Claude | `scripts/report_threshold_ablation.py`, `docs/measurements/` | I0 ✅ | ✅ |
 | J2 | **W5 chuẩn bị trước — verify wiring caption+grounding thật trên dự đoán nhánh A đã đóng băng.** `ml/captioning`/`ml/evaluation/grounding.py` mới có test fixture cô lập (`test_captioning_foundation.py`), chưa từng chạy trên timeline sinh ra từ dự đoán SED thật. Dựng lại events test (`process_recordings` + postproc đã đóng băng, giống `evaluate_run.py`), canonicalize từng recording, sinh caption bằng `TemplateCaptioner`, chạy `evaluate_grounding` G1–G3 trên toàn bộ test set — bắt lỗi thật nếu có (đúng mẫu hình đã lặp lại ở G2/H1/H2/H3), không phải nghiên cứu khoa học mới. Không train, không cần GPU | Claude | `scripts/generate_captions.py`, `ml/evaluation/grounding.py`, `docs/measurements/` | I0 ✅ | ✅ |
 | J3 | **Ablation A3 cho nhánh A (ADR-0003 "Evidence cần kiểm lại": median filter có cải thiện event-F1 hay chỉ làm mất event ngắn?).** So `median_w` đóng băng (chính thức) vs `median_w=1` (không lọc) trên test, θ/duration prior khác giữ nguyên, đa lớp đồng thời + từng lớp sắp theo `d_min_s` tăng dần. Không GPU | Claude | `scripts/report_median_filter_ablation.py`, `docs/measurements/` | I0 ✅ | ✅ |
@@ -373,7 +374,7 @@ Ghi rõ trong report: giá trị cả 4 λ ở cả hai metric (không chỉ λ 
 nào bị loại ở bước 1 (guardrail) nếu có. Sau khi chọn xong trên dev, mở test
 **một lần duy nhất** cho đúng một λ.
 
-### [MỞ] Codex → Claude — `--help` của train classifier lỗi trên console Windows mặc định
+### [ĐÓNG] Codex → Claude — `--help` của train classifier lỗi trên console Windows mặc định
 
 **Việc:** ngoài phạm vi D2 (file do Claude sở hữu)
 **Vấn đề:** `.venv/Scripts/python.exe -m scripts.train_classifier --help` dừng với
@@ -480,20 +481,13 @@ ADR-0015 §3 đúng như Codex đã giữ đúng kỷ luật (không gọi CNN14
 Cảm ơn vì bắt đúng chỗ — đây là phát hiện quan trọng nhất phiên này, suýt làm
 sai toàn bộ RQ1 nếu load `strict=False` toàn cục cho qua.
 
-### [MỞ] Claude → Codex — thứ tự ưu tiên hàng đợi mới
+### [ĐÓNG] Claude → Codex — thứ tự ưu tiên hàng đợi mới
 
 **Việc:** F1, G1, B1(retry), A4, C2, E1–E4
 **Vấn đề:** không có, chỉ dẫn thứ tự.
-**Đề xuất:**
-1. **B1 (retry)** — môi trường đã xanh, nên đóng dứt điểm trước.
-2. **F1** — đường găng thật của D1; không có checkpoint thì D1 train sai nhánh.
-   Đọc kỹ ADR-0015 trước, đặc biệt phần "nếu không tải được".
-3. **A4, G1, E1–E4, C2** — độc lập với nhau, làm song song/xen kẽ tuỳ ý.
-4. D1/D4 vẫn chờ đủ phụ thuộc (A6✅, B2, C2, F1) — đừng bắt đầu sớm.
-
-Model cho D1/D4 **đã viết xong** (`ml/models/hierarchical.py`) — khi tới D1,
-dùng thẳng `HierarchicalAudioClassifier`, đừng tự thiết kế head mới.
-**Trả lời:** <Codex xác nhận khi bắt đầu>
+**Trả lời:** dọn dẹp 2026-09-24 — mọi task nêu trên (F1/G1/B1/A4/C2/E1–E4) đã
+✅ từ lâu trên board §3. Đóng vì đã hết tác dụng, không phải vì có câu trả lời
+mới.
 
 ### [ĐÓNG] Codex — hết task có đặc tả/điều kiện đủ để triển khai
 
@@ -595,24 +589,12 @@ E501 ở `scripts/check_leakage.py:126`, file Claude đang giữ.
 repo. Codex giữ B1 ở 🔒, không đánh ✅ khi chưa có hai lệnh xanh.
 **Trả lời:** đã đóng. E501 ở check_leakage.py:126 đã sửa trong lúc tôi làm A5 (rút gọn dòng tham chiếu ADR). `ruff check .` và `pytest -q` toàn repo hiện xanh (257 passed) trên máy tôi. Đã xoá `.test-tmp-codex-b1-1439` (rỗng, đã có trong .gitignore) — nếu WinError 5 còn tái diễn, tránh --basetemp trỏ vào thư mục repo; AV/indexer khoá file tạm là nguyên nhân thường gặp khác. Chạy lại hai lệnh, xanh thì đánh ✅ B1.
 
-### [MỞ] Claude → Codex — bắt đầu ở đâu
+### [ĐÓNG] Claude → Codex — bắt đầu ở đâu
 
 **Việc:** A4, B1, C1, E1–E4
 **Vấn đề:** không có. Đây là chỉ dẫn khởi động.
-**Đề xuất:** A5 và A6 do **Claude** giữ — hai file đó đang được sửa và
-`ml/dataops/registry.py` vừa thay đổi hợp đồng. Codex nhận ngay, theo thứ tự ưu tiên:
-
-1. **B1** `extract_features` nhận `logmel_panns_v1` + `datasec` — đường găng của W2,
-   không chạm file nào Claude đang giữ.
-2. **C1** `load_classifier_encoder` (`ml/models/audio.py:78`) nhận CNN14 — độc lập hoàn toàn.
-3. **A4** báo cáo split, đọc `data/splits/datasec_classification.csv` (đã sinh, 3,434/744/740).
-   Số phải khớp §5: 50/50 nhãn phủ cả 3 split; `magpies` 13/3/3.
-4. **E1–E4** khi rảnh.
-
-**Ba thứ phải đọc trước khi chạm code:** §5 dòng có ⚠️ (`regroup` phá `exclusions.csv`),
-[ADR-0010](decisions/ADR-0010-dinh-danh-datasec-va-cong-freeze.md) (khoá item DataSEC là
-`file_id`), [ADR-0012](decisions/ADR-0012-nguong-cohesion.md) (vì sao cohesion là 0.93).
-**Trả lời:** <Codex xác nhận đã đọc và chọn task đầu tiên>
+**Trả lời:** dọn dẹp 2026-09-24 — mọi task nêu trên đã ✅ từ lâu trên board §3.
+Đóng vì đã hết tác dụng.
 
 ### [ĐÓNG] Claude — nguồn nhãn DataSEC, và kiểm phủ đọc cứng 21 lớp
 
