@@ -53,7 +53,8 @@ def test_unsupported_mirrors_the_grounding_rule() -> None:
 def _captions(run: Path) -> None:
     (run / "captions").mkdir(parents=True)
     rows = [{"recording_id": f"S-{i:04d}", "level": level,
-             "timeline": {"events": [{"class_id": "birds"}]},
+             "timeline": {"events": [{"event_id": 1, "class_id": "birds", "onset_s": 0.0,
+                                      "offset_s": 1.0, "score": 1.0}]},
              "caption": {"text": f"Birds sing ({i}, {level})."}}
             for i in range(6) for level in ("oracle", "e2e")]
     (run / "captions" / "unconstrained_test.jsonl").write_text(
@@ -108,6 +109,8 @@ def test_partially_filled_worksheet_is_scored_on_annotated_rows_only(tmp_path: P
     assert result["n_captions"] == 10 and result["n_not_annotated"] == 2
     assert result["mentions"]["precision"] == 1.0 and result["mentions"]["recall"] == 1.0
     assert result["hallucination_flag"]["lexicon_False_human_False"] == 10
+    bias = result["metric_bias"]["omission_rate"]
+    assert bias["lexicon"] == bias["human"] == 0.0 and bias["lexicon_minus_human"][0] == 0.0
 
 
 def test_scoring_needs_enough_rows_and_refuses_half_filled_rows() -> None:
@@ -122,3 +125,18 @@ def test_scoring_needs_enough_rows_and_refuses_half_filled_rows() -> None:
         annotated_rows([filled] * (MIN_ANNOTATED - 1))
     with pytest.raises(SystemExit, match="thiếu classes_mentioned"):
         annotated_rows([{**blank, "notes": "unsure"}] + [filled] * MIN_ANNOTATED)
+
+
+def test_human_grounding_counts_outside_sources_as_unsupported() -> None:
+    from ml.evaluation.mention_agreement import human_grounding
+
+    metrics = human_grounding({frozenset({"birds"})}, n_outside=1, present={"birds", "voices"})
+    assert metrics.hallucination_rate == 0.5 and metrics.omission_rate == 0.5
+    assert human_grounding(set(), 0, {"birds"}).omission_rate == 1.0
+
+
+def test_label_restatement_is_recognised() -> None:
+    from ml.evaluation.mention_agreement import label_restatement
+
+    assert label_restatement("cicadas_and_crickets", "A chorus of cicadas and crickets.", LEXICON)
+    assert not label_restatement("cicadas_and_crickets", "Crickets chirp.", LEXICON)

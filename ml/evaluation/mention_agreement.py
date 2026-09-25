@@ -15,7 +15,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 
 from ml.captioning.lexicon import CaptionLexicon
-from ml.evaluation.grounding import collapse_enumerations
+from ml.evaluation.grounding import GroundingMetrics, collapse_enumerations
 
 NONE_MARK = "none"
 Unit = frozenset[str]
@@ -82,3 +82,29 @@ def unsupported(units: set[Unit], present: set[str], outside: bool) -> bool:
     """A caption hallucinates if a unit shares no class with the timeline, or names an
     out-of-taxonomy source — the same rule as `evaluate_grounding` (ADR-0022 §3)."""
     return outside or any(not unit & present for unit in units)
+
+
+def human_grounding(units: set[Unit], n_outside: int, present: set[str]) -> GroundingMetrics:
+    """C2 hallucination/omission computed from the HUMAN reading of a caption.
+
+    Same rules as `evaluate_grounding`: a unit is supported if it shares a class with
+    the timeline; each out-of-taxonomy source is one unsupported mention; recall is over
+    timeline classes. Order, evidence and G3 are not annotated (neutral values).
+    """
+    n_mentions = len(units) + n_outside
+    supported = [unit for unit in units if unit & present]
+    precision = len(supported) / n_mentions if n_mentions else 1.0
+    covered = set().union(*(unit & present for unit in supported))
+    recall = len(covered) / len(present) if present else 1.0
+    return GroundingMetrics(event_precision=precision, event_recall=recall,
+                            hallucination_rate=1.0 - precision, omission_rate=1.0 - recall,
+                            temporal_order_accuracy=1.0, evidence_coverage=0.0,
+                            forbidden_term_rate=0.0, n_mentions=n_mentions)
+
+
+def label_restatement(class_id: str, text: str, lexicon: CaptionLexicon) -> bool:
+    """Whether the caption names `class_id` through its own taxonomy label
+    ("cicadas and crickets"), which the lexicon counts as class level, not over-specific."""
+    labels = {item.source_label.lower() for item in lexicon.taxonomy.classes
+              if item.class_id == class_id} | {class_id.replace("_", " ")}
+    return any(m.phrase in labels for m in lexicon.mentions(text) if class_id in m.class_ids)

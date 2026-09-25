@@ -1,0 +1,306 @@
+{
+  "run": "sed_polyphonic_20260924T054531Z",
+  "split": "test",
+  "lexicon_sha256": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
+  "n_captions": 60,
+  "n_not_annotated": 0,
+  "mentions": {
+    "precision": 0.8963414634146342,
+    "recall": 0.9363057324840764,
+    "tp": 147,
+    "fp": 17,
+    "fn": 10,
+    "exact": 42
+  },
+  "over_specific": {
+    "precision": 1.0,
+    "recall": 0.5675675675675675
+  },
+  "hallucination_flag": {
+    "lexicon_True_human_True": 0,
+    "lexicon_True_human_False": 2,
+    "lexicon_False_human_True": 2,
+    "lexicon_False_human_False": 56
+  },
+  "metric_bias": {
+    "hallucination_rate": {
+      "lexicon": 0.011111111111111112,
+      "human": 0.03333333333333333,
+      "lexicon_minus_human": [
+        -0.02222222222222222,
+        -0.07777777777777778,
+        0.01666666666666667
+      ]
+    },
+    "omission_rate": {
+      "lexicon": 0.049206349206349205,
+      "human": 0.08045634920634921,
+      "lexicon_minus_human": [
+        -0.031249999999999993,
+        -0.08333333333333333,
+        0.004166666666666666
+      ]
+    }
+  },
+  "over_specific_missed": {
+    "total": 16,
+    "label_restatement": 8
+  },
+  "disagreements": [
+    {
+      "item_id": "m-006",
+      "caption": "A rhythmic series of hammer strikes echoes through a workshop, punctuating the quiet air with sharp, metallic impacts.",
+      "lexicon": [
+        "workshop"
+      ],
+      "human": []
+    },
+    {
+      "item_id": "m-008",
+      "caption": "A vehicle passes by before the scene is dominated by the wailing of sirens and alarms that persist for the majority of the recording.",
+      "lexicon": [
+        "sirens_and_alarms",
+        "vehicle_idling|vehicle_pass_by"
+      ],
+      "human": [
+        "sirens_and_alarms",
+        "vehicle_pass_by"
+      ]
+    },
+    {
+      "item_id": "m-010",
+      "caption": "A rhythmic series of hammer strikes echoes through a workshop, marking the steady progress of a crafting project.",
+      "lexicon": [
+        "workshop"
+      ],
+      "human": []
+    },
+    {
+      "item_id": "m-014",
+      "caption": "A vehicle passes by briefly before the sound of jet aircrafts dominates the recording for over twenty seconds.",
+      "lexicon": [
+        "jet_aircrafts",
+        "vehicle_idling|vehicle_pass_by"
+      ],
+      "human": [
+        "jet_aircrafts",
+        "vehicle_pass_by"
+      ]
+    },
+    {
+      "item_id": "m-015",
+      "caption": "A brief vehicle passes by to reveal a lively soundscape of chirping birds, human voices, and barking dogs in a natural setting.",
+      "lexicon": [
+        "birds",
+        "dog_barkings_and_howlings",
+        "vehicle_idling|vehicle_pass_by",
+        "voices"
+      ],
+      "human": [
+        "birds",
+        "dog_barkings_and_howlings",
+        "vehicle_pass_by",
+        "voices"
+      ]
+    },
+    {
+      "item_id": "m-020",
+      "caption": "A rhythmic chorus of cicadas and crickets fills the air in this two-minute environmental recording, punctuating the quiet with repeated bursts of insect song.",
+      "lexicon": [
+        "cicadas_and_crickets",
+        "music"
+      ],
+      "human": [
+        "cicadas_and_crickets"
+      ]
+    },
+    {
+      "item_id": "m-021",
+      "caption": "A continuous stream of urban traffic noise, featuring multiple vehicles passing by and idling, punctuated by brief moments of human voices and honking horns.",
+      "lexicon": [
+        "horn",
+        "vehicle_idling",
+        "vehicle_idling|vehicle_pass_by",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "human": [
+        "horn",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ]
+    },
+    {
+      "item_id": "m-023",
+      "caption": "In a bustling workshop filled with early chatter, the steady rhythm of passing vehicles gradually takes over the soundscape.",
+      "lexicon": [
+        "vehicle_pass_by",
+        "workshop"
+      ],
+      "human": [
+        "vehicle_pass_by",
+        "voices"
+      ]
+    },
+    {
+      "item_id": "m-026",
+      "caption": "A 39.7-second environmental recording captures intermittent bursts of workshop activity, with distinct periods of machinery noise occurring at the beginning, middle, and end of the clip.",
+      "lexicon": [
+        "lawn_mower_brush_cutter_olive_shaker|vacuum_cleaner_fan_hairdryer|workshop",
+        "workshop"
+      ],
+      "human": [
+        "workshop"
+      ]
+    },
+    {
+      "item_id": "m-031",
+      "caption": "A 159-second environmental recording captures a continuous background music track punctuated by intermittent human voices and the passing sounds of vehicles.",
+      "lexicon": [
+        "music",
+        "vehicle_idling|vehicle_pass_by",
+        "voices"
+      ],
+      "human": [
+        "music",
+        "vehicle_pass_by",
+        "voices"
+      ]
+    },
+    {
+      "item_id": "m-032",
+      "caption": "A continuous stream of traffic noise, including passing vehicles, idling engines, and a distant train, is punctuated by brief moments of human voices, a lawn mower, a dog barking, a car horn, and a final loud gunshot.",
+      "lexicon": [
+        "dog_barkings_and_howlings",
+        "horn",
+        "lawn_mower_brush_cutter_olive_shaker",
+        "thunder_fireworks_gunshot",
+        "train",
+        "vehicle_idling",
+        "vehicle_idling|vehicle_pass_by",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "human": [
+        "dog_barkings_and_howlings",
+        "horn",
+        "lawn_mower_brush_cutter_olive_shaker",
+        "thunder_fireworks_gunshot",
+        "train",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ]
+    },
+    {
+      "item_id": "m-033",
+      "caption": "A brief soundscape captures the rhythmic hum of a workshop, punctuated by the roar of passing vehicles and the distinct whir of a lawn mower before settling back into mechanical noise.",
+      "lexicon": [
+        "lawn_mower_brush_cutter_olive_shaker",
+        "lawn_mower_brush_cutter_olive_shaker|vacuum_cleaner_fan_hairdryer|workshop",
+        "vehicle_pass_by",
+        "workshop"
+      ],
+      "human": [
+        "lawn_mower_brush_cutter_olive_shaker",
+        "vehicle_pass_by",
+        "workshop"
+      ]
+    },
+    {
+      "item_id": "m-037",
+      "caption": "A brief moment of nature and urban noise unfolds as birds sing and a vehicle passes, interrupted by a sudden gunshot, before the steady rumble of a train dominates the final twenty seconds.",
+      "lexicon": [
+        "birds",
+        "thunder_fireworks_gunshot",
+        "train",
+        "vehicle_idling|vehicle_pass_by"
+      ],
+      "human": [
+        "birds",
+        "thunder_fireworks_gunshot",
+        "train",
+        "vehicle_pass_by"
+      ]
+    },
+    {
+      "item_id": "m-038",
+      "caption": "A vehicle passes by and idles briefly before the recording concludes with the chirping of birds.",
+      "lexicon": [
+        "birds",
+        "vehicle_idling",
+        "vehicle_idling|vehicle_pass_by"
+      ],
+      "human": [
+        "birds",
+        "vehicle_idling",
+        "vehicle_pass_by"
+      ]
+    },
+    {
+      "item_id": "m-042",
+      "caption": "A vehicle passes by briefly before a train rumbles through the scene, punctuated by chirping birds and ending with a sudden thunder or gunshot.",
+      "lexicon": [
+        "birds",
+        "thunder_fireworks_gunshot",
+        "train",
+        "vehicle_idling|vehicle_pass_by"
+      ],
+      "human": [
+        "birds",
+        "thunder_fireworks_gunshot",
+        "train",
+        "vehicle_pass_by"
+      ]
+    },
+    {
+      "item_id": "m-050",
+      "caption": "A vehicle passes by while a horn blares, followed by the rumble of a train arriving.",
+      "lexicon": [
+        "horn",
+        "train",
+        "vehicle_idling|vehicle_pass_by"
+      ],
+      "human": [
+        "horn",
+        "train",
+        "vehicle_pass_by"
+      ]
+    },
+    {
+      "item_id": "m-055",
+      "caption": "A 3-minute environmental recording captures a dynamic urban soundscape where the rhythmic chirping of birds and distant train rumble are punctuated by the roar of passing vehicles, propeller and jet aircraft, and intermittent sirens and dog barks.",
+      "lexicon": [
+        "birds",
+        "dog_barkings_and_howlings",
+        "jet_aircrafts",
+        "sirens_and_alarms",
+        "train",
+        "vehicle_pass_by"
+      ],
+      "human": [
+        "birds",
+        "dog_barkings_and_howlings",
+        "jet_aircrafts",
+        "propeller_aircrafts",
+        "sirens_and_alarms",
+        "train",
+        "vehicle_pass_by"
+      ]
+    },
+    {
+      "item_id": "m-060",
+      "caption": "A serene natural soundscape features a long, continuous chorus of birds singing from 4.7 to 53.5 seconds and again from 60.0 to the end, punctuated by intermittent bursts of cicada and cricket chirping throughout the 93-second recording.",
+      "lexicon": [
+        "birds",
+        "cicadas_and_crickets",
+        "music|voices"
+      ],
+      "human": [
+        "birds",
+        "cicadas_and_crickets"
+      ]
+    }
+  ]
+}

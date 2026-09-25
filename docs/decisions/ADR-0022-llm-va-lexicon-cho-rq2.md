@@ -123,6 +123,37 @@ bối cảnh (32–42% caption), gọi tên quá mức bằng chứng (14–19% 
 (0.7–1.4%), thứ tự thời gian (0.90–0.94) và omission e2e (6%). Phải viết đúng như
 vậy trong Chương kết quả, không trình bày RQ2 như "giảm hallucination".
 
+### 6. Kiểm chứng lexicon bằng người đọc (25/09 tối)
+
+Người dùng đọc **mù** 60 caption unconstrained test (30 oracle + 30 e2e, chọn bằng băm có
+seed; không timeline, không output lexicon, không audio) và ghi nguồn âm mỗi caption khẳng
+định. Nguồn: `caption_mention_agreement_20260925.md`; phiếu
+`data/manifests/caption_mention_worksheet.csv`. Lexicon **không** sửa theo kết quả này
+(đã đóng băng trước test).
+
+- **Trích mention:** precision 0.896, recall 0.936 (147/17/10), 42/60 caption khớp hoàn toàn.
+  Lỗi chính của lexicon: (1) "a vehicle passes by" đọc thành họ mơ hồ
+  `vehicle_idling|vehicle_pass_by`; (2) từ chỉ **địa điểm** "workshop" đọc thành nguồn âm;
+  (3) thiếu từ ("chatter", "propeller and jet aircraft" rút gọn); (4) nghĩa bóng "insect
+  song", "birds singing" đọc thành nhạc/giọng người.
+- **Cờ "có bịa":** khớp 56/60; cả 4 ca lệch người đọc đúng — lexicon báo nhầm 2 ("song",
+  "singing") và **bỏ lọt 2** (m-006, m-010: caption bịa "hammer strikes" — búa không thuộc 5
+  loại máy của `workshop` theo taxonomy.md §C1 — nhưng lexicon cho qua vì khớp chữ địa điểm
+  "workshop"; lexicon còn coi "hammering" là `workshop`, rộng hơn định nghĩa taxonomy).
+- **C2 trên cùng mẫu, lexicon − người:** hallucination 0.011 vs 0.033 (−0.022 [−0.078,
+  +0.017]); omission 0.049 vs 0.081 (−0.031 [−0.083, +0.004]). Lexicon **dễ dãi hơn** người
+  (hướng nhất quán, CI chạm 0 ở n = 60) — đúng thiết kế "mơ hồ xử có lợi cho caption" (§3).
+  Hệ quả RQ2: đọc chặt hơn thì unconstrained bịa và bỏ sót nhiều hơn → lợi thế
+  hallucination/bối cảnh của constrained không đổi chiều; khoảng cách omission (constrained
+  thua) thu hẹp một phần.
+- **Gọi tên quá mức:** precision 1.000, recall 0.568 — mọi ca lệch là người đánh dấu mà
+  lexicon không; 8/16 là **nhắc lại đúng tên lớp** ("cicadas and crickets", "sirens and
+  alarms"), phần lớn còn lại là "dog barks" (một hành vi của lớp chó). Lexicon coi nhắc tên
+  lớp là mức lớp — dễ dãi hơn cách đọc chặt taxonomy §7 ("sirens and alarms" khẳng định cả
+  hai loại). Định nghĩa metric phải ghi rõ điều này; nhánh constrained dùng đúng tên lớp nên
+  cách đọc chặt sẽ tính cả nó.
+- **Giới hạn:** một người đọc, n = 60, chỉ caption unconstrained.
+
 ## Consequences
 
 ### Tích cực

@@ -24,10 +24,14 @@ from pathlib import Path
 from typing import Any
 
 from ml.captioning.lexicon import CaptionLexicon
+from ml.evaluation.caption_stats import paired_difference
+from ml.evaluation.grounding import evaluate_grounding
 from ml.evaluation.mention_agreement import (
     agreement,
     extractor_outside,
     extractor_units,
+    human_grounding,
+    label_restatement,
     parse_units,
     unsupported,
 )
@@ -172,14 +176,20 @@ def compare_row(row: dict[str, str], source: dict, lexicon: CaptionLexicon, clas
     lexicon_specific = {frozenset(m.class_ids) for m in lexicon.mentions(text)
                         if m.kind == "specific"}
     present = {e["class_id"] for e in source["timeline"]["events"]}
+    outside = [s for s in row["other_sources"].split(",") if s.strip()]
     flag = (unsupported(extracted, present, extractor_outside(text, lexicon)),
-            unsupported(human, present, bool(row["other_sources"].strip())))
+            unsupported(human, present, bool(outside)))
+    missed_specific = {c for unit in human_specific - lexicon_specific for c in unit}
     disagreement = None if extracted == human else {
         "item_id": row["item_id"], "caption": text,
         "lexicon": sorted("|".join(sorted(u)) for u in extracted),
         "human": sorted("|".join(sorted(u)) for u in human)}
     return {"pair": (extracted, human), "specific": (lexicon_specific, human_specific),
-            "flag": flag, "disagreement": disagreement}
+            "flag": flag, "disagreement": disagreement,
+            "metrics": (evaluate_grounding(source["timeline"], source["caption"], lexicon),
+                        human_grounding(human, len(outside), present)),
+            "label_restated": sum(label_restatement(c, text, lexicon) for c in missed_specific),
+            "missed_specific": len(missed_specific)}
 
 
 def score(args: argparse.Namespace) -> None:
@@ -189,13 +199,31 @@ def score(args: argparse.Namespace) -> None:
     rows, pending = annotated_rows(read_worksheet(args.worksheet))
     results = [compare_row(row, captions[(row["recording_id"], row["level"])], lexicon,
                            taxonomy.class_ids) for row in rows]
+    extra = {"metric_bias": metric_bias(rows, results),
+             "over_specific_missed": {
+                 "total": sum(r["missed_specific"] for r in results),
+                 "label_restatement": sum(r["label_restated"] for r in results)}}
     write_agreement(args, lexicon, agreement([r["pair"] for r in results]),
                     agreement([r["specific"] for r in results]),
                     [r["flag"] for r in results],
-                    [r["disagreement"] for r in results if r["disagreement"]], pending)
+                    [r["disagreement"] for r in results if r["disagreement"]], pending, extra)
 
 
-def write_agreement(args, lexicon, mentions, specific, flags, disagreements, pending) -> None:
+def metric_bias(rows: list[dict[str, str]], results: list[dict]) -> dict:
+    """C2 read by the lexicon vs by the human on the same captions (paired CI)."""
+    lexicon = {row["item_id"]: r["metrics"][0] for row, r in zip(rows, results, strict=True)}
+    human = {row["item_id"]: r["metrics"][1] for row, r in zip(rows, results, strict=True)}
+    out = {}
+    for metric in ("hallucination_rate", "omission_rate"):
+        diff = paired_difference(lexicon, human, metric)
+        out[metric] = {"lexicon": sum(getattr(m, metric) for m in lexicon.values()) / len(lexicon),
+                       "human": sum(getattr(m, metric) for m in human.values()) / len(human),
+                       "lexicon_minus_human": [diff.estimate, diff.lower, diff.upper]}
+    return out
+
+
+def write_agreement(args, lexicon, mentions, specific, flags, disagreements, pending,
+                    extra) -> None:
     confusion = {f"lexicon_{a}_human_{b}": sum(f == (a, b) for f in flags)
                  for a in (True, False) for b in (True, False)}
     result = {"run": args.run_dir.name, "split": args.split, "lexicon_sha256": lexicon.sha256(),
@@ -204,7 +232,7 @@ def write_agreement(args, lexicon, mentions, specific, flags, disagreements, pen
                            "tp": mentions.true_positive, "fp": mentions.false_positive,
                            "fn": mentions.false_negative, "exact": mentions.exact_captions},
               "over_specific": {"precision": specific.precision, "recall": specific.recall},
-              "hallucination_flag": confusion, "disagreements": disagreements}
+              "hallucination_flag": confusion, **extra, "disagreements": disagreements}
     stamp = datetime.now(UTC).strftime("%Y%m%d")
     destination = getattr(args, "output", None) or (
         ROOT / "docs/measurements" / f"caption_mention_agreement_{stamp}.md")
@@ -212,6 +240,20 @@ def write_agreement(args, lexicon, mentions, specific, flags, disagreements, pen
                                                 encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")
     print(render(result))
+
+
+def render_bias(result: dict[str, Any]) -> list[str]:
+    missed = result["over_specific_missed"]
+    lines = [f"Gọi tên quá mức người đánh dấu mà lexicon không: {missed['total']}, trong đó "
+             f"{missed['label_restatement']} là nhắc lại đúng tên lớp (vd \"cicadas and "
+             "crickets\") — lexicon coi là mức lớp theo thiết kế.", "",
+             "## C2 trên cùng mẫu: lexicon đọc vs người đọc", "",
+             "| Metric | Lexicon | Người | Lexicon − người [CI 95%] |", "|---|---:|---:|---:|"]
+    for metric, v in result["metric_bias"].items():
+        d = v["lexicon_minus_human"]
+        lines.append(f"| {metric} | {v['lexicon']:.4f} | {v['human']:.4f} "
+                     f"| {d[0]:+.4f} [{d[1]:+.4f}, {d[2]:+.4f}] |")
+    return lines + [""]
 
 
 def render(result: dict[str, Any]) -> str:
@@ -228,6 +270,7 @@ def render(result: dict[str, Any]) -> str:
         f"| {m['fn']} | {m['exact']}/{result['n_captions']} |",
         f"| Gọi tên quá mức | {result['over_specific']['precision']:.3f} "
         f"| {result['over_specific']['recall']:.3f} | | | | |", "",
+        *render_bias(result),
         "## Cờ \"caption có bịa\" (so với timeline)", "",
         "| | Người: có | Người: không |", "|---|---:|---:|",
         f"| Lexicon: có | {c['lexicon_True_human_True']} | {c['lexicon_True_human_False']} |",
