@@ -13,3 +13,7 @@
 
 sed_eval>=0.2.1,<1
 psds_eval>=0.5.3,<1
+
+# Caption n-gram (BLEU/CIDEr) — chỉ để tham khảo, evaluation_protocol §8.3. Dùng scorer
+# Bleu/Cider (Python thuần); tách từ PTB và METEOR/SPICE của gói cần Java nên không dùng.
+pycocoevalcap>=1.2,<2

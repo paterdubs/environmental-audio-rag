@@ -102,6 +102,15 @@ template và constrained cho cả hai lớp (`tests/test_grouped_class_wording.p
 "DataSED không có subclass ground truth" của §7 dòng thứ hai **không áp dụng**: hệ
 thống không đưa subclass prediction vào caption.
 
+### 6. N-gram — chỉ tham khảo (evaluation_protocol §8.3, thêm 25/09)
+
+BLEU-4 / CIDEr (`pycocoevalcap`, tách từ đơn giản vì PTB cần Java) so với caption
+template của cùng timeline, test: constrained 0.2521/1.6440 (oracle), 0.1813/1.4246
+(e2e); unconstrained 0.0058/0.0685 (oracle), 0.0051/0.0625 (e2e). Nguồn:
+`caption_ngram_sed_polyphonic_20260924T054531Z_test.md`. **Không kết luận gì từ đây:**
+tham chiếu là template nên số chỉ đo độ giống văn phong template — constrained cao vì
+grammar dùng cụm từ gần template, không phải vì grounded hơn; grounding đo ở §4–§5.
+
 ## Consequences
 
 ### Tích cực
