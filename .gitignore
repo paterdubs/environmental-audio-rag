@@ -40,3 +40,7 @@ Thumbs.db
 .idea/
 .vscode/
 
+
+# pytest-cov
+.coverage
+htmlcov/

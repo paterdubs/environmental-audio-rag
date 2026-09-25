@@ -1,15 +1,35 @@
 # Grounding caption — `sed_polyphonic_20260924T054531Z` (dev)
 
-> Sinh bởi `scripts.score_captions`. Lexicon `caption-lexicon-v2` sha256 `6f5634bb7837817c…`. Mơ hồ xử theo hướng có lợi cho caption (ADR-0022 §3) → Δ so với unconstrained là cận dưới.
+> Sinh bởi `scripts.score_captions`. Lexicon `caption-lexicon-v2` `6f5634bb…` · split `d2924a5e…` · taxonomy `67ca8a8c…` · prediction `3a69acca…`. Mơ hồ xử theo hướng có lợi cho caption (ADR-0022 §3) → Δ so với unconstrained là cận dưới.
 
-| Nhánh / mức | n | Halluc. ↓ | Omission ↓ | Temporal ↑ | Forbidden ↓ | Over-specific ↓ | Context ↓ | Mentions |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| constrained/e2e | 137 | 0.0000 | 0.2798 | 1.0000 | 0.0000 | 0.0000 | 0.0000 | 2.93 |
-| constrained/oracle | 137 | 0.0000 | 0.0863 | 1.0000 | 0.0000 | 0.0000 | 0.0000 | 3.48 |
-| template/e2e | 137 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | 0.0000 | 6.98 |
-| template/oracle | 137 | 0.0000 | 0.0000 | 1.0000 | 0.0000 | 0.0000 | 0.0000 | 6.47 |
-| unconstrained/e2e | 137 | 0.0015 | 0.0445 | 0.8738 | 0.0292 | 0.1519 | 0.3577 | 3.25 |
-| unconstrained/oracle | 137 | 0.0091 | 0.0174 | 0.9122 | 0.0073 | 0.0926 | 0.2263 | 2.09 |
+Temporal = tỷ lệ cặp mention đúng thứ tự onset (cặp bằng nhau tính đúng; **không** phải Kendall τ). Cột "≥2" chỉ tính caption có ít nhất 2 mention — caption 0–1 mention mặc định 1.0.
+
+| Nhánh / mức | n | Halluc. ↓ | Halluc. micro ↓ | Omission ↓ | Temporal ↑ | Temporal ≥2 ↑ (n) | Forbidden ↓ | Over-specific ↓ | Context ↓ | Mentions |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| constrained/e2e | 137 | 0.0000 | 0.0000 | 0.2798 | 1.0000 | 1.0000 (104) | 0.0000 | 0.0000 | 0.0000 | 2.93 |
+| constrained/oracle | 137 | 0.0000 | 0.0000 | 0.0863 | 1.0000 | 1.0000 (103) | 0.0000 | 0.0000 | 0.0000 | 3.48 |
+| template/e2e | 137 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 1.0000 (120) | 0.0000 | 0.0000 | 0.0000 | 6.98 |
+| template/oracle | 137 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | 1.0000 (107) | 0.0000 | 0.0000 | 0.0000 | 6.47 |
+| unconstrained/e2e | 137 | 0.0015 | 0.0022 | 0.0445 | 0.8738 | 0.8442 (111) | 0.0292 | 0.1519 | 0.3577 | 3.25 |
+| unconstrained/oracle | 137 | 0.0091 | 0.0139 | 0.0174 | 0.9122 | 0.8584 (85) | 0.0073 | 0.0926 | 0.2263 | 2.09 |
+
+## CI 95% (bootstrap theo recording, 1000 lần)
+
+| Nhánh / mức | hallucination_rate | omission_rate | temporal_order_eligible | over_specific_rate | context_term_rate | forbidden_term_rate |
+|---|---:|---:|---:|---:|---:|---:|
+| constrained/e2e | 0.000 [0.000, 0.000] | 0.280 [0.226, 0.336] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] |
+| constrained/oracle | 0.000 [0.000, 0.000] | 0.086 [0.055, 0.122] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] |
+| template/e2e | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] |
+| template/oracle | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] | 1.000 [1.000, 1.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] | 0.000 [0.000, 0.000] |
+| unconstrained/e2e | 0.001 [0.000, 0.004] | 0.044 [0.028, 0.064] | 0.844 [0.793, 0.891] | 0.152 [0.122, 0.183] | 0.358 [0.284, 0.438] | 0.029 [0.007, 0.058] |
+| unconstrained/oracle | 0.009 [0.002, 0.020] | 0.017 [0.006, 0.033] | 0.858 [0.791, 0.921] | 0.093 [0.055, 0.135] | 0.226 [0.161, 0.299] | 0.007 [0.000, 0.022] |
+
+## Hiệu số cặp (nhánh trước − nhánh sau), CI 95%
+
+| So sánh | hallucination_rate | omission_rate | temporal_order_eligible | over_specific_rate | context_term_rate | forbidden_term_rate |
+|---|---:|---:|---:|---:|---:|---:|
+| constrained−unconstrained/e2e | -0.001 [-0.004, +0.000] | +0.235 [+0.186, +0.286] | +0.156 [+0.109, +0.207] | -0.152 [-0.183, -0.122] | -0.358 [-0.438, -0.284] | -0.029 [-0.058, -0.007] |
+| constrained−unconstrained/oracle | -0.009 [-0.020, -0.002] | +0.069 [+0.042, +0.098] | +0.142 [+0.079, +0.209] | -0.093 [-0.135, -0.055] | -0.226 [-0.299, -0.161] | -0.007 [-0.022, +0.000] |
 
 ## Audit: từ ngoài mọi mention (dev)
 
