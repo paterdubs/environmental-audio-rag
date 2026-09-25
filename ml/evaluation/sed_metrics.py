@@ -138,6 +138,37 @@ def event_based_f1(
     }
 
 
+def event_counts_per_recording(
+    reference: Mapping[str, Iterable[Mapping[str, Any]]],
+    estimate: Mapping[str, Iterable[Mapping[str, Any]]],
+    *,
+    event_label_list: list[str],
+    t_collar: float = 0.2,
+    percentage_of_length: float = 0.2,
+) -> dict[str, tuple[int, int, int]]:
+    """(Nref, Nsys, Ntp) of `sed_eval` for each recording, same protocol as `event_based_f1`.
+
+    Overall event-based F1 is micro-averaged: sed_eval sums these counters across recordings,
+    so any resample of recordings can be scored by summing — without re-running sed_eval.
+    """
+    import sed_eval
+
+    counts: dict[str, tuple[int, int, int]] = {}
+    for recording_id in sorted(set(reference) | set(estimate)):
+        metric = sed_eval.sound_event.EventBasedMetrics(
+            event_label_list=event_label_list, t_collar=t_collar,
+            percentage_of_length=percentage_of_length,
+        )
+        reference_events = _events_for_recording(reference, recording_id)
+        estimated_events = _events_for_recording(estimate, recording_id)
+        if reference_events or estimated_events:
+            metric.evaluate(reference_event_list=reference_events,
+                            estimated_event_list=estimated_events)
+        overall = metric.overall
+        counts[recording_id] = (int(overall["Nref"]), int(overall["Nsys"]), int(overall["Ntp"]))
+    return counts
+
+
 def psds_score(
     *,
     ground_truth: Any,
