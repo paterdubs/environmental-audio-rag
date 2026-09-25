@@ -219,6 +219,9 @@ def main() -> None:
         "generation": {"temperature": config.temperature, "seed": config.seed,
                        "max_tokens": config.max_tokens,
                        "enable_thinking": config.enable_thinking},
+        "token_budget": ("per caption: max(max_tokens, tokens(longest grammar caption) + "
+                         "margin) — ADR-0023 §7" if args.branch != "unconstrained"
+                         else "max_tokens"),
         "output_sha256": sha256_file(out_path), "git": git_state(ROOT),
     }
     out_path.with_suffix(".meta.json").write_text(

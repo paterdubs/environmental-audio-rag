@@ -69,6 +69,10 @@ class ChatTransport(Protocol):
     def complete(self, body: dict[str, Any]) -> dict[str, Any]: ...
 
 
+class TokenCounter(Protocol):
+    def count_tokens(self, text: str) -> int: ...
+
+
 class HttpChatTransport:
     """OpenAI-compatible ``/v1/chat/completions`` client (llama.cpp server)."""
 
@@ -82,6 +86,16 @@ class HttpChatTransport:
         )
         with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
             return json.load(response)
+
+    def count_tokens(self, text: str) -> int:
+        """Tokens the served model's tokenizer uses for `text` (llama.cpp `/tokenize`)."""
+        url = self.url.removesuffix("/v1/chat/completions") + "/tokenize"
+        request = urllib.request.Request(
+            url, json.dumps({"content": text}).encode("utf-8"),
+            {"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
+            return len(json.load(response)["tokens"])
 
 
 def build_user_prompt(timeline: dict[str, Any]) -> str:
@@ -107,7 +121,8 @@ def prompt_sha256() -> str:
 
 
 def build_request(
-    timeline: dict[str, Any], config: LLMConfig, grammar: str | None = None
+    timeline: dict[str, Any], config: LLMConfig, grammar: str | None = None,
+    max_tokens: int | None = None,
 ) -> dict[str, Any]:
     body: dict[str, Any] = {
         "messages": [
@@ -116,7 +131,7 @@ def build_request(
         ],
         "temperature": config.temperature,
         "seed": config.seed,
-        "max_tokens": config.max_tokens,
+        "max_tokens": config.max_tokens if max_tokens is None else max_tokens,
         "chat_template_kwargs": {"enable_thinking": config.enable_thinking},
     }
     if grammar is not None:

@@ -16,6 +16,8 @@ runtime:
 generation:
   temperature: 0.0
   seed: 20260922
+  # Trần chung; nhánh constrained nâng theo độ dài tối đa grammar cho phép (ADR-0023 §7)
+  # — sinh greedy nên chỉ caption từng bị cắt mới đổi.
   max_tokens: 256
   enable_thinking: false
   timeout_s: 300
