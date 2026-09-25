@@ -16,7 +16,7 @@
 | W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.6, 4.7 |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
-| W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ◐ nền tảng |
+| W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ◐ benchmark RQ3 xong; còn 6.8 (câu trả lời) |
 | W7 | 03–09/11 | API + frontend + test một lần | ○ |
 | W8 | 10–16/11 | Buffer: viết báo cáo, vá lỗ hổng | ○ |
 
@@ -209,11 +209,11 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 ### Nghiệm thu W6
 
-- [ ] 4 temporal predicate chạy bằng SQL, có test
-- [ ] `filter exactness` = **1.000** cho `hybrid` và `structured_only`
-- [ ] Query set xây **trước** khi xem kết quả
-- [ ] `unsupported-claim rate` = 0.000
-- [ ] Bảng so sánh 3 cấu hình đầy đủ
+- [x] 4 temporal predicate chạy bằng SQL, có test (SQLite + tích hợp PostgreSQL: SQL == ngữ nghĩa Python, 100 câu × 2 corpus)
+- [x] `filter exactness` = **1.000** cho `hybrid` và `structured_only` (dev và test, ADR-0027 §8)
+- [x] Query set xây **trước** khi xem kết quả (v2 đóng băng ở `4762f7f`, chọn theo train)
+- [ ] `unsupported-claim rate` = 0.000 — **chưa**: sinh câu trả lời (6.8) chưa làm
+- [x] Bảng so sánh 3 cấu hình đầy đủ (EN + VI, CI, hiệu số cặp — ADR-0027 §8)
 
 ---
 

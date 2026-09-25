@@ -54,6 +54,29 @@ tin. Câu không có relevant trong một corpus bị loại khỏi trung bình 
 Recall@{1,5,10}, MRR, nDCG@10 (relevance nhị phân), filter exactness (so với event đã index —
 bắt vi phạm kiến trúc). Sinh câu trả lời (6.8) hoãn — cut-list #9.
 
+### 8. Kết quả (26/09 đêm; query set đóng băng ở 4762f7f trước mọi lần chạy)
+
+Index dựng lại trên tree sạch (`retrieval_index_20260925T202815Z`); dev chạy trước, test một
+lần. Nguồn: `retrieval_benchmark_{validation,test}_20260925.md`. 96/100 (dev), 97/100 (test)
+câu có relevant.
+
+| Test | nDCG@10 EN [CI 95%] | nDCG@10 VI | R@10 EN | MRR EN | Filter exactness |
+|---|---:|---:|---:|---:|---:|
+| structured_only | **0.523** [0.460, 0.589] | 0.523 | 0.512 | 0.610 | 1.000 |
+| hybrid | 0.481 [0.424, 0.539] | 0.472 | 0.486 | 0.588 | 1.000 |
+| vector_only | 0.418 [0.361, 0.472] | 0.340 | 0.427 | 0.532 | 0.587 (VI 0.467) |
+
+Hiệu số cặp nDCG@10 (theo câu hỏi): hybrid − vector_only +0.063 [+0.020, +0.109] (EN), +0.131
+[+0.087, +0.181] (VI); hybrid − structured_only −0.042 [−0.085, −0.004] (EN), −0.052 [−0.096,
+−0.007] (VI). Dev cùng chiều (hybrid − structured −0.019 / −0.005, CI chứa 0).
+
+**Đọc đúng:** (1) lọc cứng là thành phần quyết định — hybrid và structured vượt vector_only,
+và filter exactness 1.000 xác nhận điểm ngữ nghĩa không ghi đè bộ lọc; (2) xếp hạng vector
+**trong** tập đã lọc không giúp, trên test còn kém thứ tự theo onset — document chỉ là caption
+template nên vector ít thông tin phân biệt; (3) truy vấn tiếng Việt kém tiếng Anh ở vector_only
+(0.340 vs 0.418) nhưng gần bằng ở hybrid (0.472 vs 0.481). Chưa làm: sinh câu trả lời (6.8),
+index hệ thống SED tối ưu (độ nhạy), document dùng caption LLM (ablation).
+
 ## Consequences
 
 ### Tích cực

@@ -209,7 +209,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | Hạng mục | Còn thiếu |
 |---|---|
 | W4 | 4.6 `confusable_with` từ ma trận nhầm thật (taxonomy.md §8); 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
-| W6 (event store, RAG) | PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding BGE-M3, chưa retrieval |
+| W6 (event store, RAG) | Benchmark RQ3 xong (ADR-0027 §8, **chờ duyệt**); còn 6.8 sinh câu trả lời, độ nhạy với SED tối ưu |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
 
 ### Chưa có ○
@@ -426,6 +426,16 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 (rạng sáng, tự động) — W6: query set v2, event store, BGE-M3, benchmark RQ3
+
+W5 push xong (CI xanh, `fe16594`). Chế độ tự động: ADR-0027 (chờ duyệt) — hai corpus dev/test,
+event run B, document caption template EN + VI, BGE-M3. Query set v2 chọn theo GT train: 97/100
+câu có relevant trên test (trước 25/100). Nạp PostgreSQL + pgvector (Docker), test tích hợp: SQL
+chọn đúng và đủ như ngữ nghĩa Python. Test: nDCG@10 structured 0.523 > hybrid 0.481 > vector
+0.418; filter exactness 1.000; hybrid kém structured (−0.042 [−0.085, −0.004]) — vector trong
+tập đã lọc không giúp với document template. Một sai sót tự bắt: commit 8e37a9a ghi test pass
+khi thực tế 1 test contract hỏng — sửa ở commit sau, từ đó chuỗi commit dùng `set -e`.
 
 ### 2026-09-26 (đêm) — Rà W5 phản biện: sửa 6 lỗi, thêm 4 cải thiện
 
