@@ -1,0 +1,6 @@
+# Embedding cho retrieval W6 (ADR-0004: BGE-M3 dense 1024; ADR-0027: sentence-transformers).
+# Model tải về artifacts/hf (gitignore), không commit.
+#
+#   .venv/Scripts/python.exe -m pip install -r requirements-db.txt -r requirements-retrieval.txt
+
+sentence-transformers>=3,<6
