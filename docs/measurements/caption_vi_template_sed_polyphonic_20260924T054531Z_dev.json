@@ -1,0 +1,40 @@
+{
+  "run": "sed_polyphonic_20260924T054531Z",
+  "split": "dev",
+  "lexicon_version": "caption-lexicon-vi-v1",
+  "lexicon_sha256": "dbe6eeb73089ddbbe2ba4b8111ffacce44eb86466a98c428b2a29cf2b9be5e3d",
+  "summary": {
+    "e2e": {
+      "n": 137,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.0,
+      "temporal_order_accuracy": 1.0,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "evidence_coverage": 1.0,
+      "n_mentions": 6.978102189781022
+    },
+    "oracle": {
+      "n": 137,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.0,
+      "temporal_order_accuracy": 1.0,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "evidence_coverage": 1.0,
+      "n_mentions": 6.467153284671533
+    }
+  },
+  "examples": {
+    "e2e": [
+      "Có thể nghe thấy tiếng động cơ xe chạy không tải từ 0,0 đến 126,7 giây. Có thể nghe thấy tiếng xe chạy qua từ 0,0 đến 126,7 giây. Có thể nghe thấy tiếng chim từ 68,7 đến 70,0 giây. Có thể nghe thấy tiếng còi xe từ 92,0 đến 93,3 giây.",
+      "Có thể nghe thấy tiếng máy móc của xưởng hoặc công trình từ 6,5 đến 17,0 giây. Có thể nghe thấy tiếng máy móc của xưởng hoặc công trình từ 23,7 đến 30,0 giây. Có thể nghe thấy tiếng máy móc của xưởng hoặc công trình từ 41,6 đến 60,1 giây.",
+      "Có thể nghe thấy tiếng chó sủa hoặc tru từ 0,0 đến 39,3 giây. Có thể nghe thấy tiếng chó sủa hoặc tru từ 43,5 đến 70,5 giây. Có thể nghe thấy tiếng nhạc từ 44,0 đến 52,7 giây. Có thể nghe thấy tiếng nhạc từ 64,8 đến 70,4 giây."
+    ],
+    "oracle": [
+      "Có thể nghe thấy tiếng chim từ 0,0 đến 8,3 giây. Có thể nghe thấy tiếng xe chạy qua từ 2,2 đến 8,1 giây. Có thể nghe thấy tiếng chuông từ 8,5 đến 24,6 giây.",
+      "Có thể nghe thấy tiếng người nói từ 11,8 đến 23,5 giây. Có thể nghe thấy tiếng người nói từ 29,2 đến 34,5 giây. Có thể nghe thấy tiếng máy móc của xưởng hoặc công trình từ 35,9 đến 40,9 giây.",
+      "Có thể nghe thấy tiếng xe chạy qua từ 14,8 đến 31,1 giây. Có thể nghe thấy tiếng xe chạy qua từ 35,1 đến 58,6 giây. Có thể nghe thấy tiếng xe chạy qua từ 75,8 đến 88,4 giây."
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+# Lexicon tiếng Việt cho caption giao diện (ADR-0025).
+#
+# File RIÊNG: lexicon EN `caption_lexicon.yaml` đã đóng băng cho RQ2 (ADR-0022 §4) —
+# thêm cụm tiếng Việt vào đó sẽ đổi hash và phá cổng tái lập của phép chấm test.
+#
+# Cụm có dấu phẩy phải đặt trong ngoặc kép — YAML tách danh sách [...] theo dấu phẩy.
+# Khớp giữ nguyên dấu, ranh giới từ Unicode (lexicon.py). Phần tử ĐẦU của mỗi lớp là
+# cách template tiếng Việt gọi lớp đó — dịch sát câu mẫu EN ở taxonomy.md §2–§6; hai
+# lớp gộp giữ cách nói rào đón của taxonomy.md §7. Cụm từ chờ người dùng duyệt.
+version: caption-lexicon-vi-v1
+language: vi
+
+class:
+  bells: [tiếng chuông]
+  birds: [tiếng chim]
+  cat_fights_and_moans: [tiếng mèo kêu hoặc đánh nhau]
+  chicken_coop: [tiếng gà trong chuồng]
+  cicadas_and_crickets: [tiếng côn trùng như ve sầu hoặc dế]
+  crows_seagulls_magpies: ["tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là"]
+  dog_barkings_and_howlings: [tiếng chó sủa hoặc tru]
+  glass_breaking: [tiếng kính vỡ]
+  horn: [tiếng còi xe]
+  jet_aircrafts: [tiếng máy bay phản lực]
+  lawn_mower_brush_cutter_olive_shaker: [tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ]
+  music: [tiếng nhạc]
+  propeller_aircrafts: [tiếng máy bay cánh quạt hoặc trực thăng]
+  sirens_and_alarms: [âm thanh giống còi hú hoặc chuông báo động]
+  thunder_fireworks_gunshot: ["âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng"]
+  train: [tiếng tàu hỏa, tiếng tàu hoả]
+  vacuum_cleaner_fan_hairdryer: ["tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc"]
+  vehicle_idling: [tiếng động cơ xe chạy không tải]
+  vehicle_pass_by: [tiếng xe chạy qua]
+  voices: [tiếng người nói]
+  wind_turbine: [tiếng tua-bin gió, tiếng tuabin gió]
+  workshop: [tiếng máy móc của xưởng hoặc công trình]
+
+# Gọi một subclass của lớp gộp như sự thật — vi phạm taxonomy.md §7 (đếm là over-specific).
+# Cụm dài của lớp chứa các từ này được khớp trước nên không bị đếm nhầm.
+specific:
+  sirens_and_alarms: [tiếng còi hú, còi báo động, chuông báo động]
+  thunder_fireworks_gunshot: [tiếng sấm, tiếng pháo hoa, tiếng súng]
+
+# G3 (ADR-0001): danh sách HANDOFF_CODEX §A2 + tương ứng của danh sách EN trong lexicon.py.
+# Hai cách đặt dấu thanh ("dọa"/"doạ", "hỏa"/"hoả") đều được liệt kê.
+forbidden_terms: [khẩn cấp, tội phạm, đột nhập, kẻ gian, tai nạn, nguy hiểm, tấn công,
+                  nạn nhân, cảnh sát, công an, xe cứu thương, xe cứu hỏa, xe cứu hoả,
+                  cứu hộ, cố ý, bất hợp pháp, trái phép, vũ khí, cảnh báo, rủi ro, nguy cơ,
+                  đe dọa, đe doạ]
