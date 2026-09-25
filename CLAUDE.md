@@ -187,6 +187,7 @@ test, không phải dev (không được tuning trên test).
 | **Ablation A3 xong bộ ba A/B/C** | Không kết luận rõ hướng nào (Δ gần 0, đổi dấu: +0.0063/+0.0026/−0.0014) |
 | **W5 5.6 unconstrained (Qwen3.5-9B)** | ADR-0022; dev+test sinh và chấm; lexicon v2 đóng băng `6f5634bb…`; audit: 7/8 "bịa" là lỗi lexicon |
 | **W5 5.7–5.8 constrained + đánh giá** | ADR-0023; test: constrained 0 vi phạm bối cảnh/G3/gọi tên quá mức, omission e2e 0.28 vs unconstrained 0.06 |
+| **W5 lớp gộp (taxonomy §7)** | ADR-0023 §5; test e2e: template/constrained 0 caption gọi subclass như sự thật, unconstrained 11/18 (`sirens_and_alarms`) và 22/39 (`thunder_fireworks_gunshot`) |
 | **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
 | **Ablation A5 xong bộ ba A/B/C (nợ kỹ thuật #8)** | d_min percentile phẳng; g_max percentile 25 tốt hơn nhất quán 3/3 nhánh, 75 tệ hơn nhất quán 3/3 — ứng viên thật cho hiệu chuẩn lại trên dev, chưa đổi ADR-0003 |
 
@@ -195,7 +196,6 @@ test, không phải dev (không được tuning trên test).
 | Hạng mục | Còn thiếu |
 |---|---|
 | W4 | 4.6 `confusable_with` từ ma trận nhầm thật (taxonomy.md §8); 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
-| W5 (caption) | RQ2 có số trên test (ADR-0023 §4); còn kiểm diễn đạt lớp gộp (taxonomy.md §7) |
 | W6 (event store, RAG) | PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding BGE-M3, chưa retrieval |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
 

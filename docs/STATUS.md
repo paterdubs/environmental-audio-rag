@@ -127,7 +127,7 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 ## 5. Việc còn lại
 
 1. W4: 4.6 (`confusable_with`), 4.7 (A4 `pos_weight`), bootstrap CI cho số trung bình nhiều run.
-2. W5: kiểm caption lớp gộp theo taxonomy.md §7; W6 là việc chính tiếp theo.
+2. ~~W5: kiểm caption lớp gộp theo taxonomy.md §7~~ — xong 25/09 (ADR-0023 §5); W6 là việc chính tiếp theo.
 3. W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark.
 4. W7: API, giao diện.
 5. Cân nhắc chọn lại `g_max` percentile trên dev (A5).

@@ -83,6 +83,25 @@ sớm hơn cùng lớp bị chấm sai thứ tự (constrained dev 0.86 dù gram
 mention có evidence dùng onset của đúng event được trích; unconstrained (không
 evidence) không đổi số. Test khoá hành vi.
 
+### 5. Diễn đạt lớp gộp — taxonomy.md §7 (thêm 25/09, nghiệm thu W5 cuối)
+
+Pipeline chỉ có SED coarse nên áp dòng "Chỉ có coarse SED" của §7. Đơn vị: caption có
+lớp gộp trong timeline. `specific` = gọi subclass như sự thật ("a gunshot", "sirens",
+"thunder, fireworks, and gunshots"); liệt kê bằng "or" ("thunder or fireworks") tính là
+nêu được không chắc chắn (có lợi cho caption, luật định trên dev). Test, e2e:
+
+| Nhánh | `sirens_and_alarms` specific | `thunder_fireworks_gunshot` specific |
+|---|---:|---:|
+| template | 0/18 | 0/39 |
+| constrained | 0/18 | 0/39 (1 không nhắc) |
+| unconstrained | **11/18** | **22/39** (13 liệt kê "or") |
+
+Oracle: template/constrained 0/17 và 0/4; unconstrained 6/17 và 3/4. Nguồn:
+`grouped_class_wording_sed_polyphonic_20260924T054531Z_test.md`; test khoá cụm gộp của
+template và constrained cho cả hai lớp (`tests/test_grouped_class_wording.py`). Mệnh đề
+"DataSED không có subclass ground truth" của §7 dòng thứ hai **không áp dụng**: hệ
+thống không đưa subclass prediction vào caption.
+
 ## Consequences
 
 ### Tích cực

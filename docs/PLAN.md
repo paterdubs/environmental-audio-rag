@@ -15,7 +15,7 @@
 | W2 | 29/09–05/10 | DataSEC classifier + PANNs | ✅ làm sớm |
 | W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.6, 4.7 |
-| W5 | 20–26/10 | Grounded caption + metric hallucination | ◐ RQ2 có số (ADR-0023); còn lớp gộp/§7 |
+| W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ◐ nền tảng |
 | W7 | 03–09/11 | API + frontend + test một lần | ○ |
 | W8 | 10–16/11 | Buffer: viết báo cáo, vá lỗ hổng | ○ |
@@ -151,6 +151,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 | 4.6 | Cập nhật `confusable_with` từ ma trận nhầm thật | 2 h |
 | 4.7 | Ablation A4 (`pos_weight` trần) | 4 h |
 | 4.8 | Chạy 3 seed cho cấu hình cuối | 6 h |
+| 4.9 | Tối ưu không train lại (thêm 25/09, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)): ensemble + chọn kiểu θ / percentile `g_max` bằng CV trên **dev**, chọn hệ thống theo luật ghi trước | 6 h |
 
 ### Nghiệm thu W4
 
@@ -183,7 +184,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 - [x] Template captioner đạt hallucination = 0 (xác nhận harness đúng)
 - [x] Báo **cả** oracle và end-to-end (`caption_grounding_*_test.md`)
 - [x] Ba nhánh chạy trên **cùng** SED prediction đóng băng (script kiểm timeline trùng khít)
-- [ ] Caption lớp gộp nêu đúng mức không chắc chắn ([taxonomy.md §7](taxonomy.md))
+- [x] Caption lớp gộp nêu đúng mức không chắc chắn ([taxonomy.md §7](taxonomy.md)) — template/constrained 0 vi phạm, unconstrained 11/18 và 22/39 (ADR-0023 §5)
 
 ---
 
@@ -279,7 +280,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | 5 | Seed reproducibility: classifier **tái lập bit-for-bit** (D2). **SED KHÔNG tái lập** cùng seed (24/09): code train không đổi, frame macro-F1 B 0.5850→0.5705, C 0.5947→0.5893. Nguyên nhân chưa xác minh. Hệ quả: mọi số SED phải báo mean±sd nhiều run, không báo 1 run | **CAO** | W3 |
 | 6 | `RELATED_WORK.md` còn `⚠️ CẦN XÁC MINH`, chưa có DOI | TRUNG BÌNH | W8 |
 | ~~7~~ | ~~Ngưỡng T3 0.95/0.85 chưa hiệu chuẩn~~ — **đóng 23/09**: giữ 0.95/0.85, `threshold_calibration.json` | — | ✅ |
-| 8 | **Ablation A5 (24/09) đo xong trên A/B/C.** `d_min` (percentile 5): phẳng, không cần đổi. `g_max` (percentile 50): tín hiệu nhất quán 3/3 nhánh cho thấy percentile 25 tốt hơn — **chưa đổi**, vì quan sát trên test, cần vòng chọn trên dev trước khi sửa ADR-0003. Xem `docs/measurements/*_duration_prior_ablation_A5.md` | TRUNG BÌNH | W3 |
+| 8 | **Ablation A5 (24/09) đo xong trên A/B/C.** `d_min` (percentile 5): phẳng, không cần đổi. `g_max` (percentile 50): tín hiệu nhất quán 3/3 nhánh cho thấy percentile 25 tốt hơn — **chưa đổi**, vì quan sát trên test, cần vòng chọn trên dev trước khi sửa ADR-0003. Xem `docs/measurements/*_duration_prior_ablation_A5.md`. **Vòng chọn trên dev đang làm ở task 4.9** (ADR-0024) | TRUNG BÌNH | W3 |
 | 11 | `short_duplicate_min = 0.99` chọn từ hình dạng phân bố, chưa hiệu chuẩn trên positive đoạn ngắn | TRUNG BÌNH | W2 |
 | ~~12~~ | ~~1,731 ràng buộc cohesion kéo theo cụm lớn~~ — **đóng 23/09**: DataSED cụm lớn nhất 4 (0.6%); DataSEC có cụm 326 (6.5%), cần theo dõi ở W2 | THẤP | ✅ |
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |

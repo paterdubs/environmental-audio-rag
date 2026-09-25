@@ -1,0 +1,81 @@
+{
+  "run": "sed_polyphonic_20260924T054531Z",
+  "split": "dev",
+  "lexicon_sha256": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
+  "counts": {
+    "unconstrained/oracle": {
+      "thunder_fireworks_gunshot": {
+        "specific": 4
+      },
+      "sirens_and_alarms": {
+        "specific": 6,
+        "class": 11
+      }
+    },
+    "unconstrained/e2e": {
+      "thunder_fireworks_gunshot": {
+        "specific": 27,
+        "disjunction": 21,
+        "absent": 2
+      },
+      "sirens_and_alarms": {
+        "specific": 12,
+        "class": 5
+      }
+    },
+    "constrained/oracle": {
+      "thunder_fireworks_gunshot": {
+        "class": 4
+      },
+      "sirens_and_alarms": {
+        "class": 17
+      }
+    },
+    "constrained/e2e": {
+      "thunder_fireworks_gunshot": {
+        "class": 49,
+        "absent": 1
+      },
+      "sirens_and_alarms": {
+        "class": 17
+      }
+    },
+    "template/oracle": {
+      "thunder_fireworks_gunshot": {
+        "class": 4
+      },
+      "sirens_and_alarms": {
+        "class": 17
+      }
+    },
+    "template/e2e": {
+      "thunder_fireworks_gunshot": {
+        "class": 50
+      },
+      "sirens_and_alarms": {
+        "class": 17
+      }
+    }
+  },
+  "specific_phrases": {
+    "unconstrained/oracle": {
+      "sirens": 5,
+      "thunder": 4,
+      "fireworks": 3,
+      "gunshots": 2,
+      "siren": 1
+    },
+    "unconstrained/e2e": {
+      "thunder": 17,
+      "fireworks": 14,
+      "sirens": 12,
+      "gunshot": 7,
+      "gunshots": 6,
+      "thunderclaps": 3
+    },
+    "constrained/oracle": {},
+    "constrained/e2e": {},
+    "template/oracle": {},
+    "template/e2e": {}
+  }
+}
