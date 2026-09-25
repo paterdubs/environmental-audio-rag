@@ -75,7 +75,11 @@ async def upload(request: Request, file: UploadFile = File(...)):  # noqa: B008
            "channels": stored.channels, "sha256": stored.sha256, "split": None,
            "audio_path": destination.relative_to(ROOT).as_posix()
            if destination.is_relative_to(ROOT) else str(destination)}
-    await _db(request, _store_analysis, row, analysis)
+    try:
+        await _db(request, _store_analysis, row, analysis)
+    except Exception:
+        destination.unlink(missing_ok=True)  # never keep audio that has no recording row
+        raise
     return ok({"recording_id": recording_id, "timeline": analysis["timeline"],
                "captions": analysis["captions"]}, meta={"duplicate": False}, status=201)
 

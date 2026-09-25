@@ -119,6 +119,29 @@ def test_health_is_503_when_inference_is_down(tmp_path) -> None:
                                        "model_version": None}
 
 
+class BrokenConnection:
+    """Answers the duplicate lookup, then fails the insert like a lost database would."""
+
+    def execute(self, sql, *args):
+        if sql.lstrip().upper().startswith("SELECT"):
+            return type("Cursor", (), {"fetchone": lambda self: None})()
+        raise OSError("database went away")
+
+    def rollback(self):
+        pass
+
+    def close(self):
+        pass
+
+
+def test_failed_insert_leaves_no_orphan_audio(tmp_path) -> None:
+    api = TestClient(create_app(Settings(None, "http://unused", tmp_path), FakeInference(),
+                                BrokenConnection), raise_server_exceptions=False)
+    response = api.post("/api/v1/audio/upload", files={"file": ("a.wav", wav(3), "audio/wav")})
+    assert response.status_code == 500
+    assert list(tmp_path.iterdir()) == []
+
+
 def _db_or_skip():
     try:
         store.connect().close()

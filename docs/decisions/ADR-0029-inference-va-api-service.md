@@ -94,6 +94,9 @@ host, chờ `/health` thật). Cổng api trong compose là 8088 vì 8000 trên 
 - Nạp 4 checkpoint CNN14 + BGE-M3 trong một tiến trình: tốn VRAM/RAM hơn một run đơn.
 - Upload và benchmark dùng hai hệ thống SED khác nhau (ensemble C vs run B) — tách corpus để
   không trộn; `model_version` ghi trên từng event.
+- Demo chạy cục bộ: **không có xác thực, không giới hạn tần suất** (SYSTEM §4.4 không đặt
+  yêu cầu này cho khóa luận). Chỉ bind 127.0.0.1 (compose publish 8088 trên máy dev); không
+  đưa ra mạng công cộng khi chưa thêm hai lớp này.
 
 ## Alternatives considered
 
