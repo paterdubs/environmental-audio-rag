@@ -26,9 +26,9 @@ from pycocoevalcap.cider.cider import Cider
 from ml.captioning.lexicon import CaptionLexicon
 from ml.captioning.template import TemplateCaptioner
 from ml.taxonomy import load_taxonomy
+from scripts.score_captions import LLM_BRANCHES
 
 ROOT = Path(__file__).resolve().parents[1]
-LLM_BRANCHES = ("unconstrained", "constrained")
 TOKEN = re.compile(r"[a-z0-9]+(?:[.'-][a-z0-9]+)*")
 
 

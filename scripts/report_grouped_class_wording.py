@@ -35,10 +35,10 @@ from ml.captioning.lexicon import CaptionLexicon, Mention
 from ml.captioning.template import TemplateCaptioner
 from ml.taxonomy import load_taxonomy
 from scripts.generate_llm_captions import check_test_gate
+from scripts.score_captions import LLM_BRANCHES
 
 ROOT = Path(__file__).resolve().parents[1]
 GROUPED = ("sirens_and_alarms", "thunder_fireworks_gunshot")
-LLM_BRANCHES = ("unconstrained", "constrained")
 CATEGORIES = ("class", "disjunction", "specific", "family", "absent")
 # Glue allowed between alternatives: "thunder, fireworks, or a gunshot", "sirens or alarms".
 DISJUNCTION_GAP = re.compile(r"\s*,?\s*(?:or\s+)?(?:a |an |the )?\s*")
