@@ -75,7 +75,8 @@ GUIDE = """# Phiếu đối chiếu bộ trích mention (C2) — hướng dẫn 
 
 **Mục đích.** Metric C2 (hallucination, omission, gọi tên quá mức) dựa vào lexicon tự động
 đọc caption. Phiếu này đo lexicon đọc đúng đến đâu. Bạn đọc caption và ghi nguồn âm caption
-**khẳng định nghe thấy**. Đọc **mù**: không xem timeline, không xem kết quả lexicon.
+**khẳng định nghe thấy**. Đọc **mù**: không xem timeline, không xem kết quả lexicon, và
+**không nghe audio** — phiếu đo cách đọc câu chữ; audio chứa gì đã có nhãn DataSED trả lời.
 
 Mở được bằng Excel; khi lưu chọn **CSV UTF-8** (lưu kiểu khác sẽ mất dấu).
 
@@ -90,6 +91,8 @@ Các cột cần điền:
 - `over_specific` — `class_id` của lớp mà caption gọi tên một loại con như sự thật
   ("a gunshot" → `thunder_fireworks_gunshot`, "sirens" → `sirens_and_alarms`,
   "a vacuum cleaner" → `vacuum_cleaner_fan_hairdryer`); cách nhau bằng `;`; trống nếu không có.
+  Liệt kê loại con bằng "or" vẫn tính ("a fan or hairdryer" → `vacuum_cleaner_fan_hairdryer`)
+  — đúng định nghĩa metric C2, vốn đếm mọi tên loại con.
 - `notes` — tuỳ chọn.
 
 **Quy tắc.** (1) Từ bối cảnh ("urban", "park", "street") không phải nguồn âm — không ghi.
