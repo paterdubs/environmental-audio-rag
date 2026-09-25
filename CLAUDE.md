@@ -209,7 +209,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | Hạng mục | Còn thiếu |
 |---|---|
 | W4 | 4.6 `confusable_with` từ ma trận nhầm thật (taxonomy.md §8); 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
-| W6 (event store, RAG) | Benchmark RQ3 xong (ADR-0027 §8, **chờ duyệt**); còn 6.8 sinh câu trả lời, độ nhạy với SED tối ưu |
+| W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, **chờ duyệt**); tuỳ chọn: độ nhạy với SED tối ưu, document caption LLM, Alembic |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
 
 ### Chưa có ○

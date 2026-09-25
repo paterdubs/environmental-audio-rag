@@ -77,6 +77,13 @@ template nên vector ít thông tin phân biệt; (3) truy vấn tiếng Việt 
 (0.340 vs 0.418) nhưng gần bằng ở hybrid (0.472 vs 0.481). Chưa làm: sinh câu trả lời (6.8),
 index hệ thống SED tối ưu (độ nhạy), document dùng caption LLM (ablation).
 
+**Câu trả lời (6.8, `retrieval_answers_{validation,test}_20260925.md`):** bộ sinh tất định
+chỉ trích recording có event đã index thoả lọc; bộ kiểm độc lập đọc lại văn bản. Test,
+structured_only và hybrid × EN/VI: unsupported-claim **0.000**, contract 97/97, evidence có thật
+97/97, trích thoả lọc 97/97, 96/97 câu có trả lời (câu còn lại: evidence rỗng + filters_applied).
+Recording được trích đúng theo ground truth 0.43–0.48 — giới hạn do SED + retrieval, không do
+grounding.
+
 ## Consequences
 
 ### Tích cực
