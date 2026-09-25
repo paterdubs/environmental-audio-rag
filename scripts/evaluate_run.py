@@ -39,6 +39,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--postproc", type=Path, default=None)
+    parser.add_argument("--tag", default=None,
+                        help="hậu tố file kết quả, để không ghi đè evaluation.json chuẩn")
     return parser.parse_args()
 
 
@@ -233,10 +235,11 @@ def main() -> None:
         "n_events_estimate": sum(len(v) for v in estimate.values()),
         "n_error_instances": len(errors),
     }
-    output_path = args.run_dir / "evaluation.json"
+    suffix = f"_{args.tag}" if args.tag else ""
+    output_path = args.run_dir / f"evaluation{suffix}.json"
     output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
 
-    report_path = ROOT / "docs" / "measurements" / f"{args.run_dir.name}_eval.md"
+    report_path = ROOT / "docs" / "measurements" / f"{args.run_dir.name}_eval{suffix}.md"
     report_path.write_text(_render_report(result), encoding="utf-8")
     print(json.dumps({"evaluation": str(output_path), "report": str(report_path)}, indent=2))
 
