@@ -14,7 +14,7 @@
 | W1 | 22–28/09 | Cổng dữ liệu D1–D4 + tài liệu | ✅ |
 | W2 | 29/09–05/10 | DataSEC classifier + PANNs | ✅ làm sớm |
 | W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
-| W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.6, 4.7 |
+| W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.7 |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 chờ duyệt; Alembic hoãn) |
 | W7 | 03–09/11 | API + frontend + test một lần | ○ |
@@ -148,7 +148,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 | 4.3 | Bootstrap CI theo **recording**, 1000 lần | 3 h |
 | 4.4 | Phân tích lỗi: confusion, insertion/deletion/fragmentation/merging | 5 h |
 | 4.5 | Hiệu năng theo duration / polyphony / confidence | 4 h |
-| 4.6 | Cập nhật `confusable_with` từ ma trận nhầm thật | 2 h |
+| 4.6 | Cập nhật `confusable_with` từ ma trận nhầm thật — ✅ 26/09 ([taxonomy.md §8.1](taxonomy.md)) | 2 h |
 | 4.7 | Ablation A4 (`pos_weight` trần) | 4 h |
 | 4.8 | Chạy 3 seed cho cấu hình cuối | 6 h |
 | 4.9 | Tối ưu không train lại (thêm 25/09, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)): ensemble + chọn kiểu θ / percentile `g_max` bằng CV trên **dev**, chọn hệ thống theo luật ghi trước — ✅ 25/09 ([§5](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)) | 6 h |
@@ -158,7 +158,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 - [x] Event-based F1 và PSDS-1/PSDS-2 cho cả ba nhánh
 - [ ] CI bootstrap theo recording cho mọi số chính — **có cho từng run; chưa có cho số trung bình nhiều run** (hiện báo mean ± sd)
 - [x] Bảng phân tích lỗi per-class (`branch_per_class_*`, `error_totals` trong `evaluation.json`)
-- [ ] [taxonomy.md §8](taxonomy.md) cập nhật bằng cặp nhầm thật, kèm số lượt — **task 4.6, chưa làm**
+- [x] [taxonomy.md §8](taxonomy.md) cập nhật bằng cặp nhầm thật, kèm số lượt — §8.1, dev, 7 run sạch (`confusable_pairs_clean_dev_20260925.md`)
 - [x] Nếu không đủ ngân sách cho 3 seed: ghi rõ và **không** tuyên bố Δ nhỏ có ý nghĩa (5 seed, Welch t-test)
 
 ---

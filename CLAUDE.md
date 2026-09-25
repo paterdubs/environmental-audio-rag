@@ -208,7 +208,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 
 | Hạng mục | Còn thiếu |
 |---|---|
-| W4 | 4.6 `confusable_with` từ ma trận nhầm thật (taxonomy.md §8); 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
+| W4 | 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, **chờ duyệt**); tuỳ chọn: độ nhạy với SED tối ưu, document caption LLM, Alembic |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
 
@@ -223,7 +223,7 @@ Retrieval thật · API / inference / frontend.
    #16, #17); còn nợ #18: query set chỉ 25/100 câu có relevant trên test → 6.7 làm đủ
    4 nhóm + tiếng Việt, chọn query theo GT train. Cần ADR: SED prediction nào để index
    (run B E5 hay hệ thống tối ưu ADR-0024) và thư viện embedding.
-2. W4 còn lại: 4.6 (`confusable_with`), 4.7 (A4) — ưu tiên thấp hơn W6.
+2. W4 còn lại: 4.7 (A4) — ưu tiên thấp.
 
 ---
 
@@ -426,6 +426,14 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 — W4 4.6: `confusable_with` từ cặp nhầm đo được
+
+`ml/evaluation/confusion.py` đếm substitution (event bị bỏ lỡ chồng bởi dự đoán sai, đa âm
+không tính); `scripts.report_confusable_pairs` chạy trên dev, 7 run sạch B/C. 1,482 lượt; 4/15
+cặp giả thuyết âm học xác nhận mạnh (horn↔sirens 7/7, birds↔cicadas, lawn_mower↔workshop,
+train↔vehicle_pass_by), nhiều cặp đo được là đồng xuất hiện trong cảnh chứ không phải giống âm.
+taxonomy.md §8.1.
 
 ### 2026-09-26 (rạng sáng, tự động) — W6: query set v2, event store, BGE-M3, benchmark RQ3
 

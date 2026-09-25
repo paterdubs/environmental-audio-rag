@@ -471,10 +471,49 @@ Dán bảng này cạnh màn hình khi phân tích ma trận nhầm lẫn.
 | `vehicle_idling` ↔ `workshop` | Có **chuỗi hài của tần số nổ** động cơ đốt trong? | Có → `vehicle_idling` · Phổ ổn định/xung lặp → `workshop` |
 | `train` ↔ `vehicle_pass_by` | Kéo dài **hàng chục giây** với nhịp bánh trên ray? | Có → `train` · Vài giây → `vehicle_pass_by` |
 
-> ⚠️ Bảng trên dựa trên **đặc trưng âm học**, chưa dựa trên ma trận nhầm lẫn đo
-> được của model trên đề tài này. Sau khi có phân tích lỗi (E4), bảng phải được
-> cập nhật bằng các cặp **thực sự** bị nhầm, kèm số lượt. Đó mới là nguồn chân lý
-> cho `confusable_with`.
+> Bảng trên là **giả thuyết âm học**. Phần dưới là cặp **đo được** — nguồn chân lý cho
+> `confusable_with` (task 4.6).
+
+### 8.1 Cặp bị nhầm thật (đo trên dev, 7 run SED sạch nhánh B/C)
+
+Nguồn: `docs/measurements/confusable_pairs_clean_dev_20260925.md`, sinh bởi
+`scripts.report_confusable_pairs`. Substitution a→b = event `a` bị bỏ lỡ và bị chồng bởi một
+dự đoán **sai** `b` (không có `b` thật chồng lên), nên đa âm không bị tính là nhầm. Tổng 1,482
+lượt trên 6,202 event tham chiếu (cộng 7 run). Chỉ dùng dev — không cần mở test để mô tả lỗi.
+
+**`confusable_with` (cặp có mặt ở ≥ 6/7 run, xếp theo tổng lượt):**
+
+| Cặp | Tổng | Run có | Chiều chính | Trong bảng giả thuyết |
+|---|---:|---:|---|:---:|
+| `horn` ↔ `sirens_and_alarms` | 34 | 7/7 | horn → sirens (27) | ✓ |
+| `birds` ↔ `cicadas_and_crickets` | 32 | 6/7 | cicadas → birds (32) | ✓ |
+| `lawn_mower…` ↔ `workshop` | 29 | 6/7 | workshop → lawn_mower (28) | ✓ |
+| `jet_aircrafts` ↔ `vehicle_pass_by` | 28 | 7/7 | hai chiều | |
+| `birds` ↔ `vehicle_idling` | 27 | 7/7 | vehicle_idling → birds (19) | |
+| `jet_aircrafts` ↔ `thunder_fireworks_gunshot` | 23 | 6/7 | hai chiều | |
+| `train` ↔ `vehicle_pass_by` | 22 | 7/7 | hai chiều | ✓ |
+| `birds` ↔ `sirens_and_alarms` | 21 | 7/7 | sirens → birds (19) | |
+| `chicken_coop` ↔ `jet_aircrafts` | 20 | 7/7 | chicken_coop → jet (20) | |
+| `glass_breaking` ↔ `workshop` | 20 | 7/7 | glass_breaking → workshop (20) | |
+
+Bảng đầy đủ (top 20, cả cặp chỉ ở 4–5/7 run) nằm trong measurement.
+
+**Đọc đúng:**
+
+- 4/15 cặp giả thuyết được xác nhận mạnh (≥ 6/7 run và trong top 12); `birds` ↔ `crows…` hạng 11 nhưng chỉ 5/7 run. `cat_fights…` ↔ `dog_barkings…`
+  và `propeller_aircrafts` ↔ `wind_turbine` **không** xuất hiện (0/7; `wind_turbine` ngoài nhãn
+  polyphonic nên không thể đo); `vacuum_cleaner…` ↔ `workshop` chỉ 1 lượt.
+- Nhiều cặp đo được **không** có trong giả thuyết và không có lý do âm học rõ (`chicken_coop` →
+  `jet_aircrafts`, `birds` ↔ `vehicle_idling`): chúng phản ánh **đồng xuất hiện trong cảnh**
+  (chim trên nền xe, gà trên nền máy bay) cộng với định vị thô của CNN14 (khối 1.28 s, ADR-0014),
+  không phải hai lớp nghe giống nhau. Không dùng chúng để giải thích nhầm lẫn âm học.
+- `cicadas_and_crickets` là **điểm chìm**: event bị bỏ lỡ và bị nhiều lớp khác chồng lên
+  (crows 46, thunder 36, sirens 28 — nhưng chỉ 4–5/7 run). Đây là lỗi bỏ sót của một lớp nền dài,
+  không phải nhầm cặp.
+- Số đếm theo cặp event, chưa chuẩn hoá theo tần suất lớp; lớp phổ biến tự nhiên có nhiều lượt hơn.
+- Bằng chứng độc lập từ **ground truth** (8 cặp recording chú giải hai lần, CLAUDE.md nhật ký
+  23/09): `lawn_mower…` ↔ `propeller_aircrafts` và `vacuum_cleaner…` ↔ `lawn_mower…` là cặp người
+  chú giải bất đồng — không nằm trong top đo được của model.
 
 ---
 
@@ -548,7 +587,7 @@ cảnh báo, và nếu khác major thì phải từ chối.
 | 4 | `wind_turbine` xác nhận ngoài polyphonic label set | ✅ |
 | 5 | Caption lexicon cho 22 lớp đã viết và có test | ○ |
 | 6 | Lexicon cấm (ràng buộc G3) đã viết và có test | ○ |
-| 7 | `confusable_with` cập nhật từ ma trận nhầm lẫn thật | ○ |
+| 7 | `confusable_with` cập nhật từ ma trận nhầm lẫn thật | ✅ §8.1 |
 
 Điều kiện 1–4 pass tại `3c80110`. **Taxonomy giữ version `0.1`** cho đến khi
 5–7 xong, vì caption lexicon là một phần của semantics lớp.
