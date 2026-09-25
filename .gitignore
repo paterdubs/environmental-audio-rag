@@ -21,6 +21,7 @@ data/raw/**
 data/interim/**
 data/features/**
 data/cache/**
+data/uploads/**
 ml/runs/**
 artifacts/**
 

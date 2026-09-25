@@ -40,7 +40,6 @@ def analysis() -> dict:
 
 def test_upload_round_trip_keeps_versions_evidence_and_corpus_scope() -> None:
     conn = _connect_or_skip()
-    conn.execute("SELECT 1")  # open the outer transaction: insert_analysis becomes a savepoint
     try:
         row = {"recording_id": RID, "source_dataset": "upload", "source_id": RID.split(":")[1],
                "duration_s": 30.0, "sample_rate": 44100, "channels": 1, "sha256": SHA,
@@ -64,6 +63,7 @@ def test_upload_round_trip_keeps_versions_evidence_and_corpus_scope() -> None:
         assert hits == [RID]
         # benchmark corpora never see uploads
         assert RID not in store.search(conn, "vector_only", "test", {}, vector, VERSION)
+        assert recordings.corpus_embedding_versions(conn, "upload") == [VERSION]
     finally:
         conn.rollback()
     try:

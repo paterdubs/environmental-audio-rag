@@ -73,12 +73,20 @@ def list_recordings(conn, corpus: str, class_id: str | None, limit: int, offset:
 
 def insert_analysis(conn, recording: Mapping[str, Any], analysis: Mapping[str, Any],
                     vector: np.ndarray, embedding_version: str) -> None:
-    """Recording + events + captions (with evidence) + document, in one transaction."""
+    """Recording + events + captions (with evidence) + document. The caller commits or rolls
+    back — a nested `conn.transaction()` would only be a savepoint inside an implicit
+    transaction already opened by an earlier SELECT, and nothing would be committed."""
     timeline = analysis["timeline"]
-    with conn.transaction():
-        store.insert_recording(conn, recording)
-        event_map = store.insert_events(conn, recording["recording_id"], timeline["events"],
-                                        timeline["model_version"], timeline["taxonomy_version"])
-        for caption in analysis["captions"].values():
-            store.insert_caption(conn, recording["recording_id"], caption, event_map)
-        store.insert_document(conn, analysis["document"], vector, embedding_version)
+    store.insert_recording(conn, recording)
+    event_map = store.insert_events(conn, recording["recording_id"], timeline["events"],
+                                    timeline["model_version"], timeline["taxonomy_version"])
+    for caption in analysis["captions"].values():
+        store.insert_caption(conn, recording["recording_id"], caption, event_map)
+    store.insert_document(conn, analysis["document"], vector, embedding_version)
+
+
+def corpus_embedding_versions(conn, corpus: str) -> list[str]:
+    rows = conn.execute(
+        "SELECT DISTINCT d.embedding_version FROM retrieval_documents d JOIN recordings r"
+        f" USING (recording_id) WHERE {store.corpus_clause(corpus)}", {"split": corpus}).fetchall()
+    return sorted(row[0] for row in rows)
