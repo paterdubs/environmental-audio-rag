@@ -1,4 +1,15 @@
-from scripts.select_postproc_cv import assign_folds
+from scripts.select_postproc_cv import G_MAX_PERCENTILES, MODES, assign_folds, build_tasks
+
+
+def test_tasks_cover_every_config_once_with_slow_fits_first() -> None:
+    serial = build_tasks(5, speculative_refits=False)
+    parallel = build_tasks(5, speculative_refits=True)
+    grid = {(m, p, k) for m in MODES for p in G_MAX_PERCENTILES for k in range(5)}
+    assert len(serial) == len(set(serial)) and set(serial) == grid
+    refits = {(m, p, None) for m in MODES for p in G_MAX_PERCENTILES}
+    assert len(parallel) == len(set(parallel)) and set(parallel) == grid | refits
+    assert parallel[:2] == [("per_class", p, None) for p in G_MAX_PERCENTILES]
+    assert all(t[0] == "per_class" for t in parallel[:12])
 
 
 def test_group_k_fold_keeps_leakage_groups_together_and_is_deterministic() -> None:

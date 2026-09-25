@@ -49,6 +49,9 @@ lời "ensemble có giúp không" bằng dev, không bằng test).
   theo luật; không chọn lại sau khi xem test.
 - Báo kèm độ lệch chuẩn giữa các fold. Chênh lệch nhỏ hơn mức đó không được gọi là
   "tốt hơn".
+- Luật nằm trong `scripts.report_sed_optimization` (`select_system` chỉ nhận số dev).
+  Trình tự: đủ CV của mọi ứng viên → `--dev-only` ghi CV + lựa chọn, **commit** → mới
+  chạy `evaluate_run --tag cv` → bản đầy đủ. Git chứng minh lựa chọn có trước test.
 
 ### 4. Đã biết gì khi viết ADR này (công khai để phản biện được)
 
@@ -57,6 +60,9 @@ lời "ensemble có giúp không" bằng dev, không bằng test).
   cho 3 ensemble (B 0.0779, C 0.0662, BC 0.0656).
 - **Chưa biết:** CV của 3 cấu hình còn lại, CV của run đơn, mọi kết quả test với
   `postproc_cv.json`.
+- **Cập nhật 25/09 chiều (vẫn trước mọi test với `postproc_cv.json`):** CV đủ 4 cấu hình
+  của 3 ensemble đã có — cả ba chọn `global|25`. CV run đơn và mọi kết quả test với
+  `postproc_cv.json` vẫn chưa biết.
 
 ## Consequences
 
