@@ -392,9 +392,21 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 .venv/Scripts/python.exe -m scripts.report_duration_prior_ablation ml/runs/<run_id> # A5
 .venv/Scripts/python.exe -m scripts.generate_captions ml/runs/<run_id>  # verify wiring W5
 
-# ==== Chưa triển khai ====
-# scripts.build_retrieval_index
-# scripts.serve_demo
+.venv/Scripts/python.exe -m scripts.report_confusable_pairs ml/runs/<run> [...]   # 4.6, dev
+.venv/Scripts/python.exe -m scripts.report_multirun_bootstrap --branch B <runs...> --branch C <runs...>
+.venv/Scripts/python.exe -m scripts.report_pos_weight_ablation ml/runs/<run> [...] # A4
+
+# ==== Retrieval (W6) ====
+docker compose up -d
+.venv/Scripts/python.exe -m scripts.build_retrieval_index --split validation test
+.venv/Scripts/python.exe -m scripts.evaluate_retrieval --split validation   # test: một lần
+.venv/Scripts/python.exe -m scripts.evaluate_answers --split validation
+
+# ==== Ứng dụng (W7, ADR-0029) ====
+.venv/Scripts/python.exe -m scripts.check_inference_parity    # phục vụ = hệ thống đã đo
+.venv/Scripts/python.exe -m scripts.serve_demo                # db → inference → api + UI :8010
+docker compose --profile app up -d --build                     # api + UI trong Docker :8088
+cd services/frontend && npm ci && npm test && npm run build
 ```
 
 ---

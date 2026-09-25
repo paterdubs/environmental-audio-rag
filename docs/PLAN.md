@@ -17,7 +17,7 @@
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.7 |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 chờ duyệt; Alembic hoãn) |
-| W7 | 03–09/11 | API + frontend + test một lần | ○ |
+| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.3 xong, 7.4 một phần (ADR-0029 chờ duyệt) |
 | W8 | 10–16/11 | Buffer: viết báo cáo, vá lỗ hổng | ○ |
 
 **Nếu không dùng buffer, W7 là tuần cuối.** Mọi thứ phải xong trước 09/11.
@@ -223,17 +223,17 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 | # | Task | Ước lượng |
 |---:|---|---|
-| 7.1 | `services/inference`: preprocessing + SED + postproc + caption | 6 h |
-| 7.2 | `services/api`: upload, persistence, query (**không import torch**) | 6 h |
-| 7.3 | Frontend: upload, timeline, caption, search, evidence | 8 h |
-| 7.4 | Docker Compose đầu-cuối | 4 h |
+| 7.1 | `services/inference`: preprocessing + SED + postproc + caption — ✅ 26/09 (parity 142 recording, ADR-0029 §7) | 6 h |
+| 7.2 | `services/api`: upload, persistence, query (**không import torch**) — ✅ 26/09 | 6 h |
+| 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09 | 8 h |
+| 7.4 | Docker Compose đầu-cuối — ◐ 26/09: db + api (kèm UI) trong compose, inference trên host (ADR-0029 §8); `scripts.serve_demo` | 4 h |
 | 7.5 | **E9: chạy test một lần, config đóng băng** | 4 h |
 | 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | 3 h |
 | 7.7 | Đóng băng artifact, hướng dẫn tái lập | 3 h |
 
 ### Nghiệm thu W7
 
-- [ ] Demo đầu-cuối: upload → timeline → caption → truy vấn có evidence
+- [x] Demo đầu-cuối: upload → timeline → caption → truy vấn có evidence (chạy thật qua `serve_demo` và qua compose, 26/09)
 - [ ] CI xanh, guard `api` không import torch pass
 - [ ] Test chạy **một lần**, mọi cấu hình đã chạy đều được báo cáo
 - [ ] Mọi số trong báo cáo truy được về run manifest + split hash + taxonomy hash

@@ -139,9 +139,30 @@ python -m venv .venv
 .venv/Scripts/python.exe -m pip install -r requirements-torch.txt     --index-url https://download.pytorch.org/whl/cu128
 .venv/Scripts/python.exe -m pip install -r requirements-eval.txt      # sed_eval, psds_eval
 .venv/Scripts/python.exe -m pip install -r requirements-db.txt        # tùy chọn: event store
+.venv/Scripts/python.exe -m pip install -r requirements-retrieval.txt # BGE-M3 (W6, inference)
+.venv/Scripts/python.exe -m pip install -r requirements-services.txt  # FastAPI (W7)
 
 .venv/Scripts/python.exe -m pytest -q
 .venv/Scripts/python.exe -m ruff check .
 ```
 
 Lệnh tái lập pipeline: [CLAUDE.md §7](CLAUDE.md).
+
+### Chạy demo (W7, [ADR-0029](docs/decisions/ADR-0029-inference-va-api-service.md))
+
+Cần Docker (PostgreSQL + pgvector), checkpoint các run của ensemble C trong `ml/runs/`,
+BGE-M3 trong `artifacts/hf/`, và Node 24 nếu chưa có `services/frontend/dist`.
+
+```bash
+.venv/Scripts/python.exe -m scripts.serve_demo        # db → inference → api; mở http://127.0.0.1:8010/
+```
+
+Hoặc api trong Docker, inference trên host (GPU):
+
+```bash
+.venv/Scripts/python.exe -m uvicorn services.inference.app.main:app --host 0.0.0.0 --port 8001
+docker compose --profile app up -d --build             # mở http://localhost:8088/
+```
+
+Phát triển giao diện: `cd services/frontend && npm ci && npm run dev` (proxy `/api` tới
+`VITE_API_TARGET`, mặc định `http://localhost:8010`).
