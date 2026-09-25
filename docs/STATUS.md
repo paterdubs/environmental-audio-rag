@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
 **Cập nhật:** 2026-09-25 tối — tối ưu SED không train lại xong (ADR-0024); trước đó sửa lỗi ghép cửa sổ (`7ada7d7`), tính lại 11 run
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 486 pass (Windows), ruff sạch; CI Linux chạy lại khi push
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 509 pass (Windows), ruff sạch; CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -20,7 +20,10 @@
 - **Event-F1 thấp (~0.06)** chủ yếu do định vị thời gian thô; nới collar 0.2 → 1.0 s
   tăng ~3×.
 - **Caption (RQ2):** khi chỉ nhận timeline, LLM gần như không bịa nguồn âm; lỗi của
-  sinh tự do nằm ở suy diễn bối cảnh, gọi tên quá cụ thể, từ cấm G3 (ADR-0022 §5).
+  sinh tự do nằm ở suy diễn bối cảnh, gọi tên quá cụ thể, từ cấm G3 (ADR-0022 §5). Có CI
+  bootstrap + hiệu số cặp; constrained đổi lại omission e2e +0.224 [+0.178, +0.274]; nhánh
+  cover (ADR-0026) buộc phủ lớp → không thua unconstrained ở metric nào (caption gần template).
+  Lexicon kiểm bằng người đọc mù 60 caption: precision 0.896, recall 0.936 (ADR-0022 §6).
 - **Train SED không tất định cùng seed** → mọi số SED báo mean ± sd nhiều run.
 - **Tối ưu SED không train lại (ADR-0024):** hậu xử lý chọn bằng CV trên dev (θ global
   0.95, `g_max` p25) nâng event-F1 test ở 5/5 ứng viên (+0.030 … +0.043); hệ thống chọn
@@ -50,6 +53,8 @@
 | 4.6 `confusable_with` từ ma trận nhầm thật | ○ | — |
 | 4.7 Ablation A4 `pos_weight` | ○ | — |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
+| Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
+| Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
 | Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ chờ duyệt | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding | `docker-compose.yml`, `db/migrations/` |
 | API / frontend (W7) | ○ | — |

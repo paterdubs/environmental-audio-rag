@@ -40,7 +40,9 @@ không tạo khác biệt đo được (5 run/nhánh, Welch p = 0.12–0.91). Xe
 như không bịa nguồn âm; sinh tự do vi phạm ở suy diễn bối cảnh, gọi tên quá mức
 bằng chứng và từ cấm. Nhánh ràng buộc bằng grammar đưa ba loại vi phạm đó về 0 nhưng
 bỏ sót nhiều event hơn (omission end-to-end 6% → 28%). Với hai lớp gộp, sinh tự do gọi
-subclass như sự thật ở 11/18 và 22/39 caption, nhánh ràng buộc ở 0. Xem
+subclass như sự thật ở 11/18 và 22/39 caption, nhánh ràng buộc ở 0. Biến thể buộc nhắc
+mọi lớp (ADR-0026) đưa omission về 0 và không thua sinh tự do ở metric nào, đổi lại caption
+gần như template. Xem
 [ADR-0022](docs/decisions/ADR-0022-llm-va-lexicon-cho-rq2.md),
 [ADR-0023](docs/decisions/ADR-0023-nhanh-caption-constrained.md).
 

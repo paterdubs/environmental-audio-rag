@@ -197,6 +197,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | **W5 5.6 unconstrained (Qwen3.5-9B)** | ADR-0022; dev+test sinh và chấm; lexicon v2 đóng băng `6f5634bb…`; audit: 7/8 "bịa" là lỗi lexicon |
 | **W5 5.7–5.8 constrained + đánh giá** | ADR-0023; test: constrained 0 vi phạm bối cảnh/G3/gọi tên quá mức, omission e2e 0.28 vs unconstrained 0.06 |
 | **Tối ưu SED (4.9, ADR-0024)** | `sed_optimization_20260925.md`; chọn trên dev → ensemble C + θ global 0.95 + `g_max` p25; test event-F1 0.0941, PSDS-1 0.3489 |
+| **W5 rà phản biện (26/09)** | CI + hiệu số cặp RQ2; caption constrained hết bị cắt (ngân sách token theo ký tự, ADR-0023 §7); nhánh cover omission 0 (ADR-0026); SED tối ưu: omission constrained 0.284 → 0.036; lexicon vs người 0.896/0.936 (ADR-0022 §6) |
 | **W5 caption tiếng Việt (ADR-0025)** | Template VI + lexicon VI riêng (khớp giữ dấu); timeline thật dev/test oracle+e2e: 0 bịa/sót/G3/gọi tên quá mức; hash EN `6f5634bb…` không đổi — cụm từ VI chờ duyệt |
 | **W5 n-gram (tham khảo)** | ADR-0023 §6: BLEU-4/CIDEr so với template — chỉ đo độ giống văn phong, không kết luận |
 | **W5 lớp gộp (taxonomy §7)** | ADR-0023 §5; test e2e: template/constrained 0 caption gọi subclass như sự thật, unconstrained 11/18 (`sirens_and_alarms`) và 22/39 (`thunder_fireworks_gunshot`) |
@@ -425,6 +426,22 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 (đêm) — Rà W5 phản biện: sửa 6 lỗi, thêm 4 cải thiện
+
+Người dùng hỏi "W5 đã xong chưa, còn lỗi gì". Rà thấy: 16/558 caption constrained bị cắt
+giữa câu (trần 256 token); metric thứ tự bị gọi sai là Kendall τ và thưởng caption ít mention
+(unconstrained 0.941 → 0.887 khi chỉ tính caption ≥2 mention); RQ2 thiếu CI (vi phạm Q3/Q5);
+`score_captions` 0% coverage; tài liệu đánh giá lỗi thời. Sửa: ngân sách token — lần 1 theo
+tokenizer vẫn để lọt 3 caption (model sinh token vụn hơn tokenizer chuẩn), lần 2 theo **ký
+tự** thì 0/558; sinh lại cả file, caption vốn kết thúc tự nhiên trùng từng byte (264/264 dev,
+278/278 test). Lộ thêm: llama.cpp chỉ tất định theo chuỗi request (bộ nhớ đệm prompt).
+
+Cải thiện (người dùng chọn cả 4): nhánh `constrained_cover` (ADR-0026, ghi luật trước test) —
+omission 0, không thua unconstrained ở metric nào; e2e trên SED tối ưu — omission constrained
+0.284 → 0.036 (bỏ sót do timeline dài); lỗi theo lớp; người dùng đọc mù 60 caption — lexicon
+precision 0.896, recall 0.936, dễ dãi hơn người, bỏ lọt kiểu bịa "hammer strikes" che sau từ
+địa điểm "workshop". Dọn ổ D 26.4 GB (người dùng duyệt). 509 test pass.
 
 ### 2026-09-25 (tối) — Tối ưu SED không train lại theo giao thức ghi trước; W5 đóng
 

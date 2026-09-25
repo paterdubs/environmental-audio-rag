@@ -1,6 +1,6 @@
 # ADR-0026 — Nhánh caption `constrained_cover`: bắt buộc nhắc mọi lớp
 
-**Status:** Accepted — thiết kế và luật báo cáo ghi **sau dev, trước test** (xem §4)
+**Status:** Accepted — thiết kế và luật báo cáo ghi **sau dev, trước test** (§4); kết quả §5
 **Date:** 2026-09-25
 
 ## Context
@@ -56,6 +56,34 @@ Cover − constrained (e2e): omission −0.278 [−0.333, −0.224], mọi metri
 caption bị cắt; omission theo lớp = 0 ở 274/274 caption (đúng cấu tạo). Thời gian sinh dev
 3,226 s so với 1,568 s của constrained (×2.1). Mention/caption gần template: khi buộc phủ
 lớp, model còn tự nhắc phần lớn event lặp — caption tiến sát template.
+
+### 5. Kết quả test (một lần, sau commit `954d09d`)
+
+Nguồn: `caption_grounding_sed_polyphonic_20260924T054531Z_test.md`,
+`caption_grounding_sed_ensemble_C_clean_20260925T045631Z_test.md`, `caption_per_class_*_test.md`.
+0/284 (run B) và 0/142 (ensemble C) caption cover bị cắt; omission theo lớp = 0 ở mọi caption.
+
+| Nhánh (test) | Omission | Thứ tự ≥2 | Gọi tên quá mức | Bối cảnh | Halluc. | Mention |
+|---|---:|---:|---:|---:|---:|---:|
+| cover / e2e (run B) | **0.000** | 1.000 | 0 | 0 | 0 | 5.57 |
+| constrained / e2e (run B) | 0.284 | 1.000 | 0 | 0 | 0 | 2.75 |
+| unconstrained / e2e (run B) | 0.060 | 0.871 | 0.186 | 0.423 | 0.004 | 3.13 |
+| cover / oracle | **0.000** | 1.000 | 0 | 0 | 0 | 4.59 |
+| cover / e2e (ensemble C) | **0.000** | 1.000 | 0 | 0 | 0 | 2.50 |
+| constrained / e2e (ensemble C) | 0.036 | 1.000 | 0 | 0 | 0 | 2.37 |
+| unconstrained / e2e (ensemble C) | 0.013 | 0.880 | 0.131 | 0.444 | 0.005 | 1.50 |
+
+Hiệu số cặp, CI 95%: cover − unconstrained (run B e2e) omission −0.060 [−0.079, −0.041],
+thứ tự +0.129 [+0.088, +0.172], gọi tên quá mức −0.186 [−0.229, −0.145], bối cảnh −0.423
+[−0.500, −0.345], hallucination −0.004 [−0.010, +0.000]; oracle omission −0.012 [−0.022,
+−0.004]. Cover − constrained: omission −0.284 [−0.340, −0.233] (e2e), −0.097 [−0.132,
+−0.065] (oracle), mọi metric khác bằng nhau. Diễn đạt lớp gộp §7: 0 vi phạm (như constrained).
+
+**Đọc đúng:** cover là nhánh duy nhất không thua unconstrained ở metric nào — nhưng omission
+0 là do cấu tạo, và caption tiến sát template (5.57 so với 6.13 mention). Thời gian sinh ×2.2
+so với constrained (5,263 s so với 2,398 s trên test). **Hướng D:** trên SED tối ưu, timeline
+ngắn hơn nên omission của constrained giảm từ 0.284 xuống 0.036 — bỏ sót của constrained chủ
+yếu là hệ quả của timeline dài; kết luận RQ2 về bối cảnh/gọi tên quá mức/thứ tự giữ nguyên.
 
 ## Consequences
 

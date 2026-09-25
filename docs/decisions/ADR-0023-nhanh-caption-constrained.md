@@ -62,14 +62,28 @@ và với template (không omission, không linh hoạt).
 |---|---:|---:|---:|---:|---:|---:|---:|
 | template / oracle | 0 | 0 | 1.000 | 0 | 0 | 0 | 5.21 |
 | template / e2e | 0 | 0 | 1.000 | 0 | 0 | 0 | 6.13 |
-| constrained / oracle | 0 | 0.100 | 0.998 | 0 | 0 | 0 | 3.06 |
-| constrained / e2e | 0 | 0.284 | 0.999 | 0 | 0 | 0 | 2.75 |
-| unconstrained / oracle | 0.013* | 0.012 | 0.941 | 0.007 | 0.137 | 0.324 | 2.01 |
-| unconstrained / e2e | 0.004* | 0.060 | 0.903 | 0.014 | 0.186 | 0.423 | 3.13 |
+| constrained / oracle | 0 | 0.097 | 1.000 | 0 | 0 | 0 | 3.16 |
+| constrained / e2e | 0 | 0.284 | 1.000 | 0 | 0 | 0 | 2.75 |
+| unconstrained / oracle | 0.013* | 0.012 | 0.887 (n=74) | 0.007 | 0.137 | 0.324 | 2.01 |
+| unconstrained / e2e | 0.004* | 0.060 | 0.871 (n=107) | 0.014 | 0.186 | 0.423 | 3.13 |
 
-\* cận trên — 7/8 là dương tính giả của lexicon (`caption_lexicon_audit_test_20260925.md`).
-Nguồn: `caption_grounding_sed_polyphonic_20260924T054531Z_test.md`. 6/284 caption
-constrained chạm max_tokens.
+Số constrained là v1.2 (sau khi sửa lỗi cắt caption, §7). Cột Temporal: tỷ lệ cặp đúng thứ
+tự **chỉ trên caption ≥2 mention** (không phải Kendall τ; cách tính cũ tính cả caption 0–1
+mention là 1.0 và cho unconstrained 0.941/0.903). \* cận trên — 7/8 là dương tính giả của
+lexicon (`caption_lexicon_audit_test_20260925.md`); đối chiếu người đọc ở ADR-0022 §6.
+Nguồn: `caption_grounding_sed_polyphonic_20260924T054531Z_test.md` (kèm CI và hiệu số cặp).
+
+**Hiệu số cặp constrained − unconstrained, test, CI 95% (bootstrap theo recording):** e2e
+omission +0.224 [+0.178, +0.274], thứ tự +0.129 [+0.088, +0.172], gọi tên quá mức −0.186
+[−0.229, −0.145], bối cảnh −0.423 [−0.500, −0.345], hallucination −0.004 [−0.010, +0.000],
+G3 −0.014 [−0.035, +0.000]; oracle omission +0.085 [+0.052, +0.120], hallucination −0.013
+[−0.022, −0.004]. Hai metric hallucination/G3 ở e2e không phân biệt được với 0.
+
+**Omission theo lớp** (`caption_per_class_…_test.md`): constrained e2e bỏ sót nhiều nhất ở
+lớp nền kéo dài — `vehicle_pass_by` 43/73, `vehicle_idling` 29/35, `jet_aircrafts` 22/35.
+Trên SED tối ưu (ensemble C, timeline ngắn hơn: template 2.87 mention/caption so với 6.13)
+omission constrained chỉ còn 0.036 và không khác unconstrained (+0.023 [−0.004, +0.050]) —
+bỏ sót của nhánh này chủ yếu do timeline dài (ADR-0026 §5).
 
 **Đọc đúng:** ràng buộc đưa bối cảnh (32–42% → 0), gọi tên quá mức (14–19% → 0),
 G3 (0.7–1.4% → 0) và thứ tự (0.90–0.94 → ~1) về sàn theo cấu tạo; cái giá là
@@ -105,11 +119,46 @@ thống không đưa subclass prediction vào caption.
 ### 6. N-gram — chỉ tham khảo (evaluation_protocol §8.3, thêm 25/09)
 
 BLEU-4 / CIDEr (`pycocoevalcap`, tách từ đơn giản vì PTB cần Java) so với caption
-template của cùng timeline, test: constrained 0.2521/1.6440 (oracle), 0.1813/1.4246
-(e2e); unconstrained 0.0058/0.0685 (oracle), 0.0051/0.0625 (e2e). Nguồn:
+template của cùng timeline, test: constrained (v1.2) 0.2729/1.6460 (oracle), 0.1827/1.4133
+(e2e); cover 0.3621/1.7846, 0.3789/1.6574; unconstrained 0.0058/0.0685 (oracle), 0.0051/0.0625
+(e2e). Nguồn:
 `caption_ngram_sed_polyphonic_20260924T054531Z_test.md`. **Không kết luận gì từ đây:**
 tham chiếu là template nên số chỉ đo độ giống văn phong template — constrained cao vì
 grammar dùng cụm từ gần template, không phải vì grounded hơn; grounding đo ở §4–§5.
+
+### 7. Sửa lỗi caption bị cắt giữa câu (25/09 tối)
+
+**Lỗi.** Với trần chung `max_tokens = 256`, 16/558 caption constrained (dev 10/274, test
+6/284) dừng giữa câu ("…can be heard from 64.3 to"). Grammar cam kết caption là một câu
+hoàn chỉnh — caption bị cắt phá đúng cam kết đó, bị tính thêm omission, và người dùng sẽ
+thấy câu dở. Đó là các caption model đang nhắc nhiều event. Nhánh unconstrained 0/558.
+
+**Lần sửa 1 (v1.1) — không đủ.** Ngân sách = số token (tokenizer của server) của caption
+dài nhất grammar cho phép + 16. Dev: 7/10 caption bị cắt nay trọn câu, nhưng **3 vẫn bị
+cắt**. Khi bị grammar ràng buộc, model sinh token vụn hơn tokenizer chuẩn (~2 ký tự/token
+so với ~2.8): số token chuẩn không phải cận trên.
+
+**Lần sửa 2 (v1.2).** Ngân sách = max(256, **số ký tự** của caption dài nhất + 1). Chuỗi
+grammar toàn ASCII nên mỗi token sinh ra chiếm ≥ 1 ký tự → không thể chạm. Server chấp
+nhận ngân sách vượt context (timeline lớn nhất: 59 event) mà không lỗi; caption tự kết thúc
+không đổi khi tăng ngân sách.
+
+**Kiểm chứng trên dev** (trước khi sinh test): 0/274 bị cắt; 264/264 caption vốn kết thúc
+tự nhiên ở v1 sinh lại trùng từng byte (chữ và evidence); 10/10 caption từng bị cắt nay trọn
+câu và là phần viết tiếp của đúng chữ v1 (giải mã greedy đi lại cùng đường rồi đi tiếp).
+**Test** (sinh một lần sau khi dev đạt): 0/284 bị cắt; 278/278 caption vốn kết thúc tự
+nhiên trùng từng byte với v1; 6/6 caption từng bị cắt nay trọn câu và viết tiếp đúng chữ v1.
+
+**Tái lập — điều học được.** Giải mã greedy của llama.cpp chỉ tất định theo **chuỗi request**
+chạy trên server mới khởi động: gửi lẻ một request mà bộ nhớ đệm prompt đang giữ đúng prompt
+đó (dùng lại 2,223 token) cho caption khác lần chạy cả file (chỉ dùng lại ~18 token đầu) —
+phép tính số thực đổi theo cách chia batch. Vì vậy sinh lại luôn là cả file, theo đúng thứ tự,
+trên server khởi động lại (pipeline làm vậy); không vá lẻ từng caption. Caption v1, v1.1 lưu
+ở `<run>/captions/archive/`.
+
+**Số thay đổi (test, v1 → v1.2).** Omission constrained e2e 0.2842 → 0.2842 (không đổi — 6 caption
+bị cắt trên test đều ở mức oracle hoặc không đổi lớp được nhắc), oracle 0.0995 → 0.0972;
+mọi metric khác không đổi. Bảng §4 là số v1.2.
 
 ## Consequences
 
