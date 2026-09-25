@@ -64,3 +64,16 @@ def test_psds_operating_points_sweeps_the_full_grid_not_one_frozen_theta() -> No
     # (0.9 < 0.95) -- so the swept grid must yield more than one distinct point.
     assert len(points) >= 2
     assert len({len(point[0]) for point in points}) > 1
+
+
+def test_report_names_the_postproc_file_used() -> None:
+    from scripts.evaluate_run import _render_report
+
+    result = {
+        "run": "ml/runs/x", "postproc": "ml/runs/x/postproc_cv.json",
+        "event_based_f1": {"f_measure": 0.1, "precision": 0.2, "recall": 0.05},
+        "event_based_f1_bootstrap": {"lower": 0.05, "upper": 0.15, "n_recordings": 142},
+        "psds": {"psds_1": 0.3, "psds_2": 0.7}, "error_totals": {"deletion": 3},
+        "n_events_reference": 10, "n_events_estimate": 4,
+    }
+    assert "Hậu xử lý: `postproc_cv.json`." in _render_report(result)

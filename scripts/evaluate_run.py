@@ -41,6 +41,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--postproc", type=Path, default=None)
     parser.add_argument("--tag", default=None,
                         help="hậu tố file kết quả, để không ghi đè evaluation.json chuẩn")
+    parser.add_argument("--render-only", action="store_true",
+                        help="chỉ sinh lại file md từ evaluation<tag>.json đã có — không mở test")
     return parser.parse_args()
 
 
@@ -157,9 +159,21 @@ def bootstrap_event_f1(
             "confidence": ci.confidence, "n_recordings": ci.n_recordings}
 
 
+def _paths(args: argparse.Namespace) -> tuple[Path, Path]:
+    suffix = f"_{args.tag}" if args.tag else ""
+    return (args.run_dir / f"evaluation{suffix}.json",
+            ROOT / "docs" / "measurements" / f"{args.run_dir.name}_eval{suffix}.md")
+
+
 def main() -> None:
     args = parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    output_path, report_path = _paths(args)
+    if args.render_only:
+        result = json.loads(output_path.read_text(encoding="utf-8"))
+        report_path.write_text(_render_report(result), encoding="utf-8")
+        print(json.dumps({"report": str(report_path)}, indent=2))
+        return
 
     manifest = json.loads((args.run_dir / "manifest.json").read_text(encoding="utf-8"))
     if not manifest.get("complete"):
@@ -235,11 +249,7 @@ def main() -> None:
         "n_events_estimate": sum(len(v) for v in estimate.values()),
         "n_error_instances": len(errors),
     }
-    suffix = f"_{args.tag}" if args.tag else ""
-    output_path = args.run_dir / f"evaluation{suffix}.json"
     output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
-
-    report_path = ROOT / "docs" / "measurements" / f"{args.run_dir.name}_eval{suffix}.md"
     report_path.write_text(_render_report(result), encoding="utf-8")
     print(json.dumps({"evaluation": str(output_path), "report": str(report_path)}, indent=2))
 
@@ -252,6 +262,8 @@ def _render_report(result: dict) -> str:
         "",
         f"> Sinh bởi `scripts.evaluate_run {result['run']}`. Test chạy **một lần**, "
         "postproc đã đóng băng trước khi mở test.",
+        "",
+        f"Hậu xử lý: `{Path(result['postproc']).name}`.",
         "",
         "## Event-based F1 (test)",
         "",
