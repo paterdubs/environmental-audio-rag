@@ -6,41 +6,70 @@
   "predictions_sha256": "c3bf58932c86ee1ed6ef1b9df6ee9521f28fea3d314e353f64c3f6e8fb34ece3",
   "captions_sha256": {
     "unconstrained_test.jsonl": "f9b1955161870898de0c40e7545abf4091198b04f2ca421938a829e0716d1bc9",
-    "constrained_test.jsonl": "3021179e735722f21022a8c80f6350fd6cfe53ba178137f85a75457ccca044ca"
+    "constrained_test.jsonl": "98a8ebb458cb9bd67b34997f075bb0645c001b4fd4d4dc8d72d3dfe8ce2ef01b",
+    "constrained_cover_test.jsonl": "12c542e28e802f0f9ebb4bb4028b4f9d38806a47f41405ffcaa9c4121c9c0739"
   },
   "lexicon_version": "caption-lexicon-v2",
   "lexicon_sha256": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
   "git": {
-    "revision": "71e6d56260d992e66500febc3e1cebb9f8fe7786",
-    "dirty": true
+    "revision": "da2438916a4ec3653f9970416e914cc2945f2fe4",
+    "dirty": false
   },
   "summary": {
     "constrained/e2e": {
       "n": 142,
       "hallucination_rate": 0.0,
       "omission_rate": 0.2841800804828974,
-      "temporal_order_accuracy": 0.9985915492957746,
+      "temporal_order_accuracy": 1.0,
       "forbidden_term_rate": 0.0,
       "over_specific_rate": 0.0,
       "context_term_rate": 0.0,
-      "evidence_coverage": 0.997339593114241,
-      "n_mentions": 2.7464788732394365,
-      "temporal_order_eligible": 0.9981132075471698,
+      "evidence_coverage": 1.0,
+      "n_mentions": 2.7535211267605635,
+      "temporal_order_eligible": 1.0,
       "n_temporal_eligible": 106,
       "hallucination_micro": 0.0
     },
     "constrained/oracle": {
       "n": 142,
       "hallucination_rate": 0.0,
-      "omission_rate": 0.09953051643192488,
-      "temporal_order_accuracy": 0.9982953275206796,
+      "omission_rate": 0.0971830985915493,
+      "temporal_order_accuracy": 1.0,
       "forbidden_term_rate": 0.0,
       "over_specific_rate": 0.0,
       "context_term_rate": 0.0,
-      "evidence_coverage": 0.997507265817125,
-      "n_mentions": 3.056338028169014,
-      "temporal_order_eligible": 0.997529964366699,
+      "evidence_coverage": 1.0,
+      "n_mentions": 3.1619718309859155,
+      "temporal_order_eligible": 1.0,
       "n_temporal_eligible": 98,
+      "hallucination_micro": 0.0
+    },
+    "constrained_cover/e2e": {
+      "n": 142,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.0,
+      "temporal_order_accuracy": 1.0,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "context_term_rate": 0.0,
+      "evidence_coverage": 1.0,
+      "n_mentions": 5.570422535211268,
+      "temporal_order_eligible": 1.0,
+      "n_temporal_eligible": 114,
+      "hallucination_micro": 0.0
+    },
+    "constrained_cover/oracle": {
+      "n": 142,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.0,
+      "temporal_order_accuracy": 1.0,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "context_term_rate": 0.0,
+      "evidence_coverage": 1.0,
+      "n_mentions": 4.591549295774648,
+      "temporal_order_eligible": 1.0,
+      "n_temporal_eligible": 107,
       "hallucination_micro": 0.0
     },
     "template/e2e": {
@@ -119,8 +148,8 @@
         "n_bootstrap": 1000
       },
       "temporal_order_eligible": {
-        "estimate": 0.9981132075471698,
-        "lower": 0.994059405940594,
+        "estimate": 1.0,
+        "lower": 1.0,
         "upper": 1.0,
         "confidence": 0.95,
         "n_recordings": 142,
@@ -161,16 +190,116 @@
         "n_bootstrap": 1000
       },
       "omission_rate": {
-        "estimate": 0.09953051643192488,
-        "lower": 0.06700997652582161,
-        "upper": 0.1354518779342723,
+        "estimate": 0.0971830985915493,
+        "lower": 0.06524647887323945,
+        "upper": 0.13157863849765258,
         "confidence": 0.95,
         "n_recordings": 142,
         "n_bootstrap": 1000
       },
       "temporal_order_eligible": {
-        "estimate": 0.997529964366699,
-        "lower": 0.9929310251136972,
+        "estimate": 1.0,
+        "lower": 1.0,
+        "upper": 1.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "over_specific_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "context_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "forbidden_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      }
+    },
+    "constrained_cover/e2e": {
+      "hallucination_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "omission_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "temporal_order_eligible": {
+        "estimate": 1.0,
+        "lower": 1.0,
+        "upper": 1.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "over_specific_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "context_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "forbidden_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      }
+    },
+    "constrained_cover/oracle": {
+      "hallucination_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "omission_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "temporal_order_eligible": {
+        "estimate": 1.0,
+        "lower": 1.0,
         "upper": 1.0,
         "confidence": 0.95,
         "n_recordings": 142,
@@ -421,9 +550,9 @@
         "n_bootstrap": 1000
       },
       "temporal_order_eligible": {
-        "estimate": 0.1274412004265646,
-        "lower": 0.08684196155526439,
-        "upper": 0.17006438213914854,
+        "estimate": 0.12932799287939478,
+        "lower": 0.08807305620957481,
+        "upper": 0.1717122566394411,
         "confidence": 0.95,
         "n_recordings": 142,
         "n_bootstrap": 1000
@@ -463,17 +592,17 @@
         "n_bootstrap": 1000
       },
       "omission_rate": {
-        "estimate": 0.08708920187793427,
-        "lower": 0.0536355633802817,
-        "upper": 0.12277288732394367,
+        "estimate": 0.08474178403755869,
+        "lower": 0.052106807511737095,
+        "upper": 0.12007629107981221,
         "confidence": 0.95,
         "n_recordings": 142,
         "n_bootstrap": 1000
       },
       "temporal_order_eligible": {
-        "estimate": 0.11014257697931162,
-        "lower": 0.04883965263761182,
-        "upper": 0.17654297393427829,
+        "estimate": 0.11261261261261257,
+        "lower": 0.051802002530670674,
+        "upper": 0.1787128552971576,
         "confidence": 0.95,
         "n_recordings": 142,
         "n_bootstrap": 1000
@@ -497,6 +626,206 @@
       "forbidden_term_rate": {
         "estimate": -0.007042253521126761,
         "lower": -0.02112676056338028,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      }
+    },
+    "constrained_cover−unconstrained/e2e": {
+      "hallucination_rate": {
+        "estimate": -0.003755868544600939,
+        "lower": -0.009859154929577466,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "omission_rate": {
+        "estimate": -0.05986194947462553,
+        "lower": -0.0791937038900067,
+        "upper": -0.04105459143751397,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "temporal_order_eligible": {
+        "estimate": 0.12932799287939478,
+        "lower": 0.08807305620957481,
+        "upper": 0.1717122566394411,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "over_specific_rate": {
+        "estimate": -0.18563603845293986,
+        "lower": -0.229367035546613,
+        "upper": -0.14455818242790075,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "context_term_rate": {
+        "estimate": -0.4225352112676056,
+        "lower": -0.5,
+        "upper": -0.34507042253521125,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "forbidden_term_rate": {
+        "estimate": -0.014084507042253521,
+        "lower": -0.035211267605633804,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      }
+    },
+    "constrained_cover−unconstrained/oracle": {
+      "hallucination_rate": {
+        "estimate": -0.01255868544600939,
+        "lower": -0.022186032863849764,
+        "upper": -0.003755868544600939,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "omission_rate": {
+        "estimate": -0.01244131455399061,
+        "lower": -0.022306338028169007,
+        "upper": -0.003984741784037563,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "temporal_order_eligible": {
+        "estimate": 0.11261261261261257,
+        "lower": 0.051802002530670674,
+        "upper": 0.1787128552971576,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "over_specific_rate": {
+        "estimate": -0.13650234741784037,
+        "lower": -0.18557218309859155,
+        "upper": -0.09025528169014084,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "context_term_rate": {
+        "estimate": -0.323943661971831,
+        "lower": -0.4084507042253521,
+        "upper": -0.23943661971830985,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "forbidden_term_rate": {
+        "estimate": -0.007042253521126761,
+        "lower": -0.02112676056338028,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      }
+    },
+    "constrained_cover−constrained/e2e": {
+      "hallucination_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "omission_rate": {
+        "estimate": -0.2841800804828974,
+        "lower": -0.3403775430359937,
+        "upper": -0.23311696568298682,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "temporal_order_eligible": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "over_specific_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "context_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "forbidden_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      }
+    },
+    "constrained_cover−constrained/oracle": {
+      "hallucination_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "omission_rate": {
+        "estimate": -0.0971830985915493,
+        "lower": -0.13157863849765258,
+        "upper": -0.06524647887323945,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "temporal_order_eligible": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "over_specific_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "context_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
+        "upper": 0.0,
+        "confidence": 0.95,
+        "n_recordings": 142,
+        "n_bootstrap": 1000
+      },
+      "forbidden_term_rate": {
+        "estimate": 0.0,
+        "lower": 0.0,
         "upper": 0.0,
         "confidence": 0.95,
         "n_recordings": 142,

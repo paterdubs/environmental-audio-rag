@@ -1,12 +1,9 @@
-# N-gram caption (chỉ tham khảo) — `sed_polyphonic_20260924T054531Z` (dev)
+# N-gram caption (chỉ tham khảo) — `sed_ensemble_C_clean_20260925T045631Z` (test)
 
 > Sinh bởi `scripts.report_caption_ngram`. **Không dùng để kết luận** (evaluation_protocol §8.3): tham chiếu là caption template của cùng timeline, không phải caption người viết; nhánh constrained dùng cụm từ gần template theo cấu tạo nên có lợi sẵn; n-gram không phát hiện hallucination. Scorer `pycocoevalcap` (Bleu, Cider); tách từ đơn giản thay PTB (cần Java).
 
 | Nhánh / mức | n | BLEU-1 | BLEU-4 | CIDEr |
 |---|---:|---:|---:|---:|
-| constrained/e2e | 137 | 0.2436 | 0.1591 | 1.0981 |
-| constrained/oracle | 137 | 0.3844 | 0.2337 | 1.4907 |
-| constrained_cover/e2e | 137 | 0.6301 | 0.3948 | 1.4203 |
-| constrained_cover/oracle | 137 | 0.5719 | 0.3430 | 1.5208 |
-| unconstrained/e2e | 137 | 0.0322 | 0.0033 | 0.0474 |
-| unconstrained/oracle | 137 | 0.0246 | 0.0026 | 0.0373 |
+| constrained/e2e | 142 | 0.5767 | 0.3672 | 2.8541 |
+| constrained_cover/e2e | 142 | 0.5798 | 0.3685 | 2.9481 |
+| unconstrained/e2e | 142 | 0.1277 | 0.0170 | 0.1089 |

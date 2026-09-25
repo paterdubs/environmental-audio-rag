@@ -1,0 +1,145 @@
+{
+  "run": "sed_ensemble_C_clean_20260925T045631Z",
+  "split": "test",
+  "lexicon_sha256": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
+  "classes": {
+    "unconstrained/e2e": {
+      "present": {
+        "voices": 19,
+        "music": 9,
+        "vehicle_pass_by": 12,
+        "vehicle_idling": 10,
+        "train": 20,
+        "crows_seagulls_magpies": 3,
+        "lawn_mower_brush_cutter_olive_shaker": 10,
+        "jet_aircrafts": 8,
+        "sirens_and_alarms": 17,
+        "birds": 9,
+        "dog_barkings_and_howlings": 11,
+        "thunder_fireworks_gunshot": 4,
+        "glass_breaking": 3,
+        "propeller_aircrafts": 11,
+        "bells": 5,
+        "horn": 4,
+        "cat_fights_and_moans": 3,
+        "chicken_coop": 8,
+        "cicadas_and_crickets": 10,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "workshop": 13
+      },
+      "omitted": {
+        "cat_fights_and_moans": 1,
+        "voices": 1,
+        "vehicle_pass_by": 1
+      },
+      "unsupported": {
+        "birds": 1,
+        "thunder_fireworks_gunshot": 1
+      },
+      "specific": {
+        "crows_seagulls_magpies": 3,
+        "lawn_mower_brush_cutter_olive_shaker": 10,
+        "thunder_fireworks_gunshot": 5,
+        "sirens_and_alarms": 3,
+        "vacuum_cleaner_fan_hairdryer": 7
+      },
+      "out_of_taxonomy": {}
+    },
+    "constrained/e2e": {
+      "present": {
+        "voices": 19,
+        "music": 9,
+        "vehicle_pass_by": 12,
+        "vehicle_idling": 10,
+        "train": 20,
+        "crows_seagulls_magpies": 3,
+        "lawn_mower_brush_cutter_olive_shaker": 10,
+        "jet_aircrafts": 8,
+        "sirens_and_alarms": 17,
+        "birds": 9,
+        "dog_barkings_and_howlings": 11,
+        "thunder_fireworks_gunshot": 4,
+        "glass_breaking": 3,
+        "propeller_aircrafts": 11,
+        "bells": 5,
+        "horn": 4,
+        "cat_fights_and_moans": 3,
+        "chicken_coop": 8,
+        "cicadas_and_crickets": 10,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "workshop": 13
+      },
+      "omitted": {
+        "dog_barkings_and_howlings": 4,
+        "train": 3,
+        "vehicle_idling": 1,
+        "propeller_aircrafts": 1,
+        "horn": 1,
+        "cicadas_and_crickets": 1,
+        "vehicle_pass_by": 1,
+        "vacuum_cleaner_fan_hairdryer": 1
+      },
+      "unsupported": {},
+      "specific": {},
+      "out_of_taxonomy": {}
+    },
+    "constrained_cover/e2e": {
+      "present": {
+        "voices": 19,
+        "music": 9,
+        "vehicle_pass_by": 12,
+        "vehicle_idling": 10,
+        "train": 20,
+        "crows_seagulls_magpies": 3,
+        "lawn_mower_brush_cutter_olive_shaker": 10,
+        "jet_aircrafts": 8,
+        "sirens_and_alarms": 17,
+        "birds": 9,
+        "dog_barkings_and_howlings": 11,
+        "thunder_fireworks_gunshot": 4,
+        "glass_breaking": 3,
+        "propeller_aircrafts": 11,
+        "bells": 5,
+        "horn": 4,
+        "cat_fights_and_moans": 3,
+        "chicken_coop": 8,
+        "cicadas_and_crickets": 10,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "workshop": 13
+      },
+      "omitted": {},
+      "unsupported": {},
+      "specific": {},
+      "out_of_taxonomy": {}
+    },
+    "template/e2e": {
+      "present": {
+        "voices": 19,
+        "music": 9,
+        "vehicle_pass_by": 12,
+        "vehicle_idling": 10,
+        "train": 20,
+        "crows_seagulls_magpies": 3,
+        "lawn_mower_brush_cutter_olive_shaker": 10,
+        "jet_aircrafts": 8,
+        "sirens_and_alarms": 17,
+        "birds": 9,
+        "dog_barkings_and_howlings": 11,
+        "thunder_fireworks_gunshot": 4,
+        "glass_breaking": 3,
+        "propeller_aircrafts": 11,
+        "bells": 5,
+        "horn": 4,
+        "cat_fights_and_moans": 3,
+        "chicken_coop": 8,
+        "cicadas_and_crickets": 10,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "workshop": 13
+      },
+      "omitted": {},
+      "unsupported": {},
+      "specific": {},
+      "out_of_taxonomy": {}
+    }
+  }
+}

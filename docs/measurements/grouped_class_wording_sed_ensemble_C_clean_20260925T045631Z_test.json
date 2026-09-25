@@ -1,0 +1,52 @@
+{
+  "run": "sed_ensemble_C_clean_20260925T045631Z",
+  "split": "test",
+  "lexicon_sha256": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
+  "counts": {
+    "unconstrained/e2e": {
+      "sirens_and_alarms": {
+        "class": 15,
+        "specific": 2
+      },
+      "thunder_fireworks_gunshot": {
+        "specific": 4
+      }
+    },
+    "constrained/e2e": {
+      "sirens_and_alarms": {
+        "class": 17
+      },
+      "thunder_fireworks_gunshot": {
+        "class": 4
+      }
+    },
+    "constrained_cover/e2e": {
+      "sirens_and_alarms": {
+        "class": 17
+      },
+      "thunder_fireworks_gunshot": {
+        "class": 4
+      }
+    },
+    "template/e2e": {
+      "sirens_and_alarms": {
+        "class": 17
+      },
+      "thunder_fireworks_gunshot": {
+        "class": 4
+      }
+    }
+  },
+  "specific_phrases": {
+    "unconstrained/e2e": {
+      "thunder": 4,
+      "fireworks": 4,
+      "gunshots": 3,
+      "sirens": 2,
+      "alarm": 1
+    },
+    "constrained/e2e": {},
+    "constrained_cover/e2e": {},
+    "template/e2e": {}
+  }
+}

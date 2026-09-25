@@ -10,6 +10,10 @@ Giao thức: bản đầu của script (chưa có loại "liệt kê or") đã c
 | constrained/e2e | `thunder_fireworks_gunshot` | 39 | 38 | 0 | 0 | 0 | 1 |
 | constrained/oracle | `sirens_and_alarms` | 17 | 17 | 0 | 0 | 0 | 0 |
 | constrained/oracle | `thunder_fireworks_gunshot` | 4 | 4 | 0 | 0 | 0 | 0 |
+| constrained_cover/e2e | `sirens_and_alarms` | 18 | 18 | 0 | 0 | 0 | 0 |
+| constrained_cover/e2e | `thunder_fireworks_gunshot` | 39 | 39 | 0 | 0 | 0 | 0 |
+| constrained_cover/oracle | `sirens_and_alarms` | 17 | 17 | 0 | 0 | 0 | 0 |
+| constrained_cover/oracle | `thunder_fireworks_gunshot` | 4 | 4 | 0 | 0 | 0 | 0 |
 | template/e2e | `sirens_and_alarms` | 18 | 18 | 0 | 0 | 0 | 0 |
 | template/e2e | `thunder_fireworks_gunshot` | 39 | 39 | 0 | 0 | 0 | 0 |
 | template/oracle | `sirens_and_alarms` | 17 | 17 | 0 | 0 | 0 | 0 |

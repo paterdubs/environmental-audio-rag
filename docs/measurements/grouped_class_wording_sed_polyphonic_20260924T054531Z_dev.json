@@ -40,6 +40,22 @@
         "class": 17
       }
     },
+    "constrained_cover/oracle": {
+      "thunder_fireworks_gunshot": {
+        "class": 4
+      },
+      "sirens_and_alarms": {
+        "class": 17
+      }
+    },
+    "constrained_cover/e2e": {
+      "thunder_fireworks_gunshot": {
+        "class": 50
+      },
+      "sirens_and_alarms": {
+        "class": 17
+      }
+    },
     "template/oracle": {
       "thunder_fireworks_gunshot": {
         "class": 4
@@ -75,6 +91,8 @@
     },
     "constrained/oracle": {},
     "constrained/e2e": {},
+    "constrained_cover/oracle": {},
+    "constrained_cover/e2e": {},
     "template/oracle": {},
     "template/e2e": {}
   }
