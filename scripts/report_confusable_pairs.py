@@ -42,7 +42,8 @@ def parse_args() -> argparse.Namespace:
 def hypothesis_pairs(class_ids: tuple[str, ...]) -> set[tuple[str, str]]:
     """Pairs in the acoustic table of taxonomy.md §8 (names may be truncated with '…')."""
     text = (ROOT / "docs/taxonomy.md").read_text(encoding="utf-8")
-    section = text.split("## 8.", 1)[1].split("\n## ", 1)[0]
+    # Only the acoustic table: §8.1 (measured pairs) uses the same row format.
+    section = text.split("## 8.", 1)[1].split("\n## ", 1)[0].split("\n### ", 1)[0]
     pairs = set()
     for a, b in re.findall(r"^\| `([^`]+)` ↔ `([^`]+)` \|", section, flags=re.M):
         resolved = [next(c for c in class_ids if c.startswith(n.rstrip("…"))) for n in (a, b)]
