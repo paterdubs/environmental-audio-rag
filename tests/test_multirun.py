@@ -37,3 +37,14 @@ def test_runs_on_different_recordings_are_rejected() -> None:
     with pytest.raises(ValueError):
         paired_branch_bootstrap({"b": {"r1": (1, 1, 1), "r2": (1, 1, 0)}, "c": {"r1": (1, 1, 1)}},
                                 {"B": ["b"], "C": ["c"]}, n_bootstrap=10)
+
+
+def test_a4_verdict_and_cap_follow_adr_0028() -> None:
+    from scripts.report_pos_weight_ablation import MARGIN, cap_of, verdict
+
+    assert verdict(0.10 + MARGIN + 1e-6, 0.10) == "tốt hơn"
+    assert verdict(0.10 - MARGIN - 1e-6, 0.10) == "kém hơn"
+    assert verdict(0.10 + MARGIN / 2, 0.10) == "không phân biệt được"
+    assert cap_of({"config": {}}) == 50.0  # runs before the flag used the default cap
+    assert cap_of({"config": {"pos_weight_cap": None}}) == float("inf")
+    assert cap_of({"config": {"pos_weight_cap": 10.0}}) == 10.0

@@ -41,10 +41,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def run_counts(run: Path, taxonomy) -> dict[str, tuple[int, int, int]]:
+def run_counts(run: Path, taxonomy, split: str = "test") -> dict[str, tuple[int, int, int]]:
+    """Per-recording sed_eval counts with the run's frozen postproc; test is checked against
+    `evaluation.json` (dev has no official evaluation to check against)."""
     postproc = json.loads((run / "postproc.json").read_text(encoding="utf-8"))
     class_ids = taxonomy.polyphonic_class_ids
-    artifact = load_predictions(run / "predictions" / "test.npz", expected_class_ids=class_ids)
+    artifact = load_predictions(run / "predictions" / f"{split}.npz", expected_class_ids=class_ids)
+    if artifact.split != split:
+        raise SystemExit(f"{run.name}: predictions split={artifact.split!r}, cần {split!r}")
     probabilities = stack_predictions_by_recording(artifact)
     estimate = process_recordings(
         probabilities, class_ids=class_ids,
@@ -52,6 +56,8 @@ def run_counts(run: Path, taxonomy) -> dict[str, tuple[int, int, int]]:
         priors=priors_from_postproc(postproc, class_ids), frame_rate=1.0 / artifact.frame_hop_s)
     reference = load_events_by_recording(set(probabilities))
     counts = event_counts_per_recording(reference, estimate, event_label_list=list(class_ids))
+    if split != "test":
+        return counts
     official = json.loads((run / "evaluation.json").read_text(encoding="utf-8"))
     summed = micro_f1(*(sum(c[i] for c in counts.values()) for i in range(3)))
     if abs(summed - official["event_based_f1"]["f_measure"]) > TOLERANCE:
