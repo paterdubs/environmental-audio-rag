@@ -63,6 +63,12 @@ lời "ensemble có giúp không" bằng dev, không bằng test).
 - **Cập nhật 25/09 chiều (vẫn trước mọi test với `postproc_cv.json`):** CV đủ 4 cấu hình
   của 3 ensemble đã có — cả ba chọn `global|25`. CV run đơn và mọi kết quả test với
   `postproc_cv.json` vẫn chưa biết.
+- **Cập nhật 25/09 tối — lựa chọn đã chốt, commit trước test:** CV đủ cho 5 ứng viên;
+  cả năm chọn `global|25`. Luật §3 chọn **ensemble C** (CV 0.1538 ± 0.0214); chênh với
+  ensemble B xếp thứ hai +0.0204 < sd giữa fold → không gọi là "tốt hơn" B
+  (`sed_optimization_20260925_dev.md`). Chưa chạy test nào với `postproc_cv.json`.
+  Lưới θ đã kiểm trên dev: đỉnh ở 0.95–0.97, không cắt cụt đáng kể
+  (`threshold_grid_edge_20260925.md`).
 
 ## Consequences
 

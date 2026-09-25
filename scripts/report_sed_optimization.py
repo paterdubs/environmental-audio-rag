@@ -101,13 +101,20 @@ def load_test(run_dir: Path) -> dict:
     return {"default": _metrics(_read(run_dir / "evaluation.json")), "cv": _metrics(tuned)}
 
 
+def _cfg(key: str) -> str:
+    """`per_class|50` -> "`per_class` p50": a raw "|" would split a markdown table cell."""
+    mode, percentile = key.split("|")
+    return f"`{mode}` p{percentile}"
+
+
 def _fmt(m: dict) -> str:
     return (f"{m['event_f1']:.4f} [{m['ci'][0]:.4f}, {m['ci'][1]:.4f}] | "
             f"{m['psds_1']:.4f} | {m['psds_2']:.4f}")
 
 
 def render(candidates: list[dict], choice: dict, command: str) -> list[str]:
-    lines = render_dev(candidates, choice, command)
+    lines = render_dev(candidates, choice, command, sources=(
+        "`postproc_cv_selection.json`, `evaluation.json`, `evaluation_cv.json`"))
     lines += [
         "", "## 3. Test — mỗi cấu hình chạy một lần, báo tất cả", "",
         "| Ứng viên | hậu xử lý | event-F1 [95% CI] | PSDS-1 | PSDS-2 |",
@@ -115,42 +122,47 @@ def render(candidates: list[dict], choice: dict, command: str) -> list[str]:
     ]
     for c in candidates:
         mark = " ◀ chọn" if c["run_id"] == choice["run_id"] else ""
-        lines.append(f"| {c['label']}{mark} | mặc định `{DEFAULT_CONFIG}` | "
+        lines.append(f"| {c['label']}{mark} | mặc định {_cfg(DEFAULT_CONFIG)} | "
                      f"{_fmt(c['test']['default'])} |")
-        lines.append(f"| {c['label']}{mark} | CV `{c['selected_config']}` | "
+        lines.append(f"| {c['label']}{mark} | CV {_cfg(c['selected_config'])} | "
                      f"{_fmt(c['test']['cv'])} |")
     if any(c["git_dirty"] for c in candidates):
         lines += ["", "⚠️ Có ứng viên với `git.dirty=true` (xem JSON)."]
     return lines
 
 
-def render_dev(candidates: list[dict], choice: dict, command: str) -> list[str]:
+def render_dev(candidates: list[dict], choice: dict, command: str,
+               sources: str = "`postproc_cv_selection.json`") -> list[str]:
     """Sections 1–2: dev CV and the choice — needs no test file."""
     lines = [
         "# Tối ưu SED — chọn hậu xử lý và hệ thống trên dev (ADR-0024)", "",
-        f"> Sinh bởi `{command}`. Không tính lại metric: đọc `postproc_cv_selection.json`, "
-        "`evaluation.json`, `evaluation_cv.json` của từng ứng viên.", "",
+        f"> Sinh bởi `{command}`. Không tính lại metric: chỉ đọc {sources} "
+        "của từng ứng viên.", "",
         "Luật chọn (ADR-0024 §2–§3, ghi trước khi có số): trong mỗi ứng viên chọn cấu hình "
-        "có CV mean lớn nhất (không hơn hẳn mặc định thì giữ `per_class|50`); giữa các "
+        f"có CV mean lớn nhất (không hơn hẳn mặc định thì giữ {_cfg(DEFAULT_CONFIG)}); giữa các "
         "ứng viên chọn CV mean lớn nhất, hoà thì ít model hơn. Test chỉ để báo.", "",
         "## 1. CV 5 fold trên dev (event-F1, mean ± sd giữa fold)", "",
-        "| Ứng viên | model | " + " | ".join(f"`{k}`" for k in CONFIG_ORDER) + " | chọn |",
+        "| Ứng viên | model | " + " | ".join(_cfg(k) for k in CONFIG_ORDER) + " | chọn |",
         "|---|---:|" + "---:|" * len(CONFIG_ORDER) + "---|",
     ]
     for c in candidates:
         cells = [f"{c['cv'][k]['mean']:.4f} ± {c['cv'][k]['sd']:.4f}" for k in CONFIG_ORDER]
         lines.append(f"| {c['label']} | {c['n_models']} | " + " | ".join(cells)
-                     + f" | `{c['selected_config']}` |")
-    verdict = ("lớn hơn" if choice["margin_exceeds_fold_sd"] else
-               "**không** lớn hơn — không được gọi là tốt hơn ứng viên xếp sau")
+                     + f" | {_cfg(c['selected_config'])} |")
     lines += [
         "", "## 2. Hệ thống được chọn (chỉ bằng dev)", "",
         f"**{choice['label']}** (`{choice['run_id']}`), CV mean {choice['score']:.4f} "
         f"± {choice['fold_sd']:.4f}.",
     ]
     if choice["margin"] is not None:
-        lines.append(f"Cách ứng viên xếp thứ hai `{choice['runner_up']}` "
-                     f"{choice['margin']:+.4f} — {verdict} sd giữa fold.")
+        gap = (f"Chênh lệch với ứng viên xếp thứ hai `{choice['runner_up']}` là "
+               f"{choice['margin']:+.4f}")
+        lines.append(
+            f"{gap}, lớn hơn sd giữa fold ({choice['fold_sd']:.4f})."
+            if choice["margin_exceeds_fold_sd"] else
+            f"{gap}, **không** lớn hơn sd giữa fold ({choice['fold_sd']:.4f}) — "
+            "không được gọi là tốt hơn ứng viên đó (ADR-0024 §3)."
+        )
     return lines
 
 

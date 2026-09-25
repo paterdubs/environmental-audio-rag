@@ -89,6 +89,31 @@ def test_dev_only_render_has_no_test_section(tmp_path: Path) -> None:
     assert "## 2." in text and "## 3." not in text and "◀" not in text
 
 
+def test_markdown_tables_keep_their_column_count(tmp_path: Path) -> None:
+    run = write_run(tmp_path)
+    candidate = {**load_dev(run), "test": load_test(run)}
+    other = {**candidate, "run_id": "other", "label": "ensemble X", "score": 0.05}
+    lines = render([candidate, other], select_system([candidate, other]), "cmd")
+    tables: list[list[str]] = []
+    for previous, line in zip(["", *lines], lines, strict=False):
+        if line.startswith("|"):
+            if not previous.startswith("|"):
+                tables.append([])
+            tables[-1].append(line)
+    assert len(tables) == 2
+    for table in tables:  # a raw "|" inside a cell (e.g. `global|25`) adds a column
+        assert len({row.count("|") for row in table}) == 1, table
+
+
+def test_verdict_sentence_when_margin_within_fold_sd(tmp_path: Path) -> None:
+    run = write_run(tmp_path)
+    candidate = load_dev(run)
+    close = {**candidate, "run_id": "close", "score": candidate["score"] - 0.001}
+    text = "\n".join(render_dev([candidate, close], select_system([candidate, close]), "c"))
+    assert "**không** lớn hơn sd giữa fold" in text
+    assert "không được gọi là tốt hơn ứng viên đó" in text
+
+
 def test_render_reports_every_candidate_and_marks_choice(tmp_path: Path) -> None:
     run = write_run(tmp_path)
     candidate = {**load_dev(run), "test": load_test(run)}
