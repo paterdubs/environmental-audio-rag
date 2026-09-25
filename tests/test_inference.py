@@ -57,7 +57,8 @@ def test_members_are_averaged_in_probability_space_then_postprocessed() -> None:
     assert np.allclose(probabilities[:, 0], 0.5, atol=1e-6)
     positive = served([4.0, 2.0])
     events = positive.events(positive.probabilities(np.zeros((64, 120), np.float32)))
-    assert [(e["event_label"], e["onset"], e["offset"]) for e in events] == [(CLASSES[0], 0.0, 12.0)]
+    spans = [(e["event_label"], e["onset"], e["offset"]) for e in events]
+    assert spans == [(CLASSES[0], 0.0, 12.0)]
 
 
 def test_analyzer_produces_grounded_captions_in_both_languages_and_a_document() -> None:
