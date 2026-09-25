@@ -50,6 +50,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n", type=int, default=60)
     parser.add_argument("--worksheet", type=Path, default=WORKSHEET)
     parser.add_argument("--output", type=Path, default=None, help="measurement (mặc định docs/)")
+    parser.add_argument("--guide", type=Path, default=None, help="hướng dẫn (mặc định docs/)")
     return parser.parse_args()
 
 
@@ -130,7 +131,8 @@ def build(args: argparse.Namespace) -> None:
         writer.writeheader()
         writer.writerows(rows)
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    instructions = ROOT / "docs/measurements" / f"caption_mention_worksheet_{stamp}.md"
+    instructions = getattr(args, "guide", None) or (
+        ROOT / "docs/measurements" / f"caption_mention_worksheet_{stamp}.md")
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     instructions.write_text(guide(taxonomy, len(rows)), encoding="utf-8")
     print(json.dumps({"worksheet": str(args.worksheet), "guide": str(instructions),

@@ -67,7 +67,8 @@ def test_worksheet_build_is_deterministic_and_never_overwrites(tmp_path: Path) -
 
     _captions(tmp_path / "run")
     sheet = tmp_path / "sheet.csv"
-    namespace = argparse.Namespace(run_dir=tmp_path / "run", split="test", n=4, worksheet=sheet)
+    namespace = argparse.Namespace(run_dir=tmp_path / "run", split="test", n=4, worksheet=sheet,
+                                   guide=tmp_path / "guide.md")
     ws.build(namespace)
     first = sheet.read_text(encoding="utf-8-sig")
     rows = list(csv.DictReader(first.splitlines()))
@@ -99,7 +100,7 @@ def test_partially_filled_worksheet_is_scored_on_annotated_rows_only(tmp_path: P
     _captions(tmp_path / "run")
     sheet, out = tmp_path / "sheet.csv", tmp_path / "agreement.md"
     args = argparse.Namespace(run_dir=tmp_path / "run", split="test", n=12, worksheet=sheet,
-                              output=out)
+                              output=out, guide=tmp_path / "guide.md")
     ws.build(args)
     _fill(sheet, 10)
     ws.score(args)
