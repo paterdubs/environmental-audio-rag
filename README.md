@@ -5,7 +5,7 @@ Khóa luận Khoa học dữ liệu về phát hiện sự kiện âm thanh môi
 > **Trạng thái:** dữ liệu đã kiểm soát trùng lặp xuyên dataset và đóng băng split
 > (`data-v1.0`). Classifier DataSEC (coarse macro-F1 0.847) và SED ba nhánh A/B/C
 > đã train, đánh giá bằng event-based F1 + PSDS trên nhiều run. **RQ1 cho kết quả
-> âm tính** (ADR-0021). Caption có căn cứ và RAG đang phát triển.
+> âm tính** (ADR-0021). Caption có căn cứ đang đánh giá (ADR-0022/0023); RAG đang phát triển.
 > Chi tiết có bằng chứng: [STATUS](docs/STATUS.md).
 
 ## 1. Bài toán
@@ -31,9 +31,14 @@ Hệ thống không tuyên bố phát hiện tội phạm, ý định, tình tr�
 4. Classifier phân cấp có tách được subclass DataSEC trong các coarse class gộp hay không?
 
 **Kết quả hiện tại cho câu 1:** pretraining trên AudioSet giúp rõ (event-based F1
-tăng hơn gấp đôi so với train từ đầu), nhưng pretraining **thêm** trên DataSEC không
-tạo khác biệt đo được (5 run/nhánh, Welch p = 0.42–0.77). Xem
+~1.7× và PSDS-2 +0.2 so với train từ đầu), nhưng pretraining **thêm** trên DataSEC
+không tạo khác biệt đo được (5 run/nhánh, Welch p = 0.12–0.91). Xem
 [ADR-0021](docs/decisions/ADR-0021-rq1-ket-qua-am-tinh.md).
+
+**Kết quả hiện tại cho câu 2:** khi chỉ nhận event timeline, LLM (Qwen3.5-9B) gần
+như không bịa nguồn âm; sinh tự do vi phạm ở suy diễn bối cảnh, gọi tên quá mức
+bằng chứng và từ cấm. So sánh với nhánh ràng buộc đang hoàn tất. Xem
+[ADR-0022](docs/decisions/ADR-0022-llm-va-lexicon-cho-rq2.md).
 
 ## 3. Đóng góp dự kiến
 

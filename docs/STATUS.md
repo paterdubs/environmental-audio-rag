@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-24, sau khi chốt RQ1 (ADR-0021)
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 376 pass (Windows), 355 pass (Linux CI), ruff sạch
+**Cập nhật:** 2026-09-25, sau khi sửa lỗi ghép cửa sổ SED (`7ada7d7`) và tính lại 11 run
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 434 pass (Windows), ruff sạch; CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -11,11 +11,16 @@
 
 ## 0. Tóm tắt
 
-- **W1–W3 xong, W4 gần xong** (thiếu 4.6, 4.7). W5/W6 có nền tảng, chưa có kết quả.
-- **RQ1 âm tính:** pretraining thêm trên DataSEC **không** cải thiện SED so với chỉ
-  AudioSet (5 run/nhánh, không metric nào p < 0.05). Pretraining nói chung giúp rõ.
-- **Event-F1 thấp (~0.05)** chủ yếu do định vị thời gian thô; nới collar 0.2 → 1.0 s
+- **W1–W3 xong, W4 gần xong** (thiếu 4.6, 4.7). **W5:** nhánh caption unconstrained
+  xong dev+test, nhánh constrained xong code + dev. W6 có nền tảng, chưa có kết quả.
+- **Mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ dự đoán (`7ada7d7`, `3208dbb`).
+- **RQ1 âm tính (không đổi sau khi tính lại):** pretraining thêm trên DataSEC **không**
+  cải thiện SED so với chỉ AudioSet (5 run/nhánh, không metric nào p < 0.05).
+  Pretraining nói chung giúp rõ.
+- **Event-F1 thấp (~0.06)** chủ yếu do định vị thời gian thô; nới collar 0.2 → 1.0 s
   tăng ~3×.
+- **Caption (RQ2):** khi chỉ nhận timeline, LLM gần như không bịa nguồn âm; lỗi của
+  sinh tự do nằm ở suy diễn bối cảnh, gọi tên quá cụ thể, từ cấm G3 (ADR-0022 §5).
 - **Train SED không tất định cùng seed** → mọi số SED báo mean ± sd nhiều run.
 
 ---
@@ -40,7 +45,7 @@
 | Phân tích theo lớp / độ dài / collar | ✅ | xem §2 |
 | 4.6 `confusable_with` từ ma trận nhầm thật | ○ | — |
 | 4.7 Ablation A4 `pos_weight` | ○ | — |
-| Caption có căn cứ (W5) | ◐ template + metric G1–G3 verify trên 426 recording thật; chưa có nhánh LLM đối chứng | [*_caption_wiring_test.md](measurements/) |
+| Caption có căn cứ (W5) | ◐ unconstrained (Qwen3.5-9B) dev+test chấm xong; constrained code + dev xong, test đang sinh; lexicon v2 đóng băng | [caption_grounding_*](measurements/), ADR-0022/0023 |
 | Event store + RAG (W6) | ◐ PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding | `docker-compose.yml`, `db/migrations/` |
 | API / frontend (W7) | ○ | — |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
@@ -53,9 +58,9 @@
 
 | Metric (test, 142 recording) | A · scratch | B · AudioSet | C · AudioSet→DataSEC |
 |---|---:|---:|---:|
-| event-based F1 (collar 0.2 s) | 0.0220 | 0.0569 | 0.0396 |
-| PSDS-1 | 0.1820 | 0.2444 | 0.2533 |
-| PSDS-2 | 0.4475 | 0.6442 | 0.6384 |
+| event-based F1 (collar 0.2 s) | 0.0360 | 0.0621 | 0.0472 |
+| PSDS-1 | 0.2059 | 0.2818 | 0.2873 |
+| PSDS-2 | 0.4514 | 0.6456 | 0.6462 |
 
 Run: A `sed_polyphonic_20260923T173234Z`, B `…20260924T054531Z`, C `…20260924T061000Z`.
 
@@ -63,9 +68,9 @@ Run: A `sed_polyphonic_20260923T173234Z`, B `…20260924T054531Z`, C `…2026092
 
 | Metric | Chính: 7 run sạch (B n=3, C n=4) | Độ nhạy: 10 run (n=5/5) |
 |---|---|---|
-| event-based F1 | B 0.0526±0.0038 · C 0.0494±0.0070 · p=0.479 | p=0.917 |
-| PSDS-1 | B 0.2513±0.0077 · C 0.2541±0.0152 · p=0.767 | p=0.268 |
-| PSDS-2 | B 0.6443±0.0035 · C 0.6497±0.0113 · p=0.425 | p=0.718 |
+| event-based F1 | B 0.0610±0.0048 · C 0.0539±0.0088 · p=0.234 | p=0.124 |
+| PSDS-1 | B 0.2902±0.0093 · C 0.2892±0.0139 · p=0.913 | p=0.313 |
+| PSDS-2 | B 0.6498±0.0037 · C 0.6591±0.0107 · p=0.181 | p=0.772 |
 
 Welch t-test hai phía. 3/10 run có `git.dirty=true` (B `015736Z`, `031616Z`; C
 `021958Z`) nên phân tích chính loại chúng. Nguồn:
@@ -79,8 +84,8 @@ Welch t-test hai phía. 3/10 run có `git.dirty=true` (B `015736Z`, `031616Z`; C
 
 | Collar onset | 0.2 s (protocol) | 0.5 s | 1.0 s | 2.0 s |
 |---|---:|---:|---:|---:|
-| B run chính thức | 0.057 | 0.115 | 0.168 | 0.204 |
-| C run chính thức | 0.040 | 0.093 | 0.149 | 0.163 |
+| B run chính thức | 0.062 | 0.132 | 0.185 | 0.222 |
+| C run chính thức | 0.047 | 0.112 | 0.181 | 0.202 |
 
 Chẩn đoán, không phải số chính thức ([collar_sensitivity_20260924.md](measurements/collar_sensitivity_20260924.md)).
 Định vị thời gian là nút thắt lớn (CNN14 ~1.28 s/khối, ADR-0014); ở collar 2 s vẫn
@@ -100,9 +105,9 @@ Train SED **không tất định** cùng seed và cùng code (frame macro-F1 B 0
 
 | Ablation | Kết quả | Kết luận |
 |---|---|---|
-| A2 · θ per-class vs global | Per-class dev→test −66% / −39% / −29%; global ổn định | Overfit dev có hệ thống — vào Hạn chế |
-| A3 · median filter | Δ +0.0025 / +0.0035 / −0.0015 | Không tác động rõ |
-| A5 · percentile duration prior | `g_max` percentile 25 tốt hơn cả 3 nhánh; 75 tệ hơn cả 3 | Ứng viên chọn lại trên **dev**; ADR-0003 chưa đổi |
+| A2 · θ per-class vs global | Per-class dev→test −48% / −39% / −41%; global −15% / −4% / −2%. Trên **test**, global cao hơn per-class ở cả 3 nhánh (vd. B 0.079 vs 0.062) | Overfit dev có hệ thống — vào Hạn chế; không đổi θ theo test |
+| A3 · median filter | Δ +0.0063 / +0.0026 / −0.0014 | Không tác động rõ |
+| A5 · percentile duration prior | `g_max` percentile 25 tốt hơn cả 3 nhánh (+0.005/+0.015/+0.005); 75 tệ hơn cả 3 | Ứng viên chọn lại trên **dev**; ADR-0003 chưa đổi |
 
 ---
 
@@ -122,7 +127,7 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 ## 5. Việc còn lại
 
 1. W4: 4.6 (`confusable_with`), 4.7 (A4 `pos_weight`), bootstrap CI cho số trung bình nhiều run.
-2. W5: nhánh caption không ràng buộc (cần chọn LLM), nhánh ràng buộc, đánh giá oracle + end-to-end.
+2. W5: sinh + chấm caption constrained trên test; so RQ2 ba nhánh (template / constrained / unconstrained).
 3. W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark.
 4. W7: API, giao diện.
 5. Cân nhắc chọn lại `g_max` percentile trên dev (A5).

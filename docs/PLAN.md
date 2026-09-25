@@ -285,7 +285,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |
 | ~~9~~ | ~~Chưa có CI~~ — **đóng 24/09**: `.github/workflows/ci.yml` xanh trên GitHub Actions | — | ✅ |
 | ~~10~~ | ~~`contracts/*.schema.json` chưa tồn tại~~ — **đóng 23/09**: 8 schema Draft 2020-12 trong `contracts/` | — | ✅ |
-| ~~14~~ | ~~RQ1 chưa đủ run để kết luận~~ — **đóng 24/09** (K1–K5, ADR-0021): 5 run/nhánh, chính 7 run sạch p=0.479/0.767/0.425, độ nhạy 10 run p=0.917/0.268/0.718 → RQ1 âm tính, báo cáo như vậy | — | ✅ |
+| ~~14~~ | ~~RQ1 chưa đủ run để kết luận~~ — **đóng 24/09** (K1–K5, ADR-0021): 5 run/nhánh, chính 7 run sạch p=0.234/0.913/0.181, độ nhạy 10 run p=0.124/0.313/0.772 (số tính lại 25/09 sau `7ada7d7`) → RQ1 âm tính, báo cáo như vậy | — | ✅ |
 | ~~15~~ | ~~RQ1 chưa khoá chính thức~~ — **đóng 24/09** (I8): B/C chạy lại trên tree sạch `5bf1cf7`, `rq1_delta_official_20260924.md` | — | ✅ |
 
 ---

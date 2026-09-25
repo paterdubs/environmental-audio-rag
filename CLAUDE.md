@@ -55,30 +55,33 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật:** 24/09/2026 — **RQ1 chính thức (tree sạch, I8): KHÔNG đo được
-hiệu ứng của pretraining DataSEC.** Cả ba nhánh SED (A/B/C, ADR-0002) train 8
-epoch GPU, `git.dirty=false`, đánh giá đầy đủ (`rq1_delta_official_20260924.md`):
+**Cập nhật:** 25/09/2026 — **mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ
+dự đoán (`7ada7d7`: cửa sổ cuối căn theo cuối audio bị nối thay vì đặt theo offset →
+~10 s cuối mỗi recording nhân đôi/dịch trễ); 11 run quét θ lại trên dev, test một lần
+(`3208dbb`). **RQ1 vẫn âm tính.** Ba nhánh SED (A/B/C, ADR-0002) train 8 epoch GPU,
+`git.dirty=false` (`rq1_delta_official_20260924.md`):
 
 | | Nhánh A (scratch) | Nhánh B (AudioSet) | Nhánh C (AudioSet→DataSEC) |
 |---|---:|---:|---:|
-| event-based F1 | 0.0220 | 0.0569 | 0.0396 |
-| PSDS-1 | 0.1820 | 0.2444 | 0.2533 |
-| PSDS-2 | 0.4475 | 0.6442 | 0.6384 |
+| event-based F1 | 0.0360 | 0.0621 | 0.0472 |
+| PSDS-1 | 0.2059 | 0.2818 | 0.2873 |
+| PSDS-2 | 0.4514 | 0.6456 | 0.6462 |
 
-`Δ = C − B` của run chính thức đơn lẻ: event-F1 −0.0173 (đảo dấu so với run thăm dò).
+`Δ = C − B` của run chính thức đơn lẻ: event-F1 −0.0149 (run đơn lẻ không kết luận được).
 Kết luận chốt dựa trên nhiều run (ADR-0021), Welch t-test:
 
 | Metric | Chính: 7 run sạch (B n=3, C n=4) | Độ nhạy: 10 run (5/5) |
 |---|---|---|
-| event-based F1 | B 0.0526±0.0038 · C 0.0494±0.0070 · p=0.479 | B 0.0505 · C 0.0509 · p=0.917 |
-| PSDS-1 | B 0.2513 · C 0.2541 · p=0.767 | p=0.268 |
-| PSDS-2 | B 0.6443 · C 0.6497 · p=0.425 | p=0.718 |
+| event-based F1 | B 0.0610±0.0048 · C 0.0539±0.0088 · p=0.234 | B 0.0604 · C 0.0535 · p=0.124 |
+| PSDS-1 | B 0.2902 · C 0.2892 · p=0.913 | p=0.313 |
+| PSDS-2 | B 0.6498 · C 0.6591 · p=0.181 | p=0.772 |
 
-**RQ1 âm tính:** pretraining thêm trên DataSEC không tạo khác biệt đo được. Pretraining
-nói chung (B/C vs A) giúp rõ. Trọng tâm đóng góp chuyển sang C1/C2/C4 (ADR-0021).
+**RQ1 âm tính:** pretraining thêm trên DataSEC không tạo khác biệt đo được (event-F1
+nghiêng về B > C nhưng p 0.12–0.23 — không được viết "C nhỉnh hơn"). Pretraining nói
+chung (B/C vs A) giúp rõ. Trọng tâm đóng góp chuyển sang C1/C2/C4 (ADR-0021).
 
 **Vì sao event-F1 thấp** (`collar_sensitivity_20260924.md`): nới collar onset 0.2 → 1.0 s
-làm event-F1 tăng ~3 lần (B 0.057 → 0.168) → định vị thời gian là nút thắt lớn (ADR-0014);
+làm event-F1 tăng ~3 lần (B 0.062 → 0.185) → định vị thời gian là nút thắt lớn (ADR-0014);
 ở collar 2 s vẫn chỉ ~0.2 → còn lỗi nhận dạng lớp (nhầm lớp là loại lỗi nhiều nhất).
 
 **Train SED không tất định cùng seed**: code train không đổi, cùng seed
@@ -101,16 +104,15 @@ numpy2/thiết kế PSDS, 1 lỗi thiếu field, 1 lỗi hiệu năng 20x) — c
 **Ablation A2/A3 xong cả bộ ba A/B/C — n=3, kết luận rõ ràng cho mỗi cái:**
 
 - **A2 (global vs per-class θ): overfit dev là vấn đề hệ thống, không phải
-  triệu chứng riêng của một baseline yếu.** Per-class dev→test: A **−66%**, B
-  **−38.7%**, C **−28.6%** — giảm dần theo sức mạnh model nhưng **không biến
-  mất**. Global luôn ổn định: A −18%, B −1.3%, C **+0.7%** (test còn tốt hơn
-  dev). Bằng chứng nhất quán trên 3 nhánh độc lập — phải ghi vào Hạn chế của
-  báo cáo cuối (evaluation_protocol §2.4: 21 bậc tự do fit trên dev 142
-  recording), không đổi `postproc.json` để "sửa".
+  triệu chứng riêng của một baseline yếu.** Per-class dev→test: A **−48%**, B
+  **−39%**, C **−41%** — **không biến mất** ở model mạnh hơn. Global ổn định hơn
+  hẳn: A −15%, B −4%, C −2%. Sau khi tính lại, trên **test** global còn cao hơn
+  per-class ở cả 3 nhánh (B 0.079 vs 0.062) — quan sát trên test, **không** được
+  dùng để đổi θ. Phải ghi vào Hạn chế (evaluation_protocol §2.4: 21 bậc tự do fit
+  trên dev 142 recording), không đổi `postproc.json` để "sửa".
 - **A3 (median filter): không kết luận rõ hướng nào.** Δ tổng hợp gần 0 và đổi
-  dấu giữa các nhánh: A +0.0025, B +0.0035, C **−0.0015**. `glass_breaking`
-  (lớp ADR-0003 nêu đích danh) chỉ bị ảnh hưởng ở nhánh A yếu; B/C đều Δ=0.0000
-  — median filter hiện tại không có tác động đáng kể theo hướng nào.
+  dấu giữa các nhánh: A +0.0063, B +0.0026, C **−0.0014**. `glass_breaking`
+  chỉ bị ảnh hưởng ở nhánh A yếu; B/C Δ=0.0000.
 
 **W5 (grounded caption) đã verify wiring thật trên cả ba nhánh A/B/C** (không
 phải kết quả nghiên cứu, chỉ kiểm code chạy đúng trên dữ liệu thật thay vì
@@ -121,7 +123,7 @@ collapse onset khi một lớp lặp lại trong timeline — đã sửa.
 **Ablation A5 (duration prior percentile, nợ kỹ thuật #8) xong trên cả A/B/C.**
 `d_min_s` (percentile 5): phẳng, không cần đổi. `g_max_s` (percentile 50): tín
 hiệu **nhất quán 3/3 nhánh** cho thấy percentile 25 tốt hơn (F1 tăng cả ba
-nhánh), percentile 75 tệ hơn hẳn (F1 giảm cả ba nhánh) — ứng viên thật cho một
+nhánh: +0.005/+0.015/+0.005), percentile 75 tệ hơn hẳn (F1 giảm cả ba nhánh) — ứng viên thật cho một
 vòng chọn lại trên dev, nhưng **chưa đổi ADR-0003** vì quan sát này đến từ
 test, không phải dev (không được tuning trên test).
 
@@ -176,12 +178,15 @@ test, không phải dev (không được tuning trên test).
 | **H1 eval deps** | `sed_eval`+`psds_eval` cài, pin, **2 bug thật đã sửa** (numpy2 trong `psds_eval`, `float(namedtuple)` trong code mình) |
 | **H2 threshold+eval pipeline** | `scripts/sweep_threshold.py` + `scripts/evaluate_run.py` chạy thật end-to-end, **2 bug thật + 1 bug hiệu năng (20x) đã sửa** |
 | **H3 event store** | Docker Compose + `pgvector/pgvector:pg16`, migration chạy thật, pgvector xác nhận hoạt động |
-| **Nhánh A SED chính thức** | `sed_polyphonic_20260923T173234Z`, `git.dirty=false`. Event-F1 **0.0220**, PSDS-1/2 **0.1820/0.4475** |
-| **Nhánh B SED thật (I1+I3)** | `sed_polyphonic_20260924T015736Z`. Test frame macro-F1 **0.5850**; event-F1 **0.0479**, PSDS-1/2 **0.2132/0.6690** |
-| **Nhánh C SED thật (I2+I4)** | `sed_polyphonic_20260924T021958Z`. Test frame macro-F1 **0.5947**; event-F1 **0.0568**, PSDS-1/2 **0.2512/0.6290** |
-| **RQ1 thăm dò (I5)** | `Δ=C−B`: +0.0089/+0.0380/−0.0401; `Δ=C−A`: +0.0347/+0.0692/+0.1815. Chưa khoá (B/C dirty, 1 seed) |
-| **Ablation A2 xong bộ ba A/B/C** | Per-class overfit dev hệ thống, giảm dần theo sức mạnh model nhưng không biến mất: A −66%, B −38.7%, C −28.6%; global luôn ổn định (A −18%, B −1.3%, C +0.7%) |
-| **Ablation A3 xong bộ ba A/B/C** | Không kết luận rõ hướng nào (Δ gần 0, đổi dấu giữa nhánh: +0.0025/+0.0035/−0.0015); caveat tính động theo % lớp F1=0 thật |
+| **Nhánh A SED chính thức** | `sed_polyphonic_20260923T173234Z`, `git.dirty=false`. Event-F1 **0.0360**, PSDS-1/2 **0.2059/0.4514** (tính lại 25/09) |
+| **Nhánh B SED thật (I1+I3)** | `sed_polyphonic_20260924T015736Z`. Test frame macro-F1 **0.5850**; event-F1 **0.0616**, PSDS-1/2 **0.2558/0.6713** (tính lại 25/09) |
+| **Nhánh C SED thật (I2+I4)** | `sed_polyphonic_20260924T021958Z`. Test frame macro-F1 **0.5947**; event-F1 **0.0518**, PSDS-1/2 **0.2950/0.6467** (tính lại 25/09) |
+| **RQ1 thăm dò (I5)** | `Δ=C−B`: −0.0098/+0.0392/−0.0246; `Δ=C−A`: +0.0158/+0.0891/+0.1953 (tính lại 25/09). Thăm dò (B/C dirty, 1 seed) — kết luận chính ở ADR-0021 |
+| **Sửa lỗi ghép cửa sổ SED** | `7ada7d7`; 11 run tính lại `3208dbb`; độ dài timeline khớp audio (≤ 1 frame) |
+| **Ablation A2 xong bộ ba A/B/C** | Per-class overfit dev hệ thống: A −48%, B −39%, C −41%; global ổn định hơn (A −15%, B −4%, C −2%) |
+| **Ablation A3 xong bộ ba A/B/C** | Không kết luận rõ hướng nào (Δ gần 0, đổi dấu: +0.0063/+0.0026/−0.0014) |
+| **W5 5.6 unconstrained (Qwen3.5-9B)** | ADR-0022; dev+test sinh và chấm; lexicon v2 đóng băng `6f5634bb…`; audit: 7/8 "bịa" là lỗi lexicon |
+| **W5 5.7 constrained (code + dev)** | ADR-0023; grammar dãy con theo onset; 29 test |
 | **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
 | **Ablation A5 xong bộ ba A/B/C (nợ kỹ thuật #8)** | d_min percentile phẳng; g_max percentile 25 tốt hơn nhất quán 3/3 nhánh, 75 tệ hơn nhất quán 3/3 — ứng viên thật cho hiệu chuẩn lại trên dev, chưa đổi ADR-0003 |
 
@@ -243,7 +248,7 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Checkpoint AudioSet — phạm vi nạp | Chỉ transplant `conv_block1…6`, **không** faithful full CNN14 | [0018](docs/decisions/ADR-0018-nap-mot-phan-checkpoint-panns.md) | Checkpoint gốc có `spectrogram_extractor/bn0/fc1/fc_audioset` mà encoder repo không có — viết lại toàn bộ sẽ đổi input pipeline ở tuần 2/8 |
 | `scripts/train_classifier.py` viết lại | Bỏ hẳn `AudioClassifier`/`ClassificationFeatureDataset` cũ, dùng `HierarchicalAudioClassifier` + registry | [0019](docs/decisions/ADR-0019-viet-lai-train-classifier-datasec.md) | Script cũ đọc 2 file **chưa từng tồn tại** trong git — chưa bao giờ chạy được |
 | Giao thức ECE (D5) | Chỉ head coarse; temperature scaling, T chọn trên dev; 15 bin; 2 số trước/sau | [0017](docs/decisions/ADR-0017-hieu-chuan-ece-datasec.md) | Head subclass có lớp n_test<25 làm ECE ra nhiễu; DataSED không phải phân loại đơn nhãn |
-| RQ1 kết quả âm tính | Phân tích chính 7 run sạch, độ nhạy 10 run; báo mean±sd, không số đơn lẻ; trọng tâm sang C1/C2/C4 | [0021](docs/decisions/ADR-0021-rq1-ket-qua-am-tinh.md) | Train SED không tất định cùng seed; B≈C ở mọi cách chọn tập run (p 0.43–0.92) |
+| RQ1 kết quả âm tính | Phân tích chính 7 run sạch, độ nhạy 10 run; báo mean±sd, không số đơn lẻ; trọng tâm sang C1/C2/C4 | [0021](docs/decisions/ADR-0021-rq1-ket-qua-am-tinh.md) | Train SED không tất định cùng seed; B≈C ở mọi cách chọn tập run (p 0.12–0.91, số tính lại 25/09) |
 | Cấu hình PANNs cho SED nhánh B/C | `--encoder {audio,panns}`; cùng cửa sổ 10s/5s theo giây; nhánh C không cần normalization riêng (đi kèm checkpoint D1) | [0020](docs/decisions/ADR-0020-cau-hinh-panns-cho-sed-nhanh-bc.md) | Nhánh C fine-tune tiếp từ trọng số đã quen chuẩn hoá DataSEC — tự tính lại theo DataSED sẽ đẩy input lệch phân bố đã pretrain |
 | Checkpoint AudioSet | Zenodo `3576403`, SHA-256 xác minh; **license `not recorded`** — xử lý như chưa rõ, không giả định permissive | [0015](docs/decisions/ADR-0015-checkpoint-audioset-panns.md) | Không có nó, nhánh B/C train sai thứ ADR-0002 định nghĩa |
 | Hierarchical head DataSEC | Một encoder, 2 head tuyến tính, consistency loss = -log(khối lượng xác suất đúng gia đình) | [0016](docs/decisions/ADR-0016-hierarchical-head-consistency-loss.md) | CE 28-way một mình không phạt lệch gia đình coarse |

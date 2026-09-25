@@ -152,6 +152,8 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 
 ## 4. Nhật ký — append-only
 
+[25/09] claude — SỬA LỖI GHÉP CỬA SỔ SED (`7ada7d7`): `stack_predictions_by_recording` nối cửa sổ cuối (căn theo cuối audio, chồng lên cửa sổ trước) thay vì đặt theo `frame_offsets_s` → ~10 s cuối mỗi recording nhân đôi + dịch trễ; test 170/877 event kéo qua cuối audio. 11 run quét θ lại trên dev + test một lần, mọi measurement SED dẫn xuất sinh lại (`3208dbb`). RQ1 VẪN ÂM TÍNH: sạch p=0.234/0.913/0.181, đủ 10 p=0.124/0.313/0.772. W5: unconstrained Qwen3.5-9B (ADR-0022) + constrained grammar (ADR-0023)
+
 [hôm nay] claude — rà soát trước khi push: clone sạch 345 pass/1 skip (skip = test cần manifest run thật, gitignore), không secret, blob lớn nhất 1.6 MB, repo 7.2 MB. Viết lại STATUS.md và README (đang ghi "cổng D3 chặn" từ 22/09), cập nhật PLAN.md (W1–W3 ✅, W4 ◐ thiếu 4.6/4.7), CLAUDE.md, §2 board
 
 [hôm nay] claude — review K2-sạch/K4/K5 của Codex: K2 khớp số Claude tự tính. K5: cột F1 theo bin KHÔNG diễn giải được (reference lọc theo bin, estimate giữ nguyên → precision giả thấp), chỉ recall có nghĩa. Thêm `scripts/report_collar_sensitivity.py` (chẩn đoán, không phải số chính thức): nới collar 0.2→1.0 s event-F1 tăng ~3×. Viết ADR-0021 chốt RQ1 âm tính
@@ -263,6 +265,8 @@ Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
 Đây là nơi agent kia lấy thông tin mà không phải đo lại.
+
+> ⚠️ **Mọi số SED event-based/PSDS/ablation ghi trước 25/09 dưới đây đã bị thay thế** — tính trên lỗi ghép cửa sổ (`7ada7d7`). Số hiện hành: `docs/measurements/*` sau `3208dbb`, tóm tắt ở [STATUS.md](STATUS.md) §2–§3. Frame macro-F1 (tính trong lúc train) và số classifier DataSEC không bị ảnh hưởng. Các dòng cũ giữ nguyên làm lịch sử.
 
 | Dữ kiện | Giá trị | Nguồn | Ai đo |
 |---|---|---|---|
