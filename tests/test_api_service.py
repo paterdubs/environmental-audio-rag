@@ -100,6 +100,16 @@ def test_taxonomy_endpoint_lists_the_21_sed_classes_with_both_names(tmp_path) ->
     assert data["sha256"] == TAXONOMY.checksum
 
 
+def test_built_frontend_is_served_without_shadowing_the_api(tmp_path) -> None:
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("<!doctype html><title>ui</title>", encoding="utf-8")
+    settings = Settings(None, "http://unused", tmp_path, dist)
+    api = TestClient(create_app(settings, FakeInference(), lambda: None))
+    assert "<title>ui</title>" in api.get("/").text
+    assert api.get("/api/v1/taxonomy").json()["success"]
+
+
 def test_health_is_503_when_inference_is_down(tmp_path) -> None:
     def broken():
         raise OSError("no db")

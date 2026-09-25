@@ -17,6 +17,7 @@ from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.staticfiles import StaticFiles
 
 from ml.captioning.lexicon import VI_LEXICON_CONFIG, CaptionLexicon
 from ml.retrieval import store
@@ -33,12 +34,14 @@ class Settings:
     database_url: str | None
     inference_url: str
     upload_dir: Path
+    frontend_dist: Path | None = None
 
     @classmethod
     def from_env(cls) -> Settings:
         return cls(os.environ.get("DATABASE_URL"),
                    os.environ.get("INFERENCE_URL", "http://localhost:8001"),
-                   Path(os.environ.get("UPLOAD_DIR", ROOT / "data/uploads")))
+                   Path(os.environ.get("UPLOAD_DIR", ROOT / "data/uploads")),
+                   Path(os.environ.get("FRONTEND_DIST", ROOT / "services/frontend/dist")))
 
 
 def _database_ok(connect: Callable[[], Any]) -> bool:
@@ -103,6 +106,9 @@ def create_app(settings: Settings | None = None, inference: Any = None,
         return ok({**info, "api_taxonomy_sha256": taxonomy.checksum,
                    "taxonomy_consistent": info.get("taxonomy_sha256") == taxonomy.checksum})
 
+    # Built frontend (7.4): one origin for UI and API. Mounted last so API routes win.
+    if settings.frontend_dist is not None and (settings.frontend_dist / "index.html").is_file():
+        app.mount("/", StaticFiles(directory=settings.frontend_dist, html=True), name="frontend")
     return app
 
 

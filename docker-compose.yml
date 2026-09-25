@@ -1,10 +1,12 @@
-# PostgreSQL 16 + pgvector cho event store (ADR-0005). Chỉ service `db` — không
-# cài PostgreSQL native trên Windows: pgvector native đòi biên dịch C extension
-# theo đúng bản build Postgres, trong khi image chính thức đã có sẵn (H3).
+# PostgreSQL 16 + pgvector cho event store (ADR-0005) — không cài PostgreSQL native trên
+# Windows: pgvector native đòi biên dịch C extension theo đúng bản build Postgres (H3).
 #
-#   docker compose up -d
-#   docker compose exec db psql -U app -d environmental_audio -f /migrations/001_event_store.sql
+#   docker compose up -d                      # chỉ db (như trước)
+#   docker compose --profile app up -d --build  # db + api (kèm frontend đã build), W7 7.4
 #
+# Inference (torch + GPU + checkpoint) chạy trên host, không đóng image (ADR-0029 §8):
+#   .venv/Scripts/python.exe -m uvicorn services.inference.app.main:app --host 0.0.0.0 --port 8001
+# Giao diện: http://localhost:8088  (8000 trên máy dev đã có ứng dụng khác)
 services:
   db:
     image: pgvector/pgvector:pg16
@@ -23,6 +25,27 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  api:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://app:app@db:5432/environmental_audio
+      INFERENCE_URL: http://host.docker.internal:8001
+      UPLOAD_DIR: /app/data/uploads
+      FRONTEND_DIST: /app/services/frontend/dist
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8088:8000"
+    volumes:
+      - ./data/uploads:/app/data/uploads
+      - ./data/raw/datased/extracted:/app/data/raw/datased/extracted:ro
 
 volumes:
   environmental_audio_db:

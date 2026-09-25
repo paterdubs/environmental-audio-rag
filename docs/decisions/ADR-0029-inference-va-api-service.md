@@ -70,6 +70,18 @@ băng), xác suất lệch tối đa 0.0118: 332/408 event trùng khít, 377/408
 405/408 trong collar 0.2 s. Không phải lỗi: là nhiễu số học vốn có của chính số đã báo cáo
 — ghi vào Hạn chế (biên event tại θ = 0.95 nhạy với nhiễu fp16 ở mức vài phần nghìn).
 
+### 8. Triển khai (7.4): api trong Docker, inference trên host
+
+`docker compose --profile app up -d --build` chạy `db` + `api`; image api (build nhiều tầng:
+Node build frontend → Python slim, chỉ `requirements-api.txt`, không torch) phục vụ luôn
+giao diện đã build — một origin, không cần container web riêng. **Inference không đóng image:**
+torch CUDA + 4 checkpoint + BGE-M3 làm image nặng nhiều GB trên ổ đĩa đang gần đầy, và GPU
+trong container trên Windows cần thêm cấu hình WSL2; inference chạy trên host
+(`uvicorn ... --host 0.0.0.0 --port 8001`), api gọi qua `host.docker.internal`.
+`scripts.serve_demo` là đường một lệnh cho máy dev (db qua compose, inference + api trên
+host, chờ `/health` thật). Cổng api trong compose là 8088 vì 8000 trên máy dev đã bị một
+ứng dụng khác dùng.
+
 ## Consequences
 
 ### Tích cực
