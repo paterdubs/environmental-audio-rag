@@ -5,7 +5,9 @@ from jsonschema import Draft202012Validator
 
 from ml.retrieval.document_builder import build_document, max_polyphony
 from ml.retrieval.query_set import build_query_set
+from ml.retrieval.relevance import validate_query_classes
 from ml.retrieval.temporal import PREDICATES, temporal_query
+from ml.taxonomy import load_taxonomy
 
 
 def timeline():
@@ -30,14 +32,21 @@ def test_half_open_polyphony_and_temporal_sql():
     assert "a.onset_s < b.offset_s" in temporal_query("overlaps")
 
 
-def test_query_set_is_100_and_result_independent():
-    queries = build_query_set()
+CLASS_IDS = load_taxonomy(Path("ml/configs/taxonomy.yaml")).polyphonic_class_ids
+
+
+def test_query_set_is_100_taxonomy_pairs_with_ground_truth_relevance():
+    queries = build_query_set(CLASS_IDS)
     assert len(queries) == 100
     assert [q["query_id"] for q in queries] == [f"q-{i:03d}" for i in range(1, 101)]
-    assert all(q["relevance"]["source"] == "temporal_filter" for q in queries)
+    assert all(q["relevance"]["source"] == "ground_truth" for q in queries)
+    pairs = [(q["filters"]["temporal"]["a"], q["filters"]["temporal"]["b"]) for q in queries]
+    assert all(a != b for a, b in pairs) and len(set(pairs)) == 100
+    validate_query_classes(queries, CLASS_IDS)  # every class id exists in the taxonomy
+    assert len({c for pair in pairs for c in pair}) == len(CLASS_IDS)  # spread, all used
 
 
 def test_query_set_contract_accepts_generated_fixture():
     schema = json.loads(Path("contracts/query_set.schema.json").read_text())
-    errors = list(Draft202012Validator(schema).iter_errors(build_query_set()))
+    errors = list(Draft202012Validator(schema).iter_errors(build_query_set(CLASS_IDS)))
     assert errors == []

@@ -20,8 +20,8 @@
             "required": ["predicate", "a", "b", "tolerance_s"],
             "properties": {
               "predicate": {"enum": ["before", "after", "overlaps", "within"]},
-              "a": {"type": "string"},
-              "b": {"type": "string"},
+              "a": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+              "b": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
               "tolerance_s": {"type": "number", "minimum": 0}
             }
           }
@@ -29,10 +29,11 @@
       },
       "relevance": {
         "type": "object",
+        "description": "Relevant = recordings whose GROUND-TRUTH events satisfy `filters` (evaluation_protocol §9.1), computed by ml.retrieval.relevance — never by the filter under evaluation.",
         "required": ["type", "source"],
         "properties": {
           "type": {"const": "recording_ids"},
-          "source": {"const": "temporal_filter"}
+          "source": {"const": "ground_truth"}
         }
       }
     }

@@ -1,0 +1,23 @@
+{
+  "n_queries": 100,
+  "splits": {
+    "train": {
+      "n_recordings": 438,
+      "queries_with_relevant": 43,
+      "median_relevant": 0.0,
+      "max_relevant": 13
+    },
+    "validation": {
+      "n_recordings": 137,
+      "queries_with_relevant": 34,
+      "median_relevant": 0.0,
+      "max_relevant": 5
+    },
+    "test": {
+      "n_recordings": 142,
+      "queries_with_relevant": 25,
+      "median_relevant": 0.0,
+      "max_relevant": 5
+    }
+  }
+}

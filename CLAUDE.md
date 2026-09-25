@@ -216,10 +216,10 @@ Retrieval thật · API / inference / frontend.
 ### Việc tiếp theo — theo thứ tự
 
 1. **W6 — RAG**: nạp event thật vào pgvector, embedding BGE-M3 (ADR-0004),
-   retrieval + query set 100 câu. Trước khi làm: sửa `query_set.py` (lớp `car`/`dog`
-   không có trong taxonomy), lấy relevance từ ground truth thay vì từ chính bộ lọc đang
-   đánh giá (nợ #16, #17 ở PLAN); quyết định SED prediction nào để index (run B E5 hay
-   hệ thống tối ưu ADR-0024) và thư viện embedding — cần ADR.
+   retrieval + query set 100 câu. Lỗi `car`/`dog` và relevance vòng tròn đã sửa (nợ
+   #16, #17); còn nợ #18: query set chỉ 25/100 câu có relevant trên test → 6.7 làm đủ
+   4 nhóm + tiếng Việt, chọn query theo GT train. Cần ADR: SED prediction nào để index
+   (run B E5 hay hệ thống tối ưu ADR-0024) và thư viện embedding.
 2. W4 còn lại: 4.6 (`confusable_with`), 4.7 (A4) — ưu tiên thấp hơn W6.
 
 ---
@@ -444,7 +444,9 @@ unconstrained gọi subclass như sự thật 11/18 và 22/39 caption (e2e test)
 
 **Rà W6** tìm 2 lỗi thiết kế trước khi code: `query_set.py` dùng lớp `car`/`dog` không
 tồn tại (lọc rỗng im lặng), và relevance lấy từ chính bộ lọc đang đánh giá (vòng tròn).
-467 test pass.
+Đã sửa: lớp từ taxonomy + kiểm thành viên; `ml/retrieval/relevance.py` tính relevance từ
+annotation với đúng ngữ nghĩa SQL (test chạy SQL trên SQLite, phép thử đột biến `<=`→`<`
+bị bắt). Đo được: chỉ 25/100 query có relevant trên test → nợ #18 cho 6.7.
 
 ### 2026-09-25 — W5 xong phần RQ2; sửa lỗi ghép cửa sổ SED làm đổi mọi số SED
 

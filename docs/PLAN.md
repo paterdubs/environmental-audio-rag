@@ -288,8 +288,9 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~10~~ | ~~`contracts/*.schema.json` chưa tồn tại~~ — **đóng 23/09**: 8 schema Draft 2020-12 trong `contracts/` | — | ✅ |
 | ~~14~~ | ~~RQ1 chưa đủ run để kết luận~~ — **đóng 24/09** (K1–K5, ADR-0021): 5 run/nhánh, chính 7 run sạch p=0.234/0.913/0.181, độ nhạy 10 run p=0.124/0.313/0.772 (số tính lại 25/09 sau `7ada7d7`) → RQ1 âm tính, báo cáo như vậy | — | ✅ |
 | ~~15~~ | ~~RQ1 chưa khoá chính thức~~ — **đóng 24/09** (I8): B/C chạy lại trên tree sạch `5bf1cf7`, `rq1_delta_official_20260924.md` | — | ✅ |
-| 16 | `ml/retrieval/query_set.py` dùng lớp `car`, `dog` — **không** có trong taxonomy (đúng là `vehicle_pass_by`/`vehicle_idling`, `dog_barkings_and_howlings`) → bộ lọc oracle khớp rỗng mà không báo lỗi. Chỉ tiếng Anh, chỉ câu temporal (ADR-0004 cần truy vấn tiếng Việt) | **CAO** | W6 |
-| 17 | Relevance của query set lấy từ chính bộ lọc temporal đang đánh giá (`source: temporal_filter`) → `filter exactness` = 1.000 hiển nhiên. Phải lấy relevance từ annotation ground truth, retrieval chạy trên dự đoán | **CAO** | W6 |
+| ~~16~~ | ~~`query_set.py` dùng lớp `car`, `dog` không có trong taxonomy → lọc rỗng im lặng~~ — **đóng 25/09**: lớp lấy từ `taxonomy.polyphonic_class_ids`, `validate_query_classes` từ chối lớp lạ | — | ✅ |
+| ~~17~~ | ~~Relevance lấy từ chính bộ lọc đang đánh giá (`source: temporal_filter`)~~ — **đóng 25/09**: `ml/retrieval/relevance.py` tính từ annotation ground truth, cùng ngữ nghĩa với SQL (test chạy SQL trên SQLite); contract đổi sang `source: ground_truth` | — | ✅ |
+| 18 | Query set mới chỉ có câu temporal ghép cặp lớp máy móc: **25/100** query có ≥1 recording relevant trên test (34 validation, 43 train — `query_relevance_20260925.md`). Task 6.7 phải làm đủ HANDOFF §A4: 4 nhóm 30/25/25/20, câu tiếng Việt, mọi query có ≥1 relevant — chọn query theo ground truth **train** để khỏi dựa vào test | **CAO** | W6 |
 
 ---
 

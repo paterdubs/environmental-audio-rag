@@ -1,28 +1,48 @@
-"""Versioned, deterministic query-set fixture for retrieval evaluation."""
+"""Versioned, deterministic query-set fixture for retrieval evaluation.
 
-from itertools import cycle
+Classes come from the caller (the taxonomy's polyphonic class ids), never from a
+hard-coded list: a name outside the taxonomy filters to an empty set without any
+error (`relevance.validate_query_classes` checks a loaded set against the taxonomy).
+Relevance is declared as ground truth — `ml.retrieval.relevance` computes it
+from annotations, not from the filter being evaluated (evaluation_protocol §9.1).
+"""
+
+from collections.abc import Sequence
+from math import gcd
 from typing import Any
 
-CLASSES = ("birds", "bells", "car", "voices", "music", "horn", "dog")
+from ml.retrieval.relevance import GROUND_TRUTH
+
 PREDICATES = ("before", "after", "overlaps", "within")
+PHRASES = {"before": "before", "after": "after", "overlaps": "overlapping with",
+           "within": "during"}
 
 
-def build_query_set(size: int = 100) -> list[dict[str, Any]]:
-    """Create queries and oracle filters without consulting retrieval results."""
-    if size < 1:
-        raise ValueError("size must be positive")
-    class_pairs = cycle(
-        (CLASSES[i % len(CLASSES)], CLASSES[(i + 1) % len(CLASSES)])
-        for i in range(len(CLASSES))
-    )
+def _stride(n_items: int, size: int) -> int:
+    """Smallest step >= n_items // size that is coprime with n_items (full cycle)."""
+    step = max(1, n_items // size)
+    while gcd(step, n_items) != 1:
+        step += 1
+    return step
+
+
+def build_query_set(class_ids: Sequence[str], size: int = 100) -> list[dict[str, Any]]:
+    """Create temporal queries over ordered class pairs without consulting any result."""
+    classes = list(dict.fromkeys(class_ids))
+    pairs = [(a, b) for a in classes for b in classes if a != b]
+    if size < 1 or not pairs or size > len(pairs):
+        raise ValueError(f"need 1 <= size <= {len(pairs)} distinct class pairs")
+    step = _stride(len(pairs), size)
     queries = []
     for index in range(size):
-        a, b = next(class_pairs)
+        a, b = pairs[(index * step) % len(pairs)]
         predicate = PREDICATES[index % len(PREDICATES)]
         queries.append({
             "query_id": f"q-{index + 1:03d}",
-            "question": f"Which recordings have {a} {predicate} {b}?",
-            "filters": {"temporal": {"predicate": predicate, "a": a, "b": b, "tolerance_s": 0.0}},
-            "relevance": {"type": "recording_ids", "source": "temporal_filter"},
+            "question": (f"Which recordings have {a.replace('_', ' ')} "
+                         f"{PHRASES[predicate]} {b.replace('_', ' ')}?"),
+            "filters": {"temporal": {"predicate": predicate, "a": a, "b": b,
+                                     "tolerance_s": 0.0}},
+            "relevance": {"type": "recording_ids", "source": GROUND_TRUTH},
         })
     return queries
