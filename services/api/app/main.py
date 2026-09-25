@@ -86,6 +86,14 @@ def create_app(settings: Settings | None = None, inference: Any = None,
             return ok({"status": "ready", **components})
         return fail(503, "not_ready", "database hoặc inference chưa sẵn sàng", meta=components)
 
+    classes = [{"class_id": c, "label_en": labels[c], "label_vi": vi.canonical_phrase(c)}
+               for c in taxonomy.polyphonic_class_ids]
+
+    @app.get("/api/v1/taxonomy")
+    async def taxonomy_view():
+        """The 21 SED classes with display names — the frontend keeps no class constants."""
+        return ok({"version": taxonomy.version, "sha256": taxonomy.checksum, "classes": classes})
+
     @app.get("/api/v1/models/status")
     async def models_status():
         try:

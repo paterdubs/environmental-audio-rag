@@ -93,6 +93,13 @@ def test_request_validation_uses_the_envelope(tmp_path) -> None:
     assert bad_file.status_code == 415
 
 
+def test_taxonomy_endpoint_lists_the_21_sed_classes_with_both_names(tmp_path) -> None:
+    data = client(tmp_path).get("/api/v1/taxonomy").json()["data"]
+    assert [c["class_id"] for c in data["classes"]] == list(TAXONOMY.polyphonic_class_ids)
+    assert all(c["label_en"] and c["label_vi"] for c in data["classes"])
+    assert data["sha256"] == TAXONOMY.checksum
+
+
 def test_health_is_503_when_inference_is_down(tmp_path) -> None:
     def broken():
         raise OSError("no db")
