@@ -390,22 +390,31 @@ sao. Che giấu việc này là gian lận; ghi rõ thì không.
 
 ---
 
-## 12. Những gì bộ đánh giá hiện tại CHƯA làm được
+## 12. Bộ đánh giá: đã làm gì, còn giới hạn gì
 
 Viết vào báo cáo, không giấu.
 
-| # | Chưa có | Hệ quả |
-|---:|---|---|
-| 1 | Event-based F1 và PSDS | Chưa có kết luận SED nào so được với văn liệu |
-| 2 | Post-processing hiệu chuẩn | θ = 0.5 gần như chắc chắn không tối ưu |
-| 3 | Bootstrap CI | Chưa biết chênh lệch giữa hai run có ý nghĩa không |
-| 4 | Lưu logit thô | Mỗi lần đổi θ phải chạy lại inference |
-| 5 | Nhiều seed | Chưa tách được chênh lệch thật với nhiễu seed |
-| 6 | Metric calibration (ECE) | Chưa biết score có diễn giải như xác suất được không |
-| 7 | Phân tích lỗi per-class | Chưa biết class yếu sai kiểu gì |
-| 8 | Toàn bộ metric caption và retrieval | Chưa triển khai |
+Bảng gốc (22/09) liệt kê 8 mục chưa có; **cả 8 đã làm** (cập nhật 25/09):
 
-**Mục 5 đáng chú ý:** hiện mỗi cấu hình chỉ chạy một seed. Không có nhiều seed
-thì Δ +0.02 giữa hai nhánh **không phân biệt được với nhiễu**. Kế hoạch: 3 seed
-cho các cấu hình cuối, báo mean ± std. Nếu ngân sách tính toán không cho phép,
-phải nói rõ và không tuyên bố cải thiện nhỏ là có ý nghĩa.
+| # | Mục 22/09 | Trạng thái |
+|---:|---|---|
+| 1 | Event-based F1 và PSDS | ✅ `sed_eval`/`psds_eval`, mọi run (ADR-0020) |
+| 2 | Post-processing hiệu chuẩn | ✅ θ và duration prior chọn trên dev/train; tối ưu bằng CV dev (ADR-0024) |
+| 3 | Bootstrap CI | ✅ theo recording cho SED và cho caption (RQ2) |
+| 4 | Lưu logit thô | ✅ `predictions/{dev,test}.npz` |
+| 5 | Nhiều seed | ✅ 5 run/nhánh, Welch t-test (ADR-0021) |
+| 6 | Metric calibration (ECE) | ✅ classifier DataSEC (ADR-0017) |
+| 7 | Phân tích lỗi per-class | ✅ SED (`branch_per_class_*`) và caption (`caption_per_class_*`) |
+| 8 | Metric caption và retrieval | ✅ caption (C2, W5) · ○ retrieval (W6) |
+
+**Giới hạn còn lại — phải viết vào báo cáo:**
+
+| # | Giới hạn | Hệ quả |
+|---:|---|---|
+| 1 | Train SED không tất định cùng seed | Mọi số SED báo mean ± sd nhiều run; run đơn không kết luận được |
+| 2 | Metric C2 dựa trên lexicon; đối chiếu với người đọc mù trên mẫu 60 caption test, một người — **phiếu chờ người dùng điền** (`scripts.caption_mention_worksheet`) | Chưa có sai số trích đo được; hallucination là cận trên (7/8 mention "bịa" trên test là lỗi lexicon) |
+| 3 | Omission tính theo **lớp**, không theo event | Lặp lại cùng lớp mà chỉ nhắc một lần không bị tính bỏ sót |
+| 4 | Thứ tự là tỷ lệ cặp đúng (cặp bằng nhau tính đúng), không phải Kendall τ | Báo kèm bản chỉ tính caption ≥2 mention |
+| 5 | N-gram so với caption template, không có caption người viết | Chỉ tham khảo, không kết luận (§8.3) |
+| 6 | Retrieval chưa có số | RQ3 chưa trả lời (W6) |
+| 7 | Caption LLM chỉ tất định theo **chuỗi request** trên server mới khởi động — bộ nhớ đệm prompt của llama.cpp đổi phép tính số thực | Tái lập = sinh lại cả file theo đúng thứ tự; không vá lẻ từng caption (ADR-0023 §7) |

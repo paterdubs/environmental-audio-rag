@@ -1193,10 +1193,10 @@ retrieval một cách khó chẩn đoán.
 
 | Tầng | Đối tượng | Metric chính | Trạng thái |
 |---|---|---|---|
-| L1 | DataSEC classification | Macro-F1 trên 22 coarse class | ○ |
-| L2 | DataSED SED | **Event-based macro-F1 + PSDS** | ○ (chỉ có frame-F1 ✅) |
-| L3 | Grounded caption | Hallucination rate, omission rate | ○ |
-| L4 | Retrieval / RAG | Recall@k, MRR, evidence precision | ○ |
+| L1 | DataSEC classification | Macro-F1 trên 22 coarse class | ✅ (STATUS §1) |
+| L2 | DataSED SED | **Event-based macro-F1 + PSDS** | ✅ (STATUS §2, ADR-0021/0024) |
+| L3 | Grounded caption | Hallucination rate, omission rate | ✅ (ADR-0022/0023/0026) |
+| L4 | Retrieval / RAG | Recall@k, MRR, evidence precision | ○ (W6) |
 
 **Metric chính của L2 không phải frame-F1.** Frame-F1 chỉ dùng để xác nhận
 pipeline train chạy đúng. Mọi kết luận về SED phải dựa trên event-based F1 và PSDS.
@@ -1234,8 +1234,8 @@ nguồn âm được nhắc trong caption, `C` là tập class trong timeline.
 | Event precision | `|M ∩ C| / |M|` | Caption có bịa không |
 | Event recall | `|M ∩ C| / |C|` | Caption có bỏ sót không |
 | **Hallucination rate** | `1 − Event precision` | Tỷ lệ mention không có bằng chứng |
-| **Omission rate** | `1 − Event recall` | Tỷ lệ event bị bỏ qua |
-| Temporal order accuracy | Kendall tau giữa thứ tự mention và thứ tự onset | Caption có kể đúng trình tự |
+| **Omission rate** | `1 − Event recall` | Tỷ lệ **lớp** trong timeline không được nhắc (theo lớp, không theo event) |
+| Temporal order accuracy | Tỷ lệ cặp mention đúng thứ tự onset; cặp bằng nhau tính đúng (= (τ+1)/2 khi không có cặp bằng — **không** phải Kendall τ). Báo kèm bản chỉ tính caption ≥2 mention | Caption có kể đúng trình tự |
 | Evidence coverage | Tỷ lệ mention có `event_id` | Ràng buộc G2 |
 | Forbidden-term rate | Tỷ lệ caption chứa từ trong lexicon cấm | Ràng buộc G3 |
 
@@ -1268,12 +1268,12 @@ nhất đúng cho một timeline.
 
 ### L3 — Grounded caption
 
-| Nhánh | Mức | Hallucination ↓ | Omission ↓ | Temporal tau ↑ | Forbidden ↓ |
+Đã có số (test, CI và hiệu số cặp): `measurements/caption_grounding_sed_polyphonic_20260924T054531Z_test.md`,
+diễn giải ở ADR-0023 §4 và ADR-0026. Cột thứ tự là tỷ lệ cặp đúng thứ tự, không phải Kendall τ.
+
+| Nhánh | Mức | Hallucination ↓ | Omission ↓ | Thứ tự (tỷ lệ cặp) ↑ | Forbidden ↓ |
 |---|---|---:|---:|---:|---:|
-| Template | Oracle | ○ | ○ | ○ | ○ |
-| Constrained | Oracle | ○ | ○ | ○ | ○ |
-| Unconstrained | Oracle | ○ | ○ | ○ | ○ |
-| Constrained | End-to-end | ○ | ○ | ○ | ○ |
+| Template / Constrained / Constrained-cover / Unconstrained | Oracle + End-to-end | ✅ | ✅ | ✅ | ✅ |
 
 ### L4 — Retrieval
 
