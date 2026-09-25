@@ -11,10 +11,14 @@ model still chooses WHICH events to mention and when to stop: omission is the
 dimension left to measure.
 
 Token budget (ADR-0023 §7): the grammar bounds the caption length, so each request
-gets ``max(max_tokens, tokens of the longest admissible caption + margin)``. With the
+gets ``max(max_tokens, characters of the longest admissible caption + 1)``. With the
 shared 256-token cap, 16/558 captions were cut mid-sentence — breaking the very
-contract the grammar is meant to guarantee. Greedy decoding makes the larger cap
-change only those captions.
+contract the grammar is meant to guarantee. The bound is in CHARACTERS on purpose:
+grammar text is ASCII, so every generated token spells at least one character (+1 for
+end-of-sequence). A tokenizer count of the longest caption is NOT a bound — decoding
+under a grammar emitted ~2 chars/token where canonical tokenization packs ~2.8, and 3
+dev captions were still cut with that budget (v1.1). A larger cap does not change a
+caption that ends on its own (checked: same text at 256 and at the full bound).
 
 Two smoke-test failures shaped this (ADR-0023): one event per sentence made
 the model — asked for ONE short caption by the shared prompt — stop after a
@@ -28,10 +32,9 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .llm import ChatTransport, LLMConfig, TokenCounter, build_request
+from .llm import ChatTransport, LLMConfig, build_request
 
 EMPTY_TEXT = "No target sound event was detected in this recording."
-TOKEN_MARGIN = 16
 VERBS = ("can be heard", "can be detected")
 SEPARATORS = (", ", ", and ", " and ", ", followed by ", ", while ")
 GROUPED_PHRASES = {
@@ -93,8 +96,9 @@ def longest_caption(timeline: dict[str, Any]) -> str:
     return "".join(parts) + "."
 
 
-def token_budget(timeline: dict[str, Any], counter: TokenCounter, floor: int) -> int:
-    return max(floor, counter.count_tokens(longest_caption(timeline)) + TOKEN_MARGIN)
+def token_budget(timeline: dict[str, Any], floor: int) -> int:
+    """Tokens that can never be exhausted: one per character of the longest caption, +1."""
+    return max(floor, len(longest_caption(timeline)) + 1)
 
 
 def align_evidence(text: str, timeline: dict[str, Any]) -> list[dict[str, Any]]:
@@ -125,16 +129,14 @@ class ConstrainedLLMCaptioner:
     grounding_mode = "constrained"
 
     def __init__(self, transport: ChatTransport, config: LLMConfig):
-        if not hasattr(transport, "count_tokens"):
-            raise TypeError("constrained captioning needs a transport that counts tokens")
         self.transport = transport
         self.config = config
-        self.version = f"caption-grammar-v1.1+{config.model_name}"
+        self.version = f"caption-grammar-v1.2+{config.model_name}"
 
     def caption(self, timeline: dict[str, Any], language: str = "en") -> dict[str, Any]:
         if language != "en":
             raise ValueError("RQ2 benchmark captions are English only (ADR-0004)")
-        budget = token_budget(timeline, self.transport, self.config.max_tokens)
+        budget = token_budget(timeline, self.config.max_tokens)
         body = build_request(timeline, self.config, grammar=build_grammar(timeline),
                              max_tokens=budget)
         response = self.transport.complete(body)

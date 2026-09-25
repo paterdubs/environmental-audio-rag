@@ -8,7 +8,6 @@ import pytest
 from ml.captioning.constrained import (
     EMPTY_TEXT,
     SEPARATORS,
-    TOKEN_MARGIN,
     VERBS,
     ConstrainedLLMCaptioner,
     align_evidence,
@@ -37,10 +36,6 @@ class FakeTransport:
     def complete(self, body: dict[str, Any]) -> dict[str, Any]:
         self.bodies.append(body)
         return {"choices": [{"message": {"content": self.text}, "finish_reason": "stop"}]}
-
-    @staticmethod
-    def count_tokens(text: str) -> int:
-        return len(text)  # >= real token count for ASCII text
 
 
 def timeline(*events: tuple[str, float, float]) -> dict:
@@ -158,17 +153,8 @@ def test_request_budget_covers_the_grammar_and_never_drops_below_the_shared_cap(
     many = timeline(*[("birds", float(i), i + 0.5) for i in range(20)])
     transport = FakeTransport("The sound of birds can be heard from 0.0 to 0.5 seconds.")
     caption = ConstrainedLLMCaptioner(transport, CONFIG).caption(many)
-    expected = max(CONFIG.max_tokens, len(longest_caption(many)) + TOKEN_MARGIN)
+    expected = max(CONFIG.max_tokens, len(longest_caption(many)) + 1)  # chars, not tokens
     assert expected > CONFIG.max_tokens  # 20 events would not fit the old 256 cap
     assert transport.bodies[0]["max_tokens"] == caption["generation"]["token_budget"] == expected
     short = ConstrainedLLMCaptioner(transport, CONFIG).caption(timeline(("birds", 1.0, 2.0)))
     assert short["generation"]["token_budget"] == CONFIG.max_tokens
-
-
-def test_constrained_branch_rejects_a_transport_that_cannot_count_tokens() -> None:
-    class NoCounter:
-        def complete(self, body):  # pragma: no cover - never reached
-            raise AssertionError
-
-    with pytest.raises(TypeError, match="counts tokens"):
-        ConstrainedLLMCaptioner(NoCounter(), CONFIG)
