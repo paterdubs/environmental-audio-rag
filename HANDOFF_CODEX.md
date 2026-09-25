@@ -168,16 +168,17 @@ Viết đầy đủ **22 lớp**, lấy cụm từ hợp lệ từ cột `📌 C
 
 **Nghiệm thu:**
 
-- [ ] `ml/captioning/lexicon.py` load + checksum (theo mẫu `ml/taxonomy.py`)
-- [ ] Hàm `extract_mentions(text) -> set[class_id]` — bản đồ ngược cụm từ → class
-- [ ] Hàm `check_grounding(caption, timeline) -> GroundingReport` kiểm G1/G2/G3
-- [ ] Test: mọi 22 class có ít nhất 1 cụm EN và 1 cụm VI
-- [ ] Test: caption chứa `forbidden_terms` bị từ chối (G3)
-- [ ] Test: caption nói `"a gunshot"` khi timeline chỉ có
-      `thunder_fireworks_gunshot` bị từ chối
-- [ ] Test: caption lớp gộp **thiếu** mệnh đề "no subclass ground truth" bị từ chối
+- [x] `ml/captioning/lexicon.py` load + checksum (theo mẫu `ml/taxonomy.py`) — `CaptionLexicon.sha256`, EN đóng băng `6f5634bb…` (ADR-0022)
+- [x] Hàm `extract_mentions(text) -> set[class_id]` — bản đồ ngược cụm từ → class — `CaptionLexicon.mentions`
+- [x] Hàm `check_grounding(caption, timeline) -> GroundingReport` kiểm G1/G2/G3 — `ml/evaluation/grounding.py::evaluate_grounding`
+- [x] Test: mọi 22 class có ít nhất 1 cụm EN và 1 cụm VI — `tests/test_caption_vi.py` (ADR-0025, 25/09)
+- [x] Test: caption chứa `forbidden_terms` bị từ chối (G3) — EN `tests/test_captioning_foundation.py`, VI `tests/test_caption_vi.py`
+- [x] Test: caption nói `"a gunshot"` khi timeline chỉ có
+      `thunder_fireworks_gunshot` bị từ chối — đếm là gọi tên quá mức (kind `specific`),
+      `tests/test_grouped_class_wording.py`, `tests/test_caption_lexicon_v2.py`
+- [x] ~~Test: caption lớp gộp **thiếu** mệnh đề "no subclass ground truth" bị từ chối~~ — không áp dụng: caption không đưa subclass prediction (ADR-0023 §5)
       ([taxonomy.md §7](docs/taxonomy.md))
-- [ ] Không có cụm từ nào trùng giữa hai class (giống `Ambiguous taxonomy alias`)
+- [x] Không có cụm từ nào trùng giữa hai class (giống `Ambiguous taxonomy alias`) — `test_conflicting_duplicate_phrase_is_rejected`
 
 ## A3 · Schema cơ sở dữ liệu thành migration thật
 
@@ -226,7 +227,7 @@ truth**, không phán đoán thủ công.
 
 - [ ] 100 query, đúng phân bố 30/25/25/20
 - [ ] Mỗi query có `relevance_rule` máy đánh giá được
-- [ ] `ml/retrieval/relevance.py` tính relevant set từ ground truth
+- [x] `ml/retrieval/relevance.py` tính relevant set từ ground truth — 25/09, cùng ngữ nghĩa SQL (test SQLite); các mục A4 còn lại: nợ #18 ở PLAN
 - [ ] Test: mọi query có ≥ 1 recording relevant trên DataSED (query không có
       relevant nào là query vô dụng — sửa hoặc bỏ)
 - [ ] Query set **đóng băng trước** khi chạy retrieval lần đầu

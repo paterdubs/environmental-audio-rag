@@ -185,6 +185,8 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 - [x] Báo **cả** oracle và end-to-end (`caption_grounding_*_test.md`)
 - [x] Ba nhánh chạy trên **cùng** SED prediction đóng băng (script kiểm timeline trùng khít)
 - [x] Caption lớp gộp nêu đúng mức không chắc chắn ([taxonomy.md §7](taxonomy.md)) — template/constrained 0 vi phạm, unconstrained 11/18 và 22/39 (ADR-0023 §5)
+- [x] Caption tiếng Việt cho giao diện (ADR-0004; HANDOFF §A2 — rà trước khi push, 25/09): template VI + lexicon VI riêng, mọi lớp có cụm EN và VI, 0 vi phạm G1–G3 trên timeline thật ([ADR-0025](decisions/ADR-0025-caption-tieng-viet.md)) — **cụm từ VI chờ người dùng duyệt**
+- [x] N-gram BLEU-4/CIDEr báo **để tham khảo** (evaluation_protocol §8.3; ADR-0023 §6)
 
 ---
 

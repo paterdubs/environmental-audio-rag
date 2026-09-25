@@ -197,6 +197,8 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | **W5 5.6 unconstrained (Qwen3.5-9B)** | ADR-0022; dev+test sinh và chấm; lexicon v2 đóng băng `6f5634bb…`; audit: 7/8 "bịa" là lỗi lexicon |
 | **W5 5.7–5.8 constrained + đánh giá** | ADR-0023; test: constrained 0 vi phạm bối cảnh/G3/gọi tên quá mức, omission e2e 0.28 vs unconstrained 0.06 |
 | **Tối ưu SED (4.9, ADR-0024)** | `sed_optimization_20260925.md`; chọn trên dev → ensemble C + θ global 0.95 + `g_max` p25; test event-F1 0.0941, PSDS-1 0.3489 |
+| **W5 caption tiếng Việt (ADR-0025)** | Template VI + lexicon VI riêng (khớp giữ dấu); timeline thật dev/test oracle+e2e: 0 bịa/sót/G3/gọi tên quá mức; hash EN `6f5634bb…` không đổi — cụm từ VI chờ duyệt |
+| **W5 n-gram (tham khảo)** | ADR-0023 §6: BLEU-4/CIDEr so với template — chỉ đo độ giống văn phong, không kết luận |
 | **W5 lớp gộp (taxonomy §7)** | ADR-0023 §5; test e2e: template/constrained 0 caption gọi subclass như sự thật, unconstrained 11/18 (`sirens_and_alarms`) và 22/39 (`thunder_fireworks_gunshot`) |
 | **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
 | **Ablation A5 xong bộ ba A/B/C (nợ kỹ thuật #8)** | d_min percentile phẳng; g_max percentile 25 tốt hơn nhất quán 3/3 nhánh, 75 tệ hơn nhất quán 3/3 — ứng viên thật cho hiệu chuẩn lại trên dev, chưa đổi ADR-0003 |
@@ -257,6 +259,8 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Nghĩa của loại trừ D3 | Tách theo corpus: benchmark **giữ + buộc cùng nhóm**, pretraining **vắng mặt** | 0010 | Luật chung làm trượt chính split đã đóng băng |
 | Subclass trên continuous | Chỉ báo trên DataSEC | [0006](docs/decisions/ADR-0006-danh-gia-subclass.md) | DataSED không có subclass ground truth |
 | Caption song ngữ | EN benchmark, VI giao diện, embed cả hai | 0004 | So được với văn liệu AAC, truy vấn được tiếng Việt |
+| Caption tiếng Việt | Template tất định + lexicon VI **file riêng**, khớp giữ dấu | [0025](docs/decisions/ADR-0025-caption-tieng-viet.md) | Không đổi hash EN đóng băng của RQ2; bỏ dấu làm G3 khớp nhầm ("tới phạm vi" → "tội phạm") |
+| Hệ thống SED tối ưu | Ensemble C + θ global 0.95 + `g_max` p25, **chọn trên dev** | [0024](docs/decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md) | Luật chọn ghi trước, commit trước test; ADR-0003 giữ cho số RQ1 |
 | Không có risk score | Bỏ hoàn toàn | 0001 | Không có cơ sở gán mức nguy hiểm cho nguồn âm |
 
 ---
@@ -447,6 +451,13 @@ tồn tại (lọc rỗng im lặng), và relevance lấy từ chính bộ lọc
 Đã sửa: lớp từ taxonomy + kiểm thành viên; `ml/retrieval/relevance.py` tính relevance từ
 annotation với đúng ngữ nghĩa SQL (test chạy SQL trên SQLite, phép thử đột biến `<=`→`<`
 bị bắt). Đo được: chỉ 25/100 query có relevant trên test → nợ #18 cho 6.7.
+
+**Rà nghiệm thu W5 trước khi push** (người dùng: "hoàn thành tất cả ở W5 mới push")
+tìm hai phần đặc tả chưa làm: caption tiếng Việt (ADR-0004, HANDOFF §A2) và n-gram "để
+tham khảo" (evaluation_protocol §8.3). Đã làm cả hai (ADR-0025, ADR-0023 §6). Lexicon VI
+ở file riêng để hash EN của RQ2 không đổi; chấm lại RQ2 dev/test trùng từng byte. Test
+bắt được lỗi YAML tách cụm theo dấu phẩy; sửa kèm lỗi lệch `mention_span` của template.
+486 test pass.
 
 ### 2026-09-25 — W5 xong phần RQ2; sửa lỗi ghép cửa sổ SED làm đổi mọi số SED
 

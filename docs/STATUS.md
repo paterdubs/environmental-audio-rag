@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
 **Cập nhật:** 2026-09-25 tối — tối ưu SED không train lại xong (ADR-0024); trước đó sửa lỗi ghép cửa sổ (`7ada7d7`), tính lại 11 run
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 467 pass (Windows), ruff sạch; CI Linux chạy lại khi push
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 486 pass (Windows), ruff sạch; CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -50,6 +50,7 @@
 | 4.6 `confusable_with` từ ma trận nhầm thật | ○ | — |
 | 4.7 Ablation A4 `pos_weight` | ○ | — |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
+| Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ chờ duyệt | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding | `docker-compose.yml`, `db/migrations/` |
 | API / frontend (W7) | ○ | — |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
