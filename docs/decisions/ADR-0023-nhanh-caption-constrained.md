@@ -56,6 +56,33 @@ sinh tự do với cái giá omission bao nhiêu?* — so với unconstrained (v
 bối cảnh, gọi tên quá cụ thể, G3, thứ tự; hallucination nguồn âm ở sàn, ADR-0022 §5)
 và với template (không omission, không linh hoạt).
 
+### 4. Kết quả RQ2 trên test (lexicon `6f5634bb…` đóng băng, chấm một lần)
+
+| Nhánh / mức | Halluc. | Omission | Temporal | G3 | Over-specific | Context | Mentions |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| template / oracle | 0 | 0 | 1.000 | 0 | 0 | 0 | 5.21 |
+| template / e2e | 0 | 0 | 1.000 | 0 | 0 | 0 | 6.13 |
+| constrained / oracle | 0 | 0.100 | 0.998 | 0 | 0 | 0 | 3.06 |
+| constrained / e2e | 0 | 0.284 | 0.999 | 0 | 0 | 0 | 2.75 |
+| unconstrained / oracle | 0.013* | 0.012 | 0.941 | 0.007 | 0.137 | 0.324 | 2.01 |
+| unconstrained / e2e | 0.004* | 0.060 | 0.903 | 0.014 | 0.186 | 0.423 | 3.13 |
+
+\* cận trên — 7/8 là dương tính giả của lexicon (`caption_lexicon_audit_test_20260925.md`).
+Nguồn: `caption_grounding_sed_polyphonic_20260924T054531Z_test.md`. 6/284 caption
+constrained chạm max_tokens.
+
+**Đọc đúng:** ràng buộc đưa bối cảnh (32–42% → 0), gọi tên quá mức (14–19% → 0),
+G3 (0.7–1.4% → 0) và thứ tự (0.90–0.94 → ~1) về sàn theo cấu tạo; cái giá là
+**omission cao hơn nhiều** (e2e 6% → 28%, oracle 1% → 10%) — model, khi phải nhắc
+đúng từng event kèm mốc thời gian, dừng sớm. Không có khác biệt ở hallucination
+nguồn âm (cả hai ở sàn). Thứ tự ~1 là bảo đảm của grammar, không phải năng lực model.
+
+**Sửa metric trong lúc đánh giá (dev, trước khi chấm test):** temporal order trước
+đó gán mỗi mention vào onset sớm nhất chưa nhận của lớp, nên caption bỏ qua một event
+sớm hơn cùng lớp bị chấm sai thứ tự (constrained dev 0.86 dù grammar ép thứ tự). Nay
+mention có evidence dùng onset của đúng event được trích; unconstrained (không
+evidence) không đổi số. Test khoá hành vi.
+
 ## Consequences
 
 ### Tích cực

@@ -186,44 +186,29 @@ test, không phải dev (không được tuning trên test).
 | **Ablation A2 xong bộ ba A/B/C** | Per-class overfit dev hệ thống: A −48%, B −39%, C −41%; global ổn định hơn (A −15%, B −4%, C −2%) |
 | **Ablation A3 xong bộ ba A/B/C** | Không kết luận rõ hướng nào (Δ gần 0, đổi dấu: +0.0063/+0.0026/−0.0014) |
 | **W5 5.6 unconstrained (Qwen3.5-9B)** | ADR-0022; dev+test sinh và chấm; lexicon v2 đóng băng `6f5634bb…`; audit: 7/8 "bịa" là lỗi lexicon |
-| **W5 5.7 constrained (code + dev)** | ADR-0023; grammar dãy con theo onset; 29 test |
+| **W5 5.7–5.8 constrained + đánh giá** | ADR-0023; test: constrained 0 vi phạm bối cảnh/G3/gọi tên quá mức, omission e2e 0.28 vs unconstrained 0.06 |
 | **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
 | **Ablation A5 xong bộ ba A/B/C (nợ kỹ thuật #8)** | d_min percentile phẳng; g_max percentile 25 tốt hơn nhất quán 3/3 nhánh, 75 tệ hơn nhất quán 3/3 — ứng viên thật cho hiệu chuẩn lại trên dev, chưa đổi ADR-0003 |
 
 ### Đang làm / chưa nghiệm thu ◐
 
-> **BÀN GIAO 25/09 01:45 — đọc trước khi làm gì khác.**
-> 1. Lỗi ghép cửa sổ SED đã sửa (`7ada7d7`); **11 run đã quét θ + đánh giá lại**, mọi
->    `docs/measurements` SED dẫn xuất đã sinh lại và commit. **RQ1 vẫn âm tính** (7 run
->    sạch: event-F1 p=0.234, PSDS-1 p=0.913, PSDS-2 p=0.181). Số trong §3 dưới đây,
->    STATUS.md, README, ADR-0021 **còn là số CŨ** — phải cập nhật từ
->    `rq1_multiseed*_20260924.md`. Số cũ tra bằng `git show 18bb18c:docs/measurements/…`.
-> 2. W5: unconstrained xong dev+test (`9218922`, `18bb18c`). Constrained (5.7, ADR-0023)
->    code xong, **dev đã sinh, test CHƯA sinh** — chạy
->    `generate_llm_captions <run B 054531Z> --branch constrained --split test
->    --frozen-lexicon-sha256 6f5634bb…` rồi `score_captions … --split test`.
-> 3. Báo cáo Word gửi thầy đã lỗi thời số SED — **không** soạn lại khi chưa được yêu cầu.
-
 | Hạng mục | Còn thiếu |
 |---|---|
 | W4 | 4.6 `confusable_with` từ ma trận nhầm thật (taxonomy.md §8); 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
-| W5 (caption) | Template + metric G1–G3 đã verify trên 426 recording thật; thiếu nhánh không ràng buộc (cần chọn LLM), nhánh ràng buộc, đánh giá oracle + end-to-end |
+| W5 (caption) | RQ2 có số trên test (ADR-0023 §4); còn kiểm diễn đạt lớp gộp (taxonomy.md §7) |
 | W6 (event store, RAG) | PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding BGE-M3, chưa retrieval |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
 
 ### Chưa có ○
 
-Nhánh caption dùng LLM · retrieval thật · API / inference / frontend.
+Retrieval thật · API / inference / frontend.
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **W5 — caption có căn cứ** (trọng tâm đóng góp mới, ADR-0021): chọn LLM cho
-   nhánh không ràng buộc (cần người dùng quyết), rồi nhánh ràng buộc và đánh giá
-   oracle + end-to-end trên **cùng** SED prediction đóng băng.
-2. **W6 — RAG**: nạp event thật vào pgvector, embedding BGE-M3 (ADR-0004),
+1. **W6 — RAG**: nạp event thật vào pgvector, embedding BGE-M3 (ADR-0004),
    retrieval + query set 100 câu.
-3. W4 còn lại: 4.6 (`confusable_with`), 4.7 (A4) — ưu tiên thấp hơn W5/W6.
-4. Tuỳ chọn: chọn lại `g_max` percentile trên **dev** theo gợi ý A5.
+2. W4 còn lại: 4.6 (`confusable_with`), 4.7 (A4) — ưu tiên thấp hơn W5/W6.
+3. Tuỳ chọn: chọn lại `g_max` percentile trên **dev** theo gợi ý A5.
 
 ---
 
@@ -424,6 +409,16 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-25 — W5 xong phần RQ2; sửa lỗi ghép cửa sổ SED làm đổi mọi số SED
+
+Chọn Qwen3.5-9B chạy cục bộ (llama.cpp) cho cả hai nhánh caption (ADR-0022), mở
+rộng lexicon trên dev rồi đóng băng trước test. Smoke-test lộ lỗi ghép cửa sổ SED
+(`7ada7d7`) → 11 run tính lại, RQ1 vẫn âm tính (`3208dbb`, `8deb71a`). Nhánh
+constrained dùng grammar dãy con theo onset (ADR-0023). **RQ2 trên test:** ràng buộc
+đưa suy diễn bối cảnh, gọi tên quá mức và G3 về 0, nhưng omission e2e 0.06 → 0.28;
+hallucination nguồn âm ở sàn ở cả hai nhánh. Sửa metric thứ tự để dùng evidence
+(bắt được trên dev). 435 test pass.
 
 ### 2026-09-24 (tiếp) — RQ1 có câu trả lời thăm dò đầu tiên; ablation A2 xác nhận lặp lại trên model mạnh hơn
 

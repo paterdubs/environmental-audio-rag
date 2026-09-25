@@ -1,10 +1,35 @@
 {
   "run": "sed_polyphonic_20260924T054531Z",
   "split": "test",
-  "source": "ml\\runs\\sed_polyphonic_20260924T054531Z\\captions\\unconstrained_test.jsonl",
+  "sources": [
+    "ml\\runs\\sed_polyphonic_20260924T054531Z\\captions\\unconstrained_test.jsonl",
+    "ml\\runs\\sed_polyphonic_20260924T054531Z\\captions\\constrained_test.jsonl"
+  ],
   "lexicon_version": "caption-lexicon-v2",
   "lexicon_sha256": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
   "summary": {
+    "constrained/e2e": {
+      "n": 142,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.2841800804828974,
+      "temporal_order_accuracy": 0.9985915492957746,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "context_term_rate": 0.0,
+      "evidence_coverage": 0.997339593114241,
+      "n_mentions": 2.7464788732394365
+    },
+    "constrained/oracle": {
+      "n": 142,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.09953051643192488,
+      "temporal_order_accuracy": 0.9982953275206796,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "context_term_rate": 0.0,
+      "evidence_coverage": 0.997507265817125,
+      "n_mentions": 3.056338028169014
+    },
     "template/e2e": {
       "n": 142,
       "hallucination_rate": 0.0,

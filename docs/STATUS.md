@@ -45,7 +45,7 @@
 | Phân tích theo lớp / độ dài / collar | ✅ | xem §2 |
 | 4.6 `confusable_with` từ ma trận nhầm thật | ○ | — |
 | 4.7 Ablation A4 `pos_weight` | ○ | — |
-| Caption có căn cứ (W5) | ◐ unconstrained (Qwen3.5-9B) dev+test chấm xong; constrained code + dev xong, test đang sinh; lexicon v2 đóng băng | [caption_grounding_*](measurements/), ADR-0022/0023 |
+| Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Event store + RAG (W6) | ◐ PostgreSQL + pgvector chạy (Docker); chưa nạp dữ liệu, chưa embedding | `docker-compose.yml`, `db/migrations/` |
 | API / frontend (W7) | ○ | — |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
@@ -127,7 +127,7 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 ## 5. Việc còn lại
 
 1. W4: 4.6 (`confusable_with`), 4.7 (A4 `pos_weight`), bootstrap CI cho số trung bình nhiều run.
-2. W5: sinh + chấm caption constrained trên test; so RQ2 ba nhánh (template / constrained / unconstrained).
+2. W5: kiểm caption lớp gộp theo taxonomy.md §7; W6 là việc chính tiếp theo.
 3. W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark.
 4. W7: API, giao diện.
 5. Cân nhắc chọn lại `g_max` percentile trên dev (A5).

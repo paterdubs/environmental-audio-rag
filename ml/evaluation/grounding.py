@@ -67,7 +67,7 @@ def evaluate_grounding(
         event_recall=recall,
         hallucination_rate=1.0 - precision,
         omission_rate=1.0 - recall,
-        temporal_order_accuracy=_temporal_order(timeline, supported),
+        temporal_order_accuracy=_temporal_order(timeline, supported, evidence),
         evidence_coverage=coverage,
         forbidden_term_rate=1.0 if lexicon.forbidden_terms(text) else 0.0,
         over_specific_rate=over_specific,
@@ -99,37 +99,65 @@ def collapse_enumerations(text: str, mentions: tuple[Mention, ...]) -> tuple[Men
     return tuple(merged)
 
 
-def _temporal_order(timeline: dict[str, Any], mentions: list[Mention]) -> float:
+def _temporal_order(
+    timeline: dict[str, Any], mentions: list[Mention], evidence: list[dict[str, Any]]
+) -> float:
     """Compare text mention order against event onset order.
 
     Only supported mentions take part — an unsupported one is already charged
-    to hallucination. Each successive mention of a class claims the
-    next-earliest still-unclaimed onset of that class (a plain
-    ``{class_id: onset}`` dict would collapse repeated classes, common in real
-    polyphonic timelines). A family mention claims whichever of its present
-    classes has the earliest unclaimed onset. A mention left with nothing to
-    claim (more mentions than events) scores the whole caption 0.
+    to hallucination. A mention covered by an evidence item (G2) takes the
+    onset of the event it cites: without that, a caption that skips an earlier
+    event of a class and cites a later one gets pinned to the skipped onset
+    and scored out of order (found on constrained dev captions, ADR-0023).
+    Other mentions claim the earliest still-unclaimed onset of their class(es)
+    — never a single ``{class_id: onset}`` value, which collapses repeated
+    classes. A mention left with nothing to claim (more mentions than events)
+    scores the whole caption 0.
     """
     if len(mentions) < 2:
         return 1.0
-    onsets_by_class: dict[str, list[float]] = defaultdict(list)
+    events = {event["event_id"]: event for event in timeline["events"]}
+    cited = _cited_events(mentions, evidence, events)
+    pools: dict[str, list[float]] = defaultdict(list)
     for event in sorted(timeline["events"], key=lambda item: item["onset_s"]):
-        onsets_by_class[event["class_id"]].append(event["onset_s"])
-    claimed: dict[str, int] = defaultdict(int)
+        if event["event_id"] not in cited.values():
+            pools[event["class_id"]].append(event["onset_s"])
     values: list[float | None] = []
-    for mention in mentions:
-        candidates = [
-            (onsets_by_class[c][claimed[c]], c)
-            for c in sorted(mention.class_ids)
-            if claimed[c] < len(onsets_by_class.get(c, []))
-        ]
+    for index, mention in enumerate(mentions):
+        if index in cited:
+            values.append(events[cited[index]]["onset_s"])
+            continue
+        candidates = [(pools[c][0], c) for c in sorted(mention.class_ids) if pools.get(c)]
         if not candidates:
             values.append(None)
             continue
         onset, class_id = min(candidates)
-        claimed[class_id] += 1
+        pools[class_id].pop(0)
         values.append(onset)
     if any(value is None for value in values):
         return 0.0
     pairs = [(values[i], values[j]) for i in range(len(values)) for j in range(i + 1, len(values))]
     return sum(left <= right for left, right in pairs) / len(pairs)
+
+
+def _cited_events(
+    mentions: list[Mention], evidence: list[dict[str, Any]], events: dict[Any, dict[str, Any]]
+) -> dict[int, Any]:
+    """Mention index -> event_id, for mentions whose span an evidence item covers."""
+    cited: dict[int, Any] = {}
+    used: set[Any] = set()
+    for index, mention in enumerate(mentions):
+        for item in evidence:
+            event = events.get(item.get("event_id"))
+            span = item.get("mention_span") or [0, 0]
+            if (
+                event is not None
+                and item["event_id"] not in used
+                and event["class_id"] in mention.class_ids
+                and span[0] < mention.end
+                and mention.start < span[1]
+            ):
+                cited[index] = item["event_id"]
+                used.add(item["event_id"])
+                break
+    return cited

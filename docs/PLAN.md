@@ -15,7 +15,7 @@
 | W2 | 29/09–05/10 | DataSEC classifier + PANNs | ✅ làm sớm |
 | W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.6, 4.7 |
-| W5 | 20–26/10 | Grounded caption + metric hallucination | ◐ nền tảng |
+| W5 | 20–26/10 | Grounded caption + metric hallucination | ◐ RQ2 có số (ADR-0023); còn lớp gộp/§7 |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ◐ nền tảng |
 | W7 | 03–09/11 | API + frontend + test một lần | ○ |
 | W8 | 10–16/11 | Buffer: viết báo cáo, vá lỗ hổng | ○ |
@@ -179,10 +179,10 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 ### Nghiệm thu W5
 
-- [ ] Ba ràng buộc G1/G2/G3 có **test tự động**, không kiểm bằng mắt
-- [ ] Template captioner đạt hallucination = 0 (xác nhận harness đúng)
-- [ ] Báo **cả** oracle và end-to-end
-- [ ] Ba nhánh chạy trên **cùng** SED prediction đóng băng
+- [x] Ba ràng buộc G1/G2/G3 có **test tự động**, không kiểm bằng mắt
+- [x] Template captioner đạt hallucination = 0 (xác nhận harness đúng)
+- [x] Báo **cả** oracle và end-to-end (`caption_grounding_*_test.md`)
+- [x] Ba nhánh chạy trên **cùng** SED prediction đóng băng (script kiểm timeline trùng khít)
 - [ ] Caption lớp gộp nêu đúng mức không chắc chắn ([taxonomy.md §7](taxonomy.md))
 
 ---

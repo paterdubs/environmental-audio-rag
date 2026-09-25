@@ -121,3 +121,16 @@ def test_grammar_shaped_caption_is_fully_grounded_but_can_omit() -> None:
     assert metrics.omission_rate == pytest.approx(1 / 3)
     assert metrics.temporal_order_accuracy == 1
     assert (metrics.forbidden_term_rate, metrics.context_term_rate) == (0, 0)
+
+
+def test_temporal_order_uses_evidence_when_an_earlier_same_class_event_is_omitted() -> None:
+    """Found on dev (constrained order 0.86 despite a grammar that forces onset
+    order): without evidence the metric pinned the 'birds' mention to the
+    earliest unclaimed birds onset (1.0), not the event actually cited (9.0)."""
+    tl = timeline(("birds", 1.0, 2.0), ("bells", 5.0, 6.0), ("birds", 9.0, 10.0))
+    text = ("The sound of bells can be heard from 5.0 to 6.0 seconds, followed by the sound "
+            "of birds from 9.0 to 10.0 seconds.")
+    caption = ConstrainedLLMCaptioner(FakeTransport(text), CONFIG).caption(tl)
+    assert evaluate_grounding(tl, caption, LEXICON).temporal_order_accuracy == 1.0
+    no_evidence = {**caption, "evidence": []}
+    assert evaluate_grounding(tl, no_evidence, LEXICON).temporal_order_accuracy == 0.0
