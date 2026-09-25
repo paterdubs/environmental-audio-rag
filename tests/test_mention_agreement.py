@@ -78,3 +78,46 @@ def test_worksheet_build_is_deterministic_and_never_overwrites(tmp_path: Path) -
     sheet.unlink()
     ws.build(namespace)
     assert sheet.read_text(encoding="utf-8-sig") == first
+
+
+def _fill(sheet: Path, n_filled: int, value: str = "birds") -> None:
+    with sheet.open(encoding="utf-8-sig", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    for row in rows[:n_filled]:
+        row["classes_mentioned"] = value
+    with sheet.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def test_partially_filled_worksheet_is_scored_on_annotated_rows_only(tmp_path: Path) -> None:
+    import argparse
+
+    import scripts.caption_mention_worksheet as ws
+
+    _captions(tmp_path / "run")
+    sheet, out = tmp_path / "sheet.csv", tmp_path / "agreement.md"
+    args = argparse.Namespace(run_dir=tmp_path / "run", split="test", n=12, worksheet=sheet,
+                              output=out)
+    ws.build(args)
+    _fill(sheet, 10)
+    ws.score(args)
+    result = json.loads(out.with_suffix(".json").read_text(encoding="utf-8"))
+    assert result["n_captions"] == 10 and result["n_not_annotated"] == 2
+    assert result["mentions"]["precision"] == 1.0 and result["mentions"]["recall"] == 1.0
+    assert result["hallucination_flag"]["lexicon_False_human_False"] == 10
+
+
+def test_scoring_needs_enough_rows_and_refuses_half_filled_rows() -> None:
+    from scripts.caption_mention_worksheet import MIN_ANNOTATED, annotated_rows
+
+    blank = {"item_id": "m-1", "classes_mentioned": "", "other_sources": "",
+             "over_specific": "", "notes": ""}
+    filled = {**blank, "classes_mentioned": "none"}
+    rows, pending = annotated_rows([filled] * MIN_ANNOTATED + [blank] * 3)
+    assert len(rows) == MIN_ANNOTATED and pending == 3
+    with pytest.raises(SystemExit, match="cần ít nhất"):
+        annotated_rows([filled] * (MIN_ANNOTATED - 1))
+    with pytest.raises(SystemExit, match="thiếu classes_mentioned"):
+        annotated_rows([{**blank, "notes": "unsure"}] + [filled] * MIN_ANNOTATED)

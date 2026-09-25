@@ -39,6 +39,7 @@ COLUMNS = ("item_id", "level", "recording_id", "caption", "classes_mentioned",
            "other_sources", "over_specific", "notes")
 FILLED = ("classes_mentioned", "other_sources", "over_specific", "notes")
 SEED = "20260922"
+MIN_ANNOTATED = 10
 
 
 def parse_args() -> argparse.Namespace:
@@ -48,6 +49,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", default="test")
     parser.add_argument("--n", type=int, default=60)
     parser.add_argument("--worksheet", type=Path, default=WORKSHEET)
+    parser.add_argument("--output", type=Path, default=None, help="measurement (mặc định docs/)")
     return parser.parse_args()
 
 
@@ -140,46 +142,70 @@ def read_worksheet(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def annotated_rows(rows: list[dict[str, str]]) -> tuple[list[dict[str, str]], int]:
+    """Rows with every fill-in cell empty are not annotated yet (skipped and counted);
+    a row with other cells filled but no `classes_mentioned` is an error."""
+    done, pending = [], 0
+    for row in rows:
+        if not any(row[column].strip() for column in FILLED):
+            pending += 1
+        elif not row["classes_mentioned"].strip():
+            raise SystemExit(f"{row['item_id']}: thiếu classes_mentioned (ghi 'none' nếu "
+                             "caption không nhắc nguồn âm nào)")
+        else:
+            done.append(row)
+    if len(done) < MIN_ANNOTATED:
+        raise SystemExit(f"mới có {len(done)} dòng đã điền — cần ít nhất {MIN_ANNOTATED}")
+    return done, pending
+
+
+def compare_row(row: dict[str, str], source: dict, lexicon: CaptionLexicon, class_ids) -> dict:
+    text = source["caption"]["text"]
+    if row["caption"] != text:
+        raise SystemExit(f"{row['item_id']}: caption trong phiếu khác caption gốc")
+    human = parse_units(row["classes_mentioned"], class_ids)
+    extracted = extractor_units(text, lexicon)
+    human_specific = (parse_units(row["over_specific"], class_ids)
+                      if row["over_specific"].strip() else set())
+    lexicon_specific = {frozenset(m.class_ids) for m in lexicon.mentions(text)
+                        if m.kind == "specific"}
+    present = {e["class_id"] for e in source["timeline"]["events"]}
+    flag = (unsupported(extracted, present, extractor_outside(text, lexicon)),
+            unsupported(human, present, bool(row["other_sources"].strip())))
+    disagreement = None if extracted == human else {
+        "item_id": row["item_id"], "caption": text,
+        "lexicon": sorted("|".join(sorted(u)) for u in extracted),
+        "human": sorted("|".join(sorted(u)) for u in human)}
+    return {"pair": (extracted, human), "specific": (lexicon_specific, human_specific),
+            "flag": flag, "disagreement": disagreement}
+
+
 def score(args: argparse.Namespace) -> None:
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     lexicon = CaptionLexicon.from_taxonomy(taxonomy)
     captions = load_captions(args.run_dir, args.split)
-    pairs, specific_pairs, flags, disagreements = [], [], [], []
-    for row in read_worksheet(args.worksheet):
-        source = captions[(row["recording_id"], row["level"])]
-        text = source["caption"]["text"]
-        if row["caption"] != text:
-            raise SystemExit(f"{row['item_id']}: caption trong phiếu khác caption gốc")
-        human = parse_units(row["classes_mentioned"], taxonomy.class_ids)
-        extracted = extractor_units(text, lexicon)
-        pairs.append((extracted, human))
-        human_specific = (parse_units(row["over_specific"], taxonomy.class_ids)
-                          if row["over_specific"].strip() else set())
-        specific_pairs.append(({frozenset(m.class_ids) for m in lexicon.mentions(text)
-                                if m.kind == "specific"}, human_specific))
-        present = {e["class_id"] for e in source["timeline"]["events"]}
-        flags.append((unsupported(extracted, present, extractor_outside(text, lexicon)),
-                      unsupported(human, present, bool(row["other_sources"].strip()))))
-        if extracted != human:
-            disagreements.append({"item_id": row["item_id"], "caption": text,
-                                  "lexicon": sorted("|".join(sorted(u)) for u in extracted),
-                                  "human": sorted("|".join(sorted(u)) for u in human)})
-    write_agreement(args, lexicon, agreement(pairs), agreement(specific_pairs), flags,
-                    disagreements)
+    rows, pending = annotated_rows(read_worksheet(args.worksheet))
+    results = [compare_row(row, captions[(row["recording_id"], row["level"])], lexicon,
+                           taxonomy.class_ids) for row in rows]
+    write_agreement(args, lexicon, agreement([r["pair"] for r in results]),
+                    agreement([r["specific"] for r in results]),
+                    [r["flag"] for r in results],
+                    [r["disagreement"] for r in results if r["disagreement"]], pending)
 
 
-def write_agreement(args, lexicon, mentions, specific, flags, disagreements) -> None:
+def write_agreement(args, lexicon, mentions, specific, flags, disagreements, pending) -> None:
     confusion = {f"lexicon_{a}_human_{b}": sum(f == (a, b) for f in flags)
                  for a in (True, False) for b in (True, False)}
     result = {"run": args.run_dir.name, "split": args.split, "lexicon_sha256": lexicon.sha256(),
-              "n_captions": mentions.n_captions,
+              "n_captions": mentions.n_captions, "n_not_annotated": pending,
               "mentions": {"precision": mentions.precision, "recall": mentions.recall,
                            "tp": mentions.true_positive, "fp": mentions.false_positive,
                            "fn": mentions.false_negative, "exact": mentions.exact_captions},
               "over_specific": {"precision": specific.precision, "recall": specific.recall},
               "hallucination_flag": confusion, "disagreements": disagreements}
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    destination = ROOT / "docs/measurements" / f"caption_mention_agreement_{stamp}.md"
+    destination = getattr(args, "output", None) or (
+        ROOT / "docs/measurements" / f"caption_mention_agreement_{stamp}.md")
     destination.with_suffix(".json").write_text(json.dumps(result, indent=2, ensure_ascii=False),
                                                 encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")
@@ -191,8 +217,9 @@ def render(result: dict[str, Any]) -> str:
     lines = [
         f"# Bộ trích mention vs người đọc — `{result['run']}` ({result['split']})", "",
         f"> Sinh bởi `scripts.caption_mention_worksheet score`. Lexicon "
-        f"`{result['lexicon_sha256'][:8]}…`; {result['n_captions']} caption unconstrained, "
-        "người đọc mù (không timeline, không output lexicon).", "",
+        f"`{result['lexicon_sha256'][:8]}…`; {result['n_captions']} caption unconstrained đã "
+        f"điền ({result['n_not_annotated']} dòng chưa điền, bỏ qua); người đọc mù (không "
+        "timeline, không output lexicon, không nghe audio).", "",
         "| Mức | Precision | Recall | TP | FP | FN | Caption khớp hoàn toàn |",
         "|---|---:|---:|---:|---:|---:|---:|",
         f"| Mention (lớp) | {m['precision']:.3f} | {m['recall']:.3f} | {m['tp']} | {m['fp']} "
