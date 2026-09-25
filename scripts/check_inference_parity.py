@@ -90,6 +90,23 @@ def event_key(events: list[dict]) -> list[tuple]:
                   for e in events)
 
 
+FRAME_TOLERANCE_S = 0.011  # one 10 ms frame plus float slack
+COLLAR_S = 0.2  # evaluation_protocol onset collar
+
+
+def matched(served: list[tuple], frozen: list[tuple], tolerance: float) -> int:
+    """Frozen events with an unused served event of the same class within `tolerance` s."""
+    free = list(served)
+    count = 0
+    for label, onset, offset in frozen:
+        hit = next((s for s in free if s[0] == label and abs(s[1] - onset) <= tolerance
+                    and abs(s[2] - offset) <= tolerance), None)
+        if hit is not None:
+            free.remove(hit)
+            count += 1
+    return count
+
+
 def check(sed: ServedSed, frozen: dict[str, np.ndarray], rid: str, paths) -> dict:
     audio, stored_path = paths
     stored = np.load(stored_path, allow_pickle=False).astype(np.float32)
@@ -104,7 +121,9 @@ def check(sed: ServedSed, frozen: dict[str, np.ndarray], rid: str, paths) -> dic
             "prob_max_abs": float(np.abs(served - frozen[rid]).max())
             if served.shape == frozen[rid].shape else None,
             "events_equal": served_events == frozen_events, "n_events": len(frozen_events),
-            "n_served_events": len(served_events), "n_shared_events": shared}
+            "n_served_events": len(served_events), "n_shared_events": shared,
+            "n_within_frame": matched(served_events, frozen_events, FRAME_TOLERANCE_S),
+            "n_within_collar": matched(served_events, frozen_events, COLLAR_S)}
 
 
 def render(result: dict) -> str:
@@ -123,6 +142,8 @@ def render(result: dict) -> str:
         f"| Recording có event trùng khít | {s['events_equal']}/{len(rows)} |",
         f"| Event trùng khít (class + onset + offset) | {s['n_shared_events']} / "
         f"{s['n_events']} đóng băng, {s['n_served_events']} phục vụ |",
+        f"| Event khớp khi lệch biên ≤ 1 frame / ≤ collar {COLLAR_S} s | "
+        f"{s['n_within_frame']} / {s['n_within_collar']} trên {s['n_events']} |",
         "| Tái tạo đúng batch dump (batch test đầu, 24 cửa sổ), Δlogit tuyệt đối lớn nhất | "
         + ", ".join(f"`{m[-7:]}` {v:.3g}" for m, v in result["batch_reproduction"].items())
         + " |",
@@ -150,6 +171,8 @@ def main() -> None:
                "n_events": sum(r["n_events"] for r in rows),
                "n_served_events": sum(r["n_served_events"] for r in rows),
                "n_shared_events": sum(r["n_shared_events"] for r in rows),
+               "n_within_frame": sum(r["n_within_frame"] for r in rows),
+               "n_within_collar": sum(r["n_within_collar"] for r in rows),
                "event_mismatches": [r["recording_id"] for r in rows if not r["events_equal"]]}
     result = {"ensemble": ENSEMBLE.name, "postproc": POSTPROC, "device": args.device,
               "git": git, "summary": summary, "rows": rows,
