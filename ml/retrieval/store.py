@@ -1,6 +1,7 @@
 """PostgreSQL + pgvector event store for W6 (ADR-0005, ADR-0027).
 
-Three retrieval modes (SYSTEM §7.6), always scoped to one corpus (``recordings.split``):
+Three retrieval modes (SYSTEM §7.6), always scoped to one corpus — a benchmark split
+(``recordings.split``) or the uploaded recordings (``source_dataset = 'upload'``, ADR-0029 §6):
 
 - ``structured_only`` — hard filters, ordered by the earliest onset of a filtered class;
 - ``vector_only``     — cosine ranking over every document, no filter;
@@ -23,6 +24,14 @@ from ml.retrieval.temporal import PREDICATES
 
 DEFAULT_DSN = "postgresql://app:app@localhost:5432/environmental_audio"
 MODES = ("structured_only", "vector_only", "hybrid")
+UPLOAD_CORPUS = "upload"
+
+
+def corpus_clause(corpus: str) -> str:
+    """WHERE fragment over alias ``r`` (recordings); benchmark splits keep the RQ3 text."""
+    if corpus == UPLOAD_CORPUS:
+        return "r.source_dataset = 'upload'"
+    return "r.split = %(split)s"
 
 
 def connect(dsn: str | None = None):
@@ -91,7 +100,8 @@ def search(conn, mode: str, split: str, filters: Mapping[str, Any],
     """Top-k recording ids for one query in one corpus."""
     params: dict[str, Any] = {"split": split, "version": embedding_version, "k": k}
     base = ("SELECT d.recording_id FROM retrieval_documents d JOIN recordings r "
-            "USING (recording_id) WHERE r.split = %(split)s AND d.embedding_version = %(version)s")
+            f"USING (recording_id) WHERE {corpus_clause(split)}"
+            " AND d.embedding_version = %(version)s")
     if mode in ("structured_only", "hybrid"):
         where, extra = filter_sql(filters)
         base += " AND " + where
@@ -114,8 +124,8 @@ def indexed_events(conn, split: str) -> dict[str, list[dict[str, Any]]]:
     """Predicted events per recording of a corpus — what the system actually indexed."""
     rows = conn.execute(
         "SELECT e.recording_id, e.class_id, e.onset_s, e.offset_s FROM events e "
-        "JOIN recordings r USING (recording_id) WHERE r.split = %s "
-        "AND e.provenance = 'prediction'", (split,)).fetchall()
+        f"JOIN recordings r USING (recording_id) WHERE {corpus_clause(split)} "
+        "AND e.provenance = 'prediction'", {"split": split}).fetchall()
     events: dict[str, list[dict[str, Any]]] = {}
     for rid, class_id, onset, offset in rows:
         events.setdefault(rid, []).append({"class_id": class_id, "onset_s": onset,
@@ -127,8 +137,8 @@ def insert_recording(conn, row: Mapping[str, Any]) -> None:
     conn.execute(
         "INSERT INTO recordings (recording_id, source_dataset, source_id, duration_s,"
         " sample_rate, channels, sha256, split, audio_path) VALUES (%(recording_id)s,"
-        " 'datased', %(source_id)s, %(duration_s)s, %(sample_rate)s, %(channels)s,"
-        " %(sha256)s, %(split)s, %(audio_path)s)", dict(row))
+        " %(source_dataset)s, %(source_id)s, %(duration_s)s, %(sample_rate)s, %(channels)s,"
+        " %(sha256)s, %(split)s, %(audio_path)s)", {"source_dataset": "datased", **row})
 
 
 def insert_events(conn, recording_id: str, events: Sequence[Mapping[str, Any]],
@@ -175,8 +185,8 @@ def events_with_ids(conn, split: str) -> dict[str, list[dict[str, Any]]]:
     """Indexed events of a corpus with their database ids — what answers may cite."""
     rows = conn.execute(
         "SELECT e.event_id, e.recording_id, e.class_id, e.onset_s, e.offset_s FROM events e "
-        "JOIN recordings r USING (recording_id) WHERE r.split = %s "
-        "AND e.provenance = 'prediction'", (split,)).fetchall()
+        f"JOIN recordings r USING (recording_id) WHERE {corpus_clause(split)} "
+        "AND e.provenance = 'prediction'", {"split": split}).fetchall()
     events: dict[str, list[dict[str, Any]]] = {}
     for event_id, rid, class_id, onset, offset in rows:
         events.setdefault(rid, []).append({"event_id": event_id, "class_id": class_id,
