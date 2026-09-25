@@ -10,8 +10,8 @@
   "sed_polyphonic_20260924T080715Z"
  ],
  "git": {
-  "revision": "66e4b838f5c8a4a9fa359ae99b0de13fa67e9701",
-  "dirty": true
+  "revision": "5d7603cfc27f6283b21f91c97d26cab1eca86baf",
+  "dirty": false
  },
  "reference_events": 6202,
  "total_substitutions": 1482,
