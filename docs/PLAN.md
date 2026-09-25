@@ -156,7 +156,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 ### Nghiệm thu W4
 
 - [x] Event-based F1 và PSDS-1/PSDS-2 cho cả ba nhánh
-- [ ] CI bootstrap theo recording cho mọi số chính — **có cho từng run; chưa có cho số trung bình nhiều run** (hiện báo mean ± sd)
+- [x] CI bootstrap theo recording cho mọi số chính — từng run, và event-F1 trung bình nhiều run + hiệu số C − B (`rq1_multirun_bootstrap_clean_20260925.md`, ADR-0021 §6; PSDS không cộng dồn nên chỉ mean ± sd)
 - [x] Bảng phân tích lỗi per-class (`branch_per_class_*`, `error_totals` trong `evaluation.json`)
 - [x] [taxonomy.md §8](taxonomy.md) cập nhật bằng cặp nhầm thật, kèm số lượt — §8.1, dev, 7 run sạch (`confusable_pairs_clean_dev_20260925.md`)
 - [x] Nếu không đủ ngân sách cho 3 seed: ghi rõ và **không** tuyên bố Δ nhỏ có ý nghĩa (5 seed, Welch t-test)

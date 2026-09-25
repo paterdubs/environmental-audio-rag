@@ -1,0 +1,51 @@
+{
+ "n_recordings": 142,
+ "n_bootstrap": 1000,
+ "confidence": 0.95,
+ "seed": 20260922,
+ "branches": {
+  "B": {
+   "estimate": 0.06098444941652872,
+   "lower": 0.04397732308838392,
+   "upper": 0.0794779738119525,
+   "runs": [
+    "sed_polyphonic_20260924T054531Z",
+    "sed_polyphonic_20260924T070927Z",
+    "sed_polyphonic_20260924T074656Z"
+   ],
+   "sd": 0.0048211810108028845
+  },
+  "C": {
+   "estimate": 0.05390574019940511,
+   "lower": 0.039056017083726975,
+   "upper": 0.06994247393556183,
+   "runs": [
+    "sed_polyphonic_20260924T033537Z",
+    "sed_polyphonic_20260924T061000Z",
+    "sed_polyphonic_20260924T072736Z",
+    "sed_polyphonic_20260924T080715Z"
+   ],
+   "sd": 0.00875830685843396
+  }
+ },
+ "differences": {
+  "C-B": {
+   "estimate": -0.007078709217123606,
+   "lower": -0.01635332526539383,
+   "upper": 0.0021171931444093784
+  }
+ },
+ "per_run": {
+  "sed_polyphonic_20260924T054531Z": 0.062111801242236024,
+  "sed_polyphonic_20260924T070927Z": 0.06514206514206514,
+  "sed_polyphonic_20260924T074656Z": 0.05569948186528497,
+  "sed_polyphonic_20260924T033537Z": 0.06602475928473177,
+  "sed_polyphonic_20260924T061000Z": 0.047223994894703254,
+  "sed_polyphonic_20260924T072736Z": 0.04773561811505508,
+  "sed_polyphonic_20260924T080715Z": 0.05463858850313034
+ },
+ "git": {
+  "revision": "f035e66852748a13e3d7a60db5b0b66783c7c154",
+  "dirty": false
+ }
+}

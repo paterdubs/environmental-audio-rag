@@ -65,6 +65,14 @@ Khác biệt đáng ghi: event-F1 giờ nghiêng về **B > C** ở cả hai ph�
 p 0.12–0.23) — vẫn không có ý nghĩa, nhưng không được viết "C nhỉnh hơn". Số trước
 khi sửa: `git show 84d4405:docs/measurements/rq1_multiseed_clean_20260924.md`.
 
+### 6. Cập nhật 26/09 — CI bootstrap theo recording cho số trung bình
+
+`rq1_multirun_bootstrap_clean_20260925.md` (`scripts.report_multirun_bootstrap`, 7 run sạch,
+test 142 recording, 1000 lần, ghép cặp theo recording, run giữ nguyên): event-F1 trung bình
+B 0.0610 [0.0440, 0.0795], C 0.0539 [0.0391, 0.0699]; **C − B −0.0071 [−0.0164, +0.0021]** —
+CI chứa 0, cùng kết luận với Welch t-test. CI này chỉ phản ánh bất định do mẫu recording (seed
+không được rút lại); PSDS không có CI loại này vì không cộng dồn theo recording.
+
 ## Consequences
 
 ### Tích cực

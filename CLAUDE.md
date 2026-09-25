@@ -76,6 +76,8 @@ Kết luận chốt dựa trên nhiều run (ADR-0021), Welch t-test:
 | PSDS-1 | B 0.2902 · C 0.2892 · p=0.913 | p=0.313 |
 | PSDS-2 | B 0.6498 · C 0.6591 · p=0.181 | p=0.772 |
 
+CI bootstrap theo recording (ghép cặp, 26/09): C − B event-F1 −0.0071 [−0.0164, +0.0021].
+
 **RQ1 âm tính:** pretraining thêm trên DataSEC không tạo khác biệt đo được (event-F1
 nghiêng về B > C nhưng p 0.12–0.23 — không được viết "C nhỉnh hơn"). Pretraining nói
 chung (B/C vs A) giúp rõ. Trọng tâm đóng góp chuyển sang C1/C2/C4 (ADR-0021).
@@ -208,7 +210,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 
 | Hạng mục | Còn thiếu |
 |---|---|
-| W4 | 4.7 ablation A4 `pos_weight`; bootstrap CI cho số trung bình nhiều run |
+| W4 | 4.7 ablation A4 `pos_weight` |
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, **chờ duyệt**); tuỳ chọn: độ nhạy với SED tối ưu, document caption LLM, Alembic |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
 
@@ -426,6 +428,13 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 (tiếp) — W4: CI bootstrap cho event-F1 trung bình nhiều run
+
+`scripts.report_multirun_bootstrap`: đếm (Nref, Nsys, Ntp) theo recording một lần, bootstrap
+ghép cặp bằng cộng dồn (micro-F1), kiểm khớp `evaluation.json` từng run. C − B −0.0071
+[−0.0164, +0.0021] — RQ1 âm tính đứng vững. Nghiệm thu W4 chỉ còn 4.7 (A4). 529 test pass
+(commit f035e66 ghi nhầm 533).
 
 ### 2026-09-26 — W4 4.6: `confusable_with` từ cặp nhầm đo được
 
