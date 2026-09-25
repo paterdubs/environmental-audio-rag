@@ -60,6 +60,16 @@ trùng `sha256` thì trả recording đã có. Truy vấn nhận `corpus ∈ {up
 (mặc định `upload`); với `validation`/`test` câu SQL giữ nguyên như RQ3. Giới hạn: file ≤
 50 MB, thời lượng ≤ 600 s; audio lưu ở `data/uploads/` (gitignored).
 
+### 7. Kết quả parity (26/09, `inference_parity_20260925.md`, git `48615a0`, sạch)
+
+142 recording test, CUDA. Đặc trưng từ WAV trùng file `.npy` 142/142 (lệch 0). Dựng đúng
+batch lúc dump (24 cửa sổ trộn nhiều recording) → logit trùng **từng bit** ở cả 4
+checkpoint: pipeline phục vụ là pipeline đã đo. Phục vụ từng recording riêng (batch khác)
+thì autocast fp16 cho logit lệch tới ~0.06 (fp32 cũng lệch cỡ đó so với bản fp16 đã đóng
+băng), xác suất lệch tối đa 0.0118: 332/408 event trùng khít, 377/408 trong 1 frame,
+405/408 trong collar 0.2 s. Không phải lỗi: là nhiễu số học vốn có của chính số đã báo cáo
+— ghi vào Hạn chế (biên event tại θ = 0.95 nhạy với nhiễu fp16 ở mức vài phần nghìn).
+
 ## Consequences
 
 ### Tích cực
