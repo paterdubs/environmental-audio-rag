@@ -1,0 +1,1741 @@
+[
+  {
+    "query_id": "q-001",
+    "group": "single_class",
+    "question": "Which recordings contain vehicle pass-by?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 80,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-002",
+    "group": "single_class",
+    "question": "Which recordings contain voices?",
+    "question_vi": "Bản ghi nào có tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "voices"
+      ]
+    },
+    "support_train": 80,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-003",
+    "group": "single_class",
+    "question": "Which recordings contain train?",
+    "question_vi": "Bản ghi nào có tiếng tàu hỏa?",
+    "filters": {
+      "classes_all": [
+        "train"
+      ]
+    },
+    "support_train": 69,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-004",
+    "group": "single_class",
+    "question": "Which recordings contain workshop?",
+    "question_vi": "Bản ghi nào có tiếng máy móc của xưởng hoặc công trình?",
+    "filters": {
+      "classes_all": [
+        "workshop"
+      ]
+    },
+    "support_train": 55,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-005",
+    "group": "single_class",
+    "question": "Which recordings contain propeller aircrafts?",
+    "question_vi": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng?",
+    "filters": {
+      "classes_all": [
+        "propeller_aircrafts"
+      ]
+    },
+    "support_train": 52,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-006",
+    "group": "single_class",
+    "question": "Which recordings contain sirens and alarms?",
+    "question_vi": "Bản ghi nào có âm thanh giống còi hú hoặc chuông báo động?",
+    "filters": {
+      "classes_all": [
+        "sirens_and_alarms"
+      ]
+    },
+    "support_train": 50,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-007",
+    "group": "single_class",
+    "question": "Which recordings contain birds?",
+    "question_vi": "Bản ghi nào có tiếng chim?",
+    "filters": {
+      "classes_all": [
+        "birds"
+      ]
+    },
+    "support_train": 47,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-008",
+    "group": "single_class",
+    "question": "Which recordings contain vehicle idling?",
+    "question_vi": "Bản ghi nào có tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "classes_all": [
+        "vehicle_idling"
+      ]
+    },
+    "support_train": 47,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-009",
+    "group": "single_class",
+    "question": "Which recordings contain jet aircrafts?",
+    "question_vi": "Bản ghi nào có tiếng máy bay phản lực?",
+    "filters": {
+      "classes_all": [
+        "jet_aircrafts"
+      ]
+    },
+    "support_train": 43,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-010",
+    "group": "single_class",
+    "question": "Which recordings contain horn?",
+    "question_vi": "Bản ghi nào có tiếng còi xe?",
+    "filters": {
+      "classes_all": [
+        "horn"
+      ]
+    },
+    "support_train": 37,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-011",
+    "group": "single_class",
+    "question": "Which recordings contain dog barkings and howlings?",
+    "question_vi": "Bản ghi nào có tiếng chó sủa hoặc tru?",
+    "filters": {
+      "classes_all": [
+        "dog_barkings_and_howlings"
+      ]
+    },
+    "support_train": 34,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-012",
+    "group": "single_class",
+    "question": "Which recordings contain cicadas and crickets?",
+    "question_vi": "Bản ghi nào có tiếng côn trùng như ve sầu hoặc dế?",
+    "filters": {
+      "classes_all": [
+        "cicadas_and_crickets"
+      ]
+    },
+    "support_train": 29,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-013",
+    "group": "single_class",
+    "question": "Which recordings contain lawn mower brush cutter and olive shaker?",
+    "question_vi": "Bản ghi nào có tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ?",
+    "filters": {
+      "classes_all": [
+        "lawn_mower_brush_cutter_olive_shaker"
+      ]
+    },
+    "support_train": 27,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-014",
+    "group": "single_class",
+    "question": "Which recordings contain music?",
+    "question_vi": "Bản ghi nào có tiếng nhạc?",
+    "filters": {
+      "classes_all": [
+        "music"
+      ]
+    },
+    "support_train": 26,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-015",
+    "group": "single_class",
+    "question": "Which recordings contain vacuum cleaner fan and hairdryer?",
+    "question_vi": "Bản ghi nào có tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc?",
+    "filters": {
+      "classes_all": [
+        "vacuum_cleaner_fan_hairdryer"
+      ]
+    },
+    "support_train": 24,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-016",
+    "group": "single_class",
+    "question": "Which recordings contain crows seagulls and magpies?",
+    "question_vi": "Bản ghi nào có tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là?",
+    "filters": {
+      "classes_all": [
+        "crows_seagulls_magpies"
+      ]
+    },
+    "support_train": 23,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-017",
+    "group": "single_class",
+    "question": "Which recordings contain chicken coop?",
+    "question_vi": "Bản ghi nào có tiếng gà trong chuồng?",
+    "filters": {
+      "classes_all": [
+        "chicken_coop"
+      ]
+    },
+    "support_train": 22,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-018",
+    "group": "single_class",
+    "question": "Which recordings contain bells?",
+    "question_vi": "Bản ghi nào có tiếng chuông?",
+    "filters": {
+      "classes_all": [
+        "bells"
+      ]
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-019",
+    "group": "single_class",
+    "question": "Which recordings contain thunder fireworks and gunshot?",
+    "question_vi": "Bản ghi nào có âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng?",
+    "filters": {
+      "classes_all": [
+        "thunder_fireworks_gunshot"
+      ]
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-020",
+    "group": "single_class",
+    "question": "Which recordings contain cat fight and moans?",
+    "question_vi": "Bản ghi nào có tiếng mèo kêu hoặc đánh nhau?",
+    "filters": {
+      "classes_all": [
+        "cat_fights_and_moans"
+      ]
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-021",
+    "group": "single_class",
+    "question": "Which recordings contain glass breaking?",
+    "question_vi": "Bản ghi nào có tiếng kính vỡ?",
+    "filters": {
+      "classes_all": [
+        "glass_breaking"
+      ]
+    },
+    "support_train": 10,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-022",
+    "group": "multi_class",
+    "question": "Which recordings contain both vehicle idling and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng động cơ xe chạy không tải và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "vehicle_idling",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 26,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-023",
+    "group": "multi_class",
+    "question": "Which recordings contain both propeller aircrafts and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng máy bay cánh quạt hoặc trực thăng và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "propeller_aircrafts",
+        "voices"
+      ]
+    },
+    "support_train": 20,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-024",
+    "group": "multi_class",
+    "question": "Which recordings contain both vehicle pass-by and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng xe chạy qua và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "vehicle_pass_by",
+        "voices"
+      ]
+    },
+    "support_train": 20,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-025",
+    "group": "multi_class",
+    "question": "Which recordings contain both jet aircrafts and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng máy bay phản lực và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "jet_aircrafts",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-026",
+    "group": "multi_class",
+    "question": "Which recordings contain both vehicle idling and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng động cơ xe chạy không tải và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "vehicle_idling",
+        "voices"
+      ]
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-027",
+    "group": "multi_class",
+    "question": "Which recordings contain both horn and train?",
+    "question_vi": "Bản ghi nào có cả tiếng còi xe và tiếng tàu hỏa?",
+    "filters": {
+      "classes_all": [
+        "horn",
+        "train"
+      ]
+    },
+    "support_train": 18,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-028",
+    "group": "multi_class",
+    "question": "Which recordings contain both dog barkings and howlings and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng chó sủa hoặc tru và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "dog_barkings_and_howlings",
+        "voices"
+      ]
+    },
+    "support_train": 16,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-029",
+    "group": "multi_class",
+    "question": "Which recordings contain both dog barkings and howlings and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng chó sủa hoặc tru và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "dog_barkings_and_howlings",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 15,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-030",
+    "group": "multi_class",
+    "question": "Which recordings contain both horn and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng còi xe và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "horn",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 15,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-031",
+    "group": "multi_class",
+    "question": "Which recordings contain both birds and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng chim và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "birds",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 14,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-032",
+    "group": "multi_class",
+    "question": "Which recordings contain both music and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng nhạc và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "music",
+        "voices"
+      ]
+    },
+    "support_train": 14,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-033",
+    "group": "multi_class",
+    "question": "Which recordings contain both jet aircrafts and vehicle idling?",
+    "question_vi": "Bản ghi nào có cả tiếng máy bay phản lực và tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "classes_all": [
+        "jet_aircrafts",
+        "vehicle_idling"
+      ]
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-034",
+    "group": "multi_class",
+    "question": "Which recordings contain both sirens and alarms and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả âm thanh giống còi hú hoặc chuông báo động và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "sirens_and_alarms",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-035",
+    "group": "multi_class",
+    "question": "Which recordings contain both crows seagulls and magpies and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "crows_seagulls_magpies",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-036",
+    "group": "multi_class",
+    "question": "Which recordings contain both dog barkings and howlings and vehicle idling?",
+    "question_vi": "Bản ghi nào có cả tiếng chó sủa hoặc tru và tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "classes_all": [
+        "dog_barkings_and_howlings",
+        "vehicle_idling"
+      ]
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-037",
+    "group": "multi_class",
+    "question": "Which recordings contain both horn and vehicle idling?",
+    "question_vi": "Bản ghi nào có cả tiếng còi xe và tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "classes_all": [
+        "horn",
+        "vehicle_idling"
+      ]
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-038",
+    "group": "multi_class",
+    "question": "Which recordings contain both propeller aircrafts and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng máy bay cánh quạt hoặc trực thăng và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "propeller_aircrafts",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-039",
+    "group": "multi_class",
+    "question": "Which recordings contain both train and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng tàu hỏa và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "train",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-040",
+    "group": "multi_class",
+    "question": "Which recordings contain both birds and crows seagulls and magpies?",
+    "question_vi": "Bản ghi nào có cả tiếng chim và tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là?",
+    "filters": {
+      "classes_all": [
+        "birds",
+        "crows_seagulls_magpies"
+      ]
+    },
+    "support_train": 10,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-041",
+    "group": "multi_class",
+    "question": "Which recordings contain both birds and train?",
+    "question_vi": "Bản ghi nào có cả tiếng chim và tiếng tàu hỏa?",
+    "filters": {
+      "classes_all": [
+        "birds",
+        "train"
+      ]
+    },
+    "support_train": 10,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-042",
+    "group": "multi_class",
+    "question": "Which recordings contain both birds and propeller aircrafts?",
+    "question_vi": "Bản ghi nào có cả tiếng chim và tiếng máy bay cánh quạt hoặc trực thăng?",
+    "filters": {
+      "classes_all": [
+        "birds",
+        "propeller_aircrafts"
+      ]
+    },
+    "support_train": 9,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-043",
+    "group": "multi_class",
+    "question": "Which recordings contain both music and vehicle pass-by?",
+    "question_vi": "Bản ghi nào có cả tiếng nhạc và tiếng xe chạy qua?",
+    "filters": {
+      "classes_all": [
+        "music",
+        "vehicle_pass_by"
+      ]
+    },
+    "support_train": 9,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-044",
+    "group": "multi_class",
+    "question": "Which recordings contain both birds and jet aircrafts?",
+    "question_vi": "Bản ghi nào có cả tiếng chim và tiếng máy bay phản lực?",
+    "filters": {
+      "classes_all": [
+        "birds",
+        "jet_aircrafts"
+      ]
+    },
+    "support_train": 8,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-045",
+    "group": "multi_class",
+    "question": "Which recordings contain both birds and vehicle idling?",
+    "question_vi": "Bản ghi nào có cả tiếng chim và tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "classes_all": [
+        "birds",
+        "vehicle_idling"
+      ]
+    },
+    "support_train": 8,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-046",
+    "group": "multi_class",
+    "question": "Which recordings contain both horn and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng còi xe và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "horn",
+        "voices"
+      ]
+    },
+    "support_train": 8,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-047",
+    "group": "multi_class",
+    "question": "Which recordings contain both jet aircrafts and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng máy bay phản lực và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "jet_aircrafts",
+        "voices"
+      ]
+    },
+    "support_train": 8,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-048",
+    "group": "multi_class",
+    "question": "Which recordings contain both lawn mower brush cutter and olive shaker and voices?",
+    "question_vi": "Bản ghi nào có cả tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ và tiếng người nói?",
+    "filters": {
+      "classes_all": [
+        "lawn_mower_brush_cutter_olive_shaker",
+        "voices"
+      ]
+    },
+    "support_train": 8,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-049",
+    "group": "temporal",
+    "question": "Which recordings have vehicle pass-by before vehicle idling?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua trước tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "vehicle_pass_by",
+        "b": "vehicle_idling",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-050",
+    "group": "temporal",
+    "question": "Which recordings have voices before vehicle pass-by?",
+    "question_vi": "Bản ghi nào có tiếng người nói trước tiếng xe chạy qua?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "voices",
+        "b": "vehicle_pass_by",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 18,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-051",
+    "group": "temporal",
+    "question": "Which recordings have voices before vehicle idling?",
+    "question_vi": "Bản ghi nào có tiếng người nói trước tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "voices",
+        "b": "vehicle_idling",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 17,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-052",
+    "group": "temporal",
+    "question": "Which recordings have vehicle idling before vehicle pass-by?",
+    "question_vi": "Bản ghi nào có tiếng động cơ xe chạy không tải trước tiếng xe chạy qua?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "vehicle_idling",
+        "b": "vehicle_pass_by",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 16,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-053",
+    "group": "temporal",
+    "question": "Which recordings have vehicle idling before voices?",
+    "question_vi": "Bản ghi nào có tiếng động cơ xe chạy không tải trước tiếng người nói?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "vehicle_idling",
+        "b": "voices",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 15,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-054",
+    "group": "temporal",
+    "question": "Which recordings have voices before dog barkings and howlings?",
+    "question_vi": "Bản ghi nào có tiếng người nói trước tiếng chó sủa hoặc tru?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "voices",
+        "b": "dog_barkings_and_howlings",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 15,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-055",
+    "group": "temporal",
+    "question": "Which recordings have horn before vehicle pass-by?",
+    "question_vi": "Bản ghi nào có tiếng còi xe trước tiếng xe chạy qua?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "horn",
+        "b": "vehicle_pass_by",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-056",
+    "group": "temporal",
+    "question": "Which recordings have vehicle pass-by before jet aircrafts?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua trước tiếng máy bay phản lực?",
+    "filters": {
+      "temporal": {
+        "predicate": "before",
+        "a": "vehicle_pass_by",
+        "b": "jet_aircrafts",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-057",
+    "group": "temporal",
+    "question": "Which recordings have music after voices?",
+    "question_vi": "Bản ghi nào có tiếng nhạc sau tiếng người nói?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "music",
+        "b": "voices",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-058",
+    "group": "temporal",
+    "question": "Which recordings have vehicle pass-by after birds?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua sau tiếng chim?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "vehicle_pass_by",
+        "b": "birds",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-059",
+    "group": "temporal",
+    "question": "Which recordings have vehicle pass-by after dog barkings and howlings?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua sau tiếng chó sủa hoặc tru?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "vehicle_pass_by",
+        "b": "dog_barkings_and_howlings",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-060",
+    "group": "temporal",
+    "question": "Which recordings have vehicle pass-by after jet aircrafts?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua sau tiếng máy bay phản lực?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "vehicle_pass_by",
+        "b": "jet_aircrafts",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-061",
+    "group": "temporal",
+    "question": "Which recordings have voices after vehicle pass-by?",
+    "question_vi": "Bản ghi nào có tiếng người nói sau tiếng xe chạy qua?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "voices",
+        "b": "vehicle_pass_by",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-062",
+    "group": "temporal",
+    "question": "Which recordings have vehicle idling after horn?",
+    "question_vi": "Bản ghi nào có tiếng động cơ xe chạy không tải sau tiếng còi xe?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "vehicle_idling",
+        "b": "horn",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 10,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-063",
+    "group": "temporal",
+    "question": "Which recordings have vehicle pass-by after train?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua sau tiếng tàu hỏa?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "vehicle_pass_by",
+        "b": "train",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 10,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-064",
+    "group": "temporal",
+    "question": "Which recordings have birds after vehicle pass-by?",
+    "question_vi": "Bản ghi nào có tiếng chim sau tiếng xe chạy qua?",
+    "filters": {
+      "temporal": {
+        "predicate": "after",
+        "a": "birds",
+        "b": "vehicle_pass_by",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 9,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-065",
+    "group": "temporal",
+    "question": "Which recordings have propeller aircrafts overlapping with voices?",
+    "question_vi": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng chồng lên tiếng người nói?",
+    "filters": {
+      "temporal": {
+        "predicate": "overlaps",
+        "a": "propeller_aircrafts",
+        "b": "voices",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-066",
+    "group": "temporal",
+    "question": "Which recordings have voices overlapping with propeller aircrafts?",
+    "question_vi": "Bản ghi nào có tiếng người nói chồng lên tiếng máy bay cánh quạt hoặc trực thăng?",
+    "filters": {
+      "temporal": {
+        "predicate": "overlaps",
+        "a": "voices",
+        "b": "propeller_aircrafts",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-067",
+    "group": "temporal",
+    "question": "Which recordings have horn overlapping with train?",
+    "question_vi": "Bản ghi nào có tiếng còi xe chồng lên tiếng tàu hỏa?",
+    "filters": {
+      "temporal": {
+        "predicate": "overlaps",
+        "a": "horn",
+        "b": "train",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 13,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-068",
+    "group": "temporal",
+    "question": "Which recordings have train overlapping with horn?",
+    "question_vi": "Bản ghi nào có tiếng tàu hỏa chồng lên tiếng còi xe?",
+    "filters": {
+      "temporal": {
+        "predicate": "overlaps",
+        "a": "train",
+        "b": "horn",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 13,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-069",
+    "group": "temporal",
+    "question": "Which recordings have vehicle pass-by overlapping with voices?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua chồng lên tiếng người nói?",
+    "filters": {
+      "temporal": {
+        "predicate": "overlaps",
+        "a": "vehicle_pass_by",
+        "b": "voices",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 8,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-070",
+    "group": "temporal",
+    "question": "Which recordings have voices overlapping with vehicle pass-by?",
+    "question_vi": "Bản ghi nào có tiếng người nói chồng lên tiếng xe chạy qua?",
+    "filters": {
+      "temporal": {
+        "predicate": "overlaps",
+        "a": "voices",
+        "b": "vehicle_pass_by",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 8,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-071",
+    "group": "temporal",
+    "question": "Which recordings have birds overlapping with train?",
+    "question_vi": "Bản ghi nào có tiếng chim chồng lên tiếng tàu hỏa?",
+    "filters": {
+      "temporal": {
+        "predicate": "overlaps",
+        "a": "birds",
+        "b": "train",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 7,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-072",
+    "group": "temporal",
+    "question": "Which recordings have voices during propeller aircrafts?",
+    "question_vi": "Bản ghi nào có tiếng người nói trong lúc có tiếng máy bay cánh quạt hoặc trực thăng?",
+    "filters": {
+      "temporal": {
+        "predicate": "within",
+        "a": "voices",
+        "b": "propeller_aircrafts",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-073",
+    "group": "temporal",
+    "question": "Which recordings have horn during train?",
+    "question_vi": "Bản ghi nào có tiếng còi xe trong lúc có tiếng tàu hỏa?",
+    "filters": {
+      "temporal": {
+        "predicate": "within",
+        "a": "horn",
+        "b": "train",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-074",
+    "group": "temporal",
+    "question": "Which recordings have dog barkings and howlings during vehicle idling?",
+    "question_vi": "Bản ghi nào có tiếng chó sủa hoặc tru trong lúc có tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "temporal": {
+        "predicate": "within",
+        "a": "dog_barkings_and_howlings",
+        "b": "vehicle_idling",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 5,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-075",
+    "group": "temporal",
+    "question": "Which recordings have dog barkings and howlings during propeller aircrafts?",
+    "question_vi": "Bản ghi nào có tiếng chó sủa hoặc tru trong lúc có tiếng máy bay cánh quạt hoặc trực thăng?",
+    "filters": {
+      "temporal": {
+        "predicate": "within",
+        "a": "dog_barkings_and_howlings",
+        "b": "propeller_aircrafts",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 4,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-076",
+    "group": "temporal",
+    "question": "Which recordings have horn during vehicle idling?",
+    "question_vi": "Bản ghi nào có tiếng còi xe trong lúc có tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "temporal": {
+        "predicate": "within",
+        "a": "horn",
+        "b": "vehicle_idling",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 4,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-077",
+    "group": "temporal",
+    "question": "Which recordings have voices during music?",
+    "question_vi": "Bản ghi nào có tiếng người nói trong lúc có tiếng nhạc?",
+    "filters": {
+      "temporal": {
+        "predicate": "within",
+        "a": "voices",
+        "b": "music",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 4,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-078",
+    "group": "temporal",
+    "question": "Which recordings have voices during vehicle idling?",
+    "question_vi": "Bản ghi nào có tiếng người nói trong lúc có tiếng động cơ xe chạy không tải?",
+    "filters": {
+      "temporal": {
+        "predicate": "within",
+        "a": "voices",
+        "b": "vehicle_idling",
+        "tolerance_s": 0.0
+      }
+    },
+    "support_train": 4,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-079",
+    "group": "duration",
+    "question": "Which recordings have train lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng tàu hỏa kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "train",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 67,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-080",
+    "group": "duration",
+    "question": "Which recordings have propeller aircrafts lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "propeller_aircrafts",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 51,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-081",
+    "group": "duration",
+    "question": "Which recordings have sirens and alarms lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có âm thanh giống còi hú hoặc chuông báo động kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "sirens_and_alarms",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 43,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-082",
+    "group": "duration",
+    "question": "Which recordings have vehicle pass-by lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng xe chạy qua kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "vehicle_pass_by",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 41,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-083",
+    "group": "duration",
+    "question": "Which recordings have propeller aircrafts lasting longer than 30 seconds?",
+    "question_vi": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng kéo dài hơn 30 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "propeller_aircrafts",
+        "min_s": 30.0
+      }
+    },
+    "support_train": 36,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-084",
+    "group": "duration",
+    "question": "Which recordings have jet aircrafts lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng máy bay phản lực kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "jet_aircrafts",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 35,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-085",
+    "group": "duration",
+    "question": "Which recordings have vehicle idling lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng động cơ xe chạy không tải kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "vehicle_idling",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 35,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-086",
+    "group": "duration",
+    "question": "Which recordings have workshop lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng máy móc của xưởng hoặc công trình kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "workshop",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 33,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-087",
+    "group": "duration",
+    "question": "Which recordings have train lasting longer than 30 seconds?",
+    "question_vi": "Bản ghi nào có tiếng tàu hỏa kéo dài hơn 30 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "train",
+        "min_s": 30.0
+      }
+    },
+    "support_train": 30,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-088",
+    "group": "duration",
+    "question": "Which recordings have birds lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng chim kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "birds",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 25,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-089",
+    "group": "duration",
+    "question": "Which recordings have jet aircrafts lasting longer than 30 seconds?",
+    "question_vi": "Bản ghi nào có tiếng máy bay phản lực kéo dài hơn 30 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "jet_aircrafts",
+        "min_s": 30.0
+      }
+    },
+    "support_train": 22,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-090",
+    "group": "duration",
+    "question": "Which recordings have lawn mower brush cutter and olive shaker lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "lawn_mower_brush_cutter_olive_shaker",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 22,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-091",
+    "group": "duration",
+    "question": "Which recordings have music lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng nhạc kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "music",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 21,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-092",
+    "group": "duration",
+    "question": "Which recordings have voices lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng người nói kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "voices",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 20,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-093",
+    "group": "duration",
+    "question": "Which recordings have vacuum cleaner fan and hairdryer lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "vacuum_cleaner_fan_hairdryer",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 19,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-094",
+    "group": "duration",
+    "question": "Which recordings have sirens and alarms lasting longer than 30 seconds?",
+    "question_vi": "Bản ghi nào có âm thanh giống còi hú hoặc chuông báo động kéo dài hơn 30 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "sirens_and_alarms",
+        "min_s": 30.0
+      }
+    },
+    "support_train": 17,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-095",
+    "group": "duration",
+    "question": "Which recordings have bells lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng chuông kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "bells",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 15,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-096",
+    "group": "duration",
+    "question": "Which recordings have lawn mower brush cutter and olive shaker lasting longer than 30 seconds?",
+    "question_vi": "Bản ghi nào có tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ kéo dài hơn 30 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "lawn_mower_brush_cutter_olive_shaker",
+        "min_s": 30.0
+      }
+    },
+    "support_train": 13,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-097",
+    "group": "duration",
+    "question": "Which recordings have cicadas and crickets lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng côn trùng như ve sầu hoặc dế kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "cicadas_and_crickets",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 12,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-098",
+    "group": "duration",
+    "question": "Which recordings have dog barkings and howlings lasting longer than 10 seconds?",
+    "question_vi": "Bản ghi nào có tiếng chó sủa hoặc tru kéo dài hơn 10 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "dog_barkings_and_howlings",
+        "min_s": 10.0
+      }
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-099",
+    "group": "duration",
+    "question": "Which recordings have music lasting longer than 30 seconds?",
+    "question_vi": "Bản ghi nào có tiếng nhạc kéo dài hơn 30 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "music",
+        "min_s": 30.0
+      }
+    },
+    "support_train": 11,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  },
+  {
+    "query_id": "q-100",
+    "group": "duration",
+    "question": "Which recordings have vehicle idling lasting longer than 30 seconds?",
+    "question_vi": "Bản ghi nào có tiếng động cơ xe chạy không tải kéo dài hơn 30 giây?",
+    "filters": {
+      "duration": {
+        "class_id": "vehicle_idling",
+        "min_s": 30.0
+      }
+    },
+    "support_train": 9,
+    "relevance": {
+      "type": "recording_ids",
+      "source": "ground_truth"
+    }
+  }
+]

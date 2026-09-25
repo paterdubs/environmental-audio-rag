@@ -1,0 +1,45 @@
+{
+  "sha256": "e900fec3bcb2f678946b3c9b0a54687b40199b56b1ba5331c7cee0be53300bad",
+  "n": 100,
+  "groups": {
+    "single_class": 21,
+    "multi_class": 27,
+    "temporal": 30,
+    "duration": 22
+  },
+  "coverage": {
+    "train": {
+      "n_recordings": 438,
+      "with_relevant": 100,
+      "by_group": {
+        "single_class": 21,
+        "multi_class": 27,
+        "temporal": 30,
+        "duration": 22
+      },
+      "median_relevant": 15.0
+    },
+    "validation": {
+      "n_recordings": 137,
+      "with_relevant": 96,
+      "by_group": {
+        "single_class": 21,
+        "multi_class": 26,
+        "temporal": 27,
+        "duration": 22
+      },
+      "median_relevant": 5.0
+    },
+    "test": {
+      "n_recordings": 142,
+      "with_relevant": 97,
+      "by_group": {
+        "single_class": 21,
+        "multi_class": 26,
+        "temporal": 28,
+        "duration": 22
+      },
+      "median_relevant": 5.5
+    }
+  }
+}

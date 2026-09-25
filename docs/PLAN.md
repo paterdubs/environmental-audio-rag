@@ -293,7 +293,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~15~~ | ~~RQ1 chưa khoá chính thức~~ — **đóng 24/09** (I8): B/C chạy lại trên tree sạch `5bf1cf7`, `rq1_delta_official_20260924.md` | — | ✅ |
 | ~~16~~ | ~~`query_set.py` dùng lớp `car`, `dog` không có trong taxonomy → lọc rỗng im lặng~~ — **đóng 25/09**: lớp lấy từ `taxonomy.polyphonic_class_ids`, `validate_query_classes` từ chối lớp lạ | — | ✅ |
 | ~~17~~ | ~~Relevance lấy từ chính bộ lọc đang đánh giá (`source: temporal_filter`)~~ — **đóng 25/09**: `ml/retrieval/relevance.py` tính từ annotation ground truth, cùng ngữ nghĩa với SQL (test chạy SQL trên SQLite); contract đổi sang `source: ground_truth` | — | ✅ |
-| 18 | Query set mới chỉ có câu temporal ghép cặp lớp máy móc: **25/100** query có ≥1 recording relevant trên test (34 validation, 43 train — `query_relevance_20260925.md`). Task 6.7 phải làm đủ HANDOFF §A4: 4 nhóm 30/25/25/20, câu tiếng Việt, mọi query có ≥1 relevant — chọn query theo ground truth **train** để khỏi dựa vào test | **CAO** | W6 |
+| ~~18~~ | ~~Query set chỉ có câu temporal, 25/100 câu có relevant trên test~~ — **đóng 26/09** (6.7, ADR-0027): query set v2 4 nhóm 21/27/30/22, EN + VI, chọn theo ground truth **train**; 97/100 câu có relevant trên test, 96/100 dev (`retrieval_queryset_v2_20260925.md`) | — | ✅ |
 
 ---
 

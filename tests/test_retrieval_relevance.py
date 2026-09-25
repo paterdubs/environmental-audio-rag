@@ -82,3 +82,20 @@ def test_python_predicates_match_the_sql_filter_on_sqlite() -> None:
                 sql = sorted(r for (r,) in db.execute(temporal_query(name), params))
                 python = relevant_recordings(query(name, a, b, tolerance), ground_truth)
                 assert python == sql, (name, a, b, tolerance)
+
+
+def test_class_and_duration_rules_use_ground_truth() -> None:
+    both = {"filters": {"classes_all": ["birds", "voices"]},
+            "relevance": {"type": "recording_ids", "source": "ground_truth"}}
+    long_birds = {"filters": {"duration": {"class_id": "birds", "min_s": 5.0}},
+                  "relevance": {"type": "recording_ids", "source": "ground_truth"}}
+    assert relevant_recordings(both, GROUND_TRUTH) == ["datased:S-1", "datased:S-2",
+                                                       "datased:S-3"]
+    assert relevant_recordings(long_birds, GROUND_TRUTH) == ["datased:S-3"]
+
+
+def test_empty_filters_are_rejected() -> None:
+    from ml.retrieval.relevance import satisfied
+
+    with pytest.raises(ValueError, match="at least one filter"):
+        satisfied([event("birds", 0.0, 1.0)], {})
