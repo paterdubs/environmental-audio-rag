@@ -22,8 +22,8 @@ import numpy as np
 
 from ml.evaluation.ensemble import average_predictions
 from ml.evaluation.predictions import load_predictions, save_predictions
+from ml.provenance import git_state
 from ml.taxonomy import load_taxonomy
-from ml.training.common import git_state
 
 ROOT = Path(__file__).resolve().parents[1]
 SHARED = ("split_sha256", "data_manifest_sha256", "taxonomy_sha256")

@@ -4,12 +4,13 @@ import hashlib
 import json
 import os
 import random
-import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
 import torch
+
+from ml.provenance import git_state as git_state  # re-export: torch-free home
 
 
 def seed_everything(seed: int) -> dict[str, int]:
@@ -33,23 +34,6 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(8 * 1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
-
-
-def git_state(root: Path) -> dict:
-    def run(*args: str) -> str:
-        completed = subprocess.run(
-            ["git", *args],
-            cwd=root,
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-        return completed.stdout.strip()
-
-    revision = run("rev-parse", "HEAD")
-    if not revision:
-        raise RuntimeError(f"Cannot resolve Git revision under {root}")
-    return {"revision": revision, "dirty": bool(run("status", "--porcelain"))}
 
 
 def runtime_environment() -> dict:
