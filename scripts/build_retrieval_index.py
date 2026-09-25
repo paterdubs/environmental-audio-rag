@@ -92,6 +92,29 @@ def load_corpus(conn, split: str, corpus: dict, meta: dict, version: str, replac
     return len(corpus["items"])
 
 
+def run_manifest(run_id, args, taxonomy, embedder, loaded, migrations, git) -> dict:
+    """Valid against contracts/run_manifest.schema.json, like every run under ml/runs."""
+    import platform
+
+    import sentence_transformers
+
+    sed = json.loads((args.run / "manifest.json").read_text(encoding="utf-8"))
+    return {
+        "run_id": run_id, "task": "retrieval_index", "complete": True,
+        "command": ["python", "-m", "scripts.build_retrieval_index", *sys.argv[1:]],
+        "class_ids": list(taxonomy.polyphonic_class_ids),
+        "taxonomy_sha256": taxonomy.checksum, "split_sha256": sed["split_sha256"],
+        "data_manifest_sha256": sed["data_manifest_sha256"],
+        "config": {"sed_run": args.run.name,
+                   "postproc": (args.postproc or args.run / "postproc.json").name,
+                   "embedding_version": embedder.version, "model_revision": embedder.revision,
+                   "corpora": loaded, "migrations_applied": migrations},
+        "environment": {"python": platform.python_version(),
+                        "sentence_transformers": sentence_transformers.__version__},
+        "git": git,
+    }
+
+
 def main() -> None:
     args = parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -104,11 +127,8 @@ def main() -> None:
     loaded = {split: load_corpus(conn, split, build_corpus(args, split, taxonomy, embedder),
                                  meta, embedder.version, args.replace)
               for split in args.split}
-    manifest = {"task": "retrieval_index", "sed_run": args.run.name,
-                "postproc": (args.postproc or args.run / "postproc.json").name,
-                "embedding_version": embedder.version, "model_revision": embedder.revision,
-                "corpora": loaded, "migrations_applied": migrations, "git": git}
     out = ROOT / "ml/runs" / f"retrieval_index_{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}"
+    manifest = run_manifest(out.name, args, taxonomy, embedder, loaded, migrations, git)
     out.mkdir(parents=True)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(json.dumps(manifest, indent=2))
