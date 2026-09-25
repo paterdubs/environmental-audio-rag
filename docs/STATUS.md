@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-25, sau khi sửa lỗi ghép cửa sổ SED (`7ada7d7`) và tính lại 11 run
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 434 pass (Windows), ruff sạch; CI Linux chạy lại khi push
+**Cập nhật:** 2026-09-25 tối — tối ưu SED không train lại xong (ADR-0024); trước đó sửa lỗi ghép cửa sổ (`7ada7d7`), tính lại 11 run
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 467 pass (Windows), ruff sạch; CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -11,8 +11,8 @@
 
 ## 0. Tóm tắt
 
-- **W1–W3 xong, W4 gần xong** (thiếu 4.6, 4.7). **W5:** nhánh caption unconstrained
-  xong dev+test, nhánh constrained xong code + dev. W6 có nền tảng, chưa có kết quả.
+- **W1–W3 xong, W4 gần xong** (thiếu 4.6, 4.7; 4.9 tối ưu SED xong). **W5 xong**
+  (RQ2 trên test + diễn đạt lớp gộp §7). W6 có nền tảng, chưa có kết quả.
 - **Mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ dự đoán (`7ada7d7`, `3208dbb`).
 - **RQ1 âm tính (không đổi sau khi tính lại):** pretraining thêm trên DataSEC **không**
   cải thiện SED so với chỉ AudioSet (5 run/nhánh, không metric nào p < 0.05).
@@ -22,6 +22,9 @@
 - **Caption (RQ2):** khi chỉ nhận timeline, LLM gần như không bịa nguồn âm; lỗi của
   sinh tự do nằm ở suy diễn bối cảnh, gọi tên quá cụ thể, từ cấm G3 (ADR-0022 §5).
 - **Train SED không tất định cùng seed** → mọi số SED báo mean ± sd nhiều run.
+- **Tối ưu SED không train lại (ADR-0024):** hậu xử lý chọn bằng CV trên dev (θ global
+  0.95, `g_max` p25) nâng event-F1 test ở 5/5 ứng viên (+0.030 … +0.043); hệ thống chọn
+  theo luật ghi trước = ensemble C: event-F1 **0.0941**, PSDS-1 0.3489, PSDS-2 0.6987.
 
 ---
 
@@ -42,6 +45,7 @@
 | SED ba nhánh A/B/C | ✅ 1 + 5 + 5 run | xem §2 |
 | Hậu xử lý + event-F1 + PSDS + bootstrap | ✅ chạy thật trên mọi run | `ml/runs/*/evaluation.json`, `*_eval.md` |
 | Ablation A2, A3, A5 (hậu xử lý) | ✅ trên cả A/B/C | xem §3 |
+| Tối ưu SED: ensemble + hậu xử lý chọn trên dev (4.9) | ✅ 5 ứng viên, chọn trên dev, test một lần | xem §2.5, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md) |
 | Phân tích theo lớp / độ dài / collar | ✅ | xem §2 |
 | 4.6 `confusable_with` từ ma trận nhầm thật | ○ | — |
 | 4.7 Ablation A4 `pos_weight` | ○ | — |
@@ -99,6 +103,25 @@ bội ([branch_per_class_clean_20260924.md](measurements/branch_per_class_clean_
 Train SED **không tất định** cùng seed và cùng code (frame macro-F1 B 0.5850 →
 0.5705). Classifier DataSEC tái lập bit-for-bit. Nguyên nhân chưa xác minh.
 
+### 2.5 Tối ưu không train lại ([ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md))
+
+Ensemble (trung bình xác suất các run sạch) + chọn kiểu θ / percentile `g_max` bằng CV
+5 fold trên **dev**; hệ thống chọn theo luật ghi và commit **trước** test (`0387225`).
+Cả 5 ứng viên chọn θ global 0.95 + `g_max` p25. Test, event-F1 mặc định → CV:
+
+| Ứng viên | CV dev | event-F1 test [95% CI] | PSDS-1 | PSDS-2 |
+|---|---:|---|---:|---:|
+| **ensemble C (chọn)** | 0.1538 | 0.0636 → **0.0941** [0.0624, 0.1277] | 0.3489 | 0.6987 |
+| ensemble B | 0.1334 | 0.0553 → 0.0969 | 0.3174 | 0.6800 |
+| ensemble BC | 0.1236 | 0.0696 → 0.1001 | 0.3402 | 0.7074 |
+| run đơn B `054531Z` | 0.1259 | 0.0621 → 0.1048 | 0.2934 | 0.6312 |
+| run đơn C `061000Z` | 0.1198 | 0.0472 → 0.0801 | 0.3150 | 0.6324 |
+
+PSDS ở cột phải là với hậu xử lý CV. Hậu xử lý chọn trên dev tăng event-F1, precision,
+recall và PSDS-1 ở 5/5; PSDS-2 giảm nhẹ 5/5. Hệ thống được chọn không cao nhất trên test
+nhưng CI mọi ứng viên chồng lấn — không chọn lại. Deletion thành lỗi chính (dự đoán
+408/740 event). Nguồn: [sed_optimization_20260925.md](measurements/sed_optimization_20260925.md).
+
 ---
 
 ## 3. Ablation hậu xử lý (A/B/C)
@@ -107,7 +130,7 @@ Train SED **không tất định** cùng seed và cùng code (frame macro-F1 B 0
 |---|---|---|
 | A2 · θ per-class vs global | Per-class dev→test −48% / −39% / −41%; global −15% / −4% / −2%. Trên **test**, global cao hơn per-class ở cả 3 nhánh (vd. B 0.079 vs 0.062) | Overfit dev có hệ thống — vào Hạn chế; không đổi θ theo test |
 | A3 · median filter | Δ +0.0063 / +0.0026 / −0.0014 | Không tác động rõ |
-| A5 · percentile duration prior | `g_max` percentile 25 tốt hơn cả 3 nhánh (+0.005/+0.015/+0.005); 75 tệ hơn cả 3 | Ứng viên chọn lại trên **dev**; ADR-0003 chưa đổi |
+| A5 · percentile duration prior | `g_max` percentile 25 tốt hơn cả 3 nhánh (+0.005/+0.015/+0.005); 75 tệ hơn cả 3 | Đã chọn lại trên **dev** (ADR-0024): cả 5 ứng viên chọn p25; ADR-0003 giữ cho số RQ1 |
 
 ---
 
@@ -130,4 +153,4 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 2. ~~W5: kiểm caption lớp gộp theo taxonomy.md §7~~ — xong 25/09 (ADR-0023 §5); W6 là việc chính tiếp theo.
 3. W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark.
 4. W7: API, giao diện.
-5. Cân nhắc chọn lại `g_max` percentile trên dev (A5).
+5. ~~Cân nhắc chọn lại `g_max` percentile trên dev (A5)~~ — xong 25/09 (ADR-0024).

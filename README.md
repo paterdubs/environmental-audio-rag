@@ -5,7 +5,8 @@ Khóa luận Khoa học dữ liệu về phát hiện sự kiện âm thanh môi
 > **Trạng thái:** dữ liệu đã kiểm soát trùng lặp xuyên dataset và đóng băng split
 > (`data-v1.0`). Classifier DataSEC (coarse macro-F1 0.847) và SED ba nhánh A/B/C
 > đã train, đánh giá bằng event-based F1 + PSDS trên nhiều run. **RQ1 cho kết quả
-> âm tính** (ADR-0021). Caption có căn cứ đang đánh giá (ADR-0022/0023); RAG đang phát triển.
+> âm tính** (ADR-0021). SED tối ưu không train lại, chọn trên dev (ADR-0024). Caption có
+> căn cứ đã đánh giá trên test (ADR-0022/0023); RAG đang phát triển.
 > Chi tiết có bằng chứng: [STATUS](docs/STATUS.md).
 
 ## 1. Bài toán
@@ -37,8 +38,11 @@ không tạo khác biệt đo được (5 run/nhánh, Welch p = 0.12–0.91). Xe
 
 **Kết quả hiện tại cho câu 2:** khi chỉ nhận event timeline, LLM (Qwen3.5-9B) gần
 như không bịa nguồn âm; sinh tự do vi phạm ở suy diễn bối cảnh, gọi tên quá mức
-bằng chứng và từ cấm. So sánh với nhánh ràng buộc đang hoàn tất. Xem
-[ADR-0022](docs/decisions/ADR-0022-llm-va-lexicon-cho-rq2.md).
+bằng chứng và từ cấm. Nhánh ràng buộc bằng grammar đưa ba loại vi phạm đó về 0 nhưng
+bỏ sót nhiều event hơn (omission end-to-end 6% → 28%). Với hai lớp gộp, sinh tự do gọi
+subclass như sự thật ở 11/18 và 22/39 caption, nhánh ràng buộc ở 0. Xem
+[ADR-0022](docs/decisions/ADR-0022-llm-va-lexicon-cho-rq2.md),
+[ADR-0023](docs/decisions/ADR-0023-nhanh-caption-constrained.md).
 
 ## 3. Đóng góp dự kiến
 

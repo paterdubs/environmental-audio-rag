@@ -151,7 +151,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 | 4.6 | Cập nhật `confusable_with` từ ma trận nhầm thật | 2 h |
 | 4.7 | Ablation A4 (`pos_weight` trần) | 4 h |
 | 4.8 | Chạy 3 seed cho cấu hình cuối | 6 h |
-| 4.9 | Tối ưu không train lại (thêm 25/09, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)): ensemble + chọn kiểu θ / percentile `g_max` bằng CV trên **dev**, chọn hệ thống theo luật ghi trước | 6 h |
+| 4.9 | Tối ưu không train lại (thêm 25/09, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)): ensemble + chọn kiểu θ / percentile `g_max` bằng CV trên **dev**, chọn hệ thống theo luật ghi trước — ✅ 25/09 ([§5](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)) | 6 h |
 
 ### Nghiệm thu W4
 
@@ -280,7 +280,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | 5 | Seed reproducibility: classifier **tái lập bit-for-bit** (D2). **SED KHÔNG tái lập** cùng seed (24/09): code train không đổi, frame macro-F1 B 0.5850→0.5705, C 0.5947→0.5893. Nguyên nhân chưa xác minh. Hệ quả: mọi số SED phải báo mean±sd nhiều run, không báo 1 run | **CAO** | W3 |
 | 6 | `RELATED_WORK.md` còn `⚠️ CẦN XÁC MINH`, chưa có DOI | TRUNG BÌNH | W8 |
 | ~~7~~ | ~~Ngưỡng T3 0.95/0.85 chưa hiệu chuẩn~~ — **đóng 23/09**: giữ 0.95/0.85, `threshold_calibration.json` | — | ✅ |
-| 8 | **Ablation A5 (24/09) đo xong trên A/B/C.** `d_min` (percentile 5): phẳng, không cần đổi. `g_max` (percentile 50): tín hiệu nhất quán 3/3 nhánh cho thấy percentile 25 tốt hơn — **chưa đổi**, vì quan sát trên test, cần vòng chọn trên dev trước khi sửa ADR-0003. Xem `docs/measurements/*_duration_prior_ablation_A5.md`. **Vòng chọn trên dev đang làm ở task 4.9** (ADR-0024) | TRUNG BÌNH | W3 |
+| ~~8~~ | ~~Percentile `g_max` chọn không có cơ sở thực nghiệm~~ — **đóng 25/09** (4.9, ADR-0024): CV 5 fold trên **dev** chọn percentile 25 ở cả 5 ứng viên (cùng hướng A5 đã thấy trên test); ADR-0003 giữ percentile 50 cho số RQ1 | — | ✅ |
 | 11 | `short_duplicate_min = 0.99` chọn từ hình dạng phân bố, chưa hiệu chuẩn trên positive đoạn ngắn | TRUNG BÌNH | W2 |
 | ~~12~~ | ~~1,731 ràng buộc cohesion kéo theo cụm lớn~~ — **đóng 23/09**: DataSED cụm lớn nhất 4 (0.6%); DataSEC có cụm 326 (6.5%), cần theo dõi ở W2 | THẤP | ✅ |
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |
@@ -288,6 +288,8 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~10~~ | ~~`contracts/*.schema.json` chưa tồn tại~~ — **đóng 23/09**: 8 schema Draft 2020-12 trong `contracts/` | — | ✅ |
 | ~~14~~ | ~~RQ1 chưa đủ run để kết luận~~ — **đóng 24/09** (K1–K5, ADR-0021): 5 run/nhánh, chính 7 run sạch p=0.234/0.913/0.181, độ nhạy 10 run p=0.124/0.313/0.772 (số tính lại 25/09 sau `7ada7d7`) → RQ1 âm tính, báo cáo như vậy | — | ✅ |
 | ~~15~~ | ~~RQ1 chưa khoá chính thức~~ — **đóng 24/09** (I8): B/C chạy lại trên tree sạch `5bf1cf7`, `rq1_delta_official_20260924.md` | — | ✅ |
+| 16 | `ml/retrieval/query_set.py` dùng lớp `car`, `dog` — **không** có trong taxonomy (đúng là `vehicle_pass_by`/`vehicle_idling`, `dog_barkings_and_howlings`) → bộ lọc oracle khớp rỗng mà không báo lỗi. Chỉ tiếng Anh, chỉ câu temporal (ADR-0004 cần truy vấn tiếng Việt) | **CAO** | W6 |
+| 17 | Relevance của query set lấy từ chính bộ lọc temporal đang đánh giá (`source: temporal_filter`) → `filter exactness` = 1.000 hiển nhiên. Phải lấy relevance từ annotation ground truth, retrieval chạy trên dự đoán | **CAO** | W6 |
 
 ---
 

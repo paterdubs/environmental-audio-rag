@@ -1,6 +1,6 @@
 # ADR-0024 — Tối ưu SED: ensemble và chọn hậu xử lý bằng CV trên dev
 
-**Status:** Proposed — luật chọn ghi **trước** khi có đủ kết quả (xem §4)
+**Status:** Accepted (25/09 tối) — luật chọn ghi **trước** khi có kết quả (§4); kết quả ở §5
 **Date:** 2026-09-25
 
 ## Context
@@ -70,6 +70,50 @@ lời "ensemble có giúp không" bằng dev, không bằng test).
   Lưới θ đã kiểm trên dev: đỉnh ở 0.95–0.97, không cắt cụt đáng kể
   (`threshold_grid_edge_20260925.md`).
 
+### 5. Kết quả (test chạy một lần mỗi ứng viên, sau commit `0387225`)
+
+Cả 5 ứng viên chọn `global|25` (θ = 0.95 mọi lớp, `g_max` percentile 25). Nguồn:
+`sed_optimization_20260925.md` (dev CV + test), `<run>_eval_cv.md`.
+
+| Ứng viên | CV dev | event-F1 mặc định → CV [95% CI] | PSDS-1 | PSDS-2 |
+|---|---:|---|---:|---:|
+| **ensemble C (chọn)** | **0.1538** | 0.0636 → **0.0941** [0.0624, 0.1277] | 0.3166 → 0.3489 | 0.7053 → 0.6987 |
+| ensemble B | 0.1334 | 0.0553 → 0.0969 [0.0651, 0.1298] | 0.2996 → 0.3174 | 0.6929 → 0.6800 |
+| ensemble BC | 0.1236 | 0.0696 → 0.1001 [0.0656, 0.1336] | 0.3147 → 0.3402 | 0.7157 → 0.7074 |
+| run đơn B `054531Z` | 0.1259 | 0.0621 → 0.1048 [0.0772, 0.1380] | 0.2818 → 0.2934 | 0.6456 → 0.6312 |
+| run đơn C `061000Z` | 0.1198 | 0.0472 → 0.0801 [0.0549, 0.1079] | 0.2873 → 0.3150 | 0.6462 → 0.6324 |
+
+**Đọc đúng:**
+
+1. **Hậu xử lý chọn trên dev tổng quát hoá sang test**: event-F1 tăng ở 5/5 ứng viên
+   (+0.030 … +0.043), precision **và** recall cùng tăng ở 5/5, PSDS-1 tăng 5/5.
+   PSDS-2 giảm nhẹ 5/5 (−0.007 … −0.014). PSDS quét operating point nên không phụ
+   thuộc θ — thay đổi PSDS đến từ `g_max` percentile 25 (gap ngắn hơn → ít gộp event).
+   Cơ chế theo phân tích lỗi: nhầm lớp giảm mạnh (ensemble C 229 → 36), dự đoán ít
+   event hơn (613 → 408 trên 740 tham chiếu) → **deletion thành lỗi chính** (232 → 293).
+   Đây là điểm vận hành thiên về precision; recall vẫn thấp (0.073).
+2. **Ensemble**: cùng nhánh, ensemble nâng PSDS-1/2 so với run đơn (B 0.3174/0.6800 vs
+   0.2934/0.6312; C 0.3489/0.6987 vs 0.3150/0.6324); event-F1 lẫn lộn (C +0.014, B
+   −0.008). Không kết luận ensemble cải thiện event-F1.
+3. **Hệ thống được chọn không cao nhất trên test** (run đơn B 0.1048 > ensemble C
+   0.0941), nhưng CI của mọi ứng viên chồng lấn lớn — test không phân biệt được các ứng
+   viên. Đúng rủi ro đã ghi trước ở Đánh đổi; **không chọn lại**.
+4. **CV dev lạc quan hơn test** (0.12–0.15 so với 0.08–0.10): CV là trung bình F1 trên
+   fold ~27 recording. Không dùng số CV làm ước lượng hiệu năng test.
+
+### 6. Provenance và quan hệ với ADR-0003
+
+- Manifest 3 ensemble ghi `git.dirty=true` (build ở `1ca6bb4` khi tree bẩn). Dựng lại
+  trên tree sạch `ed5289b` (25/09 tối): SHA-256 dự đoán dev/test **trùng khít** cả 3
+  (B `bdabcbbb…`/`dd28f594…`, C `7a6e5f02…`/`c5e3007b…`, BC `8b76e3f6…`/`f3c800ac…`).
+- CV run đơn: `select_postproc_cv --workers 8`, git `eb292a6`/`7c0c60a`, `dirty=false`.
+  CV ensemble chạy bản tuần tự trước khi có trường `git`; bản song song tái lập đúng
+  từng bit 5 fold + θ của ensemble B `global|25` (commit `eb292a6`).
+- **ADR-0003 không đổi**: θ per-class + `g_max` percentile 50 vẫn là giao thức của số
+  chính thức RQ1 (ADR-0021). Cấu hình `global|25` là của **hệ thống tối ưu** theo ADR
+  này. Nợ kỹ thuật #8 (percentile `g_max` chọn không có cơ sở) đóng: cả 5 ứng viên chọn
+  25 **trên dev** — cùng hướng A5 đã thấy trên test, nay có cơ sở hợp lệ.
+
 ## Consequences
 
 ### Tích cực
@@ -83,7 +127,9 @@ lời "ensemble có giúp không" bằng dev, không bằng test).
   cho thấy không phải tốt nhất — đó là cái giá của không tuning trên test, phải báo đúng
   như vậy.
 - W5 (RQ2) giữ nguyên SED prediction đóng băng của run B `054531Z` (E5); hệ thống tối
-  ưu chỉ đổi đầu vào cho W6 nếu có quyết định riêng.
+  ưu chỉ đổi đầu vào cho W6 nếu có quyết định riêng. Lưu ý cho quyết định đó: cấu hình
+  tối ưu dự đoán ít event hơn tham chiếu (deletion là lỗi chính) → retrieval trên event
+  dự đoán sẽ bị giới hạn bởi recall SED.
 
 ## Alternatives considered
 

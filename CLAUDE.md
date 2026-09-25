@@ -125,7 +125,16 @@ collapse onset khi một lớp lặp lại trong timeline — đã sửa.
 hiệu **nhất quán 3/3 nhánh** cho thấy percentile 25 tốt hơn (F1 tăng cả ba
 nhánh: +0.005/+0.015/+0.005), percentile 75 tệ hơn hẳn (F1 giảm cả ba nhánh) — ứng viên thật cho một
 vòng chọn lại trên dev, nhưng **chưa đổi ADR-0003** vì quan sát này đến từ
-test, không phải dev (không được tuning trên test).
+test, không phải dev (không được tuning trên test). → Đã chọn lại trên dev ở ADR-0024.
+
+**Tối ưu SED không train lại xong (task 4.9, ADR-0024).** Ensemble trung bình xác suất
+các run sạch + chọn kiểu θ / percentile `g_max` bằng CV 5 fold trên **dev** (chia theo
+`leakage_group`); luật chọn hệ thống ghi trước và lựa chọn commit **trước** test
+(`0387225`). Cả 5 ứng viên chọn θ global 0.95 + `g_max` p25; test: event-F1 tăng 5/5
+(+0.030 … +0.043), precision và recall cùng tăng, PSDS-1 tăng, PSDS-2 giảm nhẹ. Hệ thống
+chọn = **ensemble C: event-F1 0.0941 [0.0624, 0.1277], PSDS-1 0.3489, PSDS-2 0.6987** —
+không cao nhất trên test (run đơn B 0.1048) nhưng CI chồng lấn, không chọn lại. Deletion
+thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số RQ1.
 
 ### Đã có ✅
 
@@ -156,7 +165,7 @@ test, không phải dev (không được tuning trên test).
 | **Duyệt tay 35 cặp** | Xong: 10 `duplicate` · 1 `unsure` · 24 `distinct`, `human:patphh` |
 | Rò rỉ cuối | **11 clip** / 5,048 = **0.2179%** → dải `minor`, **RQ1 vẫn hợp lệ** |
 | Độ nhất quán chú giải | 8 cặp byte-identical gán nhãn 2 lần: **67/94** biên trong collar 0.2 s; **2/8** bất đồng lớp |
-| Test suite | **366 pass**, ruff sạch; clone sạch (không có dữ liệu gitignore) 345 pass, 1 skip |
+| Test suite | **467 pass** (25/09 tối), ruff sạch |
 | JSON Schema contracts | 6 schema Draft 2020-12; 13 test contract pass |
 | CI baseline | `.github/workflows/ci.yml`; guard `services/api` không import torch pass |
 | Tài liệu vận hành + annotation | `TRAINING_OPS_PLAN.md` và `annotation_guideline.md` đã cập nhật 23/09 |
@@ -187,6 +196,7 @@ test, không phải dev (không được tuning trên test).
 | **Ablation A3 xong bộ ba A/B/C** | Không kết luận rõ hướng nào (Δ gần 0, đổi dấu: +0.0063/+0.0026/−0.0014) |
 | **W5 5.6 unconstrained (Qwen3.5-9B)** | ADR-0022; dev+test sinh và chấm; lexicon v2 đóng băng `6f5634bb…`; audit: 7/8 "bịa" là lỗi lexicon |
 | **W5 5.7–5.8 constrained + đánh giá** | ADR-0023; test: constrained 0 vi phạm bối cảnh/G3/gọi tên quá mức, omission e2e 0.28 vs unconstrained 0.06 |
+| **Tối ưu SED (4.9, ADR-0024)** | `sed_optimization_20260925.md`; chọn trên dev → ensemble C + θ global 0.95 + `g_max` p25; test event-F1 0.0941, PSDS-1 0.3489 |
 | **W5 lớp gộp (taxonomy §7)** | ADR-0023 §5; test e2e: template/constrained 0 caption gọi subclass như sự thật, unconstrained 11/18 (`sirens_and_alarms`) và 22/39 (`thunder_fireworks_gunshot`) |
 | **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
 | **Ablation A5 xong bộ ba A/B/C (nợ kỹ thuật #8)** | d_min percentile phẳng; g_max percentile 25 tốt hơn nhất quán 3/3 nhánh, 75 tệ hơn nhất quán 3/3 — ứng viên thật cho hiệu chuẩn lại trên dev, chưa đổi ADR-0003 |
@@ -206,9 +216,11 @@ Retrieval thật · API / inference / frontend.
 ### Việc tiếp theo — theo thứ tự
 
 1. **W6 — RAG**: nạp event thật vào pgvector, embedding BGE-M3 (ADR-0004),
-   retrieval + query set 100 câu.
-2. W4 còn lại: 4.6 (`confusable_with`), 4.7 (A4) — ưu tiên thấp hơn W5/W6.
-3. Tuỳ chọn: chọn lại `g_max` percentile trên **dev** theo gợi ý A5.
+   retrieval + query set 100 câu. Trước khi làm: sửa `query_set.py` (lớp `car`/`dog`
+   không có trong taxonomy), lấy relevance từ ground truth thay vì từ chính bộ lọc đang
+   đánh giá (nợ #16, #17 ở PLAN); quyết định SED prediction nào để index (run B E5 hay
+   hệ thống tối ưu ADR-0024) và thư viện embedding — cần ADR.
+2. W4 còn lại: 4.6 (`confusable_with`), 4.7 (A4) — ưu tiên thấp hơn W6.
 
 ---
 
@@ -409,6 +421,30 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-25 (tối) — Tối ưu SED không train lại theo giao thức ghi trước; W5 đóng
+
+**Tối ưu (4.9, ADR-0024).** CV 5 fold trên dev cho 5 ứng viên (3 ensemble, 2 run đơn
+chính thức); cả năm chọn θ global 0.95 + `g_max` p25. Luật chọn hệ thống thành code
+(`scripts.report_sed_optimization`), lựa chọn **ensemble C** commit bằng `--dev-only`
+trước khi mở test, rồi test một lần mỗi ứng viên: event-F1 tăng 5/5 (+0.030 … +0.043),
+hệ thống chọn 0.0941 — không cao nhất trên test (run đơn B 0.1048), CI chồng lấn, báo
+đúng như vậy. Kiểm thêm trên dev: θ = 0.95 nằm ở biên lưới nhưng đỉnh thật ở 0.95–0.97
+(`threshold_grid_edge_20260925.md`) → giữ lưới. Dựng lại 3 ensemble trên tree sạch:
+digest trùng khít (manifest cũ ghi `dirty=true`).
+
+**CV song song.** Lần đầu 12 worker hết bộ nhớ sau 52 phút (mỗi worker ~0.8 GB commit;
+máy chỉ còn ~11.5 GB trống) và `pool.map` chỉ báo lỗi khi mọi task khác xong. Sửa:
+`as_completed` + huỷ task chờ, xếp việc dài trước, in tiến độ, dùng 8 worker; parity
+với bản tuần tự trùng từng bit. `git_state` tách sang `ml/provenance.py` để script
+đánh giá không kéo torch.
+
+**W5 đóng** (diễn đạt lớp gộp §7, ADR-0023 §5): template/constrained 0 vi phạm,
+unconstrained gọi subclass như sự thật 11/18 và 22/39 caption (e2e test).
+
+**Rà W6** tìm 2 lỗi thiết kế trước khi code: `query_set.py` dùng lớp `car`/`dog` không
+tồn tại (lọc rỗng im lặng), và relevance lấy từ chính bộ lọc đang đánh giá (vòng tròn).
+467 test pass.
 
 ### 2026-09-25 — W5 xong phần RQ2; sửa lỗi ghép cửa sổ SED làm đổi mọi số SED
 
