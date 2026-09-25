@@ -1,0 +1,53 @@
+/* Field-notebook instrument: warm paper, ink, one amber signal colour for "now". */
+:root {
+  --paper: oklch(96.5% 0.012 85);
+  --paper-raised: oklch(98.5% 0.008 85);
+  --paper-sunk: oklch(93% 0.016 85);
+  --ink: oklch(24% 0.02 60);
+  --ink-soft: oklch(45% 0.02 60);
+  --ink-faint: oklch(62% 0.015 60);
+  --rule: oklch(86% 0.015 80);
+  --rule-strong: oklch(72% 0.02 70);
+  --signal: oklch(72% 0.17 62);
+  --signal-ink: oklch(38% 0.11 55);
+  --ok: oklch(58% 0.12 150);
+  --warn: oklch(62% 0.16 35);
+  --mark: oklch(88% 0.09 85);
+
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+  --text-lg: clamp(1.125rem, 1rem + 0.4vw, 1.3rem);
+  --text-caption: clamp(1.2rem, 1rem + 0.9vw, 1.6rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1.25rem;
+  --space-5: 2rem;
+  --radius-s: 3px;
+  --radius-m: 10px;
+  --lane-label: 13.5rem;
+  --shadow-raised: 0 1px 0 oklch(100% 0 0 / 0.7) inset, 0 12px 30px -18px oklch(30% 0.04 60 / 0.35);
+  --duration-fast: 140ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: oklch(20% 0.012 70);
+    --paper-raised: oklch(24% 0.014 70);
+    --paper-sunk: oklch(17% 0.012 70);
+    --ink: oklch(92% 0.012 85);
+    --ink-soft: oklch(76% 0.015 80);
+    --ink-faint: oklch(58% 0.015 75);
+    --rule: oklch(32% 0.014 70);
+    --rule-strong: oklch(44% 0.018 70);
+    --signal: oklch(78% 0.16 70);
+    --signal-ink: oklch(86% 0.1 75);
+    --mark: oklch(40% 0.07 75);
+    --shadow-raised: 0 1px 0 oklch(100% 0 0 / 0.04) inset, 0 16px 40px -20px oklch(0% 0 0 / 0.7);
+  }
+}

@@ -1,0 +1,13 @@
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+// API target is configurable so the dev server can proxy to any api port (ADR-0029 §5).
+const apiTarget = process.env.VITE_API_TARGET ?? "http://localhost:8010";
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 5173,
+    proxy: { "/api": apiTarget, "/health": apiTarget },
+  },
+});
