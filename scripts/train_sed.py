@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -86,6 +87,10 @@ def parse_args() -> argparse.Namespace:
         "--normalization", type=Path, default=None,
         help="Chuẩn hoá train-only cho nhánh B; bỏ qua với --datasec-checkpoint (ADR-0020 §4). "
         f"Mặc định: {DEFAULT_NORMALIZATION}",
+    )
+    parser.add_argument(
+        "--pos-weight-cap", type=float, default=50.0,
+        help="Trần pos_weight (ablation A4: 10, 30, 50, inf = không clip)",
     )
     parser.add_argument("--evaluate-test", action="store_true")
     parser.add_argument("--device", default="cuda")
@@ -213,6 +218,7 @@ def main() -> None:
         class_ids,
         train_events[["class_id", "onset_s", "offset_s"]].itertuples(index=False, name=None),
         float(joined.loc[joined["split"] == "train", "duration_s"].sum()),
+        maximum=args.pos_weight_cap,
     )
     encoder, weight_info = build_encoder(args)
     model = SoundEventDetector(classes=len(class_ids), encoder=encoder)
@@ -225,6 +231,7 @@ def main() -> None:
             "encoder_type": args.encoder,
             "feature_set": feature_set,
             "frame_rate": frame_rate,
+            "pos_weight_cap": args.pos_weight_cap if math.isfinite(args.pos_weight_cap) else None,
             **weight_info,
         },
         "class_ids": class_ids,
