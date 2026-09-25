@@ -67,6 +67,50 @@ def sample(captions: dict[tuple[str, str], dict], n: int) -> list[tuple[str, str
     return chosen
 
 
+GUIDE = """# Phiếu đối chiếu bộ trích mention (C2) — hướng dẫn điền
+
+> Sinh bởi `scripts.caption_mention_worksheet build`. Phiếu:
+> `data/manifests/caption_mention_worksheet.csv` ({n} caption unconstrained, tập test;
+> {half} mức oracle + {half} mức e2e, chọn bằng thứ tự băm có seed).
+
+**Mục đích.** Metric C2 (hallucination, omission, gọi tên quá mức) dựa vào lexicon tự động
+đọc caption. Phiếu này đo lexicon đọc đúng đến đâu. Bạn đọc caption và ghi nguồn âm caption
+**khẳng định nghe thấy**. Đọc **mù**: không xem timeline, không xem kết quả lexicon.
+
+Mở được bằng Excel; khi lưu chọn **CSV UTF-8** (lưu kiểu khác sẽ mất dấu).
+
+Các cột cần điền:
+
+- `classes_mentioned` — `class_id` của mọi nguồn âm caption nói là nghe thấy, cách nhau
+  bằng `;`. Từ mơ hồ phủ nhiều lớp ghi `lớp_a|lớp_b` (vd `jet_aircrafts|propeller_aircrafts`
+  cho "aircraft"). Không có nguồn nào: ghi `none` — không để trống.
+  Ví dụ: `birds; jet_aircrafts|propeller_aircrafts`.
+- `other_sources` — nguồn âm **ngoài** 22 lớp (gió, mưa, bước chân, đám đông…), cách nhau
+  bằng dấu phẩy; trống nếu không có. Ví dụ: `wind, footsteps`.
+- `over_specific` — `class_id` của lớp mà caption gọi tên một loại con như sự thật
+  ("a gunshot" → `thunder_fireworks_gunshot`, "sirens" → `sirens_and_alarms`,
+  "a vacuum cleaner" → `vacuum_cleaner_fan_hairdryer`); cách nhau bằng `;`; trống nếu không có.
+- `notes` — tuỳ chọn.
+
+**Quy tắc.** (1) Từ bối cảnh ("urban", "park", "street") không phải nguồn âm — không ghi.
+(2) Một lớp nhắc nhiều lần chỉ ghi một lần. (3) Cách gọi khác vẫn tính ("chirping" →
+`birds`, "people talking" → `voices`, "engine idling" → `vehicle_idling`). (4) Không sửa cột
+`caption` — script kiểm nguyên văn. (5) Xong thì chạy
+`scripts.caption_mention_worksheet score ml/runs/<run>`.
+
+## 22 lớp
+
+| `class_id` | Nhãn gốc |
+|---|---|
+{classes}
+"""
+
+
+def guide(taxonomy, n: int) -> str:
+    rows = "\n".join(f"| `{c.class_id}` | {c.source_label} |" for c in taxonomy.classes)
+    return GUIDE.format(n=n, half=n // 2, classes=rows)
+
+
 def build(args: argparse.Namespace) -> None:
     if args.worksheet.exists():
         raise SystemExit(f"{args.worksheet} đã tồn tại — không ghi đè phiếu có thể đã điền")
@@ -80,7 +124,12 @@ def build(args: argparse.Namespace) -> None:
         writer = csv.DictWriter(handle, fieldnames=COLUMNS)
         writer.writeheader()
         writer.writerows(rows)
-    print(json.dumps({"worksheet": str(args.worksheet), "n": len(rows)}, ensure_ascii=False))
+    stamp = datetime.now(UTC).strftime("%Y%m%d")
+    instructions = ROOT / "docs/measurements" / f"caption_mention_worksheet_{stamp}.md"
+    taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
+    instructions.write_text(guide(taxonomy, len(rows)), encoding="utf-8")
+    print(json.dumps({"worksheet": str(args.worksheet), "guide": str(instructions),
+                      "n": len(rows)}, ensure_ascii=False))
 
 
 def read_worksheet(path: Path) -> list[dict[str, str]]:
