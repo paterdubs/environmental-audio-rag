@@ -14,6 +14,44 @@ from typing import Any
 from ml.taxonomy import Taxonomy
 
 
+def _normalize_event(raw: Mapping[str, Any], index: int, duration_s: float,
+                     taxonomy: Taxonomy) -> dict[str, Any]:
+    """One validated event; `_input_id` keeps the caller's id for the stable sort."""
+    try:
+        class_id = str(raw["class_id"])
+        onset = float(raw["onset_s"])
+        offset = float(raw["offset_s"])
+        score = float(raw["score"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError(f"invalid event at index {index}") from exc
+    if class_id not in taxonomy.class_ids:
+        raise ValueError(f"class_id is not in taxonomy: {class_id}")
+    if not (0 <= onset < offset <= float(duration_s)):
+        raise ValueError(f"invalid event bounds at index {index}")
+    if not 0 <= score <= 1:
+        raise ValueError(f"score must be in [0, 1] at index {index}")
+    return {"class_id": class_id, "onset_s": onset, "offset_s": offset, "score": score,
+            "_input_id": raw.get("event_id", index)}
+
+
+def _with_ids(normalized: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep input ids when they are unique positive ints, else number 1..n in sorted order."""
+    ids = [item["_input_id"] for item in normalized]
+    preserve = all(isinstance(value, int) and value > 0 for value in ids) and len(set(ids)) == len(
+        ids
+    )
+    return [
+        {
+            "event_id": item["_input_id"] if preserve else new_id,
+            "class_id": item["class_id"],
+            "onset_s": item["onset_s"],
+            "offset_s": item["offset_s"],
+            "score": item["score"],
+        }
+        for new_id, item in enumerate(normalized, start=1)
+    ]
+
+
 def canonicalize_timeline(
     recording_id: str,
     duration_s: float,
@@ -33,30 +71,8 @@ def canonicalize_timeline(
         raise ValueError("recording_id must contain a dataset prefix")
     if not isinstance(duration_s, Real) or duration_s <= 0:
         raise ValueError("duration_s must be positive")
-    normalized: list[dict[str, Any]] = []
-    for index, raw in enumerate(events, start=1):
-        try:
-            class_id = str(raw["class_id"])
-            onset = float(raw["onset_s"])
-            offset = float(raw["offset_s"])
-            score = float(raw["score"])
-        except (KeyError, TypeError, ValueError) as exc:
-            raise ValueError(f"invalid event at index {index}") from exc
-        if class_id not in taxonomy.class_ids:
-            raise ValueError(f"class_id is not in taxonomy: {class_id}")
-        if not (0 <= onset < offset <= float(duration_s)):
-            raise ValueError(f"invalid event bounds at index {index}")
-        if not 0 <= score <= 1:
-            raise ValueError(f"score must be in [0, 1] at index {index}")
-        normalized.append(
-            {
-                "class_id": class_id,
-                "onset_s": onset,
-                "offset_s": offset,
-                "score": score,
-                "_input_id": raw.get("event_id", index),
-            }
-        )
+    normalized = [_normalize_event(raw, index, duration_s, taxonomy)
+                  for index, raw in enumerate(events, start=1)]
     normalized.sort(
         key=lambda item: (
             item["onset_s"],
@@ -65,25 +81,10 @@ def canonicalize_timeline(
             str(item["_input_id"]),
         )
     )
-    ids = [item["_input_id"] for item in normalized]
-    preserve = all(isinstance(value, int) and value > 0 for value in ids) and len(set(ids)) == len(
-        ids
-    )
-    output_events = []
-    for new_id, item in enumerate(normalized, start=1):
-        output_events.append(
-            {
-                "event_id": item["_input_id"] if preserve else new_id,
-                "class_id": item["class_id"],
-                "onset_s": item["onset_s"],
-                "offset_s": item["offset_s"],
-                "score": item["score"],
-            }
-        )
     return {
         "recording_id": recording_id,
         "duration_s": float(duration_s),
         "taxonomy_version": taxonomy_version or taxonomy.version,
         "model_version": model_version,
-        "events": output_events,
+        "events": _with_ids(normalized),
     }
