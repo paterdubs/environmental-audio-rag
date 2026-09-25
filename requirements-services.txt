@@ -1,0 +1,9 @@
+# HTTP services W7 (ADR-0029): services/inference và services/api.
+# api còn cần requirements-db.txt; inference cần requirements-torch.txt + requirements-retrieval.txt.
+#
+#   .venv/Scripts/python.exe -m pip install -r requirements-services.txt
+
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+python-multipart>=0.0.9,<1
+httpx>=0.27,<1

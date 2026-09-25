@@ -21,6 +21,7 @@ jobs:
             requirements.txt
             requirements-torch.txt
             requirements-eval.txt
+            requirements-services.txt
 
       - name: Install dependencies
         run: |
@@ -28,6 +29,7 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install -r requirements-torch.txt --index-url https://download.pytorch.org/whl/cpu
           python -m pip install -r requirements-eval.txt
+          python -m pip install -r requirements-services.txt
 
       - name: Lint
         run: python -m ruff check .
