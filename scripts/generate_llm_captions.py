@@ -33,7 +33,7 @@ from typing import Any
 
 import pandas as pd
 
-from ml.captioning.constrained import ConstrainedLLMCaptioner
+from ml.captioning.constrained import ConstrainedLLMCaptioner, CoverConstrainedLLMCaptioner
 from ml.captioning.lexicon import CaptionLexicon
 from ml.captioning.llm import (
     PROMPT_VERSION,
@@ -52,7 +52,8 @@ from scripts.report_threshold_ablation import priors_from_postproc
 
 ROOT = Path(__file__).resolve().parents[1]
 LEVELS = ("oracle", "e2e")
-BRANCHES = {"unconstrained": UnconstrainedLLMCaptioner, "constrained": ConstrainedLLMCaptioner}
+BRANCHES = {"unconstrained": UnconstrainedLLMCaptioner, "constrained": ConstrainedLLMCaptioner,
+            "constrained_cover": CoverConstrainedLLMCaptioner}
 
 
 def parse_args() -> argparse.Namespace:
@@ -62,6 +63,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", choices=("dev", "test"), default="dev")
     parser.add_argument("--config", type=Path, default=ROOT / "ml/configs/caption_llm.yaml")
     parser.add_argument("--frozen-lexicon-sha256", default=None)
+    parser.add_argument("--postproc", type=Path, default=None,
+                        help="postproc cho timeline e2e (mặc định <run>/postproc.json)")
+    parser.add_argument("--levels", nargs="+", choices=LEVELS, default=list(LEVELS))
     parser.add_argument("--limit", type=int, default=None, help="chỉ để smoke-test")
     return parser.parse_args()
 
@@ -76,9 +80,12 @@ def check_test_gate(split: str, lexicon_sha: str, frozen_sha: str | None) -> Non
         )
 
 
-def e2e_timelines(run_dir: Path, split: str, taxonomy: Taxonomy) -> dict[str, dict[str, Any]]:
+def e2e_timelines(
+    run_dir: Path, split: str, taxonomy: Taxonomy, postproc_path: Path | None = None
+) -> dict[str, dict[str, Any]]:
     """Timeline từ prediction đóng băng — cùng đường đi với `scripts.generate_captions`."""
-    postproc = json.loads((run_dir / "postproc.json").read_text(encoding="utf-8"))
+    postproc_path = postproc_path or run_dir / "postproc.json"
+    postproc = json.loads(postproc_path.read_text(encoding="utf-8"))
     validate_postproc_artifact(postproc, taxonomy=taxonomy)
     class_ids = taxonomy.polyphonic_class_ids
     artifact = load_predictions(
@@ -165,6 +172,7 @@ def main() -> None:
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     lexicon_sha = CaptionLexicon.from_taxonomy(taxonomy).sha256()
     check_test_gate(args.split, lexicon_sha, args.frozen_lexicon_sha256)
+    git = git_state(ROOT)  # code that generates, recorded before the long run
 
     manifest = json.loads((args.run_dir / "manifest.json").read_text(encoding="utf-8"))
     if not manifest.get("complete"):
@@ -181,11 +189,12 @@ def main() -> None:
     if model_sha != config.model_sha256:
         raise SystemExit(f"SHA-256 model lệch: {model_sha} != {config.model_sha256}")
 
-    by_level = {"e2e": e2e_timelines(args.run_dir, args.split, taxonomy)}
+    by_level = {"e2e": e2e_timelines(args.run_dir, args.split, taxonomy, args.postproc)}
     recording_ids = sorted(by_level["e2e"])[: args.limit]
     recordings = pd.read_csv(ROOT / "data/manifests/datased_recordings.csv")
     durations = dict(zip(recordings["recording_id"], recordings["duration_s"], strict=True))
     by_level["oracle"] = oracle_timelines(recording_ids, durations, taxonomy)
+    levels = [level for level in LEVELS if level in args.levels]
     compared = check_same_timelines(out_dir, args.split, args.branch, by_level)
 
     transport = HttpChatTransport(config.endpoint, config.timeout_s)
@@ -193,7 +202,7 @@ def main() -> None:
     rows: list[dict[str, Any]] = []
     started = time.perf_counter()
     for rid in recording_ids:
-        for level in LEVELS:
+        for level in levels:
             timeline = by_level[level][rid]
             rows.append({"recording_id": rid, "level": level, "timeline": timeline,
                          "caption": captioner.caption(timeline)})
@@ -209,7 +218,8 @@ def main() -> None:
     meta = {
         "branch": args.branch, "captioner_version": captioner.version,
         "timelines_identical_to": compared,
-        "sed_run": args.run_dir.name, "split": args.split, "levels": list(LEVELS),
+        "sed_run": args.run_dir.name, "split": args.split, "levels": levels,
+        "postproc": (args.postproc or args.run_dir / "postproc.json").name,
         "n_recordings": len(recording_ids), "n_captions": len(rows),
         "n_truncated": truncated, "wall_clock_s": round(wall_s, 1),
         "prompt_version": PROMPT_VERSION, "prompt_sha256": prompt_sha256(),
@@ -221,7 +231,7 @@ def main() -> None:
                        "enable_thinking": config.enable_thinking},
         "token_budget": ("per caption: max(max_tokens, chars(longest grammar caption) + 1)"
                          " — ADR-0023 §7" if args.branch != "unconstrained" else "max_tokens"),
-        "output_sha256": sha256_file(out_path), "git": git_state(ROOT),
+        "output_sha256": sha256_file(out_path), "git": git,
     }
     out_path.with_suffix(".meta.json").write_text(
         json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8"

@@ -86,3 +86,17 @@ def test_test_split_scoring_requires_the_frozen_lexicon() -> None:
     check_test_gate("test", "a" * 64, "a" * 64)
     with pytest.raises(SystemExit, match="đóng băng"):
         check_test_gate("test", "a" * 64, "b" * 64)
+
+
+def test_cover_branch_file_is_scored_under_its_own_name(tmp_path: Path) -> None:
+    from ml.captioning.lexicon import CaptionLexicon
+    from ml.taxonomy import load_taxonomy
+    from scripts.score_captions import score_sources
+
+    lexicon = CaptionLexicon.from_taxonomy(
+        load_taxonomy(Path(__file__).parents[1] / "ml/configs/taxonomy.yaml"))
+    base = {"recording_id": "datased:S-0001", "duration_s": 10.0, "events": [
+        {"event_id": 1, "class_id": "birds", "onset_s": 0.0, "offset_s": 2.0, "score": 1.0}]}
+    _write_branch(tmp_path, "constrained_cover", base)
+    scored, _ = score_sources([tmp_path / "constrained_cover_dev.jsonl"], lexicon)
+    assert ("constrained_cover", "oracle") in scored

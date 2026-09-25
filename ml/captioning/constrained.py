@@ -10,6 +10,11 @@ invented times, wrong order and repeats are impossible by construction. The
 model still chooses WHICH events to mention and when to stop: omission is the
 dimension left to measure.
 
+Cover variant (ADR-0026, ``cover=True``): the FIRST event of every class becomes
+mandatory, later events of a class stay optional, onset order is unchanged. Class
+omission is then impossible by construction; the only difference from the plain
+branch is that one constraint, so comparing the two isolates its cost and benefit.
+
 Token budget (ADR-0023 §7): the grammar bounds the caption length, so each request
 gets ``max(max_tokens, characters of the longest admissible caption + 1)``. With the
 shared 256-token cap, 16/558 captions were cut mid-sentence — breaking the very
@@ -58,25 +63,41 @@ def _quote(text: str) -> str:
     return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
-def build_grammar(timeline: dict[str, Any]) -> str:
+def first_occurrences(events: list[dict[str, Any]]) -> set[int]:
+    """Indices of the earliest event of each class (events are in onset order)."""
+    seen: set[str] = set()
+    first = set()
+    for index, event in enumerate(events):
+        if event["class_id"] not in seen:
+            seen.add(event["class_id"])
+            first.add(index)
+    return first
+
+
+def build_grammar(timeline: dict[str, Any], cover: bool = False) -> str:
     events = timeline["events"]
     if not events:
         return f"root ::= {_quote(EMPTY_TEXT)}"
     items = [(source_phrase(e["class_id"]), event_clause(e)) for e in events]
     n = len(items)
+    mandatory = first_occurrences(events) if cover else set()
     # f<i>: the caption starts with event i; r<j>: events j.. may follow, in order.
+    # Cover: event 0 is a first occurrence, so the caption must start there.
+    starts = [0] if cover else list(range(n))
     lines = [
-        "root ::= (" + " | ".join(f"f{i}" for i in range(n)) + ') "."',
+        "root ::= (" + " | ".join(f"f{i}" for i in starts) + ') "."',
         f"separator ::= {' | '.join(_quote(s) for s in SEPARATORS)}",
         f"verb ::= {' | '.join(_quote(' ' + v) for v in VERBS)}",
     ]
     for i, (phrase, clause) in enumerate(items):
         head = _quote(phrase[0].upper() + phrase[1:]) + " verb " + _quote(" " + clause)
-        lines.append(f"f{i} ::= {head}" + (f" r{i + 1}" if i + 1 < n else ""))
+        if i in starts:
+            lines.append(f"f{i} ::= {head}" + (f" r{i + 1}" if i + 1 < n else ""))
         if i > 0:
-            item = _quote(phrase) + " verb? " + _quote(" " + clause)
+            item = "separator " + _quote(phrase) + " verb? " + _quote(" " + clause)
             rest = f" r{i + 1}" if i + 1 < n else ""
-            lines.append(f"r{i} ::= (separator {item})?{rest}")
+            body = item if i in mandatory else f"({item})?"
+            lines.append(f"r{i} ::= {body}{rest}")
     return "\n".join(lines)
 
 
@@ -128,16 +149,20 @@ def align_evidence(text: str, timeline: dict[str, Any]) -> list[dict[str, Any]]:
 class ConstrainedLLMCaptioner:
     grounding_mode = "constrained"
 
+    cover = False
+    grammar_version = "caption-grammar-v1.2"
+
     def __init__(self, transport: ChatTransport, config: LLMConfig):
         self.transport = transport
         self.config = config
-        self.version = f"caption-grammar-v1.2+{config.model_name}"
+        self.version = f"{self.grammar_version}+{config.model_name}"
 
     def caption(self, timeline: dict[str, Any], language: str = "en") -> dict[str, Any]:
         if language != "en":
             raise ValueError("RQ2 benchmark captions are English only (ADR-0004)")
         budget = token_budget(timeline, self.config.max_tokens)
-        body = build_request(timeline, self.config, grammar=build_grammar(timeline),
+        body = build_request(timeline, self.config,
+                             grammar=build_grammar(timeline, cover=self.cover),
                              max_tokens=budget)
         response = self.transport.complete(body)
         try:
@@ -161,3 +186,10 @@ class ConstrainedLLMCaptioner:
                 "token_budget": budget,
             },
         }
+
+
+class CoverConstrainedLLMCaptioner(ConstrainedLLMCaptioner):
+    """Constrained branch that must mention every class at least once (ADR-0026)."""
+
+    cover = True
+    grammar_version = "caption-grammar-cover-v1"

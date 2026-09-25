@@ -158,3 +158,29 @@ def test_request_budget_covers_the_grammar_and_never_drops_below_the_shared_cap(
     assert transport.bodies[0]["max_tokens"] == caption["generation"]["token_budget"] == expected
     short = ConstrainedLLMCaptioner(transport, CONFIG).caption(timeline(("birds", 1.0, 2.0)))
     assert short["generation"]["token_budget"] == CONFIG.max_tokens
+
+
+def test_cover_grammar_makes_the_first_event_of_every_class_mandatory() -> None:
+    from ml.captioning.constrained import first_occurrences
+
+    tl = timeline(("birds", 0.0, 2.0), ("bells", 3.0, 4.0), ("birds", 5.0, 6.0),
+                  ("music", 7.0, 8.0))
+    assert first_occurrences(tl["events"]) == {0, 1, 3}
+    rules = dict(line.split(" ::= ", 1) for line in build_grammar(tl, cover=True).splitlines())
+    assert rules["root"] == '(f0) "."'  # must start at the earliest event
+    assert not rules["r1"].startswith("(") and not rules["r3"].startswith("(")  # mandatory
+    assert rules["r2"].startswith("(separator")  # a repeat of birds stays optional
+    plain = dict(line.split(" ::= ", 1) for line in build_grammar(tl).splitlines())
+    assert plain["root"].startswith("(f0 | f1") and plain["r1"].startswith("(separator")
+
+
+def test_cover_captioner_sends_the_cover_grammar_and_names_its_version() -> None:
+    from ml.captioning.constrained import CoverConstrainedLLMCaptioner
+
+    tl = timeline(("birds", 0.0, 2.0), ("bells", 3.0, 4.0))
+    transport = FakeTransport("The sound of birds can be heard from 0.0 to 2.0 seconds, "
+                              "and the sound of bells can be heard from 3.0 to 4.0 seconds.")
+    caption = CoverConstrainedLLMCaptioner(transport, CONFIG).caption(tl)
+    assert transport.bodies[0]["grammar"] == build_grammar(tl, cover=True)
+    assert caption["captioner_version"].startswith("caption-grammar-cover-v1+")
+    assert evaluate_grounding(tl, caption, LEXICON).omission_rate == 0
