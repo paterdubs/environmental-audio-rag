@@ -71,6 +71,19 @@ class SedWindow:
     available_frames: int
 
 
+def window_starts(total_frames: int, window_frames: int, hop_frames: int) -> list[int]:
+    """Window start frames: regular hops, plus a last window end-aligned to the recording.
+
+    Shared by training/evaluation (`SedFeatureDataset`) and serving (`ml.inference`) so a
+    served recording is cut exactly like the recordings the reported numbers came from.
+    """
+    starts = list(range(0, max(total_frames - window_frames + 1, 1), hop_frames))
+    last = max(total_frames - window_frames, 0)
+    if not starts or starts[-1] != last:
+        starts.append(last)
+    return starts
+
+
 class SedFeatureDataset(Dataset):
     def __init__(
         self,
@@ -104,10 +117,7 @@ class SedFeatureDataset(Dataset):
         self.windows: list[SedWindow] = []
         for row in recordings.itertuples(index=False):
             total = int(row.frames)
-            starts = list(range(0, max(total - window_frames + 1, 1), hop_frames))
-            last = max(total - window_frames, 0)
-            if not starts or starts[-1] != last:
-                starts.append(last)
+            starts = window_starts(total, window_frames, hop_frames)
             self.windows.extend(
                 SedWindow(
                     recording_id=str(row.recording_id),

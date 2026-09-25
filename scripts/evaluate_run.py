@@ -20,7 +20,12 @@ from ml.evaluation.bootstrap import recording_bootstrap
 from ml.evaluation.errors import classify_event_errors
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_based_f1, psds_score
-from ml.postprocessing import DurationPrior, process_recordings, stack_predictions_by_recording
+from ml.postprocessing import (
+    DurationPrior,
+    priors_from_postproc,
+    process_recordings,
+    stack_predictions_by_recording,
+)
 from ml.postprocessing.calibration import DEFAULT_THRESHOLD_GRID, validate_postproc_artifact
 from ml.taxonomy import load_taxonomy
 
@@ -55,18 +60,6 @@ def load_events_by_recording(recording_ids: set[str]) -> dict[str, list[dict[str
             {"event_label": row.class_id, "onset": row.onset_s, "offset": row.offset_s}
         )
     return grouped
-
-
-def priors_from_postproc(postproc: dict, class_ids: tuple[str, ...]) -> dict[str, DurationPrior]:
-    return {
-        class_id: DurationPrior(
-            median_w=postproc["per_class"][class_id]["median_w"],
-            d_min_s=postproc["per_class"][class_id]["d_min_s"],
-            g_max_s=postproc["per_class"][class_id]["g_max_s"],
-            n_events=postproc["per_class"][class_id]["n_train_events"],
-        )
-        for class_id in class_ids
-    }
 
 
 def to_detection_frame(events_by_recording: dict[str, list[dict[str, object]]]) -> pd.DataFrame:

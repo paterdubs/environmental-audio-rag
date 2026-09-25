@@ -22,7 +22,12 @@ from pathlib import Path
 
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_based_f1
-from ml.postprocessing import DurationPrior, process_recordings, stack_predictions_by_recording
+from ml.postprocessing import (
+    DurationPrior,
+    priors_from_postproc,
+    process_recordings,
+    stack_predictions_by_recording,
+)
 from ml.postprocessing.calibration import validate_postproc_artifact
 from ml.taxonomy import Taxonomy, load_taxonomy
 from scripts.evaluate_run import load_events_by_recording
@@ -35,18 +40,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
-
-
-def priors_from_postproc(postproc: dict, class_ids: tuple[str, ...]) -> dict[str, DurationPrior]:
-    return {
-        class_id: DurationPrior(
-            median_w=postproc["per_class"][class_id]["median_w"],
-            d_min_s=postproc["per_class"][class_id]["d_min_s"],
-            g_max_s=postproc["per_class"][class_id]["g_max_s"],
-            n_events=postproc["per_class"][class_id]["n_train_events"],
-        )
-        for class_id in class_ids
-    }
 
 
 def overall_event_f1(

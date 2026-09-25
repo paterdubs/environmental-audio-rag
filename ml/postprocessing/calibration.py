@@ -59,6 +59,19 @@ def _odd_width(value: float) -> int:
     return rounded if rounded % 2 else rounded + 1
 
 
+def priors_from_postproc(postproc: dict, class_ids: tuple[str, ...]) -> dict[str, DurationPrior]:
+    """Duration priors stored in a frozen `postproc.json` (shared by evaluation and serving)."""
+    return {
+        class_id: DurationPrior(
+            median_w=postproc["per_class"][class_id]["median_w"],
+            d_min_s=postproc["per_class"][class_id]["d_min_s"],
+            g_max_s=postproc["per_class"][class_id]["g_max_s"],
+            n_events=postproc["per_class"][class_id]["n_train_events"],
+        )
+        for class_id in class_ids
+    }
+
+
 def stack_predictions_by_recording(artifact: PredictionArtifact) -> dict[str, np.ndarray]:
     """Turn a window-indexed `PredictionArtifact` into `process_recordings`'s
     expected `{recording_id: [frames, classes]}` sigmoid-probability mapping.
