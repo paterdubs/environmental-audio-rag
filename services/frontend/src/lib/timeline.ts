@@ -21,10 +21,14 @@ export function buildLanes(events: SedEvent[], classOrder: string[]): Lane[] {
     .map(([classId, list]) => ({ classId, events: [...list].sort((x, y) => x.onset_s - y.onset_s) }));
 }
 
-/** Evenly spread, perceptually uniform hues keyed by the class's taxonomy index. */
+/**
+ * Golden-angle hues keyed by the class's taxonomy index, with lightness alternating over
+ * three steps so classes whose hues land close together still differ in value.
+ */
 export function classColor(index: number): string {
   const hue = (index * 137.508) % 360;
-  return `oklch(64% 0.14 ${hue.toFixed(1)})`;
+  const lightness = [66, 54, 76][index % 3];
+  return `oklch(${lightness}% 0.14 ${hue.toFixed(1)})`;
 }
 
 export function percent(seconds: number, duration: number): number {

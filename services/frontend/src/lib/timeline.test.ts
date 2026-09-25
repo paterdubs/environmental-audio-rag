@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { SedEvent } from "../api/types";
-import { buildLanes, captionSegments, formatClock, formatSeconds, percent } from "./timeline";
+import { buildLanes, captionSegments, classColor, formatClock, formatSeconds, percent } from "./timeline";
 
 const event = (event_id: number, class_id: string, onset_s: number, offset_s: number): SedEvent => ({
   event_id,
@@ -55,5 +55,11 @@ describe("formatting", () => {
     expect(formatClock(125.9)).toBe("2:05");
     expect(percent(-1, 10)).toBe(0);
     expect(percent(20, 10)).toBe(100);
+  });
+});
+
+describe("classColor", () => {
+  it("gives the 21 classes 21 distinct colours", () => {
+    expect(new Set(Array.from({ length: 21 }, (_, i) => classColor(i))).size).toBe(21);
   });
 });
