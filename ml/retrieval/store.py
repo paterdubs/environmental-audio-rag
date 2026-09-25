@@ -169,3 +169,16 @@ def insert_document(conn, document: Mapping[str, Any], vector: np.ndarray,
         " class_ids, total_events, max_polyphony) VALUES (%s, %s, %s, %s, %s, %s, %s)",
         (document["recording_id"], document["text"], vector, embedding_version,
          document["class_ids"], document["total_events"], document["max_polyphony"]))
+
+
+def events_with_ids(conn, split: str) -> dict[str, list[dict[str, Any]]]:
+    """Indexed events of a corpus with their database ids — what answers may cite."""
+    rows = conn.execute(
+        "SELECT e.event_id, e.recording_id, e.class_id, e.onset_s, e.offset_s FROM events e "
+        "JOIN recordings r USING (recording_id) WHERE r.split = %s "
+        "AND e.provenance = 'prediction'", (split,)).fetchall()
+    events: dict[str, list[dict[str, Any]]] = {}
+    for event_id, rid, class_id, onset, offset in rows:
+        events.setdefault(rid, []).append({"event_id": event_id, "class_id": class_id,
+                                           "onset_s": onset, "offset_s": offset})
+    return events
