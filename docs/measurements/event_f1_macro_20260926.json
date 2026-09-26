@@ -34,6 +34,14 @@
   },
   {
    "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "file": "dev_evaluation_cv.json",
+   "split": "dev",
+   "postproc": "postproc_cv.json",
+   "micro": 0.15875265768958186,
+   "macro": 0.13078714636358488
+  },
+  {
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
    "file": "evaluation.json",
    "split": "test",
    "postproc": "postproc.json",
@@ -47,6 +55,22 @@
    "postproc": "postproc_cv.json",
    "micro": 0.09407665505226481,
    "macro": 0.09174940145456899
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T150934Z",
+   "file": "dev_evaluation_cv.json",
+   "split": "dev",
+   "postproc": "postproc_cv.json",
+   "micro": 0.21203438395415475,
+   "macro": 0.14943030831701068
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T155630Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.1476394849785408,
+   "macro": 0.13688426652079558
   },
   {
    "run": "sed_polyphonic_20260923T173234Z",
@@ -175,10 +199,26 @@
    "postproc": "postproc.json",
    "micro": 0.061374249499666446,
    "macro": 0.07260346680019879
+  },
+  {
+   "run": "sed_polyphonic_20260926T033312Z",
+   "file": "dev_evaluation_cv.json",
+   "split": "dev",
+   "postproc": "postproc_cv.json",
+   "micro": 0.19466474405191062,
+   "macro": 0.1354177251505996
+  },
+  {
+   "run": "sed_polyphonic_20260926T033312Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.1255301102629347,
+   "macro": 0.11976111122919458
   }
  ],
  "git": {
-  "revision": "aa5b32a52bc902f96d9f191a3cb0201a6bbc3781",
-  "dirty": false
+  "revision": "ec71b2016b75afcc88f03a2dbb217e94601a3f2c",
+  "dirty": true
  }
 }

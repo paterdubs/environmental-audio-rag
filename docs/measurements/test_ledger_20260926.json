@@ -1,6 +1,6 @@
 {
  "git": {
-  "revision": "f3f230168e36453fb98f5b461cc3c326167b0903",
+  "revision": "ec71b2016b75afcc88f03a2dbb217e94601a3f2c",
   "dirty": true
  },
  "sed": [
@@ -75,6 +75,18 @@
    "event_f1": 0.09407665505226481,
    "psds_1": 0.34893611878145836,
    "psds_2": 0.6987040936771308
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T155630Z",
+   "evaluation": "evaluation_cv.json",
+   "branch": "ensemble v2",
+   "seed": "—",
+   "pos_weight_cap": "—",
+   "postproc": "postproc_cv.json",
+   "git_dirty": false,
+   "event_f1": 0.1476394849785408,
+   "psds_1": 0.34468712890832665,
+   "psds_2": 0.6744000108120831
   },
   {
    "run": "sed_polyphonic_20260923T173234Z",
@@ -267,6 +279,18 @@
    "event_f1": 0.061374249499666446,
    "psds_1": 0.2687180971895418,
    "psds_2": 0.6642651105567746
+  },
+  {
+   "run": "sed_polyphonic_20260926T033312Z",
+   "evaluation": "evaluation_cv.json",
+   "branch": "B",
+   "seed": 20260922,
+   "pos_weight_cap": 10.0,
+   "postproc": "postproc_cv.json",
+   "git_dirty": false,
+   "event_f1": 0.1255301102629347,
+   "psds_1": 0.3224631112343968,
+   "psds_2": 0.6656507075784441
   }
  ],
  "other": {

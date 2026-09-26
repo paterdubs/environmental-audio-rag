@@ -2,7 +2,7 @@
 
 > Sinh bởi `scripts.report_test_ledger`. Chỉ đọc artifact đã có. Mọi dòng dưới đây đã chạy trên test; không có cấu hình nào được chọn bằng test (θ, prior, hệ thống, percentile đều chọn trên dev — ADR-0003, ADR-0024, ADR-0028).
 
-## SED — 22 lần đánh giá trên test
+## SED — 24 lần đánh giá trên test
 
 | Run | Đánh giá | Nhánh | Seed | Trần pos_weight | Hậu xử lý | Dirty | Event-F1 | PSDS-1 | PSDS-2 |
 |---|---|---|---:|---|---|:---:|---:|---:|---:|
@@ -12,6 +12,7 @@
 | `sed_ensemble_BC_clean_20260925T045658Z` | `evaluation_cv.json` | ensemble BC_clean | — | — | `postproc_cv.json` | có | 0.1001 | 0.3402 | 0.7074 |
 | `sed_ensemble_C_clean_20260925T045631Z` | `evaluation.json` | ensemble C_clean | — | — | `postproc.json` | có | 0.0636 | 0.3166 | 0.7053 |
 | `sed_ensemble_C_clean_20260925T045631Z` | `evaluation_cv.json` | ensemble C_clean | — | — | `postproc_cv.json` | có | 0.0941 | 0.3489 | 0.6987 |
+| `sed_ensemble_v2_20260926T155630Z` | `evaluation_cv.json` | ensemble v2 | — | — | `postproc_cv.json` | không | 0.1476 | 0.3447 | 0.6744 |
 | `sed_polyphonic_20260923T173234Z` | `evaluation.json` | A | 20260922 | 50 (mặc định) | `postproc.json` | không | 0.0360 | 0.2059 | 0.4514 |
 | `sed_polyphonic_20260924T015736Z` | `evaluation.json` | B | 20260922 | 50 (mặc định) | `postproc.json` | có | 0.0616 | 0.2558 | 0.6713 |
 | `sed_polyphonic_20260924T021958Z` | `evaluation.json` | C | 20260922 | 50 (mặc định) | `postproc.json` | có | 0.0518 | 0.2950 | 0.6467 |
@@ -28,6 +29,7 @@
 | `sed_polyphonic_20260925T205837Z` | `evaluation.json` | B | 20260922 | 10.0 | `postproc.json` | không | 0.0725 | 0.3010 | 0.6292 |
 | `sed_polyphonic_20260925T211704Z` | `evaluation.json` | B | 20260922 | 30.0 | `postproc.json` | không | 0.0548 | 0.2722 | 0.6656 |
 | `sed_polyphonic_20260925T213732Z` | `evaluation.json` | B | 20260922 | inf | `postproc.json` | không | 0.0614 | 0.2687 | 0.6643 |
+| `sed_polyphonic_20260926T033312Z` | `evaluation_cv.json` | B | 20260922 | 10.0 | `postproc_cv.json` | không | 0.1255 | 0.3225 | 0.6657 |
 
 ## Thành phần khác chạm test
 

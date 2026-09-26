@@ -1,6 +1,6 @@
 # Event-F1 micro và macro cho mọi lần đánh giá SED
 
-> Sinh bởi `scripts.report_event_f1_macro`. Macro = nanmean F1 theo lớp đã lưu (= `class_wise_average` của sed_eval); **không chạy lại test**. git `aa5b32a`.
+> Sinh bởi `scripts.report_event_f1_macro`. Macro = nanmean F1 theo lớp đã lưu (= `class_wise_average` của sed_eval); **không chạy lại test**. git `ec71b20`.
 
 | Run | File | Split | Hậu xử lý | Event-F1 micro | Event-F1 macro |
 |---|---|---|---|---:|---:|
@@ -8,8 +8,11 @@
 | `sed_ensemble_B_clean_20260925T045606Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.0969 | 0.0811 |
 | `sed_ensemble_BC_clean_20260925T045658Z` | `evaluation.json` | test | `postproc.json` | 0.0696 | 0.0683 |
 | `sed_ensemble_BC_clean_20260925T045658Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.1001 | 0.0854 |
+| `sed_ensemble_C_clean_20260925T045631Z` | `dev_evaluation_cv.json` | dev | `postproc_cv.json` | 0.1588 | 0.1308 |
 | `sed_ensemble_C_clean_20260925T045631Z` | `evaluation.json` | test | `postproc.json` | 0.0636 | 0.0732 |
 | `sed_ensemble_C_clean_20260925T045631Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.0941 | 0.0917 |
+| `sed_ensemble_v2_20260926T150934Z` | `dev_evaluation_cv.json` | dev | `postproc_cv.json` | 0.2120 | 0.1494 |
+| `sed_ensemble_v2_20260926T155630Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.1476 | 0.1369 |
 | `sed_polyphonic_20260923T173234Z` | `evaluation.json` | test | `postproc.json` | 0.0360 | 0.0287 |
 | `sed_polyphonic_20260924T015736Z` | `evaluation.json` | test | `postproc.json` | 0.0616 | 0.0671 |
 | `sed_polyphonic_20260924T021958Z` | `evaluation.json` | test | `postproc.json` | 0.0518 | 0.0585 |
@@ -26,3 +29,5 @@
 | `sed_polyphonic_20260925T205837Z` | `evaluation.json` | test | `postproc.json` | 0.0725 | 0.0694 |
 | `sed_polyphonic_20260925T211704Z` | `evaluation.json` | test | `postproc.json` | 0.0548 | 0.0569 |
 | `sed_polyphonic_20260925T213732Z` | `evaluation.json` | test | `postproc.json` | 0.0614 | 0.0726 |
+| `sed_polyphonic_20260926T033312Z` | `dev_evaluation_cv.json` | dev | `postproc_cv.json` | 0.1947 | 0.1354 |
+| `sed_polyphonic_20260926T033312Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.1255 | 0.1198 |
