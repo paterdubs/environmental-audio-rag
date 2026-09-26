@@ -52,6 +52,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--folds", type=int, default=5)
+    parser.add_argument("--modes", nargs="+", choices=MODES, default=list(MODES),
+                        help="ADR-0030 §3: v2 chỉ dùng global (A2: per-class overfit dev)")
     parser.add_argument("--workers", type=int, default=1,
                         help="số tiến trình; >1 chạy song song, kết quả y hệt")
     return parser.parse_args()
@@ -133,11 +135,12 @@ def _worker(task: tuple[str, float, int | None]):
     return task, run_task(_WORKER_CTX, *task)
 
 
-def build_tasks(n_folds: int, *, speculative_refits: bool) -> list[tuple[str, float, int | None]]:
+def build_tasks(n_folds: int, *, speculative_refits: bool, modes: tuple[str, ...] = MODES
+                ) -> list[tuple[str, float, int | None]]:
     """Every (mode, percentile, fold) once, longest first: per_class before global,
     whole-dev refits (fold None) before folds, so the slowest fits do not form the tail."""
     folds: list[int | None] = [*([None] if speculative_refits else []), *range(n_folds)]
-    return [(m, p, k) for m in MODES for k in folds for p in G_MAX_PERCENTILES]
+    return [(m, p, k) for m in modes for k in folds for p in G_MAX_PERCENTILES]
 
 
 def run_all(args: argparse.Namespace, ctx: dict) -> dict:
@@ -148,7 +151,7 @@ def run_all(args: argparse.Namespace, ctx: dict) -> dict:
     task cancels the queued ones instead of letting the pool run to the end.
     """
     parallel = args.workers > 1
-    tasks = build_tasks(args.folds, speculative_refits=parallel)
+    tasks = build_tasks(args.folds, speculative_refits=parallel, modes=tuple(args.modes))
     outputs: dict = {}
     start = time.monotonic()
 
@@ -183,7 +186,7 @@ def main() -> None:
     outputs = run_all(args, ctx)
 
     results = {}
-    for mode in MODES:
+    for mode in args.modes:
         for p in G_MAX_PERCENTILES:
             fold_scores = [outputs[(mode, p, k)] for k in range(args.folds)]
             results[f"{mode}|{p:g}"] = {"mean": mean(fold_scores), "sd": stdev(fold_scores),
@@ -192,7 +195,8 @@ def main() -> None:
 
     best_key = max(results, key=lambda key: results[key]["mean"])
     default_key = f"{DEFAULT[0]}|{DEFAULT[1]:g}"
-    if results[best_key]["mean"] <= results[default_key]["mean"]:
+    # The ADR-0024 fallback to the default only applies when the default was evaluated.
+    if default_key in results and results[best_key]["mean"] <= results[default_key]["mean"]:
         best_key = default_key
     mode, p = best_key.split("|")[0], float(best_key.split("|")[1])
     thresholds = outputs.get((mode, p, None)) or run_task(ctx, mode, p, None)
@@ -206,7 +210,7 @@ def main() -> None:
     write_postproc_json(args.run_dir / "postproc_cv.json", postproc, taxonomy=ctx["taxonomy"])
     report = {"run": args.run_dir.name, "folds": args.folds, "grouping": "leakage_group",
               "selected": {"threshold_mode": mode, "g_max_percentile": p},
-              "cv": results, "git": git, "workers": args.workers}
+              "cv": results, "git": git, "workers": args.workers, "modes": args.modes}
     (args.run_dir / "postproc_cv_selection.json").write_text(json.dumps(report, indent=2),
                                                              encoding="utf-8")
     print(json.dumps(report["selected"]))

@@ -20,3 +20,10 @@ def test_group_k_fold_keeps_leakage_groups_together_and_is_deterministic() -> No
     for i in range(0, 40, 2):
         assert folds[ids[i]] == folds[ids[i + 1]]
     assert set(folds.values()) == {0, 1, 2, 3, 4}
+
+
+def test_tasks_can_be_restricted_to_the_global_mode() -> None:
+    """ADR-0030 §3: v2 selects among global thresholds only (A2: per-class overfits dev)."""
+    tasks = build_tasks(5, speculative_refits=False, modes=("global",))
+    assert {mode for mode, _, _ in tasks} == {"global"}
+    assert len(tasks) == 5 * len(G_MAX_PERCENTILES)

@@ -48,6 +48,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--render-only", action="store_true",
                         help="chỉ sinh lại báo cáo từ sebb_cv_selection.json đã có")
+    parser.add_argument("--report", action="store_true",
+                        help="ghi thêm báo cáo vào docs/measurements (mặc định chỉ ghi vào "
+                             "thư mục run, để chạy song song hàng đợi train mà tree vẫn sạch)")
     return parser.parse_args()
 
 
@@ -185,7 +188,8 @@ def main() -> None:
     (args.run_dir / "sebb_cv_selection.json").write_text(
         json.dumps(selection, indent=1), encoding="utf-8")
     print(json.dumps(selection["selected"], indent=1))
-    print(write_report(args.run_dir, selection))
+    if args.report:
+        print(write_report(args.run_dir, selection))
 
 
 if __name__ == "__main__":
