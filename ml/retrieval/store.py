@@ -38,7 +38,9 @@ def connect(dsn: str | None = None):
     import psycopg
     from pgvector.psycopg import register_vector
 
-    conn = psycopg.connect(dsn or os.environ.get("DATABASE_URL", DEFAULT_DSN))
+    # Without a timeout a stopped Docker Desktop made each attempt hang ~130 s (PLAN debt #19).
+    conn = psycopg.connect(dsn or os.environ.get("DATABASE_URL", DEFAULT_DSN),
+                           connect_timeout=int(os.environ.get("DB_CONNECT_TIMEOUT", "5")))
     conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
     register_vector(conn)
     return conn

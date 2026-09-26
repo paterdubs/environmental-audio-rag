@@ -135,7 +135,10 @@ def event_based_f1(
         )
     result = metric.results()
     return {
+        # Headline = micro (every event of every class pooled). evaluation_protocol Q2 also
+        # asks for macro — sed_eval's class_wise_average, i.e. nanmean of per-class F.
         "f_measure": result["overall"].get("f_measure", {}),
+        "macro": result.get("class_wise_average", {}).get("f_measure", {}),
         "overall": result.get("overall", {}),
         "per_class": result.get("class_wise", {}),
         "config": {

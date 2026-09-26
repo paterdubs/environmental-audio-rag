@@ -33,6 +33,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("members", nargs="+", type=Path)
     parser.add_argument("--label", required=True)
+    parser.add_argument("--splits", nargs="+", choices=("dev", "test"), default=["dev", "test"],
+                        help="ADR-0030 §5: run v2 chưa có logit test cho tới khi lựa chọn trên "
+                             "dev được commit → dựng ensemble chỉ-dev trước")
     return parser.parse_args()
 
 
@@ -73,7 +76,7 @@ def main() -> None:
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     out = ROOT / "ml" / "runs" / f"sed_ensemble_{args.label}_{stamp}"
     digests: dict[str, str] = {}
-    for split in ("dev", "test"):
+    for split in args.splits:
         members = [load_predictions(m / "predictions" / f"{split}.npz",
                                     expected_class_ids=class_ids) for m in args.members]
         digests[split] = save_predictions(out / "predictions" / f"{split}.npz",
@@ -84,7 +87,7 @@ def main() -> None:
         command=["python", "-m", "scripts.build_ensemble", *sys.argv[1:]], git=git_state(ROOT),
     )
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    metrics = {"dev_predictions_sha256": digests["dev"], "test_predictions_sha256": digests["test"]}
+    metrics = {f"{split}_predictions_sha256": digest for split, digest in digests.items()}
     (out / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     print(json.dumps({"run_dir": str(out), **metrics}, indent=2))
 

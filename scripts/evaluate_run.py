@@ -238,6 +238,7 @@ def main() -> None:
         "split": args.split,
         "postproc": str(postproc_path),
         "event_based_f1": event_f1["f_measure"],
+        "event_based_f1_macro": event_f1["macro"],
         "event_based_f1_per_class": {
             class_id: event_f1["per_class"].get(class_id, {}).get("f_measure", {})
             for class_id in class_ids
@@ -273,9 +274,11 @@ def _render_report(result: dict) -> str:
         "",
         "| Metric | Giá trị |",
         "|---|---:|",
-        f"| F1 | {f1.get('f_measure', float('nan')):.4f} |",
-        f"| Precision | {f1.get('precision', float('nan')):.4f} |",
-        f"| Recall | {f1.get('recall', float('nan')):.4f} |",
+        f"| F1 (micro) | {f1.get('f_measure', float('nan')):.4f} |",
+        f"| Precision (micro) | {f1.get('precision', float('nan')):.4f} |",
+        f"| Recall (micro) | {f1.get('recall', float('nan')):.4f} |",
+        f"| F1 (macro, evaluation_protocol Q2) | "
+        f"{result.get('event_based_f1_macro', {}).get('f_measure', float('nan')):.4f} |",
         f"| Bootstrap 95% CI (theo recording, n={ci['n_recordings']}) | "
         f"[{ci['lower']:.4f}, {ci['upper']:.4f}] |",
         "",
