@@ -70,6 +70,8 @@ Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". H�
 | S23 | Biên v2 tốt lên nhưng vẫn tản rộng | Onset trong ±0.2 s 35.8% (v1 30.2%), IQR [−0.54, +0.30] s. Chỉ onset 0.2708 (v1 0.2325), chỉ offset 0.4914 (v1 0.4975), segment F1 0.6869 (v1 0.6542) | [boundary_errors_20260926.md](measurements/boundary_errors_20260926.md), [sed_ceilings_v2_20260926.md](measurements/sed_ceilings_v2_20260926.md) | Hướng A: phần lỗi còn lại |
 | S24 | Dev → test giảm ở cả v1 và v2 | v2 0.2129 (CV dev) → 0.1476 (test, −31%); v1 0.1538 → 0.0941 (−39%) | như trên | Mối đe doạ: θ global chọn trên dev 137 recording |
 | S25 | cSEBB thua θ global trên **mọi** run v2 (lặp lại S14) | 6 run: cSEBB 0.0202–0.1379 so với θ global 0.1060–0.2169; ensemble 0.1275 so với 0.2129 | `ml/runs/*/sebb_cv_selection.json`, `summary_all.log` | Kết quả âm tính lặp lại |
+| S26 | **RQ1-v2 — chỉ CV dev, sơ bộ** (S9, ADR-0031 §2). C-v2 (khởi tạo DataSEC) không tách biệt rõ khỏi B-v2 (khởi tạo AudioSet) dưới recipe v2, giống mẫu hình RQ1 gốc (ADR-0021) | CV dev θ global p25 mỗi seed: B-v2 0.1900 / 0.2096 / 0.2169 (mean 0.2055, sd 0.0139); C-v2 0.1913 / 0.2166 / 0.2170 (mean 0.2083, sd 0.0147). Chênh mean 3-seed +0.0028 — trong khoảng sd giữa seed của cả hai nhánh | `ml/runs/sed_polyphonic_20260926T{161726,172229,185208}Z/postproc_cv_selection.json` | **Chưa phải kết luận RQ1-v2**: đây là CV dev, không phải Welch/bootstrap trên test theo luật ghi trước (ADR-0031 §2). Test 6 run này chỉ mở sau vòng chọn cuối S13 (18/10) |
+| S27 | Ensemble (d) C-v2 3-seed có CV dev **cao nhất trong mọi ứng viên non-Track2** tính tới nay — cao hơn cả (c), hệ thống đã chọn và test đêm 26/09 | (d) 0.2230 ± 0.0492 so với (c) đã chọn 0.2129 ± 0.0622 (test 0.1476) và (b) B-v2 đơn tốt nhất 0.2169. (e) 6-model (B-v2+C-v2 trộn) 0.2050 ± 0.0561 — **không** hơn (d) hay (c), trộn hai cách khởi tạo không giúp trên CV dev | `ml/runs/sed_ensemble_cv2_20260926T205405Z`, `sed_ensemble_bcv2_20260926T205412Z` | Ứng viên (d)/(e) đã ghi trước ở ADR-0031 §4; **không** đổi hệ thống đang phục vụ, không mở test cho (d)/(e) trước S13 |
 
 ### 2.3 Caption (RQ2 — C1, C2)
 
@@ -228,3 +230,6 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | 26/09 (tối) | **Lựa chọn commit trước khi mở test**: ensemble v2 3 seed | `ec71b20` (tree sạch) |
 | 26/09 (tối) | Test một lần cho (b) và (c); ensemble dev+test `155630Z` (dev trùng SHA); sổ test, macro; bootstrap ghép cặp v2 − v1 +0.0536 [+0.0261, +0.0853] (S18) | `43d5847` + commit tài liệu này |
 | 26/09 23:17 | S9 (RQ1-v2) bắt đầu: 3 run C-v2 tại `43d5847` | `scratchpad/s9_queue.log` |
+| 27/09 03:53 | S9 xong: 3 run C-v2 hoàn tất trên tree sạch, code train vẫn trùng `e808df4`. CV dev sơ bộ (S26) chưa tách biệt B-v2/C-v2 | `sed_polyphonic_20260926T{161726,172229,185208}Z` |
+| 27/09 04:42 | Dựng ensemble (d) C-v2 3-seed và (e) B-v2+C-v2 6-model (ADR-0031 §4), chạy CV dev cả hai họ hậu xử lý. (d) có CV cao nhất trong mọi ứng viên non-Track2 (S27) | `sed_ensemble_cv2_20260926T205405Z`, `sed_ensemble_bcv2_20260926T205412Z` |
+| 27/09 | Sửa nợ #24 (`best_validation` theo đúng `select_metric`) | `4135d17` |

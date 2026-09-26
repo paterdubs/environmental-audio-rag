@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-26 (tối) — SED v2 chốt và test một lần (ADR-0030 §9); S9 đang chạy; Track 2 cổng T0 bước 1–2 (ADR-0032); lộ trình tới hạn nộp ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md), mốc đóng băng model 18/10)
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 605 pass, 0 skip, ruff sạch (Windows, `43d5847`); CI Linux chạy lại khi push
+**Cập nhật:** 2026-09-27 (đêm) — S9 xong + ensemble (d)/(e) CV dev; SED v2 chốt và test một lần (ADR-0030 §9); Track 2 cổng T0 bước 1–2 (ADR-0032, chờ duyệt bước 3–4); lộ trình tới hạn nộp ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md), mốc đóng băng model 18/10)
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 608 pass, 4 skip (DB — Docker Desktop tắt), ruff sạch (Windows, `4135d17`); CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -69,7 +69,7 @@
 | Chẩn đoán trần SED (độ phân giải, người, onset/offset) | ✅ dev + ground truth | [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md) |
 | Hậu xử lý cSEBB (Ebbers 2024) | ✅ cài + CV dev; **âm tính** trên v1 (0.0582 vs 0.1538) | [sebb_cv_…_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) |
 | SED v2 (ADR-0030) | ✅ chốt 26/09 tối: ensemble 3 seed chọn trên dev (`ec71b20`); test micro 0.1476, macro 0.1369, PSDS-1 0.3447, PSDS-2 0.6744; v2 − v1 +0.0536 [+0.0261, +0.0853] | [sed_v2_selection_20260926.md](measurements/sed_v2_selection_20260926.md), [sed_ensemble_v2_20260926T155630Z_eval_cv.md](measurements/sed_ensemble_v2_20260926T155630Z_eval_cv.md), [sed_v2_ablation_20260926.md](measurements/sed_v2_ablation_20260926.md), ADR-0030 §9 |
-| RQ1-v2 (S9) / Track 2 (S10) | ◐ S9 train từ 23:17; S10 cổng T0 bước 1–2 xong (nguồn V3, license), ADR-0032 Proposed | ADR-0031, ADR-0032 |
+| RQ1-v2 (S9) / Track 2 (S10) | ✅ S9: 3 run C-v2 + ensemble (d)/(e), CV dev xong (test chờ S13); (d) CV dev 0.2230, cao nhất mọi ứng viên non-Track2. S10: cổng T0 bước 1–2 xong, ADR-0032 Proposed chờ duyệt bước 3–4 | ADR-0031, ADR-0032, [PAPER_NOTES S26–S27](PAPER_NOTES.md) |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |

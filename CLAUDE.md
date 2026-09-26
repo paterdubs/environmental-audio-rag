@@ -252,24 +252,28 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
 | W7 (ứng dụng) | ADR-0029 duyệt 26/09; 7.4 image inference, 7.5–7.7 — làm 19/10–02/11, sau S8 |
 | **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
-| **Cải thiện cuối** (ADR-0031) | S9 RQ1-v2 đang train (từ 23:17, `scratchpad/s9_queue.log`); S10 T0 bước 1–2 xong, bước 3–4 chờ GPU; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
+| **Cải thiện cuối** (ADR-0031) | S9 xong 27/09 03:53 (train+CV dev; test chờ S13); S10 T0 bước 1–2 xong, bước 3–4 chờ duyệt ADR-0032; nợ #24 đóng; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
 | Tài liệu | PretrainedSED đã V3; còn DCASE 2016 T3, bài DataSED ở V2 (nợ #21) |
 
 ### Chưa có ○
 
-ADR-0032 Accepted (chờ duyệt; T0 bước 3–4) · giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) ·
-bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo cáo luận văn (L3).
+ADR-0032 Accepted (chờ duyệt; T0 bước 3–4, cần tải checkpoint BEATs ~364 MB) · giải thích vì sao
+PSDS không tăng (PAPER_NOTES §6 #8) · bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo cáo
+luận văn (L3).
 
 ### Việc tiếp theo — theo thứ tự
 
 Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 §7).
 
-1. **S9 RQ1-v2** đang chạy. Khi xong: CV từng run đã có. Dựng ensemble chỉ-dev (d) C-v2 và (e)
-   B-v2 + C-v2 rồi chạy CV (Runbook bước 6). Test của RQ1-v2 chỉ mở sau S13.
-2. **S10 Track 2** (ADR-0032): sau S9, T0 bước 3–4 cho T2a (BEATs đóng băng + head v2) → 3 seed; rồi
-   T2b (`frame_mn10`). Code viết trong worktree, vào master sau S9.
-3. Nợ #24 (`best_validation`), sửa sau S9. Giải thích S21 (PSDS) trên dev.
-4. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test.
+1. ~~S9 RQ1-v2~~ — ✅ 27/09 03:53: 3 run C-v2 xong; ensemble (d)/(e) + CV dev xong 04:42
+   (PAPER_NOTES S26–S27). Test 6 run này vẫn **chờ S13**, không mở sớm hơn.
+2. **S10 Track 2** (ADR-0032, còn Proposed): T0 bước 3–4 cho T2a (BEATs đóng băng + head v2) đòi
+   tải checkpoint ngoài và quyết định thiết kế thật (chọn BEATs so với ATST-F, cách cache
+   embedding) — **để người dùng xem ADR-0032 trước khi tôi tải/viết code**, không tự ý làm tiếp
+   trong lúc không ai giám sát. Sau khi duyệt: T0 bước 3–4 → 3 seed T2a → T2b (`frame_mn10`).
+3. ~~Nợ #24~~ — ✅ 27/09 (`4135d17`). Giải thích S21 (PSDS) trên dev — còn mở.
+4. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e) đã có CV dev,
+   sẵn sàng vào vòng chọn cùng ứng viên Track 2.
 5. Sau 18/10: S8 một lần → W7 7.4–7.7 → L2 → viết báo cáo.
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
@@ -524,6 +528,32 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-27 (đêm, tự động) — S9 xong; ensemble (d)/(e) + CV dev; sửa nợ #24
+
+Theo dõi qua đêm theo yêu cầu người dùng ("tự theo dõi và tự động làm tiếp"). S9 báo `S9 DONE`
+03:53: 3 run C-v2 hoàn tất trên tree sạch, code train vẫn trùng `e808df4` (kiểm lại trước khi
+dùng). CV dev per-seed C-v2 (0.1913 / 0.2166 / 0.2170) rất sát B-v2 (0.1900 / 0.2096 / 0.2169) —
+**sơ bộ**, không phải kết luận RQ1-v2 chính thức (test chờ S13, PAPER_NOTES S26).
+
+Dựng tiếp ứng viên (d) C-v2 3-seed và (e) B-v2+C-v2 6-model đã ghi trước ở ADR-0031 §4, chạy CV
+cả hai họ hậu xử lý. **(d) có CV dev 0.2230 ± 0.0492 — cao nhất trong mọi ứng viên non-Track2
+tính tới nay**, vượt cả hệ thống đã chọn và test đêm qua (0.2129 → test 0.1476). (e) trộn hai
+cách khởi tạo không giúp (0.2050, thấp hơn cả (d) lẫn (c)) (S27). Không mở test cho (d)/(e) —
+đợi vòng chọn cuối S13 xét cùng lúc với Track 2.
+
+Sửa nợ #24 (`4135d17`): `best_validation` giờ đọc đúng `config.select_metric` thay vì luôn max
+macro_f1 — trước đây con số này sai (không liên quan checkpoint đã chọn) cho mọi run v2, nhưng
+không ai từng trích nó (mọi báo cáo v2 đọc thẳng `history.json`).
+
+**Dừng lại trước khi chạm Track 2 thật**, dù GPU đã rảnh: ADR-0032 (chọn BEATs so với ATST-F,
+cách cache embedding, tải checkpoint ~364 MB) vẫn ở Proposed — đây là quyết định thiết kế thật,
+khác các bước đêm nay vốn chỉ thực thi luật đã có sẵn. Để người dùng xem qua trước khi tôi tải
+checkpoint ngoài và viết code Track 2 vào master.
+
+Gate (ruff + pytest) 608 pass, 4 skip (test DB tự bỏ qua — Docker Desktop được người dùng tắt,
+xác nhận không ảnh hưởng S9 vì `ml/training`/`select_postproc_cv`/`select_sebb_cv` không đụng
+PostgreSQL).
 
 ### 2026-09-26 (tối) — SED v2 chốt theo luật ghi trước; test một lần; S9 bắt đầu; Track 2 T0 bước 1–2
 
