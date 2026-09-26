@@ -70,12 +70,17 @@ mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_N
 - **cSEBB** (Ebbers 2024) trên posterior v1 **thất bại**: CV 0.058 vs 0.154. Lý do "posterior bão
   hoà" ở bản đầu **đã bị bác bỏ** (`boundary_errors_20260926.md`): frame âm trung vị p 0.008,
   onset lệch đối xứng (IQR −0.39…+0.51 s) → lỗi là **biên tản rộng**.
-- **SED v2** (`--recipe v2`: pool /8, BiGRU 2×256, 30 epoch, lr encoder 3e-4, random crop,
-  mixup, FilterAugment, trần 10) **đang train**: hàng đợi 3 seed + 3 ablation từ `e808df4`.
-  Run 1 (seed 20260922) xong: CV dev **0.1900 ± 0.0523** (sơ bộ, 1/3 seed; v1 ensemble C
-  0.1538). Mã thoát 127 của run v2 là giả (TRAINING_OPS_PLAN §7 #6) → follower CV ngầm kiểm
-  `manifest.complete`. Test chỉ mở sau khi lựa chọn trên dev đã
-  commit (`scripts.dump_predictions`).
+- **SED v2 chốt 26/09 tối** (`--recipe v2`: pool /8, BiGRU 2×256, 30 epoch, lr encoder 3e-4,
+  random crop, mixup, FilterAugment, trần 10; ADR-0030 §9).
+  - 6 run trên tree sạch.
+  - Lựa chọn commit trước test (`ec71b20`): **ensemble 3 seed**, CV dev 0.2129 ± 0.0622. Nó
+    "không được gọi là tốt hơn" run đơn 0.1900.
+  - **Test một lần:** micro **0.1476** [0.1088, 0.1866], macro **0.1369** (v1: 0.0941 / 0.0917).
+    Ghép cặp v2 − v1 +0.0536 [+0.0261, +0.0853].
+  - **PSDS-1/2 không tăng** (0.3447 / 0.6744 so với 0.3489 / 0.6987).
+  - Ablation: độ phân giải quyết định (−0.084); trần 50 và augmentation không phân biệt được.
+  - Lợi ích chủ yếu ở lớp phổ biến (macro dev chỉ +0.019).
+  - Mã thoát 127 của run v2 là giả (TRAINING_OPS_PLAN §7 #6).
 - **Lệch protocol phát hiện 26/09:** event-F1 headline từ trước tới nay là **micro**, trong khi
   Q2 đòi macro → báo thêm macro (PLAN nợ #20).
 - **Người dùng duyệt lộ trình tới hạn nộp 26/09 chiều** ([ADR-0031](docs/decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)),
@@ -246,28 +251,25 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 |---|---|
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
 | W7 (ứng dụng) | ADR-0029 duyệt 26/09; 7.4 image inference, 7.5–7.7 — làm 19/10–02/11, sau S8 |
-| **SED v2** (ADR-0030) | Hàng đợi 6 run đang chạy (run 1, 2 xong); S5–S7 theo Runbook (PLAN, khối "SED v2"); S8 sau mốc 18/10 |
-| **Cải thiện cuối** (ADR-0031) | S9 RQ1-v2 sau S6; S10 Track 2; S11–S12 nếu còn thời gian; S13 vòng chọn cuối 18/10 |
-| Tài liệu | `RELATED_WORK.md`: nhiều nguồn mới ở mức V2 (tóm tắt) — đọc trực tiếp trước khi trích (nợ #21) |
+| **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
+| **Cải thiện cuối** (ADR-0031) | S9 RQ1-v2 đang train (từ 23:17, `scratchpad/s9_queue.log`); S10 T0 bước 1–2 xong, bước 3–4 chờ GPU; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
+| Tài liệu | PretrainedSED đã V3; còn DCASE 2016 T3, bài DataSED ở V2 (nợ #21) |
 
 ### Chưa có ○
 
-Measurement event-F1 macro cho v2 (sinh sau hàng đợi) · ADR-0032 (Track 2, sau T0) · bộ chuyển
-câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo cáo luận văn (L3).
+ADR-0032 Accepted (chờ duyệt; T0 bước 3–4) · giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) ·
+bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo cáo luận văn (L3).
 
 ### Việc tiếp theo — theo thứ tự
 
 Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 §7).
 
-1. **Chốt SED v2** khi hàng đợi xong: PLAN, khối "SED v2", Runbook bước 1–5.
-   - CV, ablation, `select_sed_v2`, rồi **commit**.
-   - Sau đó mới `dump_predictions --split test` và `evaluate_run` một lần; tiếp theo là
-     `report_event_f1_macro` (nợ #20) và PAPER_NOTES.
-   - **Không chạy S8 lúc này.**
-2. **S9 RQ1-v2** (Runbook bước 6): train 3 run C-v2 qua đêm. Code train giữ nguyên tới khi xong.
-3. **S10 Track 2:** T0 (nguồn V3, license checkpoint, VRAM, 1 epoch dev hết đường ống) → ADR-0032,
-   ghi ứng viên → `frame_mn10` × 3 seed. Code viết trong worktree, vào master sau S9.
-4. S11, S12 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test.
+1. **S9 RQ1-v2** đang chạy. Khi xong: CV từng run đã có. Dựng ensemble chỉ-dev (d) C-v2 và (e)
+   B-v2 + C-v2 rồi chạy CV (Runbook bước 6). Test của RQ1-v2 chỉ mở sau S13.
+2. **S10 Track 2** (ADR-0032): sau S9, T0 bước 3–4 cho T2a (BEATs đóng băng + head v2) → 3 seed; rồi
+   T2b (`frame_mn10`). Code viết trong worktree, vào master sau S9.
+3. Nợ #24 (`best_validation`), sửa sau S9. Giải thích S21 (PSDS) trên dev.
+4. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test.
 5. Sau 18/10: S8 một lần → W7 7.4–7.7 → L2 → viết báo cáo.
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
@@ -522,6 +524,26 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 (tối) — SED v2 chốt theo luật ghi trước; test một lần; S9 bắt đầu; Track 2 T0 bước 1–2
+
+Runbook chạy đúng thứ tự.
+- **Ensemble chỉ-dev** bằng script repo: `dev.npz` trùng từng byte bản xem trước; CV khớp.
+- **Measurement dev** (`8795960`): ablation (độ phân giải −0.084; trần 50 và augmentation không
+  phân biệt được, luật S12 không đòi thêm seed), biên, phân rã lỗi v2 (`--tag v2`, vì file cùng
+  ngày sẽ ghi đè v1 — sửa ở `3b08999`), macro dev (thứ hạng trùng micro).
+- **Lựa chọn** chạy lại trên tree sạch và commit **trước test** (`ec71b20`): ensemble 3 seed.
+- **Test một lần** (`43d5847`): micro 0.1476, macro 0.1369, so với v1 0.0941 / 0.0917. Bootstrap ghép
+  cặp +0.0536 [+0.0261, +0.0853]. **PSDS không tăng** → PAPER_NOTES S21 và §6 #8.
+- **S9** bắt đầu 23:17 trên tree sạch, code train trùng `e808df4`.
+- **Track 2** (`df8f3c0`): PretrainedSED lên V3 (đọc PDF v2, code, LICENSE). Bắt được một dòng số sai
+  phiên bản trong bản V2. Frozen gần bằng fine-tune → ADR-0032 đổi thứ tự sang BEATs đóng băng
+  trước; ứng viên (f1)–(f4) ghi trước khi có số.
+
+Tự bắt:
+- Gate trượt vì thư mục ensemble xem trước (script nháp, manifest thiếu `command`) → chuyển ra
+  scratchpad, không xoá.
+- Báo nhầm "post_queue không chạy" (kiểm quá sớm) → đã đính chính.
 
 ### 2026-09-26 (chiều, tiếp) — Người dùng duyệt lộ trình tới hạn nộp (ADR-0031)
 

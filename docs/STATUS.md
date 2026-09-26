@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-26 — chẩn đoán trần SED + SED v2 đang chạy (ADR-0030); tài liệu cho paper ([PAPER_NOTES.md](PAPER_NOTES.md)); lộ trình tới hạn nộp đã duyệt ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md), mốc đóng băng model 18/10)
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 572 pass, 3 skip (test cần PostgreSQL khi Docker tắt), ruff sạch (Windows, `e808df4`); CI Linux chạy lại khi push
+**Cập nhật:** 2026-09-26 (tối) — SED v2 chốt và test một lần (ADR-0030 §9); S9 đang chạy; Track 2 cổng T0 bước 1–2 (ADR-0032); lộ trình tới hạn nộp ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md), mốc đóng băng model 18/10)
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 605 pass, 0 skip, ruff sạch (Windows, `43d5847`); CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -17,9 +17,15 @@
   của kiến trúc v1 là 0.63 (pool thời gian /64); trần người 0.58; v1 chỉ onset 0.23, chỉ
   offset 0.50, segment F1 0.65 → lỗi nằm ở biên. Biên lệch **đối xứng, tản rộng** — giả thuyết
   "posterior bão hoà" bị đo bác bỏ ([boundary_errors_20260926.md](measurements/boundary_errors_20260926.md)).
-  cSEBB thất bại cả trên v1 (CV 0.058 vs 0.154) lẫn v2 seed 1 (0.095 vs 0.190). SED v2 (pool /8,
-  BiGRU 2×256, 30 epoch, augmentation, trần `pos_weight` 10) **đang train**: 1/6 run xong —
-  seed 20260922 CV dev 0.1900 ± 0.0523 (sơ bộ; v1 ensemble C 0.1538 ± 0.0214).
+  cSEBB thua θ global ở v1 (CV 0.058 so với 0.154) và ở mọi run v2.
+- **SED v2 chốt 26/09 tối** (ADR-0030 §9). Cấu hình: pool /8, BiGRU 2×256, 30 epoch,
+  augmentation, trần `pos_weight` 10.
+  - Lựa chọn trên dev commit trước test (`ec71b20`): ensemble 3 seed, CV 0.2129 ± 0.0622.
+  - Test một lần: event-F1 **micro 0.1476** [0.1088, 0.1866], **macro 0.1369**. Mốc v1 là
+    0.0941 / 0.0917. Bootstrap ghép cặp v2 − v1 +0.0536 [+0.0261, +0.0853].
+  - **PSDS không tăng** (PSDS-1 0.3447 so với 0.3489).
+  - Ablation: độ phân giải thời gian là thành phần quyết định (−0.084 CV dev khi bỏ).
+  - S9 (RQ1-v2) chạy từ 23:17.
 - **Event-F1 headline trước 26/09 là micro** (lệch Q2, evaluation_protocol §3.2). Từ 26/09 con
   số chính là **macro**, micro kèm; chọn hệ thống vẫn bằng micro (ADR-0031 §1, PLAN nợ #20).
 - **Mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ dự đoán (`7ada7d7`, `3208dbb`).
@@ -62,7 +68,8 @@
 | 4.6 `confusable_with` / 4.7 A4 | ✅ | taxonomy.md §8.1, ADR-0028 |
 | Chẩn đoán trần SED (độ phân giải, người, onset/offset) | ✅ dev + ground truth | [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md) |
 | Hậu xử lý cSEBB (Ebbers 2024) | ✅ cài + CV dev; **âm tính** trên v1 (0.0582 vs 0.1538) | [sebb_cv_…_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) |
-| SED v2 (ADR-0030) | ◐ code + pilot xong; 6 run đang train (từ `e808df4`, tree sạch); RQ1-v2 và Track 2 duyệt 26/09 (ADR-0031) | ADR-0030, ADR-0031, [PAPER_NOTES §9](PAPER_NOTES.md) |
+| SED v2 (ADR-0030) | ✅ chốt 26/09 tối: ensemble 3 seed chọn trên dev (`ec71b20`); test micro 0.1476, macro 0.1369, PSDS-1 0.3447, PSDS-2 0.6744; v2 − v1 +0.0536 [+0.0261, +0.0853] | [sed_v2_selection_20260926.md](measurements/sed_v2_selection_20260926.md), [sed_ensemble_v2_20260926T155630Z_eval_cv.md](measurements/sed_ensemble_v2_20260926T155630Z_eval_cv.md), [sed_v2_ablation_20260926.md](measurements/sed_v2_ablation_20260926.md), ADR-0030 §9 |
+| RQ1-v2 (S9) / Track 2 (S10) | ◐ S9 train từ 23:17; S10 cổng T0 bước 1–2 xong (nguồn V3, license), ADR-0032 Proposed | ADR-0031, ADR-0032 |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
@@ -175,7 +182,7 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
    (ADR-0027, duyệt 26/09).
 4. W7: 7.4 inference image, 7.5–7.7 — làm 19/10–02/11, sau S8 (ADR-0031 §7).
 5. ~~Cân nhắc chọn lại `g_max` percentile trên dev (A5)~~ — xong 25/09 (ADR-0024).
-6. **SED v2 (ADR-0030):** CV hậu xử lý + ablation trên dev → commit lựa chọn → test một lần.
+6. ~~SED v2 (ADR-0030): CV + ablation trên dev → commit lựa chọn → test một lần~~ — xong 26/09 tối.
    Chạy lại W5 e2e / W6 (S8) **một lần sau mốc 18/10**, trên hệ thống thắng vòng chọn cuối.
 7. Event-F1 macro cho mọi hệ thống đã báo (PLAN nợ #20) — v1 xong (`event_f1_macro_20260926.md`),
    v2 sinh sau hàng đợi.

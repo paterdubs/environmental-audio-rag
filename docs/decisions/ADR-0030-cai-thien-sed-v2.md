@@ -208,6 +208,40 @@ model 18/10, trên hệ thống thắng vòng chọn cuối; không chạy ngay 
   seed v2 (seed 20260922: θ global p25 0.1900 ± 0.0523). Luật không đổi so với bản ghi ở trên.
 - **Việc cần làm theo thứ tự sau khi hàng đợi xong:** PLAN, khối "SED v2", mục "Runbook".
 
+### 9. Kết quả (26/09 tối; Runbook chạy đúng thứ tự)
+
+- **Hàng đợi:** 6 run hoàn tất trên tree sạch (xong 18:10); CV từng run xong 18:37.
+- **Ablation (§4, chỉ dev,** `sed_v2_ablation_20260926.md`**):**
+  - v2 đủ 3 seed: 0.1900 / 0.2096 / 0.2169 (sd giữa seed 0.0139); ngưỡng nhiễu 0.0523.
+  - Bỏ độ phân giải (pool /64): **−0.0840**, giảm.
+  - Trần 50: −0.0126; không augmentation: +0.0068 → không phân biệt được.
+- **Lựa chọn (§5,** `sed_v2_selection_20260926.md`**, commit `ec71b20` trên tree sạch, trước mọi
+  logit test):**
+  - **(c) v2 ensemble 3 seed**: CV 0.2129 ± 0.0622.
+  - (b) 0.1900 ± 0.0523; (a) 0.1538 ± 0.0214.
+  - (c) − (b) = +0.0229 ≤ sd fold → **không được gọi là tốt hơn (b)**.
+  - Thứ hạng theo macro dev trùng: 0.1494 > 0.1354 > 0.1308.
+- **Test, mỗi ứng viên một lần** (`43d5847`; ensemble dev+test `155630Z`, `dev.npz` trùng SHA
+  bản chỉ-dev):
+
+  | Hệ thống | F1 micro [CI 95%] | F1 macro | PSDS-1 | PSDS-2 |
+  |---|---:|---:|---:|---:|
+  | (c) v2 ensemble 3 seed — **chọn** | **0.1476** [0.1088, 0.1866] | **0.1369** | 0.3447 | 0.6744 |
+  | (b) v2 run đơn | 0.1255 [0.0883, 0.1643] | 0.1198 | 0.3225 | 0.6657 |
+  | (a) v1 ensemble C (ADR-0024) | 0.0941 [0.0624, 0.1277] | 0.0917 | 0.3489 | 0.6987 |
+
+- Bootstrap ghép cặp theo recording (test, `rq1_multirun_bootstrap_sedv2_vs_v1_20260926.md`):
+  v2 − v1 = **+0.0536 [+0.0261, +0.0853]**.
+- **Đọc đúng:**
+  - Event-F1 tăng rõ (micro và macro).
+  - PSDS-1/2 **không tăng**.
+  - Lợi ích chủ yếu ở lớp phổ biến: macro dev chỉ +0.019 so với micro +0.053.
+  - Biên tốt lên vừa phải: onset trong ±0.2 s 35.8% so với 30.2%.
+  - Dev → test giảm 31%.
+  - Chi tiết ở PAPER_NOTES S18–S25.
+- **Hệ thống SED cuối của giai đoạn này là (c).** Theo ADR-0031 §6, S8 (W5/W6 và hệ thống phục
+  vụ) **chưa** chạy; sẽ chạy một lần sau vòng chọn cuối 18/10.
+
 ## Consequences
 
 - Sửa đúng nguyên nhân đo được thay vì dò siêu tham số.

@@ -1,0 +1,43 @@
+{
+ "n_recordings": 142,
+ "n_bootstrap": 1000,
+ "confidence": 0.95,
+ "seed": 20260922,
+ "branches": {
+  "v2": {
+   "estimate": 0.14763948497854076,
+   "lower": 0.10882120768198894,
+   "upper": 0.18663498957985294,
+   "runs": [
+    "sed_ensemble_v2_20260926T155630Z"
+   ],
+   "sd": 0.0
+  },
+  "v1": {
+   "estimate": 0.09407665505226481,
+   "lower": 0.06243863612533006,
+   "upper": 0.1276738267331772,
+   "runs": [
+    "sed_ensemble_C_clean_20260925T045631Z"
+   ],
+   "sd": 0.0
+  }
+ },
+ "differences": {
+  "v1-v2": {
+   "estimate": -0.05356282992627595,
+   "lower": -0.08529238422308712,
+   "upper": -0.026080640595647284
+  }
+ },
+ "per_run": {
+  "sed_ensemble_v2_20260926T155630Z": 0.14763948497854076,
+  "sed_ensemble_C_clean_20260925T045631Z": 0.09407665505226481
+ },
+ "git": {
+  "revision": "43d58475cd85f85cb3c1eff753fda932979065ed",
+  "dirty": false
+ },
+ "postproc_name": "postproc_cv.json",
+ "evaluation_name": "evaluation_cv.json"
+}

@@ -62,6 +62,14 @@ Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". H�
 | S15 | Giao thức "chọn trên dev, commit, rồi mới sinh logit test": đường dump tái tạo **trùng từng bit** logit lúc train | SHA-256 dev trùng khít trên run `054531Z` | commit `8b1df60`, `scripts/dump_predictions.py` | Phương pháp: chứng minh test không bị dùng để chọn |
 | S16 | Parity phục vụ | Đặc trưng 142/142 trùng; logit trùng bit khi cùng batch; 332/408 event trùng khít, 405/408 trong collar khi phục vụ từng file (nhiễu fp16 theo thành phần batch) | [inference_parity_20260925.md](measurements/inference_parity_20260925.md), ADR-0029 §7 | Phụ lục kỹ thuật |
 | S17 | **Không bão hoà; biên tản rộng và đối xứng** (bác bỏ giả thuyết ban đầu của ADR-0030) | v1 ensemble C, dev: frame âm trung vị p 0.008, ≥ 0.5 chỉ 2.3%; onset trung vị +0.00 s, [q25, q75] [−0.39, +0.51], trong ±0.2 s 30.2%, trễ 36.5%, sớm 33.3%. v2 seed 20260922 (sơ bộ): trong ±0.2 s 35.2% | [boundary_errors_20260926.md](measurements/boundary_errors_20260926.md) | Hướng A: lời giải thích đúng cho lỗi biên; ví dụ "trace đơn lẻ đánh lừa" |
+| S18 | **SED v2 được chọn trên dev và tăng event-F1 trên test** (luật ghi trước, lựa chọn commit trước khi mở test) | CV dev (micro): 3 seed 0.1900 / 0.2096 / 0.2169; ensemble 3 seed **0.2129 ± 0.0622** được chọn, nhưng hơn run đơn chỉ 0.023 (≤ sd fold) nên "không được gọi là tốt hơn" run đơn. **Test một lần:** ensemble v2 micro **0.1476** [0.1088, 0.1866], macro **0.1369**; run đơn 0.1255 / 0.1198; v1 ensemble C 0.0941 / 0.0917. Bootstrap ghép cặp theo recording: v2 − v1 **+0.0536 [+0.0261, +0.0853]** | [sed_v2_selection_20260926.md](measurements/sed_v2_selection_20260926.md), [sed_ensemble_v2_20260926T155630Z_eval_cv.md](measurements/sed_ensemble_v2_20260926T155630Z_eval_cv.md), [rq1_multirun_bootstrap_sedv2_vs_v1_20260926.md](measurements/rq1_multirun_bootstrap_sedv2_vs_v1_20260926.md) | Hướng A: kết quả chính |
+| S19 | **Độ phân giải thời gian là thành phần quyết định; AP frame không nhìn thấy điều này** | Bỏ nó (pool /64): CV dev 0.1900 → 0.1060 (−0.0840, gấp 1.6 lần ngưỡng nhiễu 0.0523), trong khi AP frame dev 0.667 so với 0.688 | [sed_v2_ablation_20260926.md](measurements/sed_v2_ablation_20260926.md) | Hướng A: bảng ablation; lý do phải báo metric mức event |
+| S20 | Trần `pos_weight` 50 so với 10, và augmentation (mixup + FilterAugment): **không phân biệt được** (1 seed mỗi biến thể; luật S12 không đòi thêm seed) | Δ −0.0126 và +0.0068. Không augmentation thì AP frame thấp hơn (0.644 so với 0.688), nhưng event-F1 không giảm | như trên | Kết quả âm tính: augmentation giúp AP frame, không giúp event-F1 |
+| S21 | **PSDS không tăng dù event-F1 tăng** | Test: PSDS-1 0.3447 so với 0.3489 (v1), PSDS-2 0.6744 so với 0.6987 | các file `*_eval_cv.md` ở trên | Hướng A: lợi ích nằm ở điểm vận hành đã chọn; chưa giải thích (§6) |
+| S22 | **Lợi ích chủ yếu ở lớp phổ biến**, lớp hiếm vẫn bị bỏ sót | Dev in-sample: micro 0.1588 → 0.2120 (+0.053), macro 0.1308 → 0.1494 (+0.019). Frame dương có p < 0.5 của `horn` / `crows…` / `thunder…` ở v2 seed 1 là 75 / 73 / 58%. Deletion test 274 so với 27 insertion | `*_deveval_cv.md`, [boundary_errors_20260926.json](measurements/boundary_errors_20260926.json) | Hướng A; động cơ S11 (loss cho lớp hiếm) |
+| S23 | Biên v2 tốt lên nhưng vẫn tản rộng | Onset trong ±0.2 s 35.8% (v1 30.2%), IQR [−0.54, +0.30] s. Chỉ onset 0.2708 (v1 0.2325), chỉ offset 0.4914 (v1 0.4975), segment F1 0.6869 (v1 0.6542) | [boundary_errors_20260926.md](measurements/boundary_errors_20260926.md), [sed_ceilings_v2_20260926.md](measurements/sed_ceilings_v2_20260926.md) | Hướng A: phần lỗi còn lại |
+| S24 | Dev → test giảm ở cả v1 và v2 | v2 0.2129 (CV dev) → 0.1476 (test, −31%); v1 0.1538 → 0.0941 (−39%) | như trên | Mối đe doạ: θ global chọn trên dev 137 recording |
+| S25 | cSEBB thua θ global trên **mọi** run v2 (lặp lại S14) | 6 run: cSEBB 0.0202–0.1379 so với θ global 0.1060–0.2169; ensemble 0.1275 so với 0.2129 | `ml/runs/*/sebb_cv_selection.json`, `summary_all.log` | Kết quả âm tính lặp lại |
 
 ### 2.3 Caption (RQ2 — C1, C2)
 
@@ -93,13 +101,14 @@ Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". H�
 | Trần `pos_weight` | A4 | `scripts/train_sed.py --pos-weight-cap` | 10 tốt nhất trên dev (S9) | → vào v2 |
 | cSEBB (phát hiện điểm đổi) | Ebbers và cộng sự, Interspeech 2024 | `ml/postprocessing/sebb.py`, `scripts/select_sebb_cv.py` | **thất bại** trên v1 (S14) và trên v2 seed 20260922: CV tốt nhất 0.0953 ± 0.0302 (τ 0.48, abs 0.15) so với θ global p25 0.1900 ± 0.0523 (`ml/runs/sed_polyphonic_20260926T033312Z/{sebb,postproc}_cv_selection.json`, sơ bộ 1/3 seed) | vẫn trong lưới chọn của v2 |
 | Hysteresis (hai ngưỡng) | thực hành SED cổ điển | `ml/postprocessing/sebb.py::hysteresis_runs` | chưa đánh giá | ○ |
-| CNN14 giữ độ phân giải (pool thời gian /8) | chẩn đoán S11/S13; CRNN DCASE pool thời gian ít | `PannsCNN14Encoder(time_pooling=…)` | đang chạy | ◐ v2 |
-| BiGRU 2 lớp chạy ở nhịp encoder | CRNN chuẩn | `SoundEventDetector(upsample="after_rnn")` | đang chạy | ◐ v2 |
-| Warmup + cosine, lr encoder riêng | fine-tune pretrained | `ml/training/sed.py::build_optimizer/build_scheduler` | pilot: lr encoder 3e-4 (ADR-0030 §2) | ◐ v2 |
-| Random crop mỗi epoch | augmentation thời gian | `SedFeatureDataset(random_crop=True)` | đang chạy | ◐ v2 |
-| Mixup (nhãn mềm) | Zhang và cộng sự, ICLR 2018; PANNs | `ml/training/augment.py` | đang chạy | ◐ v2 |
-| FilterAugment (cộng dB theo dải) | Nam và cộng sự, ICASSP 2022 | `ml/training/augment.py` | đang chạy | ◐ v2 |
-| Chọn checkpoint theo macro-AP dev | không phụ thuộc ngưỡng | `SedTrainingConfig(select_metric=…)` | đang chạy | ◐ v2 |
+| CNN14 giữ độ phân giải (pool thời gian /8) | chẩn đoán S11/S13; CRNN DCASE pool thời gian ít | `PannsCNN14Encoder(time_pooling=…)` | **quyết định**: bỏ đi thì CV dev −0.084 (S19) | ✅ v2 |
+| BiGRU 2 lớp chạy ở nhịp encoder | CRNN chuẩn | `SoundEventDetector(upsample="after_rnn")` | không ablate riêng (thuộc v2 đủ) | ✅ v2 |
+| Warmup + cosine, lr encoder riêng | fine-tune pretrained | `ml/training/sed.py::build_optimizer/build_scheduler` | pilot: lr encoder 3e-4 (ADR-0030 §2); không ablate riêng | ✅ v2 |
+| Random crop mỗi epoch | augmentation thời gian | `SedFeatureDataset(random_crop=True)` | không ablate riêng | ✅ v2 |
+| Mixup (nhãn mềm) | Zhang và cộng sự, ICLR 2018; PANNs | `ml/training/augment.py` | ablate chung với FilterAugment: không phân biệt được trên event-F1, giúp AP frame (S20) | ✅ giữ trong v2 (không hại) |
+| FilterAugment (cộng dB theo dải) | Nam và cộng sự, ICASSP 2022 | `ml/training/augment.py` | như dòng trên (S20) | ✅ giữ trong v2 (không hại) |
+| Chọn checkpoint theo macro-AP dev | không phụ thuộc ngưỡng | `SedTrainingConfig(select_metric=…)` | epoch tốt nhất 17 / 23 / 28 cho 3 seed | ✅ v2 |
+| Ensemble 3 seed v2 | thực hành chuẩn | `scripts/build_ensemble.py` | CV dev 0.2129 so với run đơn 0.1900; test 0.1476 so với 0.1255 (S18) | ✅ hệ thống được chọn |
 
 **Bài học từ pilot (ADR-0030 §2):** mỗi thành phần v2 riêng lẻ chỉ làm chậm hội tụ ban đầu
 (AP dev sau 120 bước 0.32–0.40 so với v1 0.47), nhưng cộng dồn thì chậm hẳn (0.158). Không có
@@ -151,10 +160,11 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | # | Việc | Vì sao |
 |---:|---|---|
 | ~~1~~ | ~~Đo bão hoà posterior có artifact~~ — **xong 26/09**: `boundary_errors_20260926.md`; giả thuyết bị bác bỏ (S17) | — |
-| 2 | **Event-F1 macro** bên cạnh micro cho mọi hệ thống — công cụ xong (`report_event_f1_macro`, `evaluate_run` ghi macro, commit `550daec`); measurement sinh sau hàng đợi. **Người dùng chốt 26/09:** macro là con số chính, chọn vẫn bằng micro (ADR-0031 §1) | evaluation_protocol Q2 đòi macro; mọi số event-F1 headline đến nay là **micro** (`overall` của sed_eval) — lệch protocol, PLAN nợ #20 |
+| ~~2~~ | ~~**Event-F1 macro** bên cạnh micro cho mọi hệ thống~~ — **xong 26/09 tối**: `event_f1_macro_20260926` có cả v2 (ensemble 0.1369, run đơn 0.1198). **Người dùng chốt 26/09:** macro là con số chính, chọn vẫn bằng micro (ADR-0031 §1) | evaluation_protocol Q2 đòi macro; mọi số event-F1 headline đến nay là **micro** (`overall` của sed_eval) — lệch protocol, PLAN nợ #20 |
 | 3 | Đối chiếu trực tiếp các số văn liệu lấy qua tóm tắt WebFetch (V2 → V3) | Bài học ADR-0015: tóm tắt từng báo sai license |
 | 4 | Systematic search: đã có baseline nào trên DataSED chưa | Để được viết "baseline đầu tiên" |
-| 5 | Kết quả v2 (dev → chọn → test một lần) | ADR-0030 §4–§5 |
+| ~~5~~ | ~~Kết quả v2 (dev → chọn → test một lần)~~ — **xong 26/09 tối** (S18–S25; lựa chọn `ec71b20` trước test `43d5847`) | ADR-0030 §4–§5 |
+| 8 | **Giải thích S21**: vì sao event-F1 tăng mà PSDS không tăng. Ví dụ: đo PSDS theo lớp, so đường ROC của v1 và v2, và xem θ global 0.95 có đặt v2 vào một điểm vận hành khác không | Không giải thích thì không được viết "v2 tốt hơn" chung chung; phải nói theo từng metric |
 | 6 | Vòng chọn cuối 18/10 với ứng viên ghi trước; test RQ1-v2 chỉ mở **sau** khi lựa chọn cuối commit | ADR-0031 §2, §4: không số test nào có trước lựa chọn cuối hay dẫn hướng Track 2 |
 | ~~7~~ | ~~PretrainedSED lên V3~~ — **xong 26/09 tối**: đọc PDF v2, code, LICENSE (RELATED_WORK §2.1 (2)); bắt được dòng "checkpoint cũ" sai phiên bản trong bản V2 | ADR-0031 §3, cổng T0 bước 1–2 |
 
@@ -190,6 +200,11 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
    cùng license.
 8. Nhiều số văn liệu hiện ở mức V2 (lấy qua tóm tắt) — chưa được trích. PretrainedSED đã lên V3
    (26/09); còn DCASE 2016 T3, bài DataSED (PLAN nợ #21).
+9. v2 cải thiện event-F1 (micro +0.054 với CI ghép cặp không chứa 0; macro +0.045) nhưng **không**
+   cải thiện PSDS-1/2 (S21). CI bootstrap chỉ đo độ bất định do mẫu recording, không đo độ lệch giữa
+   seed. Hệ thống được chọn không được gọi là tốt hơn run đơn (S18).
+10. Ablation v2 chỉ 1 seed mỗi biến thể; kết luận "không phân biệt được" (S20) không có nghĩa là
+    "không có hiệu ứng".
 
 ---
 
@@ -207,4 +222,9 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | 26/09 | Đo phân bố xác suất + sai số biên → bác bỏ "bão hoà" (S17) | `boundary_errors_20260926.md` (`550daec`) |
 | 26/09 | Luật chọn §5 thành code + công cụ ablation, macro, `build_ensemble --splits` | `550daec` |
 | 26/09 | Người dùng duyệt lộ trình: macro là con số chính, chọn bằng micro; RQ1-v2 (S9); Track 2 qua cổng T0 (S10); vòng chọn cuối có ứng viên ghi trước, mốc đóng băng 18/10; S8 một lần sau mốc. Kiểm checkpoint DataSEC khớp encoder v2 (74 tensor) | ADR-0031 |
-| 26/09 (tối) | T0 bước 1–2 cho Track 2: PretrainedSED lên V3, chuỗi license; đổi thứ tự sang BEATs đóng băng + head trước `frame_mn10` (frozen gần fine-tune; `frame_mn` không có số); ứng viên (f1)–(f4) ghi trước khi có số | RELATED_WORK §2.1 (2), ADR-0032 |
+| 26/09 (tối) | T0 bước 1–2 cho Track 2: PretrainedSED lên V3, chuỗi license; đổi thứ tự sang BEATs đóng băng + head trước `frame_mn10` (frozen gần fine-tune; `frame_mn` không có số); ứng viên (f1)–(f4) ghi trước khi có số | RELATED_WORK §2.1 (2), ADR-0032 (`df8f3c0`) |
+| 26/09 | Hàng đợi v2 xong 18:10; CV từng run xong 18:37 (6 run, tree sạch). Run: seed 20260922 `033312Z`, seed 2 `053024Z`, seed 3 `064832Z`, pool /64 `075611Z`, trần 50 `085233Z`, không augmentation `100315Z` | `ml/runs/sed_polyphonic_20260926T*` |
+| 26/09 (tối) | Ensemble chỉ-dev bằng script repo (`150934Z`, `dev.npz` trùng từng byte bản xem trước); ablation; biên; phân rã lỗi v2; macro dev (S19–S25) | `8795960` |
+| 26/09 (tối) | **Lựa chọn commit trước khi mở test**: ensemble v2 3 seed | `ec71b20` (tree sạch) |
+| 26/09 (tối) | Test một lần cho (b) và (c); ensemble dev+test `155630Z` (dev trùng SHA); sổ test, macro; bootstrap ghép cặp v2 − v1 +0.0536 [+0.0261, +0.0853] (S18) | `43d5847` + commit tài liệu này |
+| 26/09 23:17 | S9 (RQ1-v2) bắt đầu: 3 run C-v2 tại `43d5847` | `scratchpad/s9_queue.log` |
