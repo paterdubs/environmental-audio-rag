@@ -88,8 +88,13 @@ def event_based_f1(
     event_label_list: list[str],
     t_collar: float = 0.2,
     percentage_of_length: float = 0.2,
+    evaluate_onset: bool = True,
+    evaluate_offset: bool = True,
 ) -> dict[str, Any]:
     """Evaluate event F1 through :mod:`sed_eval` with the locked protocol.
+
+    The protocol is onset **and** offset (defaults). `evaluate_onset`/`evaluate_offset`
+    exist only for diagnostics that ask which boundary fails (`report_sed_ceilings`).
 
     ``sed_eval.sound_event.EventBasedMetrics.evaluate`` accumulates internal
     state and must be called **once per recording** — passing a mixed list
@@ -117,6 +122,8 @@ def event_based_f1(
         event_label_list=event_label_list,
         t_collar=t_collar,
         percentage_of_length=percentage_of_length,
+        evaluate_onset=evaluate_onset,
+        evaluate_offset=evaluate_offset,
     )
     for recording_id in sorted(set(reference) | set(estimate)):
         reference_events = _events_for_recording(reference, recording_id)
@@ -134,6 +141,8 @@ def event_based_f1(
         "config": {
             "t_collar": t_collar,
             "percentage_of_length": percentage_of_length,
+            "evaluate_onset": evaluate_onset,
+            "evaluate_offset": evaluate_offset,
         },
     }
 
