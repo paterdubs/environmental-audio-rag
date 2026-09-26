@@ -106,6 +106,10 @@ mạnh hơn trên test, đó là dấu hiệu overfit dev.
 | **Event-based F1** | Chất lượng phát hiện và biên | ✅ |
 | **PSDS** | Hiệu năng trên toàn dải operating point | ✅ |
 
+Segment-based F1 (1 s) **chỉ báo làm bối cảnh**, không thay primary. DCASE 2016/2017 Task 3
+(ghi âm thật) dùng nó làm metric chính, nên nó giúp định cỡ khi đặt cạnh văn liệu
+(RELATED_WORK §2.1 (4)). Đổi primary sau khi đã thấy số là đổi thước đo.
+
 ### 3.2 Cấu hình event-based F1
 
 Dùng `sed_eval`, **không tự viết lại**.
@@ -116,6 +120,19 @@ Dùng `sed_eval`, **không tự viết lại**.
 | `percentage_of_length` (offset) | 0.200 | Offset dung sai 20% độ dài event |
 | Offset collar hiệu dụng | $\max(0.2\text{ s},\ 0.2 \cdot L_{ref})$ | Sai 1 s trên event 2 s khác hẳn trên event 60 s |
 | Averaging | **macro** | Q2 |
+
+> ⚠️ **Lệch protocol, phát hiện 26/09 khi rà tài liệu cho paper.** Mọi event-F1 *headline*
+> đã báo tới nay (RQ1, ADR-0024, A2–A5, v1) là **micro**: `result["overall"]` của sed_eval,
+> tức đếm cộng dồn mọi lớp. `evaluation.json` có per-class, nhưng không có macro. Q2 đòi
+> macro, và DCASE Task 4 cũng báo macro.
+>
+> Xử lý:
+> 1. Không đổi số đã báo; ghi rõ "event-F1 (micro)" ở mọi chỗ trích.
+> 2. Báo **thêm macro**, tính lại từ per-class đã có. Đây chỉ là tổng hợp lại số đã có, không
+>    chạy lại test.
+> 3. Metric chọn hệ thống v2 giữ micro để so được với ADR-0024 (ADR-0030 §5).
+>
+> PLAN nợ #20.
 
 > ⚠️ **Collar 0.2 s chặt hơn độ chính xác của chính nhãn** — đo được 23/09/2026,
 > [`annotation_consistency_20260923.md`](measurements/annotation_consistency_20260923.md).
@@ -155,6 +172,26 @@ Dùng `psds_eval`. Hai scenario phải khai trong config **trước** test.
 
 PSDS-1 khắt khe về biên; PSDS-2 nới biên nhưng phạt cross-trigger. Báo cả hai vì
 một model có thể tốt ở cái này và tệ ở cái kia — và chênh lệch đó là thông tin.
+
+### 3.3b Trần đo được — đọc một con số event-F1 thế nào (26/09)
+
+Nguồn: [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md)
+(`scripts.report_sed_ceilings`), chỉ dev + ground truth.
+
+| Trần | Giá trị | Ý nghĩa |
+|---|---:|---|
+| Model hoàn hảo, quyết định theo khối 0.64 s (CNN14 /64, v1) | 0.6294 | Kiến trúc v1 không thể vượt, dù nhận dạng hoàn hảo |
+| Như trên, khối 1.28 s | 0.3032 | |
+| Như trên, khối ≤ 0.32 s | 1.0000 | Độ phân giải không còn là trần |
+| Người vs người (8 cặp trùng, trung bình hai chiều) | 0.5785 | Trần thực tế do độ chính xác của nhãn |
+
+Ba chẩn đoán phụ, báo kèm event-F1 khi phân tích lỗi: event-F1 **chỉ onset**, **chỉ offset**
+(`event_based_f1(evaluate_onset=…, evaluate_offset=…)`), và segment-based F1 1 s. Với v1 trên
+dev, ba con số là 0.23 / 0.50 / 0.65: lỗi nằm ở onset, không ở nhận dạng.
+
+Hệ quả:
+- Không tuyên bố cải thiện vượt trần người mà không giải thích.
+- Một hệ thống có trần kiến trúc < 1 phải báo trần đó cạnh số của nó.
 
 ### 3.4 Chỉ dùng 21 class cho polyphonic
 
@@ -388,6 +425,15 @@ SAU KHI CHẠY
 sửa và chạy lại — nhưng **phải ghi vào báo cáo** rằng test đã chạy N lần và vì
 sao. Che giấu việc này là gian lận; ghi rõ thì không.
 
+**Từ SED v2 (ADR-0030):**
+
+- Run train **không** kèm `--evaluate-test`. Logit test chỉ sinh bằng
+  `scripts.dump_predictions --split test` **sau khi** lựa chọn trên dev đã commit.
+  `--verify-dev` chứng minh đường dump trùng từng bit với lúc train.
+- `scripts.evaluate_run --split dev` là đánh giá **dev in-sample**, dùng cho ablation và chẩn
+  đoán. Kết quả ghi vào `dev_evaluation*.json` và `*_deveval*.md`. **Không bao giờ** trình bày
+  như số test; sổ test (`report_test_ledger`) không tính các file này.
+
 ---
 
 ## 12. Bộ đánh giá: đã làm gì, còn giới hạn gì
@@ -418,3 +464,7 @@ Bảng gốc (22/09) liệt kê 8 mục chưa có; **cả 8 đã làm** (cập n
 | 5 | N-gram so với caption template, không có caption người viết | Chỉ tham khảo, không kết luận (§8.3) |
 | 6 | Retrieval chưa có số | RQ3 chưa trả lời (W6) |
 | 7 | Caption LLM chỉ tất định theo **chuỗi request** trên server mới khởi động — bộ nhớ đệm prompt của llama.cpp đổi phép tính số thực | Tái lập = sinh lại cả file theo đúng thứ tự; không vá lẻ từng caption (ADR-0023 §7) |
+| 8 | Event-F1 headline là **micro**, trong khi Q2 đòi macro (§3.2) | Ghi "micro" ở mọi chỗ trích; báo thêm macro (PLAN nợ #20) |
+| 9 | Kiến trúc v1 có **trần** event-F1 0.63 do pool thời gian /64; nhãn có trần người 0.58 (8 cặp) (§3.3b) | Số v1 phải đọc cạnh trần; cải thiện kiến trúc ở ADR-0030 |
+| 10 | Posterior v1 **bão hoà** (`pos_weight` tới 50): θ tối ưu 0.95, onset trễ; cSEBB mất tác dụng | Mới là quan sát trên trace + CV cSEBB; cần artifact phân bố xác suất (PAPER_NOTES §6 #1) |
+| 11 | Chưa có baseline công bố trên DataSED | Không so trực tiếp được với văn liệu; chỉ định cỡ bằng DCASE 2016 T3 (khác dataset, khác collar) |

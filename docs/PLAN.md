@@ -19,6 +19,7 @@
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 chờ duyệt; Alembic hoãn) |
 | W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.3 xong, 7.4 một phần (ADR-0029 chờ duyệt) |
 | W8 | 10–16/11 | Buffer: viết báo cáo, vá lỗ hổng | ○ |
+| SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ◐ đang train |
 
 **Nếu không dùng buffer, W7 là tuần cuối.** Mọi thứ phải xong trước 09/11.
 
@@ -163,6 +164,39 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 ---
 
+# SED v2 · thêm 26/09 · Cải thiện model ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md), Proposed)
+
+Người dùng (26/09): event-F1 0.06–0.09 quá thấp. Đề tài tập trung vào model, nghiên cứu và tối
+ưu, hướng tới paper → mọi kỹ thuật, nguồn và kết quả ghi vào [PAPER_NOTES.md](PAPER_NOTES.md)
+và [RELATED_WORK.md](RELATED_WORK.md).
+
+### Tasks
+
+| # | Task | Trạng thái |
+|---:|---|---|
+| S0 | Chẩn đoán trần (độ phân giải, người), phân rã lỗi, onset/offset/segment — `report_sed_ceilings` | ✅ 26/09 |
+| S1 | cSEBB (Ebbers 2024) + CV trên dev | ✅ 26/09 — âm tính trên v1 |
+| S2 | Code v2: pool thời gian cấu hình được, GRU sau encoder, lr riêng, warmup + cosine, random crop, mixup, FilterAugment, factory model, `dump_predictions`, `evaluate_run --split dev` | ✅ 26/09 |
+| S3 | Pilot lr encoder trên dev (3 epoch) | ✅ 26/09 — 3e-4 |
+| S4 | Hàng đợi: v2 × 3 seed {20260922, 2, 3} + ablation (/64, trần 50, không augmentation) | ◐ bắt đầu 26/09 10:33 |
+| S5 | Chọn hậu xử lý (θ global × p, cSEBB) bằng CV dev cho từng run; ensemble 3 seed; bảng ablation dev | ○ |
+| S6 | Commit lựa chọn hệ thống (ADR-0030 §5) → `dump_predictions --split test` → `evaluate_run` một lần | ○ |
+| S7 | Đo bão hoà posterior có artifact (v1 vs v2) + event-F1 macro | ○ |
+| S8 | Nếu v2 được chọn: chạy lại W5 e2e, W6 RQ3 trên event v2; đổi hệ thống phục vụ | ○ |
+| S9 | Tuỳ chọn, chờ duyệt: RQ1-v2 (nhánh C × 3 seed) | ○ |
+| S10 | Tuỳ chọn, chờ duyệt: Track 2 PretrainedSED (ADR riêng) | ○ |
+
+### Nghiệm thu SED v2
+
+- [x] Chẩn đoán có artifact trước khi đổi code (`sed_ceilings_20260926.md`)
+- [x] Luật chọn ghi và commit trước khi có số v2 (`ead5a2f`)
+- [ ] Mọi run v2 trên tree sạch; ablation chỉ trên dev
+- [ ] Lựa chọn hệ thống commit trước khi sinh logit test
+- [ ] Test một lần; báo mọi cấu hình, kể cả khi v2 thua v1
+- [ ] PAPER_NOTES và RELATED_WORK cập nhật với mọi kết quả, kể cả âm tính
+
+---
+
 # W5 · 20–26/10 · Grounded caption
 
 ### Tasks
@@ -294,6 +328,10 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~16~~ | ~~`query_set.py` dùng lớp `car`, `dog` không có trong taxonomy → lọc rỗng im lặng~~ — **đóng 25/09**: lớp lấy từ `taxonomy.polyphonic_class_ids`, `validate_query_classes` từ chối lớp lạ | — | ✅ |
 | ~~17~~ | ~~Relevance lấy từ chính bộ lọc đang đánh giá (`source: temporal_filter`)~~ — **đóng 25/09**: `ml/retrieval/relevance.py` tính từ annotation ground truth, cùng ngữ nghĩa với SQL (test chạy SQL trên SQLite); contract đổi sang `source: ground_truth` | — | ✅ |
 | ~~18~~ | ~~Query set chỉ có câu temporal, 25/100 câu có relevant trên test~~ — **đóng 26/09** (6.7, ADR-0027): query set v2 4 nhóm 21/27/30/22, EN + VI, chọn theo ground truth **train**; 97/100 câu có relevant trên test, 96/100 dev (`retrieval_queryset_v2_20260925.md`) | — | ✅ |
+| 19 | Test tích hợp PostgreSQL treo ~130 s mỗi lần khi Docker Desktop tắt (`psycopg.connect` không có `connect_timeout`); một lần treo hẳn khi Docker tắt giữa chừng (26/09) | TRUNG BÌNH | Khi rảnh GPU/tree |
+| 20 | **Event-F1 headline là micro** (`overall` của sed_eval), trong khi evaluation_protocol Q2 đòi macro — lệch protocol phát hiện 26/09. Báo thêm macro từ per-class đã có (không chạy lại test); ghi "micro" ở mọi chỗ trích | **CAO** (paper) | Trước khi viết Chương 4 |
+| 21 | Số văn liệu mức V2 (lấy qua tóm tắt WebFetch: PretrainedSED, DCASE 2016 T3, bài DataSED) phải đọc trực tiếp trước khi trích (RELATED_WORK §2.1) | TRUNG BÌNH | Trước khi viết Chương 2 |
+| 22 | Bão hoà posterior mới là quan sát (một trace + CV cSEBB) — cần artifact phân bố xác suất theo lớp, v1 vs v2 | TRUNG BÌNH | Cùng S7 |
 
 ---
 

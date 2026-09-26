@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-25 tối — tối ưu SED không train lại xong (ADR-0024); trước đó sửa lỗi ghép cửa sổ (`7ada7d7`), tính lại 11 run
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 521 pass (Windows), ruff sạch; CI Linux chạy lại khi push
+**Cập nhật:** 2026-09-26 — chẩn đoán trần SED + SED v2 đang chạy (ADR-0030); tài liệu cho paper ([PAPER_NOTES.md](PAPER_NOTES.md))
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 572 pass, 3 skip (test cần PostgreSQL khi Docker tắt), ruff sạch (Windows, `e808df4`); CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -11,8 +11,15 @@
 
 ## 0. Tóm tắt
 
-- **W1–W3 xong, W4 gần xong** (thiếu 4.6, 4.7; 4.9 tối ưu SED xong). **W5 xong**
-  (RQ2 trên test + diễn đạt lớp gộp §7). W6 có nền tảng, chưa có kết quả.
+- **W1–W5 xong.** W6 có kết quả RQ3 (ADR-0027 chờ duyệt). W7 chạy được đầu-cuối (ADR-0029
+  chờ duyệt).
+- **Giai đoạn cải thiện SED (26/09, ADR-0030, Proposed).** Chẩn đoán trên dev: trần event-F1
+  của kiến trúc v1 là 0.63 (pool thời gian /64); trần người 0.58; v1 chỉ onset 0.23, chỉ
+  offset 0.50, segment F1 0.65 → lỗi nằm ở onset. cSEBB trên posterior v1 thất bại (CV 0.058
+  vs 0.154). SED v2 (pool /8, BiGRU 2×256, 30 epoch, augmentation, trần `pos_weight` 10)
+  **đang train**: 3 seed + 3 ablation, chưa có số.
+- **Event-F1 headline là micro** (lệch Q2, evaluation_protocol §3.2) — báo thêm macro (PLAN
+  nợ #20).
 - **Mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ dự đoán (`7ada7d7`, `3208dbb`).
 - **RQ1 âm tính (không đổi sau khi tính lại):** pretraining thêm trên DataSEC **không**
   cải thiện SED so với chỉ AudioSet (5 run/nhánh, không metric nào p < 0.05).
@@ -51,6 +58,9 @@
 | Tối ưu SED: ensemble + hậu xử lý chọn trên dev (4.9) | ✅ 5 ứng viên, chọn trên dev, test một lần | xem §2.5, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md) |
 | Phân tích theo lớp / độ dài / collar | ✅ | xem §2 |
 | 4.6 `confusable_with` / 4.7 A4 | ✅ | taxonomy.md §8.1, ADR-0028 |
+| Chẩn đoán trần SED (độ phân giải, người, onset/offset) | ✅ dev + ground truth | [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md) |
+| Hậu xử lý cSEBB (Ebbers 2024) | ✅ cài + CV dev; **âm tính** trên v1 (0.0582 vs 0.1538) | [sebb_cv_…_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) |
+| SED v2 (ADR-0030) | ◐ code + pilot xong; 6 run đang train (từ `e808df4`, tree sạch) | ADR-0030, [PAPER_NOTES §9](PAPER_NOTES.md) |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
@@ -97,7 +107,10 @@ Welch t-test hai phía. 3/10 run có `git.dirty=true` (B `015736Z`, `031616Z`; C
 | C run chính thức | 0.047 | 0.112 | 0.181 | 0.202 |
 
 Chẩn đoán, không phải số chính thức ([collar_sensitivity_20260924.md](measurements/collar_sensitivity_20260924.md)).
-Định vị thời gian là nút thắt lớn (CNN14 ~1.28 s/khối, ADR-0014); ở collar 2 s vẫn
+Định vị thời gian là nút thắt lớn. CNN14 ở 100 fps quyết định theo khối ≈ 0.64 s (1000 frame →
+15 khối). ADR-0014 tính 1.28 s cho 50 fps; ghi "~1.28 s" trước đây là sai với nhánh PANNs.
+Trần của khối 0.64 s là 0.63 ngay cả với model hoàn hảo
+([sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md)). Ở collar 2 s vẫn
 ~0.2 → còn lỗi nhận dạng lớp (nhầm lớp là loại lỗi nhiều nhất). Recall thấp ở mọi
 bin độ dài ([rq1_duration_polyphony_20260924.md](measurements/rq1_duration_polyphony_20260924.md);
 chỉ cột recall hợp lệ). Theo lớp: kết quả trộn, không lớp nào đủ tin cậy sau so sánh
@@ -154,8 +167,12 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 
 ## 5. Việc còn lại
 
-1. W4: 4.6 (`confusable_with`), 4.7 (A4 `pos_weight`), bootstrap CI cho số trung bình nhiều run.
-2. ~~W5: kiểm caption lớp gộp theo taxonomy.md §7~~ — xong 25/09 (ADR-0023 §5); W6 là việc chính tiếp theo.
-3. W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark.
-4. W7: API, giao diện.
+1. ~~W4: 4.6, 4.7, bootstrap CI cho số trung bình nhiều run~~ — xong 26/09.
+2. ~~W5: kiểm caption lớp gộp theo taxonomy.md §7~~ — xong 25/09 (ADR-0023 §5).
+3. ~~W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark~~ — có kết quả
+   (ADR-0027 chờ duyệt).
+4. W7: 7.4 inference image, 7.5–7.7.
 5. ~~Cân nhắc chọn lại `g_max` percentile trên dev (A5)~~ — xong 25/09 (ADR-0024).
+6. **SED v2 (ADR-0030):** CV hậu xử lý + ablation trên dev → commit lựa chọn → test một lần
+   → nếu v2 được chọn thì chạy lại W5 e2e / W6 trên event v2.
+7. Event-F1 macro cho mọi hệ thống đã báo (PLAN nợ #20).

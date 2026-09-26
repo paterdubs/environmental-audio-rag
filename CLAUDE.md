@@ -46,7 +46,8 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 | **[docs/AGENT_SYNC.md](docs/AGENT_SYNC.md)** | *Agent kia đang làm gì, đã đo được gì* | **Mỗi phiên có 2 agent, đọc TRƯỚC khi code** |
 | [docs/STATUS.md](docs/STATUS.md) | Snapshot đã đối soát, bằng chứng, giới hạn | Khi cần số liệu hiện hành |
 | [docs/TRAINING_OPS_PLAN.md](docs/TRAINING_OPS_PLAN.md) | Tracking, kiểm tra, phân tích lỗi | Trước lần train mới |
-| [docs/RELATED_WORK.md](docs/RELATED_WORK.md) | Văn liệu và mức xác minh | Khi viết Chương 2 |
+| [docs/RELATED_WORK.md](docs/RELATED_WORK.md) | Văn liệu, mức xác minh V0–V4, nhật ký tra cứu (§10) | Khi viết Chương 2; **mỗi lần tra một nguồn** |
+| **[docs/PAPER_NOTES.md](docs/PAPER_NOTES.md)** | *Phát hiện, kỹ thuật, nguồn, ý tưởng cho paper* — mỗi dòng trỏ artifact, kể cả kết quả âm tính | **Sau mỗi thí nghiệm**; khi viết báo cáo/paper |
 | [docs/data_inventory.md](docs/data_inventory.md) | Số file/giờ theo class | Khi lo về dữ liệu |
 | [docs/decisions/](docs/decisions/) | Vì sao chọn thế này | Khi định thay đổi kiến trúc |
 | [docs/measurements/](docs/measurements/) | Số đo sinh tự động | Khi cần bằng chứng cho một claim |
@@ -54,6 +55,26 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 ---
 
 ## 3. Trạng thái hiện tại
+
+**Cập nhật 26/09/2026 — giai đoạn cải thiện SED ([ADR-0030](docs/decisions/ADR-0030-cai-thien-sed-v2.md),
+Proposed).** Người dùng: đề tài tập trung vào model, nghiên cứu và tối ưu, hướng tới paper →
+mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_NOTES.md) và
+[RELATED_WORK.md](docs/RELATED_WORK.md).
+
+- **Chẩn đoán trên dev** (`sed_ceilings_20260926.md`):
+  - Trần event-F1 của kiến trúc v1 là **0.63**: CNN14 trong repo pool thời gian /64 = 0.64 s,
+    trong khi CNN14 gốc chỉ /32.
+  - Trần người 0.58 (8 cặp trùng).
+  - v1: event-F1 0.159, chỉ onset **0.23**, chỉ offset 0.50, segment F1 0.65. Lỗi nằm ở onset,
+    không ở nhận dạng.
+- **cSEBB** (Ebbers 2024) trên posterior v1 **thất bại**: CV 0.058 vs 0.154. Posterior bão hoà
+  vì `pos_weight` tới 50.
+- **SED v2** (`--recipe v2`: pool /8, BiGRU 2×256, 30 epoch, lr encoder 3e-4, random crop,
+  mixup, FilterAugment, trần 10) **đang train**: hàng đợi 3 seed + 3 ablation từ `e808df4`,
+  mỗi run tự chạy CV hậu xử lý dev. Chưa có số v2. Test chỉ mở sau khi lựa chọn trên dev đã
+  commit (`scripts.dump_predictions`).
+- **Lệch protocol phát hiện 26/09:** event-F1 headline từ trước tới nay là **micro**, trong khi
+  Q2 đòi macro → báo thêm macro (PLAN nợ #20).
 
 **Cập nhật:** 25/09/2026 — **mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ
 dự đoán (`7ada7d7`: cửa sổ cuối căn theo cuối audio bị nối thay vì đặt theo offset →
@@ -211,20 +232,26 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | Hạng mục | Còn thiếu |
 |---|---|
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, **chờ duyệt**); tuỳ chọn: độ nhạy với SED tối ưu, document caption LLM, Alembic |
-| Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
+| W7 (ứng dụng) | ADR-0029 chờ duyệt; 7.4 inference image, 7.5–7.7 |
+| **SED v2** (ADR-0030) | Hàng đợi 6 run đang chạy; S5–S8 (PLAN, khối "SED v2") |
+| Tài liệu | `RELATED_WORK.md`: nhiều nguồn mới ở mức V2 (tóm tắt) — đọc trực tiếp trước khi trích (nợ #21) |
 
 ### Chưa có ○
 
-Retrieval thật · API / inference / frontend.
+Event-F1 macro (nợ #20) · artifact bão hoà posterior (nợ #22) · Track 2 PretrainedSED (chờ duyệt).
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **W6 — RAG**: nạp event thật vào pgvector, embedding BGE-M3 (ADR-0004),
-   retrieval + query set 100 câu. Lỗi `car`/`dog` và relevance vòng tròn đã sửa (nợ
-   #16, #17); còn nợ #18: query set chỉ 25/100 câu có relevant trên test → 6.7 làm đủ
-   4 nhóm + tiếng Việt, chọn query theo GT train. Cần ADR: SED prediction nào để index
-   (run B E5 hay hệ thống tối ưu ADR-0024) và thư viện embedding.
-2. W4 còn lại: 4.7 (A4) — ưu tiên thấp.
+1. **SED v2**:
+   1. Khi hàng đợi xong: đọc CV hậu xử lý dev của từng run; ensemble 3 seed; bảng ablation
+      dev.
+   2. Commit lựa chọn theo ADR-0030 §5.
+   3. `dump_predictions --split test`, rồi `evaluate_run` một lần.
+   4. Cập nhật PAPER_NOTES.
+   - **Trong lúc hàng đợi chạy, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree
+     ngoài repo, rồi fast-forward.
+2. Event-F1 macro cho mọi hệ thống (nợ #20) và artifact bão hoà posterior (nợ #22).
+3. Nếu v2 được chọn: chạy lại W5 e2e / W6 RQ3 trên event v2, đổi hệ thống phục vụ.
 
 ---
 
@@ -281,6 +308,14 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 - **Báo cáo trung thực:** test trượt thì nói trượt kèm output; bỏ bước nào thì nói rõ.
 - **Số trong docs phải sinh từ script**, không chép tay. Mọi số phải truy được về
   artifact trong `data/manifests/` hoặc `ml/runs/`.
+- **Ghi dẫn chứng cho paper** (người dùng 26/09: đề tài tập trung vào model, nghiên cứu,
+  tối ưu, hướng tới paper):
+  - Mỗi thí nghiệm, kỹ thuật thử và kết quả, **kể cả âm tính**, vào
+    [PAPER_NOTES.md](docs/PAPER_NOTES.md), kèm số và file dẫn chứng.
+  - Mỗi nguồn đã tra vào [RELATED_WORK.md](docs/RELATED_WORK.md): trích dẫn đầy đủ, mức
+    V0–V4, cách tiếp cận (đọc trực tiếp hay qua tóm tắt), và một dòng trong nhật ký tra
+    cứu §10.
+  - Ý tưởng chưa làm vào PAPER_NOTES §5, không làm ngay.
 - Sau khi sửa `ml/configs/taxonomy.yaml`: **grep toàn repo tìm tên lớp cũ TRƯỚC
   khi coi là xong.** `class_id` xuất hiện trong manifest, split, checkpoint và
   caption lexicon; đổi taxonomy mà không quét lại để lại dòng mồ côi mang lớp đã mất.
@@ -395,6 +430,15 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 .venv/Scripts/python.exe -m scripts.report_multirun_bootstrap --branch B <runs...> --branch C <runs...>
 .venv/Scripts/python.exe -m scripts.report_pos_weight_ablation ml/runs/<run> [...] # A4
 
+# ==== Cải thiện SED (ADR-0030) ====
+.venv/Scripts/python.exe -m scripts.report_sed_ceilings [--run ml/runs/<run>]  # trần + phân rã lỗi, dev
+.venv/Scripts/python.exe -m scripts.select_sebb_cv ml/runs/<run> --workers 6    # cSEBB, CV dev
+.venv/Scripts/python.exe -m scripts.select_postproc_cv ml/runs/<run> --modes global --workers 6
+.venv/Scripts/python.exe -m scripts.train_sed --encoder panns --audioset-checkpoint "artifacts/checkpoints/Cnn14_mAP=0.431.pth" --recipe v2 --seed <s>   # KHÔNG --evaluate-test
+.venv/Scripts/python.exe -m scripts.evaluate_run ml/runs/<run> --split dev --postproc <file>  # dev in-sample
+.venv/Scripts/python.exe -m scripts.dump_predictions ml/runs/<run> --verify-dev   # đường dump trùng bit?
+.venv/Scripts/python.exe -m scripts.dump_predictions ml/runs/<run> --split test   # CHỈ sau khi lựa chọn đã commit
+
 # ==== Retrieval (W6) ====
 docker compose up -d
 .venv/Scripts/python.exe -m scripts.build_retrieval_index --split validation test
@@ -415,6 +459,13 @@ cd services/frontend && npm ci && npm test && npm run build
 Không làm bây giờ. Ghi ở đây để khỏi mở rộng scope giữa chừng.
 
 - Hop nhỏ hơn 320 cho class impulsive (`Gunshot` chỉ ~5 frame ở 50 fps).
+- **Từ giai đoạn SED v2 (chi tiết, rủi ro, nguồn ở [PAPER_NOTES §5](docs/PAPER_NOTES.md)):**
+  - Transformer pretrain theo frame (PretrainedSED, 40 ms) — Track 2, chờ duyệt.
+  - Soundscape tổng hợp từ clip DataSEC train (kiểu DESED/Scaper) — cơ chế transfer khác
+    pretraining.
+  - Train chung nhãn mạnh DataSED + nhãn yếu DataSEC.
+  - Loss focal/asymmetric thay `pos_weight` để chống bão hoà.
+  - Frequency dynamic convolution.
 - `logmel_v2` với ref cố định, để giữ mức áp suất âm tuyệt đối.
 - Multi-task: SED + subclass cùng lúc thay vì hai giai đoạn.
 - Spatial SED nếu tìm được dataset multi-channel cùng miền.
@@ -433,12 +484,45 @@ Cuối mỗi block công việc:
 3. Cập nhật [docs/STATUS.md](docs/STATUS.md) nếu có artifact mới.
 4. Viết ADR nếu có quyết định kiến trúc.
 5. Sinh measurement bằng script nếu có số mới.
+6. Ghi phát hiện, kỹ thuật và kết quả (kể cả âm tính) vào [PAPER_NOTES.md](docs/PAPER_NOTES.md);
+   nguồn mới vào [RELATED_WORK.md](docs/RELATED_WORK.md) §2.1/§10.
 
 **Không ghi "đã hoàn thành" nếu chưa có command và artifact kiểm chứng.**
 
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 (trưa) — SED v2: chẩn đoán, văn liệu, code, hàng đợi; tài liệu cho paper
+
+Người dùng: event-F1 quá thấp, "tự nghĩ cách, tìm hiểu văn liệu".
+
+**Chẩn đoán trên dev** (`dd5d3b9`):
+- Trần event-F1 của v1 là 0.63, vì CNN14 trong repo pool thời gian /64; bản gốc /32, đối
+  chiếu code 26/09.
+- Trần người 0.58.
+- v1 chỉ onset 0.23, chỉ offset 0.50, segment F1 0.65.
+- Posterior bão hoà do `pos_weight` tới 50: cSEBB tự viết theo bài Ebbers 2024 thất bại
+  trên v1, CV 0.058 vs 0.154 (`9dc78dc`).
+
+**SED v2** (`8b1df60`, ADR-0030 `ead5a2f`):
+- Pool /8, BiGRU sau encoder, 30 epoch cosine, lr encoder 3e-4 (pilot dev), random crop,
+  mixup, FilterAugment, trần 10.
+- `dump_predictions --verify-dev` trùng bit.
+- Hàng đợi 6 run bắt đầu 10:33 trên tree sạch `e808df4`.
+
+**Tài liệu cho paper** (người dùng: đề tài hướng tới paper, lưu mọi thông tin, kỹ thuật,
+nguồn):
+- Tạo `docs/PAPER_NOTES.md`.
+- RELATED_WORK §2.1 (9 nhóm nguồn, mức V2–V3) và §10 (nhật ký tra cứu).
+- Cập nhật ADR-0030, evaluation_protocol (§3.3b trần, dev mode), SYSTEM §5.7, PLAN (khối
+  SED v2, nợ #19–#22), STATUS.
+- Viết trong git worktree ngoài repo để hàng đợi không thấy tree bẩn.
+
+**Tự bắt khi đối chiếu nguồn:**
+- ADR-0030 ghi DCASE 2016 T3 là "onset-only" mà thiếu collar; thật ra là 250 ms. Đã sửa.
+- STATUS ghi "CNN14 ~1.28 s/khối"; ở 100 fps thật ra là 0.64 s. Đã sửa.
+- **Mọi event-F1 headline là micro trong khi Q2 đòi macro** (nợ #20).
 
 ### 2026-09-26 (sáng, tự động) — W4 đóng (A4); W7 7.1–7.4 làm sớm
 

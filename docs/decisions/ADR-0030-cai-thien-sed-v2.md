@@ -24,8 +24,10 @@ caption e2e và RAG (khoảng 45% recording được trích dẫn đúng theo gr
 40% event. Có ba nguyên nhân đo được:
 
 1. **Độ phân giải thời gian.** `PannsCNN14Encoder` pool thời gian ở cả 6 khối (/64 → 0.64 s
-   ở 100 fps). CNN14 gốc (Kong et al. 2020) **không** pool thời gian ở khối 6 (/32). Chỉ riêng
-   điều này đã chặn event-F1 ở 0.63 ngay cả khi model hoàn hảo.
+   ở 100 fps). CNN14 gốc **không** pool ở khối 6 (/32). Code gốc
+   `audioset_tagging_cnn/pytorch/models.py`, đối chiếu 26/09, dùng `pool_size=(2, 2)` cho
+   khối 1–5 và `(1, 1)` cho khối 6, kèm dropout 0.2 sau mỗi khối; encoder của repo không có
+   dropout này. Chỉ riêng việc pool thêm đã chặn event-F1 ở 0.63 ngay cả khi model hoàn hảo.
 2. **Posterior bão hoà.** `pos_weight` tới 50 đẩy xác suất lên cao ngay cả ngoài event. Ví dụ
    S-0021, lớp `vehicle_pass_by`: điểm dao động 0.5–1.0 suốt recording, kể cả đoạn 56–89 s
    không có event đó. Vì thế CV chọn θ = 0.95, và onset rơi vào chỗ điểm *chạm* 0.95 thay vì
@@ -35,17 +37,24 @@ caption e2e và RAG (khoảng 45% recording được trích dẫn đúng theo gr
 3. **Công thức train tối giản.** 8 epoch, lr 1e-3 cố định cho cả encoder đã pretrain, cửa sổ
    cố định (mỗi epoch thấy đúng các crop cũ), không augmentation.
 
-### 2. Văn liệu (đã đọc nguồn gốc; trích số đúng như nguồn)
+### 2. Văn liệu
 
-- **Mốc cho recording thật:** ở DCASE 2016 Task 3 (TUT Sound Events, môi trường thật),
-  event-F1 onset-only của baseline là 6.3%, của ba hệ thống đứng đầu 4.7–6.3%, trong khi
-  segment-F1 là 34–48% (trang kết quả DCASE 2016). Event-F1 thấp là đặc thù của dữ liệu thật,
-  nhưng hệ thống của ta còn cách xa cả trần phân giải lẫn trần người.
-- **DataSED** (Fredianelli và cộng sự, *Scientific Data* 2025) không công bố baseline SED nào,
-  nên chưa có mốc so sánh trực tiếp.
-- **Công thức DCASE Task 4:** CRNN pool thời gian ít (/4), BiGRU, mixup, và FilterAugment.
-  FilterAugment (Nam và cộng sự, ICASSP 2022) tăng PSDS 6.50%, so với 2.13% của frequency
-  masking.
+Trích dẫn đầy đủ, mức xác minh và nhật ký tra cứu nằm ở [RELATED_WORK §2.1, §10](../RELATED_WORK.md).
+Chỉ bài SEBBs đã được đọc trực tiếp (V3); các số còn lại là V2, lấy qua tóm tắt hoặc
+abstract, và phải đối chiếu trước khi trích vào báo cáo.
+
+- **Mốc cho recording thật:** DCASE 2016 Task 3 (ghi âm thật, hai cảnh home/residential area)
+  lấy segment ER 1 s làm metric chính. Event-F1 **onset-only, collar 250 ms** của baseline là
+  6.3%, của ba hệ thống đứng đầu 4.7–6.3%, trong khi segment-F1 là 34–48% (trang task + trang
+  kết quả DCASE 2016, đối chiếu 26/09). Protocol của ta (onset 200 ms **và** offset) còn chặt
+  hơn. Event-F1 thấp là đặc thù của dữ liệu thật, nhưng hệ thống của ta còn cách xa cả trần
+  phân giải lẫn trần người.
+- **DataSED** (Fredianelli và cộng sự, *Scientific Data* 2025): theo tóm tắt, bài không có
+  thí nghiệm baseline nào, nên chưa có mốc so sánh trực tiếp.
+- **Công thức kiểu DCASE Task 4:** CRNN ít pool thời gian, BiGRU, mixup, FilterAugment.
+  Mức pool cụ thể của baseline DCASE là hiểu biết của agent, ⚠️ chưa đối chiếu nguồn.
+  FilterAugment (Nam và cộng sự, ICASSP 2022; abstract): PSDS tăng 6.50%, so với 2.13% của
+  frequency masking.
 - **cSEBB** (Ebbers, Germain, Wichern, Le Roux, Interspeech 2024) tách biên event khỏi độ
   tin cậy. Trên 13 hệ thống DCASE 2023, nó tăng trung bình 4.1 điểm PSDS1 và 3.4 điểm
   collar-F1, đúng metric của ta. Mã tham chiếu license AGPL-3.0; repo tự viết lại theo mô tả
@@ -137,7 +146,12 @@ hơn max(sd giữa fold, 2 × sd giữa seed của v2 đủ) được ghi là kh
   các run B sạch).
 
 Điểm của mỗi ứng viên là CV mean event-F1 dev (§3). Chọn điểm cao nhất; nếu hoà thì chọn ít
-model hơn. Lựa chọn được **commit trước** khi mở test. Sau đó (b) và (c) mỗi cái được đánh
+model hơn.
+
+Event-F1 ở đây là **micro**, tức `overall` của sed_eval, giống code ADR-0024. Chọn micro để
+so ngang với con số 0.1538 đã có. Điều này lệch với Q2 của evaluation_protocol, vốn đòi báo
+macro. Vì vậy mọi bảng kết quả v2 báo **thêm macro và per-class**; macro chỉ để báo, không
+dùng để chọn (PLAN nợ #20). Lựa chọn được **commit trước** khi mở test. Sau đó (b) và (c) mỗi cái được đánh
 giá test đúng một lần, và báo **tất cả**, kể cả khi v2 thua v1. Không chọn lại sau khi xem
 test (như ADR-0024 §3).
 
@@ -175,6 +189,11 @@ một lần. Số cũ vẫn giữ và báo song song. Việc phục vụ (ADR-00
 | Per-class θ / luật gộp theo lớp | A2: 21 tham số overfit dev 142 recording |
 | Nhảy thẳng sang transformer (Track 2) | Đổi họ model, checkpoint ngoài, pipeline 16 kHz; làm sau khi v2 cho biết phần còn lại |
 | Tổng hợp soundscape từ DataSEC (kiểu DESED/Scaper) | Hướng mạnh nhưng là một đóng góp khác; ghi CLAUDE §8 |
+
+## Nguồn
+
+- Trích dẫn đầy đủ, mức xác minh, nhật ký tra cứu: [RELATED_WORK §2.1, §10](../RELATED_WORK.md).
+- Phát hiện, kỹ thuật, ý tưởng cho paper: [PAPER_NOTES.md](../PAPER_NOTES.md).
 
 ## Evidence cần kiểm lại
 

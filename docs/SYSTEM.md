@@ -938,6 +938,48 @@ Chi tiết: [ADR-0003](decisions/ADR-0003-threshold-va-post-processing.md).
 | A5 | Coarse-only vs hierarchical trên DataSEC | RQ4 |
 | A6 | Class-balanced vs uniform sampling khi pretrain DataSEC | §3.4 |
 
+## 5.7 SED v2 — đang thí nghiệm ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md), Proposed)
+
+**Vì sao.** Chẩn đoán trên dev ([sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md))
+cho thấy hệ thống v1 **nhận ra** âm thanh khá tốt (segment F1 1 s 0.65) nhưng **đặt onset sai**
+(event-F1 chỉ onset 0.23, chỉ offset 0.50). Có ba nguyên nhân đo được:
+
+- CNN14 trong repo pool thời gian ở cả 6 khối (/64, 0.64 s ở 100 fps), trong khi CNN14 gốc
+  chỉ /32. Riêng điều này chặn event-F1 ở 0.63 ngay cả với model hoàn hảo.
+- Posterior bão hoà do `pos_weight` tới 50.
+- Công thức train tối giản.
+
+**v2 (`scripts.train_sed --recipe v2`; mặc định code vẫn là v1):**
+
+```text
+Input: (B, 1, 64, 1000)   log-mel logmel_panns_v1, 100 fps, cửa sổ 10 s
+
+PannsCNN14Encoder(time_pooling = 2,2,2,1,1,1)     # mỗi khối pool tần số 2
+  6 khối conv (trọng số AudioSet hoặc DataSEC nạp y như v1)
+  → (B, 2048, 125)                                 # 80 ms / frame
+
+SoundEventDetector(upsample = "after_rnn")
+  BiGRU 2 lớp × 256 (dropout 0.2 giữa lớp) chạy trên 125 frame
+  Dropout(0.2) + Linear(512 → 21)
+  lặp logit nearest 125 → 1000 frame              # nhịp nhãn 100 fps
+```
+
+| Công thức train | v1 | v2 |
+|---|---|---|
+| Epoch / lịch lr | 8, lr 1e-3 cố định | 30, warmup 1 epoch + cosine theo bước |
+| lr encoder / head | 1e-3 / 1e-3 | 3e-4 (pilot trên dev) / 1e-3 |
+| Cửa sổ train | cố định | random crop mỗi epoch |
+| Augmentation | — | mixup p 0.5 (α 0.2, nhãn mềm), FilterAugment p 0.5 (±6 dB, step/linear) |
+| Trần `pos_weight` | 50 | 10 |
+| Chọn checkpoint | frame macro-F1 @0.5 | frame macro-AP dev |
+
+Hậu xử lý v2 được chọn bằng CV 5 fold trên dev, trong hai họ: θ global × `g_max` p ∈ {50, 25},
+và cSEBB (`ml/postprocessing/sebb.py`). Ablation bỏ-từng-phần và luật chọn hệ thống cuối ở
+ADR-0030 §4–§5.
+
+Kiến trúc được ghi trong `manifest.json` của run; `ml/models/sed_factory.py` dựng lại đúng
+model đó khi phục vụ (thiếu khoá thì dựng v1).
+
 ---
 
 # 6. Grounded captioning
