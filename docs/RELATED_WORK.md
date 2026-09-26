@@ -114,7 +114,7 @@ Nội dung theo tóm tắt (⚠️ phải đối chiếu toàn văn trước khi
 |---|---|---|
 | Strong vs weak label, và vì sao strong label cần cho grounding | V1 | Khái niệm đã dùng ở [SYSTEM §2.1](SYSTEM.md) |
 | CRNN cho SED | V1 | Kiến trúc baseline của đề tài thuộc họ này |
-| Pretrained audio transformer (AST, PaSST, BEATs) | V1 → **V2** (26/09) | Xem [ADR-0002](decisions/ADR-0002-encoder-va-nhanh-transfer.md) về lý do không chọn; bản pretrain **theo frame** trên AudioSet Strong: Schmid và cộng sự 2025, §2.1 |
+| Pretrained audio transformer (AST, PaSST, BEATs) | V1 → V2 (26/09); Schmid và cộng sự 2025 **V3** (26/09 tối) | Xem [ADR-0002](decisions/ADR-0002-encoder-va-nhanh-transfer.md) về lý do không chọn ban đầu; bản pretrain **theo frame** trên AudioSet Strong: Schmid và cộng sự 2025, §2.1 (2) — dùng cho Track 2 (ADR-0032) |
 | PANNs / AudioSet pretraining | V1 → **V2**; chi tiết kiến trúc **V3** (26/09) | Encoder đề xuất; pool CNN14 đối chiếu với code gốc, §2.1 |
 | Threshold calibration và hậu xử lý | V1 → **V3** (cSEBB, 26/09) | Xem [ADR-0003](decisions/ADR-0003-threshold-va-post-processing.md); cSEBB §2.1 |
 | Event-based F1 và collar | V1 → **V2** | `sed_eval`; Mesaros và cộng sự 2016 (từ danh mục tham khảo) §2.1 |
@@ -168,27 +168,51 @@ Interspeech 2024, tr. 562–566. DOI `10.21437/Interspeech.2024-2075`.** — **V
 
 **(2) Schmid F., Morocutti T., Foscarin F., Schlüter J., Primus P., Widmer G. (2025).
 *Effective Pre-Training of Audio Transformers for Sound Event Detection.* ICASSP 2025
-(IEEE Xplore 10888942); arXiv:2409.09546 (v1 14/09/2024, v2 28/11/2024).** — **V2**
+(IEEE Xplore 10888942); arXiv:2409.09546 (v1 14/09/2024, v2 28/11/2024).** — **V3** (26/09,
+cổng T0 của ADR-0031 §3)
 
-- Tiếp cận: abstract và metadata đối chiếu trên arXiv; bảng số qua tóm tắt WebFetch bản HTML
-  v1; README repo.
-- Ý chính: pretrain transformer trên nhãn **theo frame** AudioSet Strong, gồm balanced sampler
-  (trọng số nghịch tần suất nhãn), augmentation (frequency warping, filter augmentation,
-  Freq-MixStyle, mixup) và ensemble knowledge distillation (15 teacher, 3 mỗi kiến trúc;
-  teacher 30 epoch, student 120). Đầu ra 250 frame / 10 s (**40 ms**).
-- Số (tóm tắt, ⚠️ đối chiếu bảng gốc):
-  - PSDS1 AudioSet Strong (đủ pipeline): ATST-F 45.8, BEATs 46.5, fPaSST 45.4, M2D 46.3,
-    ASiT 46.2.
-  - Checkpoint cũ: ATST-F 34.7, BEATs 29.0, M2D 29.2.
-  - DESED fine-tune toàn bộ PSDS1: 48.2 / 49.2 / 48.2 / 48.7 / 47.6.
-  - Downstream: layer-wise lr decay 0.5, lr grid search.
-- Repo: `github.com/fschmid56/PretrainedSED`, **MIT**. Checkpoint gồm `BEATs_strong_1`,
-  `ATST-F_strong_1`, `fpasst_strong_1`, `ASIT_strong_1`, `M2D_strong_1`, `frame_mn06`
-  (1.62M tham số), `frame_mn10` (3.83M), đều 447 lớp. Frontend `frame_mn`: 16 kHz, n_fft 512,
-  win 400, hop 160, 128 mel.
-- Dùng ở: ADR-0030 §7; ADR-0031 §3 (Track 2, **duyệt 26/09**). Cổng T0 buộc nâng nguồn này lên V3
-  (đọc bảng gốc, code, license từng checkpoint) trước run đầy đủ đầu tiên. Repo MIT không có nghĩa
-  checkpoint dựng từ model của nhóm khác cũng MIT.
+- Tiếp cận: **đọc trực tiếp** PDF arXiv v2 (5 trang), README, file LICENSE và code model của repo
+  (`models/frame_mn/*`, `inference.py`, `models/prediction_wrapper.py`). Trước đó chỉ có tóm
+  tắt WebFetch của bản HTML v1 (V2).
+- Ý chính: pretrain transformer trên nhãn **theo frame** AudioSet Strong (bước 3, sau SSL/ImageNet
+  và AudioSet Weak). Teacher: sampler cân bằng (trọng số ∝ nghịch tần suất theo tổng thời gian
+  nhãn), frequency warping, FilterAugment, Freq-MixStyle, mixup; BiGRU 2 lớp (hidden 1024–2048)
+  trên transformer; 30 epoch. Ensemble 15 teacher (3 mỗi kiến trúc, PSDS1 47.1) → knowledge
+  distillation theo frame cho student **không** có sequence model, 120 epoch, chỉ mixup.
+- Kiến trúc đầu ra: embedding S×D (S = 250, 496, 250, 62, 497; D = 768, 768, 768, 3840, 768 cho
+  ATST-F, BEATs, fPaSST, M2D, ASiT) đưa về 250 frame / 10 s (**40 ms**) bằng adaptive avg pool
+  (S > 250) hoặc nội suy tuyến tính (S < 250), rồi lớp tuyến tính.
+- Cài đặt train AudioSet Strong: Adam, cosine + 5,000 bước warmup, lưới lr {7e-5, 1e-4, 3e-4,
+  6e-4, 1e-3, 3e-3}, batch 256, median filter 0.48 s chung mọi lớp, 3 seed; kiểm định ASO
+  α = 0.05 (Bonferroni).
+- Số (đối chiếu bảng gốc v2):
+  - Bảng I, PSDS1 AudioSet Strong (không variance penalty), ATST-F / BEATs / fPaSST / M2D / ASiT:
+    đủ pipeline 45.8 / 46.5 / 45.4 / 46.3 / 46.2; hệ thống của Li và cộng sự (tính lại bằng PSDS1
+    mới) 40.9 / 36.5 / 38.7 / 36.9 / 37.0. Dòng "checkpoint cũ 34.7 / 29.0 / 29.2" trong bản ghi V2
+    trước đây **không có trong v2** (lấy từ HTML v1) → bỏ.
+  - Bảng II, DESED (PSDS1 có variance penalty), đủ pipeline: **fine-tune** 48.2 / 49.2 / 48.2 /
+    48.7 / 47.6; **frozen** (đóng băng transformer, chỉ train lớp tuyến tính) 47.7 / 48.1 / 45.4 /
+    49.2 / 48.1. Frozen gần bằng fine-tune.
+  - Fine-tune DESED dùng layer-wise lr decay **0.5** (bài báo); ví dụ DC16-T2 trong README dùng
+    0.95. Lr chọn bằng lưới riêng mỗi thí nghiệm; DESED và DC16-T2 mỗi thí nghiệm 4 seed.
+  - MAESTRO (ngoài miền): không cải thiện rõ → lợi ích chỉ có khi âm thanh và nhãn gần ontology
+    AudioSet (lớp DataSED thuộc trường hợp này).
+- README (thêm, không có trong bài): bỏ 2 lớp transformer cuối làm DESED tăng (ATST-F 50.4 →
+  51.1, BEATs 48.6 → 51.1, cấu hình baseline DCASE 2023). `frame_mn06` (1.62M) và `frame_mn10`
+  (3.83M tham số) ghi "NEW", **không có số nào trong bài** → chất lượng chưa được xác minh.
+- Repo: `github.com/fschmid56/PretrainedSED`, **MIT** (đọc LICENSE). Release v0.0.1:
+  `frame_mn10_strong_1.pt` khoảng 15.5 MB; `BEATs_strong_1.pt` khoảng 364 MB;
+  `ATST-F_strong_1.pt` khoảng 344 MB; đều 447 lớp.
+- Frontend `frame_mn` (đọc `Frame_MN_wrapper.py`): 128 mel, n_fft 512, win 400, hop 160 (16 kHz,
+  10 ms), fmin 0; có augmentation biên filterbank lúc train. Code `frame_mn` dựa trên MobileNetV3
+  của EfficientAT.
+- **Chuỗi license** (GitHub API `/license` + đọc LICENSE, 26/09):
+  - `fschmid56/EfficientAT` MIT; `microsoft/unilm` (BEATs) MIT; `kkoutini/PaSST` và
+    `facebookresearch/deit` Apache-2.0.
+  - `Audio-WestlakeU/audiossl` (ATST-F): code MIT, **checkpoint CC BY 4.0** (phải ghi công).
+  - `nttcslab/m2d`: license riêng dạng PDF (chưa đọc) → **không dùng M2D**.
+  - ASiT: chưa kiểm.
+- Dùng ở: ADR-0030 §7; ADR-0031 §3 (Track 2, duyệt 26/09); ADR-0032 (thiết kế Track 2).
 
 **(3) Kong Q., Cao Y., Iqbal T., Wang Y., Wang W., Plumbley M. D. (2020). *PANNs: Large-Scale
 Pretrained Audio Neural Networks for Audio Pattern Recognition.* IEEE/ACM TASLP (2020);
@@ -364,7 +388,7 @@ Từ khóa gợi ý: `polyphonic sound event detection`, `environmental noise da
 | DataSED (Zenodo) | 2025 | SED | DataSED | Strong | — | — | — | §3 dữ liệu | Chưa xác minh có paper | V2 |
 | Fredianelli et al., *Scientific Data* | 2025 | Mô tả dataset SEC + SED | DataSEC, DataSED | Clip-level; strong mono/poly | — | — | Không có baseline (theo tóm tắt) | §1, §3 dữ liệu | Chưa đọc toàn văn; số giờ/file khác archive | V2 |
 | Ebbers et al., Interspeech | 2024 | Hậu xử lý SED (cSEBB) | DCASE 2023 T4a (DESED) | Strong | 13 hệ DCASE 2023 + cSEBB | PSDS1, collar-F1 | +4.1 PSDS1 / +3.4 F1 trung bình so với median filter | ADR-0030, PAPER_NOTES S14 | Tune theo lớp trên validation | **V3** |
-| Schmid et al., ICASSP | 2025 | Pretrain SED theo frame | AudioSet Strong; DESED | Strong (frame) | ATST-F, BEATs, fPaSST, M2D, ASiT | PSDS1 | AS-Strong 45.4–46.5; DESED 47.6–49.2 | ADR-0030 §7 | Bảng số qua tóm tắt | V2 |
+| Schmid et al., ICASSP | 2025 | Pretrain SED theo frame | AudioSet Strong; DESED | Strong (frame) | ATST-F, BEATs, fPaSST, M2D, ASiT | PSDS1 | AS-Strong 45.4–46.5; DESED fine-tune 47.6–49.2, frozen 45.4–49.2 | ADR-0030 §7, ADR-0031 §3, ADR-0032 | Đọc trực tiếp PDF v2 + code + LICENSE (26/09 tối) | **V3** |
 | Kong et al., TASLP | 2020 | Tagging / pretraining | AudioSet | Weak | CNN14 | mAP | — | Encoder nhánh B/C | vol/pages chưa xác minh | V2 (kiến trúc V3) |
 | DCASE 2016 T3 (kết quả) | 2016 | SED ghi âm thật | Dữ liệu DCASE 2016 T3 (home, residential area) | Strong | Baseline + hệ tham gia | Segment ER/F1 1 s; event onset-only 250 ms | Event-F1 4.7–6.3% (top 3 + baseline) | Bảng bối cảnh | Khác dataset, khác collar | V2 |
 | Nam et al., FilterAugment, ICASSP | 2022 | Augmentation SED | DESED | Strong + weak | CRNN | PSDS | +6.50% so với +2.13% (frequency masking) | `augment.py` | Chỉ đọc abstract | V2 |
@@ -407,3 +431,5 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 26/09 | WebFetch | arxiv.org/abs/1912.10211, arxiv.org/abs/1710.09412 | Metadata PANNs, mixup | §2.1 (3), (6) |
 | 26/09 | WebSearch | `Turpault Serizel Shah Salamon "Sound event detection in domestic environments …"` | DESED, DCASE Workshop 2019 | §2.1 (7) |
 | 26/09 | WebFetch | mdpi.com/2076-3417/6/6/162 | **403** — chưa xác minh DOI Mesaros 2016 | §2.1 (8) |
+| 26/09 (tối) | curl + **đọc trực tiếp** | arxiv.org/pdf/2409.09546v2 (PDF 5 trang); raw README, LICENSE, `models/frame_mn/{Frame_MN_wrapper,model}.py`, `inference.py`, `models/prediction_wrapper.py`; API release v0.0.1 | PretrainedSED lên **V3**: Bảng I/II khớp; frozen gần bằng fine-tune; lr decay 0.5 (DESED); `frame_mn` không có trong bài; dòng "checkpoint cũ" của V2 sai phiên bản | §2.1 (2) |
+| 26/09 (tối) | GitHub API `/repos/*/license` + đọc LICENSE | microsoft/unilm, Audio-WestlakeU/audiossl, nttcslab/m2d, fschmid56/EfficientAT, kkoutini/PaSST, facebookresearch/deit | MIT / code MIT + checkpoint CC BY 4.0 / PDF riêng / MIT / Apache-2.0 / Apache-2.0 | §2.1 (2) |

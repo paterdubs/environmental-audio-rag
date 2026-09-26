@@ -135,7 +135,7 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 
 | Ý tưởng | Vì sao đáng làm | Rủi ro / ràng buộc | Liên quan |
 |---|---|---|---|
-| **Transformer pretrain theo frame** (PretrainedSED: `frame_mn10`, ATST-F/BEATs strong) | 40 ms; DESED PSDS1 0.476–0.492 sau fine-tune (theo bài gốc) | Họ model mới, checkpoint ngoài (MIT), cần 16 kHz / 128 mel; ADR riêng | **Đã duyệt 26/09** → S10, ADR-0031 §3 (cổng T0 → ADR-0032) |
+| **Transformer pretrain theo frame** (PretrainedSED: BEATs strong đóng băng, rồi `frame_mn10`) | 40 ms. Nguồn **V3** (đọc PDF v2): DESED PSDS1 fine-tune 0.476–0.492, **frozen 0.454–0.492** — gần bằng, nên đóng băng + head là cách rẻ trên 8 GB, chạy đủ seed. `frame_mn` không có số trong bài | Họ model mới, checkpoint ngoài; license: repo MIT, BEATs (unilm) MIT, ATST-F checkpoint CC BY 4.0, M2D riêng → loại; số trong bài là DESED, không phải DataSED | **Đã duyệt 26/09** → S10; thiết kế + ứng viên (f1)–(f4) ghi trước: ADR-0032 |
 | **Soundscape tổng hợp từ clip DataSEC** (kiểu DESED/Scaper) | Cơ chế transfer isolated → continuous **khác** pretraining; tạo nhãn mạnh cho lớp hiếm | Chỉ dùng DataSEC **train** và bỏ 130 clip đã loại (leakage); nhãn mạnh nhiễu do khoảng lặng trong clip | RQ1 hướng mới, CLAUDE §8; ADR-0031 §5: chỉ khi còn ≥ 1 tuần trước mốc 18/10 |
 | Train chung nhãn mạnh (DataSED) + nhãn yếu (DataSEC) | Chuẩn DCASE Task 4 | Ánh xạ 22 → 21 lớp (bỏ `wind_turbine`) | RQ1 hướng mới |
 | RQ1-v2: B vs C dưới recipe v2 | RQ1 âm tính có phải do kiến trúc thô? Thêm 3 model khởi tạo khác cho ensemble 6 model | +3 run (4–6 h; run B-v2 mất 78–117 phút) | **Đã duyệt 26/09** → S9, ADR-0031 §2 (phân tích ghi trước; test chỉ sau vòng chọn cuối) |
@@ -156,7 +156,7 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | 4 | Systematic search: đã có baseline nào trên DataSED chưa | Để được viết "baseline đầu tiên" |
 | 5 | Kết quả v2 (dev → chọn → test một lần) | ADR-0030 §4–§5 |
 | 6 | Vòng chọn cuối 18/10 với ứng viên ghi trước; test RQ1-v2 chỉ mở **sau** khi lựa chọn cuối commit | ADR-0031 §2, §4: không số test nào có trước lựa chọn cuối hay dẫn hướng Track 2 |
-| 7 | PretrainedSED lên V3 (đọc bảng gốc, code, license checkpoint) trước khi trích hay dùng | ADR-0031 §3, cổng T0 |
+| ~~7~~ | ~~PretrainedSED lên V3~~ — **xong 26/09 tối**: đọc PDF v2, code, LICENSE (RELATED_WORK §2.1 (2)); bắt được dòng "checkpoint cũ" sai phiên bản trong bản V2 | ADR-0031 §3, cổng T0 bước 1–2 |
 
 ---
 
@@ -188,7 +188,8 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
    này khác nhau và báo thứ hạng theo macro dev để người đọc tự kiểm.
 7. License checkpoint AudioSet không ghi (ADR-0015); dữ liệu CC-BY-NC-SA → model công bố phải
    cùng license.
-8. Nhiều số văn liệu hiện ở mức V2 (lấy qua tóm tắt) — chưa được trích.
+8. Nhiều số văn liệu hiện ở mức V2 (lấy qua tóm tắt) — chưa được trích. PretrainedSED đã lên V3
+   (26/09); còn DCASE 2016 T3, bài DataSED (PLAN nợ #21).
 
 ---
 
@@ -206,3 +207,4 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | 26/09 | Đo phân bố xác suất + sai số biên → bác bỏ "bão hoà" (S17) | `boundary_errors_20260926.md` (`550daec`) |
 | 26/09 | Luật chọn §5 thành code + công cụ ablation, macro, `build_ensemble --splits` | `550daec` |
 | 26/09 | Người dùng duyệt lộ trình: macro là con số chính, chọn bằng micro; RQ1-v2 (S9); Track 2 qua cổng T0 (S10); vòng chọn cuối có ứng viên ghi trước, mốc đóng băng 18/10; S8 một lần sau mốc. Kiểm checkpoint DataSEC khớp encoder v2 (74 tensor) | ADR-0031 |
+| 26/09 (tối) | T0 bước 1–2 cho Track 2: PretrainedSED lên V3, chuỗi license; đổi thứ tự sang BEATs đóng băng + head trước `frame_mn10` (frozen gần fine-tune; `frame_mn` không có số); ứng viên (f1)–(f4) ghi trước khi có số | RELATED_WORK §2.1 (2), ADR-0032 |
