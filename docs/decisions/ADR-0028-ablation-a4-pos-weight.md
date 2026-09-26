@@ -24,6 +24,14 @@ cho tín hiệu thô.
    trần khác chỉ được ghi là "tốt hơn" nếu hơn trần 50 trên dev quá 2 × 0.0048 event-F1; kể cả
    khi đó cũng không train lại hệ thống chính (W5/W6 đã khoá) — chỉ ghi vào Hạn chế/hướng mở.
 
+## Kết quả (26/09, `ablation_a4_pos_weight_20260926.md`)
+
+Event-F1 dev (in-sample): trần 10 **0.1233**, 30 0.0944, 50 0.0814, không clip 0.0946 → theo
+luật cả ba trần khác đều "tốt hơn" 50 trên dev (Δ +0.042 / +0.013 / +0.013). Test (chỉ báo):
+0.0725 / 0.0548 / 0.0621 / 0.0614 — chỉ trần 10 giữ hướng tăng; 30 và không clip đảo chiều.
+**Đọc đúng:** trần thấp (10) là tín hiệu nhất quán dev + test, nhưng n = 1 và SD seed ~0.005;
+trần 50 giữ nguyên cho mọi số đã báo (§4). Trần 10 là hướng mở, không phải kết luận.
+
 ## Consequences
 
 - Trả lời câu hỏi mở của ADR-0003 mà không đụng số đã khoá.

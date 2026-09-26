@@ -210,7 +210,6 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 
 | Hạng mục | Còn thiếu |
 |---|---|
-| W4 | 4.7 ablation A4 `pos_weight` |
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, **chờ duyệt**); tuỳ chọn: độ nhạy với SED tối ưu, document caption LLM, Alembic |
 | Tài liệu | `RELATED_WORK.md` còn mục `⚠️ CẦN XÁC MINH` (trích dẫn — rủi ro bịa, ưu tiên thấp) |
 
@@ -440,6 +439,15 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 (sáng, tự động) — W4 đóng (A4); W7 7.1–7.4 làm sớm
+
+A4 (ADR-0028, ghi trước): trần 10 tốt nhất trên dev (0.123 vs 0.081) và test (0.0725 vs
+0.0621); 30/không clip tăng dev nhưng giảm test; giữ trần 50. W7 (ADR-0029, chờ duyệt):
+inference phục vụ ensemble C — parity trùng bit khi cùng batch, 405/408 event trong collar;
+api không torch; frontend React; compose (api) + `scripts.serve_demo`; sổ test
+`test_ledger_20260926.md`. Tự bắt: ruff lỗi lọt qua pipe (đính chính 74388da), test DB để
+lại dòng rác (đã xoá), file upload mồ côi khi DB lỗi (đã sửa).
 
 ### 2026-09-26 (tiếp) — W4: CI bootstrap cho event-F1 trung bình nhiều run
 

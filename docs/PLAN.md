@@ -14,7 +14,7 @@
 | W1 | 22–28/09 | Cổng dữ liệu D1–D4 + tài liệu | ✅ |
 | W2 | 29/09–05/10 | DataSEC classifier + PANNs | ✅ làm sớm |
 | W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
-| W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ◐ còn 4.7 |
+| W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ✅ |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 chờ duyệt; Alembic hoãn) |
 | W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.3 xong, 7.4 một phần (ADR-0029 chờ duyệt) |
@@ -149,7 +149,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 | 4.4 | Phân tích lỗi: confusion, insertion/deletion/fragmentation/merging | 5 h |
 | 4.5 | Hiệu năng theo duration / polyphony / confidence | 4 h |
 | 4.6 | Cập nhật `confusable_with` từ ma trận nhầm thật — ✅ 26/09 ([taxonomy.md §8.1](taxonomy.md)) | 2 h |
-| 4.7 | Ablation A4 (`pos_weight` trần) | 4 h |
+| 4.7 | Ablation A4 (`pos_weight` trần) — ✅ 26/09 (ADR-0028) | 4 h |
 | 4.8 | Chạy 3 seed cho cấu hình cuối | 6 h |
 | 4.9 | Tối ưu không train lại (thêm 25/09, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)): ensemble + chọn kiểu θ / percentile `g_max` bằng CV trên **dev**, chọn hệ thống theo luật ghi trước — ✅ 25/09 ([§5](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md)) | 6 h |
 

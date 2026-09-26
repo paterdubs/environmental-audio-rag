@@ -50,14 +50,13 @@
 | Ablation A2, A3, A5 (hậu xử lý) | ✅ trên cả A/B/C | xem §3 |
 | Tối ưu SED: ensemble + hậu xử lý chọn trên dev (4.9) | ✅ 5 ứng viên, chọn trên dev, test một lần | xem §2.5, [ADR-0024](decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md) |
 | Phân tích theo lớp / độ dài / collar | ✅ | xem §2 |
-| 4.6 `confusable_with` từ ma trận nhầm thật | ○ | — |
-| 4.7 Ablation A4 `pos_weight` | ○ | — |
+| 4.6 `confusable_with` / 4.7 A4 | ✅ | taxonomy.md §8.1, ADR-0028 |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
 | Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ chờ duyệt | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ dev+test nạp vào PostgreSQL + pgvector, BGE-M3, benchmark RQ3 (test nDCG@10: structured 0.523, hybrid 0.481, vector 0.418; filter exactness 1.000); câu trả lời ràng buộc evidence: unsupported-claim 0.000 | ADR-0027, [retrieval_benchmark_test_20260925.md](measurements/retrieval_benchmark_test_20260925.md) |
-| API / frontend (W7) | ○ | — |
+| API / inference / frontend (W7) | ◐ 7.1–7.4 chạy thật; inference chưa đóng image | ADR-0029, [inference_parity_20260925.md](measurements/inference_parity_20260925.md) |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
 
 ---
