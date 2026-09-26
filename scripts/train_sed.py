@@ -183,6 +183,21 @@ def split_dataset(joined: pd.DataFrame, events: pd.DataFrame, split: str, *,
     )
 
 
+def best_validation_metrics(
+    history: list[dict[str, object]], select_metric: str
+) -> dict[str, object]:
+    """`best_validation` reported in `metrics.json`, using the metric that actually picked the
+    checkpoint (PLAN nợ #24). Trước đây trường này luôn là max `macro_f1` bất kể `select_metric`:
+    đúng cho v1 (macro_f1), nhưng cho v2 (macro_average_precision) nó là một con số không liên
+    quan tới checkpoint đã chọn -- không ai dùng số này để kết luận (mọi báo cáo v2 đọc thẳng
+    `logs/history.json`), nhưng vẫn phải sửa cho những run về sau."""
+    validations = [item["validation"] for item in history]
+    return {
+        "select_metric": select_metric,
+        "best_validation": max(validation[select_metric] for validation in validations),
+    }
+
+
 def resolve_recipe(args: argparse.Namespace) -> dict[str, object]:
     """Recipe defaults, then every knob the caller set explicitly on the command line."""
     knobs = dict(RECIPES[args.recipe])
@@ -338,7 +353,7 @@ def main() -> None:
         checkpoint_directory=run / "checkpoints",
     )
     write_json(run / "logs" / "history.json", {"epochs": history})
-    metrics = {"best_validation": max(item["validation"]["macro_f1"] for item in history)}
+    metrics = best_validation_metrics(history, config.select_metric)
 
     checkpoint = torch.load(best_path, map_location=device, weights_only=True)
     model.load_state_dict(checkpoint["model_state"])
