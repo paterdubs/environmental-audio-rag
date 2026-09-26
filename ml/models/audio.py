@@ -62,23 +62,29 @@ class SoundEventDetector(nn.Module):
         encoder: nn.Module | None = None,
         hidden_size: int = 128,
         dropout: float = 0.2,
+        rnn_layers: int = 1,
+        upsample: str = "before_rnn",
     ) -> None:
         super().__init__()
+        if upsample not in ("before_rnn", "after_rnn"):
+            raise ValueError("upsample must be 'before_rnn' or 'after_rnn'")
         self.encoder = encoder or AudioEncoder()
         self.temporal = nn.GRU(
             input_size=self.encoder.output_channels,
             hidden_size=hidden_size,
-            num_layers=1,
+            num_layers=rnn_layers,
             batch_first=True,
             bidirectional=True,
+            dropout=dropout if rnn_layers > 1 else 0.0,
         )
         self.dropout = nn.Dropout(dropout)
         self.head = nn.Linear(2 * hidden_size, classes)
+        self.upsample = upsample
 
     def forward(self, inputs: Tensor) -> Tensor:
         target_frames = inputs.shape[-1]
         encoded = self.encoder(inputs)
-        if encoded.shape[-1] != target_frames:
+        if self.upsample == "before_rnn" and encoded.shape[-1] != target_frames:
             # CNN14 nén T còn T/64. Phục hồi bằng nearest-neighbor thay vì linear:
             # mỗi frame đã pool mang thông tin của một cửa sổ ~64 frame gốc, và
             # nearest lặp lại đúng giá trị đó thay vì bịa ra giá trị trung gian
@@ -86,7 +92,15 @@ class SoundEventDetector(nn.Module):
             # framewise output sau pooling (Kong et al., 2020).
             encoded = nn.functional.interpolate(encoded, size=target_frames, mode="nearest")
         contextual, _ = self.temporal(encoded.transpose(1, 2))
-        return self.head(self.dropout(contextual))
+        logits = self.head(self.dropout(contextual))
+        if logits.shape[1] != target_frames:
+            # SED v2 (ADR-0030): GRU chạy ở nhịp frame của encoder, rồi mới lặp logit về
+            # nhịp nhãn — cùng lý do nearest như trên, nhưng GRU không phải đi qua các
+            # đoạn giá trị lặp lại.
+            logits = nn.functional.interpolate(
+                logits.transpose(1, 2), size=target_frames, mode="nearest"
+            ).transpose(1, 2)
+        return logits
 
     def load_classifier_encoder(self, checkpoint: dict) -> None:
         """Nạp trọng số encoder từ checkpoint classifier cùng kiến trúc.

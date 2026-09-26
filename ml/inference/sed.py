@@ -21,7 +21,7 @@ from ml.datasets.features import window_starts
 from ml.evaluation.ensemble import average_predictions
 from ml.evaluation.predictions import PredictionArtifact
 from ml.models.audio import SoundEventDetector
-from ml.models.panns import PannsCNN14Encoder
+from ml.models.sed_factory import sed_model
 from ml.postprocessing import (
     priors_from_postproc,
     process_recordings,
@@ -55,8 +55,9 @@ def member_config(manifest: dict[str, Any]) -> MemberConfig:
 
 
 def load_member(run_dir: Path, class_count: int, device: torch.device) -> SoundEventDetector:
-    """Checkpoint carries the input normalisation buffers, so no normalisation file is read."""
-    model = SoundEventDetector(classes=class_count, encoder=PannsCNN14Encoder())
+    """Checkpoint carries the input normalisation buffers, so no normalisation file is read.
+    The architecture comes from the member's manifest (v1 when the keys are absent)."""
+    model = sed_model(_read_json(run_dir / "manifest.json")["config"], class_count)
     checkpoint = torch.load(run_dir / "checkpoints" / "best.pt", map_location="cpu",
                             weights_only=True)
     model.load_state_dict(checkpoint["model_state"])

@@ -6,6 +6,7 @@ can be supplied explicitly with :meth:`load_local_checkpoint`.
 
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -113,8 +114,11 @@ class PannsCNN14Encoder(nn.Module):
     """CNN14 feature extractor with PANNs' six-block channel layout.
 
     Inputs are log-mel tensors shaped ``[batch, 1, mel_bins, frames]``. The
-    output is ``[batch, 2048, reduced_frames]``; frequency is pooled away and
-    time is reduced by the six 2x2 pooling operations.
+    output is ``[batch, 2048, reduced_frames]``; frequency is pooled away (2 per block)
+    and time by ``time_pooling`` (one factor per block). The default (2 in every block,
+    /64) is the encoder of every RQ1 run; SED v2 keeps time resolution by pooling time
+    only in the first blocks (ADR-0030). Convolution weights do not depend on pooling,
+    so the AudioSet and DataSEC checkpoints load either way.
     """
 
     output_channels = 2048
@@ -124,10 +128,14 @@ class PannsCNN14Encoder(nn.Module):
         *,
         channels: tuple[int, ...] = (64, 128, 256, 512, 1024, 2048),
         normalization_path: str | Path | None = None,
+        time_pooling: tuple[int, ...] = (2, 2, 2, 2, 2, 2),
     ) -> None:
         super().__init__()
         if len(channels) != 6 or any(channel <= 0 for channel in channels):
             raise ValueError("CNN14 requires six positive channel sizes")
+        if len(time_pooling) != len(channels) or any(p not in (1, 2) for p in time_pooling):
+            raise ValueError("time_pooling needs one factor (1 or 2) per CNN14 block")
+        self.time_pooling = tuple(int(p) for p in time_pooling)
         blocks: list[nn.Module] = []
         input_channels = 1
         for output_channels in channels:
@@ -149,8 +157,8 @@ class PannsCNN14Encoder(nn.Module):
 
     @property
     def time_reduction(self) -> int:
-        """Tỉ lệ CNN14 nén trục thời gian — 2 lần mỗi khối, sáu khối = /64."""
-        return 2 ** len(self.blocks)
+        """Tỉ lệ CNN14 nén trục thời gian: tích hệ số pool thời gian (mặc định /64)."""
+        return math.prod(self.time_pooling)
 
     def forward(self, inputs: Tensor) -> Tensor:
         if inputs.ndim != 4 or inputs.shape[1] != 1:
@@ -158,16 +166,16 @@ class PannsCNN14Encoder(nn.Module):
         frames = inputs.shape[-1]
         if frames < self.time_reduction:
             raise ValueError(
-                f"CNN14 nén trục thời gian /{self.time_reduction} qua sáu lần pool 2x2; "
+                f"CNN14 nén trục thời gian /{self.time_reduction} (pool {self.time_pooling}); "
                 f"input chỉ có {frames} frame sẽ về 0 giữa chừng. Cần ≥ {self.time_reduction} "
                 "frame — cửa sổ SED thật (500 frame @ 50 fps = 10 s) thoả điều kiện này."
             )
         if inputs.shape[2] != self.input_mean.shape[2]:
             raise ValueError("CNN14 normalization expects 64 mel bands")
         encoded = (inputs - self.input_mean) / self.input_std
-        for block in self.blocks:
+        for block, pool in zip(self.blocks, self.time_pooling, strict=True):
             encoded = block(encoded)
-            encoded = nn.functional.avg_pool2d(encoded, kernel_size=(2, 2))
+            encoded = nn.functional.avg_pool2d(encoded, kernel_size=(2, pool))
         return encoded.mean(dim=2)
 
     def load_local_checkpoint(self, path: str | Path, *, strict: bool = True) -> None:

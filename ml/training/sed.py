@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -12,6 +13,9 @@ from torch.utils.data import DataLoader, SequentialSampler
 
 from ml.evaluation.predictions import PredictionArtifact
 from ml.models import SoundEventDetector
+from ml.training.augment import augment_batch
+
+SELECT_METRICS = ("macro_f1", "macro_average_precision")
 
 
 @dataclass(frozen=True)
@@ -24,6 +28,54 @@ class SedTrainingConfig:
     window_frames: int = 500
     hop_frames: int = 500
     seed: int = 20260922
+    # SED v2 (ADR-0030). Defaults reproduce the v1 recipe of every RQ1 run exactly.
+    encoder_learning_rate: float | None = None  # None: one learning rate for everything
+    warmup_epochs: int = 0
+    cosine_decay: bool = False
+    select_metric: str = "macro_f1"
+    mixup_p: float = 0.0
+    filter_augment_p: float = 0.0
+
+    def __post_init__(self) -> None:
+        if self.select_metric not in SELECT_METRICS:
+            raise ValueError(f"select_metric must be one of {SELECT_METRICS}")
+        if not (0 <= self.mixup_p <= 1 and 0 <= self.filter_augment_p <= 1):
+            raise ValueError("augmentation probabilities must be in [0, 1]")
+        if self.warmup_epochs < 0 or self.warmup_epochs > self.epochs:
+            raise ValueError("warmup_epochs must be in [0, epochs]")
+
+
+def build_optimizer(model: SoundEventDetector, config: SedTrainingConfig
+                    ) -> torch.optim.Optimizer:
+    """v1: one AdamW over every parameter. v2: the pretrained encoder learns more slowly."""
+    if config.encoder_learning_rate is None:
+        return torch.optim.AdamW(model.parameters(), lr=config.learning_rate,
+                                 weight_decay=config.weight_decay)
+    encoder = list(model.encoder.parameters())
+    encoder_ids = {id(parameter) for parameter in encoder}
+    head = [parameter for parameter in model.parameters() if id(parameter) not in encoder_ids]
+    return torch.optim.AdamW(
+        [{"params": encoder, "lr": config.encoder_learning_rate},
+         {"params": head, "lr": config.learning_rate}],
+        weight_decay=config.weight_decay)
+
+
+def build_scheduler(optimizer: torch.optim.Optimizer, config: SedTrainingConfig,
+                    steps_per_epoch: int) -> torch.optim.lr_scheduler.LambdaLR | None:
+    """Per-step linear warmup, then cosine decay to 0 (or constant); None for v1."""
+    if config.warmup_epochs == 0 and not config.cosine_decay:
+        return None
+    warmup = config.warmup_epochs * steps_per_epoch
+    total = config.epochs * steps_per_epoch
+
+    def factor(step: int) -> float:
+        if step < warmup:
+            return (step + 1) / warmup
+        if not config.cosine_decay:
+            return 1.0
+        return 0.5 * (1.0 + math.cos(math.pi * (step - warmup) / max(1, total - warmup)))
+
+    return torch.optim.lr_scheduler.LambdaLR(optimizer, factor)
 
 
 def masked_bce(logits: Tensor, targets: Tensor, valid: Tensor, pos_weight: Tensor) -> Tensor:
@@ -57,7 +109,10 @@ def run_epoch(
     optimizer: torch.optim.Optimizer | None,
     scaler: torch.amp.GradScaler | None,
     threshold: float,
+    scheduler: torch.optim.lr_scheduler.LambdaLR | None = None,
+    augmentation: tuple[float, float] = (0.0, 0.0),
 ) -> dict:
+    """One pass; `augmentation` = (mixup_p, filter_augment_p), applied only when training."""
     training = optimizer is not None
     model.train(training)
     losses: list[float] = []
@@ -69,6 +124,10 @@ def run_epoch(
         valid = valid.to(device, non_blocking=True)
         if training:
             optimizer.zero_grad(set_to_none=True)
+            if any(augmentation):
+                features, targets, valid = augment_batch(
+                    features, targets, valid, mixup_p=augmentation[0],
+                    filter_augment_p=augmentation[1])
         with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
             logits = model(features)
             loss = masked_bce(logits, targets, valid, pos_weight)
@@ -80,9 +139,12 @@ def run_epoch(
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
+            if scheduler is not None:
+                scheduler.step()
         losses.append(float(loss.detach()))
         keep = valid.bool().cpu().numpy()
-        batch_targets = targets.detach().cpu().numpy()
+        # Mixup makes training targets soft; frame metrics need binary labels.
+        batch_targets = (targets.detach() >= 0.5).float().cpu().numpy()
         batch_probabilities = logits.detach().sigmoid().cpu().numpy()
         all_targets.append(batch_targets[keep])
         all_probabilities.append(batch_probabilities[keep])
@@ -174,9 +236,8 @@ def train_sed(
     config: SedTrainingConfig,
     checkpoint_directory: Path,
 ) -> tuple[list[dict], Path]:
-    optimizer = torch.optim.AdamW(
-        model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay
-    )
+    optimizer = build_optimizer(model, config)
+    scheduler = build_scheduler(optimizer, config, len(loaders["train"]))
     scaler = torch.amp.GradScaler("cuda", enabled=device.type == "cuda")
     model.to(device)
     pos_weight = pos_weight.to(device)
@@ -192,6 +253,8 @@ def train_sed(
             optimizer=optimizer,
             scaler=scaler,
             threshold=config.threshold,
+            scheduler=scheduler,
+            augmentation=(config.mixup_p, config.filter_augment_p),
         )
         with torch.inference_mode():
             validation_metrics = run_epoch(
@@ -218,8 +281,8 @@ def train_sed(
             "validation": validation_metrics,
         }
         torch.save(state, checkpoint_directory / "last.pt")
-        if validation_metrics["macro_f1"] > best_score:
-            best_score = validation_metrics["macro_f1"]
+        if validation_metrics[config.select_metric] > best_score:
+            best_score = validation_metrics[config.select_metric]
             torch.save(state, best_path)
     return history, best_path
 

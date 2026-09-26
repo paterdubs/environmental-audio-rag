@@ -48,6 +48,9 @@ def parse_args() -> argparse.Namespace:
                         help="hậu tố file kết quả, để không ghi đè evaluation.json chuẩn")
     parser.add_argument("--render-only", action="store_true",
                         help="chỉ sinh lại file md từ evaluation<tag>.json đã có — không mở test")
+    parser.add_argument("--split", choices=("test", "dev"), default="test",
+                        help="dev: chẩn đoán/ablation (ADR-0030), in-sample vì hậu xử lý "
+                             "chọn trên dev; ghi dev_evaluation*.json, sổ test không tính")
     return parser.parse_args()
 
 
@@ -154,6 +157,9 @@ def bootstrap_event_f1(
 
 def _paths(args: argparse.Namespace) -> tuple[Path, Path]:
     suffix = f"_{args.tag}" if args.tag else ""
+    if args.split == "dev":
+        return (args.run_dir / f"dev_evaluation{suffix}.json",
+                ROOT / "docs" / "measurements" / f"{args.run_dir.name}_deveval{suffix}.md")
     return (args.run_dir / f"evaluation{suffix}.json",
             ROOT / "docs" / "measurements" / f"{args.run_dir.name}_eval{suffix}.md")
 
@@ -181,10 +187,10 @@ def main() -> None:
         raise SystemExit("postproc.json khoá theo taxonomy khác taxonomy đang dùng")
 
     test_artifact = load_predictions(
-        args.run_dir / "predictions" / "test.npz", expected_class_ids=class_ids
+        args.run_dir / "predictions" / f"{args.split}.npz", expected_class_ids=class_ids
     )
-    if test_artifact.split != "test":
-        raise SystemExit(f"prediction artifact split={test_artifact.split!r}, cần 'test'")
+    if test_artifact.split != args.split:
+        raise SystemExit(f"prediction artifact split={test_artifact.split!r}, cần {args.split!r}")
 
     probabilities = stack_predictions_by_recording(test_artifact)
     reference = load_events_by_recording(set(probabilities))
@@ -229,6 +235,7 @@ def main() -> None:
 
     result = {
         "run": str(args.run_dir),
+        "split": args.split,
         "postproc": str(postproc_path),
         "event_based_f1": event_f1["f_measure"],
         "event_based_f1_per_class": {
@@ -250,15 +257,19 @@ def main() -> None:
 def _render_report(result: dict) -> str:
     f1 = result["event_based_f1"]
     ci = result["event_based_f1_bootstrap"]
+    split = result.get("split", "test")
+    note = ("Test chạy **một lần**, postproc đã đóng băng trước khi mở test."
+            if split == "test" else
+            "**Dev, in-sample** (hậu xử lý chọn trên chính dev) — chẩn đoán/ablation "
+            "ADR-0030, không phải số chính thức.")
     lines = [
-        f"# Đánh giá SED — `{Path(result['run']).name}`",
+        f"# Đánh giá SED — `{Path(result['run']).name}` ({split})",
         "",
-        f"> Sinh bởi `scripts.evaluate_run {result['run']}`. Test chạy **một lần**, "
-        "postproc đã đóng băng trước khi mở test.",
+        f"> Sinh bởi `scripts.evaluate_run {result['run']} --split {split}`. {note}",
         "",
         f"Hậu xử lý: `{Path(result['postproc']).name}`.",
         "",
-        "## Event-based F1 (test)",
+        f"## Event-based F1 ({split})",
         "",
         "| Metric | Giá trị |",
         "|---|---:|",

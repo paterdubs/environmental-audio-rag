@@ -69,6 +69,7 @@ class SedWindow:
     feature_relative_path: str
     start_frame: int
     available_frames: int
+    recording_frames: int = 0
 
 
 def window_starts(total_frames: int, window_frames: int, hop_frames: int) -> list[int]:
@@ -95,6 +96,7 @@ class SedFeatureDataset(Dataset):
         frame_rate: float = 50.0,
         window_frames: int = 500,
         hop_frames: int = 250,
+        random_crop: bool = False,
     ) -> None:
         recording_required = {"recording_id", "feature_relative_path", "frames"}
         event_required = {"recording_id", "class_id", "onset_s", "offset_s"}
@@ -106,6 +108,9 @@ class SedFeatureDataset(Dataset):
         self.class_index = {class_id: index for index, class_id in enumerate(class_ids)}
         self.frame_rate = frame_rate
         self.window_frames = window_frames
+        # SED v2 (ADR-0030), train only: each item is a window at a uniformly random start
+        # in its recording, so every epoch sees new crops. Off = the fixed windows of v1.
+        self.random_crop = random_crop
         self.events = {
             str(recording_id): group.reset_index(drop=True)
             for recording_id, group in events.groupby("recording_id", sort=False)
@@ -124,6 +129,7 @@ class SedFeatureDataset(Dataset):
                     feature_relative_path=str(row.feature_relative_path),
                     start_frame=start,
                     available_frames=min(window_frames, total - start),
+                    recording_frames=total,
                 )
                 for start in starts
             )
@@ -131,8 +137,15 @@ class SedFeatureDataset(Dataset):
     def __len__(self) -> int:
         return len(self.windows)
 
+    def _cropped(self, window: SedWindow) -> SedWindow:
+        if not self.random_crop or window.recording_frames <= self.window_frames:
+            return window
+        start = int(np.random.randint(0, window.recording_frames - self.window_frames + 1))
+        return SedWindow(window.recording_id, window.feature_relative_path, start,
+                         self.window_frames, window.recording_frames)
+
     def __getitem__(self, index: int) -> tuple[Tensor, Tensor, Tensor]:
-        window = self.windows[index]
+        window = self._cropped(self.windows[index])
         feature = np.load(
             self.feature_root / window.feature_relative_path, mmap_mode="r", allow_pickle=False
         )
