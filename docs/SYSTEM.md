@@ -946,7 +946,8 @@ cho thấy hệ thống v1 **nhận ra** âm thanh khá tốt (segment F1 1 s 0.
 
 - CNN14 trong repo pool thời gian ở cả 6 khối (/64, 0.64 s ở 100 fps), trong khi CNN14 gốc
   chỉ /32. Riêng điều này chặn event-F1 ở 0.63 ngay cả với model hoàn hảo.
-- Posterior bão hoà do `pos_weight` tới 50.
+- ~~Posterior bão hoà~~ — giả thuyết bản đầu, đã bị đo bác bỏ: biên tản rộng và đối xứng
+  ([boundary_errors_20260926.md](measurements/boundary_errors_20260926.md)).
 - Công thức train tối giản.
 
 **v2 (`scripts.train_sed --recipe v2`; mặc định code vẫn là v1):**

@@ -20,7 +20,7 @@
 
 | # | Hướng | Đóng góp chính | Dẫn chứng đã có | Còn thiếu |
 |---|---|---|---|---|
-| **A** | Chẩn đoán + cải thiện SED trên ghi âm môi trường thật (DataSED). Tiêu đề nháp: *"Where does event-level SED fail on real-world environmental recordings? Resolution ceilings, annotator agreement and posterior saturation"* | Phân rã event-F1 thành trần độ phân giải / trần người / lỗi biên / bỏ sót; sửa từng nguyên nhân (SED v2) với ablation bỏ-từng-phần; baseline đầu tiên *đã báo cáo* trên DataSED (⚠️ phải xác minh chưa ai báo) | §2.2, §3 | Kết quả v2 (đang chạy), đo bão hoà posterior có artifact (§6 #1), systematic search baseline DataSED |
+| **A** | Chẩn đoán + cải thiện SED trên ghi âm môi trường thật (DataSED). Tiêu đề nháp: *"Where does event-level SED fail on real-world environmental recordings? Resolution ceilings, annotator agreement and boundary dispersion"* | Phân rã event-F1 thành trần độ phân giải / trần người / lỗi biên / bỏ sót; sửa từng nguyên nhân (SED v2) với ablation bỏ-từng-phần; baseline đầu tiên *đã báo cáo* trên DataSED (⚠️ phải xác minh chưa ai báo) | §2.2, §3 | Kết quả v2 (đang chạy), systematic search baseline DataSED |
 | **B** | Transfer isolated → continuous **có kiểm soát leakage xuyên dataset** (C3, RQ1) | Đo được trùng nguồn DataSEC–DataSED; RQ1 âm tính có thống kê nhiều seed; ý tưởng thay pretraining bằng soundscape tổng hợp (§5) | §2.1 | RQ1-v2 (ADR-0030 §7), thí nghiệm soundscape tổng hợp |
 | **C** | Caption có căn cứ kiểm được bằng máy + RAG trên timeline (C1, C2, C4) | Đánh đổi ràng buộc ↔ độ phủ và cách giải; metric hallucination không cần caption người viết; truy vấn có vị từ thời gian | §2.3, §2.4 | Chạy lại trên SED v2 (ADR-0030 §6); systematic search AAC hallucination (RELATED_WORK §4) |
 
@@ -61,6 +61,7 @@ Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". H�
 | S14 | **cSEBB thất bại trên posterior v1** (kết quả âm tính) | CV tốt nhất 0.0582 ± 0.0220 (τ 1.28 s, rel 2) so với 0.1538 ± 0.0214 của ADR-0024 | [sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) | Hướng A: hậu xử lý không cứu được posterior bão hoà |
 | S15 | Giao thức "chọn trên dev, commit, rồi mới sinh logit test": đường dump tái tạo **trùng từng bit** logit lúc train | SHA-256 dev trùng khít trên run `054531Z` | commit `8b1df60`, `scripts/dump_predictions.py` | Phương pháp: chứng minh test không bị dùng để chọn |
 | S16 | Parity phục vụ | Đặc trưng 142/142 trùng; logit trùng bit khi cùng batch; 332/408 event trùng khít, 405/408 trong collar khi phục vụ từng file (nhiễu fp16 theo thành phần batch) | [inference_parity_20260925.md](measurements/inference_parity_20260925.md), ADR-0029 §7 | Phụ lục kỹ thuật |
+| S17 | **Không bão hoà; biên tản rộng và đối xứng** (bác bỏ giả thuyết ban đầu của ADR-0030) | v1 ensemble C, dev: frame âm trung vị p 0.008, ≥ 0.5 chỉ 2.3%; onset trung vị +0.00 s, [q25, q75] [−0.39, +0.51], trong ±0.2 s 30.2%, trễ 36.5%, sớm 33.3%. v2 seed 20260922 (sơ bộ): trong ±0.2 s 35.2% | [boundary_errors_20260926.md](measurements/boundary_errors_20260926.md) | Hướng A: lời giải thích đúng cho lỗi biên; ví dụ "trace đơn lẻ đánh lừa" |
 
 ### 2.3 Caption (RQ2 — C1, C2)
 
@@ -90,7 +91,7 @@ Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". H�
 | θ global vs per-class | ADR-0003, A2 | `ml/postprocessing/calibration.py` | per-class overfit dev (S4) | ✅ global |
 | Duration prior từ train (median, `d_min`, `g_max`) | ADR-0003 | `ml/postprocessing/events.py` | `g_max` p25 tốt hơn (S6) | ✅ dùng |
 | Trần `pos_weight` | A4 | `scripts/train_sed.py --pos-weight-cap` | 10 tốt nhất trên dev (S9) | → vào v2 |
-| cSEBB (phát hiện điểm đổi) | Ebbers và cộng sự, Interspeech 2024 | `ml/postprocessing/sebb.py`, `scripts/select_sebb_cv.py` | **thất bại** trên posterior v1 (S14) | vào lưới chọn của v2 |
+| cSEBB (phát hiện điểm đổi) | Ebbers và cộng sự, Interspeech 2024 | `ml/postprocessing/sebb.py`, `scripts/select_sebb_cv.py` | **thất bại** trên v1 (S14) và trên v2 seed 20260922: CV tốt nhất 0.0953 ± 0.0302 (τ 0.48, abs 0.15) so với θ global p25 0.1900 ± 0.0523 (`ml/runs/sed_polyphonic_20260926T033312Z/{sebb,postproc}_cv_selection.json`, sơ bộ 1/3 seed) | vẫn trong lưới chọn của v2 |
 | Hysteresis (hai ngưỡng) | thực hành SED cổ điển | `ml/postprocessing/sebb.py::hysteresis_runs` | chưa đánh giá | ○ |
 | CNN14 giữ độ phân giải (pool thời gian /8) | chẩn đoán S11/S13; CRNN DCASE pool thời gian ít | `PannsCNN14Encoder(time_pooling=…)` | đang chạy | ◐ v2 |
 | BiGRU 2 lớp chạy ở nhịp encoder | CRNN chuẩn | `SoundEventDetector(upsample="after_rnn")` | đang chạy | ◐ v2 |
@@ -122,9 +123,11 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
    onset, không phải ở nhận dạng (S12).
 4. **Phân rã lỗi ba nhóm:** khớp / chồng đúng lớp nhưng lệch biên / bỏ sót (S12). Khác
    taxonomy lỗi của `errors.py` ở chỗ tách riêng nhóm "phát hiện được nhưng biên sai".
-5. **Chẩn đoán bão hoà posterior (giả thuyết, cần artifact):** `pos_weight` lớn → xác suất cao
-   cả ngoài event → CV đẩy θ lên 0.95 → onset trễ; và hậu xử lý phát hiện điểm đổi (cSEBB)
-   mất tác dụng (S14). v2 kiểm giả thuyết này bằng ablation trần 50 so với 10 (ADR-0030 §4).
+5. **Phân bố xác suất + sai số biên có dấu** (`scripts/report_boundary_errors.py`).
+   - **Giả thuyết ban đầu "posterior bão hoà làm onset trễ" bị chính phép đo này bác bỏ**
+     (S17). Đây là ví dụ đáng kể trong paper: một trace thuyết phục nhưng sai về tổng thể.
+   - Chẩn đoán đúng là **biên tản rộng, đối xứng**. Công cụ dùng lại được cho mọi hệ thống SED
+     có dự đoán theo frame.
 
 ---
 
@@ -136,7 +139,7 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | **Soundscape tổng hợp từ clip DataSEC** (kiểu DESED/Scaper) | Cơ chế transfer isolated → continuous **khác** pretraining; tạo nhãn mạnh cho lớp hiếm | Chỉ dùng DataSEC **train** và bỏ 130 clip đã loại (leakage); nhãn mạnh nhiễu do khoảng lặng trong clip | RQ1 hướng mới, CLAUDE §8 |
 | Train chung nhãn mạnh (DataSED) + nhãn yếu (DataSEC) | Chuẩn DCASE Task 4 | Ánh xạ 22 → 21 lớp (bỏ `wind_turbine`) | RQ1 hướng mới |
 | RQ1-v2: B vs C dưới recipe v2 | RQ1 âm tính có phải do kiến trúc thô? | +3 run (~4.5 h) | ADR-0030 §7 |
-| Loss hiệu chuẩn tốt hơn (focal / asymmetric) thay `pos_weight` | Trực tiếp nhắm bão hoà posterior | Thêm một núm; chọn trên dev | §4 mục 5 |
+| Loss hiệu chuẩn tốt hơn (focal / asymmetric) thay `pos_weight` | Lớp hiếm bị bỏ sót (trung vị p trên frame dương: `horn` 0.23, `thunder…` 0.008 — S17); *không* còn động cơ "bão hoà" (đã bác bỏ) | Thêm một núm; chọn trên dev | §4 mục 5 |
 | Frequency dynamic convolution | SOTA DESED dòng CNN | Đổi kiến trúc conv, không dùng lại trọng số CNN14 | RELATED_WORK §2 |
 | Hậu xử lý theo lớp khi có thêm dữ liệu | cSEBB gốc tune theo lớp | A2: overfit dev nhỏ | S4 |
 | Báo segment-based metric song song | So được với DCASE 2016/2017 T3 | Không thay primary (không đổi thước đo sau khi thấy số) | evaluation_protocol §3.1 |
@@ -147,8 +150,8 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 
 | # | Việc | Vì sao |
 |---:|---|---|
-| 1 | Đo bão hoà posterior có artifact (phân bố xác suất trên frame âm/dương theo lớp, v1 vs v2) | §4 mục 5 hiện chỉ là quan sát trên một trace |
-| 2 | **Event-F1 macro** bên cạnh micro cho mọi hệ thống | evaluation_protocol Q2 đòi macro; mọi số event-F1 headline đến nay là **micro** (`overall` của sed_eval) — lệch protocol, xem PLAN nợ #20 |
+| ~~1~~ | ~~Đo bão hoà posterior có artifact~~ — **xong 26/09**: `boundary_errors_20260926.md`; giả thuyết bị bác bỏ (S17) | — |
+| 2 | **Event-F1 macro** bên cạnh micro cho mọi hệ thống — công cụ xong (`report_event_f1_macro`, `evaluate_run` ghi macro, commit `550daec`); measurement sinh sau hàng đợi | evaluation_protocol Q2 đòi macro; mọi số event-F1 headline đến nay là **micro** (`overall` của sed_eval) — lệch protocol, PLAN nợ #20 |
 | 3 | Đối chiếu trực tiếp các số văn liệu lấy qua tóm tắt WebFetch (V2 → V3) | Bài học ADR-0015: tóm tắt từng báo sai license |
 | 4 | Systematic search: đã có baseline nào trên DataSED chưa | Để được viết "baseline đầu tiên" |
 | 5 | Kết quả v2 (dev → chọn → test một lần) | ADR-0030 §4–§5 |
@@ -161,7 +164,7 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 |---|---|---|
 | Hình 1 | Event-F1 theo độ dài khối quyết định (trần độ phân giải), vạch ngang trần người 0.58, điểm hệ thống v1/v2 | `sed_ceilings_*.json` |
 | Hình 2 | Phân rã lỗi (khớp / lệch biên / bỏ sót) v1 so với v2 | `report_sed_ceilings --run` cho từng hệ thống |
-| Hình 3 | Trace posterior một recording (bão hoà v1 so với v2) | cần artifact (§6 #1) |
+| Hình 3 | Phân bố sai số onset/offset có dấu (v1 so với v2) + phân bố xác suất frame âm/dương | `boundary_errors_*.json` (`scripts/report_boundary_errors.py`) |
 | Hình 4 | Đường cong học v1 (overfit epoch 3) so với v2 | `logs/history.json` |
 | Bảng 1 | Ablation bỏ-từng-phần v2 (CV event-F1 dev, macro-AP, PSDS dev) | ADR-0030 §4 |
 | Bảng 2 | Kết quả test một lần + CI 95%, v1 và v2 | `evaluation*.json` |
@@ -194,3 +197,7 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | 26/09 | Code SED v2, `dump_predictions` (trùng bit), `evaluate_run --split dev` | `8b1df60` |
 | 26/09 | ADR-0030 (Proposed) + pilot lr encoder 3e-4 | `ead5a2f` |
 | 26/09 | Hàng đợi 6 run v2 (3 seed + 3 ablation), bắt đầu 10:33 trên tree sạch `e808df4` | `ml/runs/sed_polyphonic_20260926T033312Z`, … (điền khi xong) |
+| 26/09 | Run 1 (seed 20260922) xong 12:30: AP frame dev tốt nhất 0.688 (epoch 17), không tụt tới epoch 30. CV dev θ global p25 **0.1900 ± 0.0523** (v1 ensemble C 0.1538 ± 0.0214); cSEBB 0.0953. `dump --verify-dev` trùng bit. **Sơ bộ, 1/3 seed** | `ml/runs/sed_polyphonic_20260926T033312Z/` |
+| 26/09 | Mã thoát 127 của mọi run v2: cuDNN khi giải phóng GRU nhiều lớp có dropout (chế độ train) lúc tắt, trên Windows; artifact đã ghi xong. Follower CV kiểm `manifest.complete` | ADR-0030 §8, TRAINING_OPS_PLAN |
+| 26/09 | Đo phân bố xác suất + sai số biên → bác bỏ "bão hoà" (S17) | `boundary_errors_20260926.md` (`550daec`) |
+| 26/09 | Luật chọn §5 thành code + công cụ ablation, macro, `build_ensemble --splits` | `550daec` |

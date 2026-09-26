@@ -181,7 +181,7 @@ và [RELATED_WORK.md](RELATED_WORK.md).
 | S4 | Hàng đợi: v2 × 3 seed {20260922, 2, 3} + ablation (/64, trần 50, không augmentation) | ◐ bắt đầu 26/09 10:33 |
 | S5 | Chọn hậu xử lý (θ global × p, cSEBB) bằng CV dev cho từng run; ensemble 3 seed; bảng ablation dev | ○ |
 | S6 | Commit lựa chọn hệ thống (ADR-0030 §5) → `dump_predictions --split test` → `evaluate_run` một lần | ○ |
-| S7 | Đo bão hoà posterior có artifact (v1 vs v2) + event-F1 macro | ○ |
+| S7 | Phân bố xác suất + sai số biên có artifact (v1 vs v2) + event-F1 macro | ◐ công cụ + v1/v2 seed 1 xong (`550daec`, `boundary_errors_20260926.md` — bác bỏ "bão hoà"); macro sinh sau hàng đợi |
 | S8 | Nếu v2 được chọn: chạy lại W5 e2e, W6 RQ3 trên event v2; đổi hệ thống phục vụ | ○ |
 | S9 | Tuỳ chọn, chờ duyệt: RQ1-v2 (nhánh C × 3 seed) | ○ |
 | S10 | Tuỳ chọn, chờ duyệt: Track 2 PretrainedSED (ADR riêng) | ○ |
@@ -194,6 +194,42 @@ và [RELATED_WORK.md](RELATED_WORK.md).
 - [ ] Lựa chọn hệ thống commit trước khi sinh logit test
 - [ ] Test một lần; báo mọi cấu hình, kể cả khi v2 thua v1
 - [ ] PAPER_NOTES và RELATED_WORK cập nhật với mọi kết quả, kể cả âm tính
+
+### Runbook sau hàng đợi (ADR-0030 §4–§5) — chạy đúng thứ tự
+
+Viết sẵn 26/09 để khi hàng đợi xong chỉ việc chạy. `<…>` là run ID trong `v2_queue.log`.
+
+```bash
+# 0. Log ngầm: scratchpad phiên 9d87d957… (v2_queue.log, cv_follow.log, post_queue.log).
+#    "FAILED rc=127" là giả — kiểm manifest.complete (TRAINING_OPS_PLAN §7 #6).
+
+# 1. Ensemble chỉ-dev 3 seed bằng script repo + CV hai họ hậu xử lý
+.venv/Scripts/python.exe -m scripts.build_ensemble --splits dev --label v2 ml/runs/<s20260922> ml/runs/<s2> ml/runs/<s3>
+.venv/Scripts/python.exe -m scripts.select_postproc_cv ml/runs/<ens> --modes global --workers 6
+.venv/Scripts/python.exe -m scripts.select_sebb_cv ml/runs/<ens> --workers 6
+
+# 2. Measurement cho paper (chỉ dev)
+.venv/Scripts/python.exe -m scripts.report_sed_v2_ablation --full ml/runs/<s20260922> ml/runs/<s2> ml/runs/<s3>     --ablation "không độ phân giải (pool /64)=ml/runs/<nores>" --ablation "trần pos_weight 50=ml/runs/<cap50>"     --ablation "không augmentation=ml/runs/<noaug>" --reference "ensemble C v1=ml/runs/sed_ensemble_C_clean_20260925T045631Z"
+.venv/Scripts/python.exe -m scripts.report_boundary_errors --run "v1 ensemble C=ml/runs/sed_ensemble_C_clean_20260925T045631Z" --run "v2 ensemble=ml/runs/<ens>"
+.venv/Scripts/python.exe -m scripts.report_sed_ceilings --run ml/runs/<ens>          # phân rã lỗi v2
+
+# 3. Chọn hệ thống — COMMIT trước khi mở test
+.venv/Scripts/python.exe -m scripts.select_sed_v2 --candidate "ensemble C v1=ml/runs/sed_ensemble_C_clean_20260925T045631Z"     --candidate "v2 run đơn=ml/runs/<s20260922>" --candidate "v2 ensemble 3 seed=ml/runs/<ens>"
+git add docs/measurements/sed_v2_* docs/measurements/boundary_errors_* && git commit   # lựa chọn có trước test
+
+# 4. Test MỘT lần cho ứng viên (b) và (c), báo tất cả (ADR-0030 §5)
+.venv/Scripts/python.exe -m scripts.dump_predictions ml/runs/<s> --split test          # từng seed
+.venv/Scripts/python.exe -m scripts.build_ensemble --splits dev test --label v2 <3 seed>   # dev.npz phải trùng SHA bản chỉ-dev
+.venv/Scripts/python.exe -m scripts.evaluate_run ml/runs/<s20260922> --postproc ml/runs/<s20260922>/postproc_cv.json --tag cv
+.venv/Scripts/python.exe -m scripts.evaluate_run ml/runs/<ens dev+test> --postproc ml/runs/<ens>/postproc_cv.json --tag cv
+.venv/Scripts/python.exe -m scripts.report_test_ledger
+.venv/Scripts/python.exe -m scripts.report_event_f1_macro                               # nợ #20
+
+# 5. PAPER_NOTES §2/§9, ADR-0030 (kết quả), STATUS, CLAUDE; nếu v2 thắng → S8
+```
+
+Lưu ý: nếu ứng viên thắng dùng họ **cSEBB**, `evaluate_run` và phục vụ chưa hỗ trợ cSEBB →
+phải cài trước bước 4 (hiện cSEBB thua ở v1 và v2 seed 1).
 
 ---
 
@@ -328,10 +364,12 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~16~~ | ~~`query_set.py` dùng lớp `car`, `dog` không có trong taxonomy → lọc rỗng im lặng~~ — **đóng 25/09**: lớp lấy từ `taxonomy.polyphonic_class_ids`, `validate_query_classes` từ chối lớp lạ | — | ✅ |
 | ~~17~~ | ~~Relevance lấy từ chính bộ lọc đang đánh giá (`source: temporal_filter`)~~ — **đóng 25/09**: `ml/retrieval/relevance.py` tính từ annotation ground truth, cùng ngữ nghĩa với SQL (test chạy SQL trên SQLite); contract đổi sang `source: ground_truth` | — | ✅ |
 | ~~18~~ | ~~Query set chỉ có câu temporal, 25/100 câu có relevant trên test~~ — **đóng 26/09** (6.7, ADR-0027): query set v2 4 nhóm 21/27/30/22, EN + VI, chọn theo ground truth **train**; 97/100 câu có relevant trên test, 96/100 dev (`retrieval_queryset_v2_20260925.md`) | — | ✅ |
-| 19 | Test tích hợp PostgreSQL treo ~130 s mỗi lần khi Docker Desktop tắt (`psycopg.connect` không có `connect_timeout`); một lần treo hẳn khi Docker tắt giữa chừng (26/09) | TRUNG BÌNH | Khi rảnh GPU/tree |
-| 20 | **Event-F1 headline là micro** (`overall` của sed_eval), trong khi evaluation_protocol Q2 đòi macro — lệch protocol phát hiện 26/09. Báo thêm macro từ per-class đã có (không chạy lại test); ghi "micro" ở mọi chỗ trích | **CAO** (paper) | Trước khi viết Chương 4 |
+| ~~19~~ | ~~Test tích hợp PostgreSQL treo ~130 s khi Docker tắt~~ — **đóng 26/09** (`550daec`): `connect_timeout` 5 s (`DB_CONNECT_TIMEOUT`); bộ test 13.5 phút → 57 s | — | ✅ |
+| 20 | **Event-F1 headline là micro** (`overall` của sed_eval), trong khi evaluation_protocol Q2 đòi macro — lệch protocol phát hiện 26/09. Báo thêm macro từ per-class đã có (không chạy lại test); ghi "micro" ở mọi chỗ trích. **26/09:** công cụ xong (`550daec`: `evaluate_run` ghi macro, `scripts.report_event_f1_macro`); còn sinh measurement sau hàng đợi | **CAO** (paper) | Trước khi viết Chương 4 |
 | 21 | Số văn liệu mức V2 (lấy qua tóm tắt WebFetch: PretrainedSED, DCASE 2016 T3, bài DataSED) phải đọc trực tiếp trước khi trích (RELATED_WORK §2.1) | TRUNG BÌNH | Trước khi viết Chương 2 |
-| 22 | Bão hoà posterior mới là quan sát (một trace + CV cSEBB) — cần artifact phân bố xác suất theo lớp, v1 vs v2 | TRUNG BÌNH | Cùng S7 |
+| ~~22~~ | ~~Bão hoà posterior mới là quan sát~~ — **đóng 26/09**: `boundary_errors_20260926.md` đo trên dev → **bác bỏ** (không bão hoà; biên lệch đối xứng) | — | ✅ |
+| 23 | Mã thoát 127 của mọi run v2 (cuDNN giải phóng GRU nhiều lớp có dropout lúc tắt, Windows) — tự động hoá phải kiểm `manifest.complete` (TRAINING_OPS_PLAN §7 #6) | THẤP | Ghi nhận |
+| 24 | `metrics.json` `best_validation` luôn là max frame macro-F1, kể cả khi checkpoint chọn theo macro-AP (v2) — tên gây hiểu nhầm; sửa **sau** hàng đợi (không đổi code train giữa chừng) | THẤP | Sau hàng đợi SED v2 |
 
 ---
 

@@ -15,9 +15,11 @@
   chờ duyệt).
 - **Giai đoạn cải thiện SED (26/09, ADR-0030, Proposed).** Chẩn đoán trên dev: trần event-F1
   của kiến trúc v1 là 0.63 (pool thời gian /64); trần người 0.58; v1 chỉ onset 0.23, chỉ
-  offset 0.50, segment F1 0.65 → lỗi nằm ở onset. cSEBB trên posterior v1 thất bại (CV 0.058
-  vs 0.154). SED v2 (pool /8, BiGRU 2×256, 30 epoch, augmentation, trần `pos_weight` 10)
-  **đang train**: 3 seed + 3 ablation, chưa có số.
+  offset 0.50, segment F1 0.65 → lỗi nằm ở biên. Biên lệch **đối xứng, tản rộng** — giả thuyết
+  "posterior bão hoà" bị đo bác bỏ ([boundary_errors_20260926.md](measurements/boundary_errors_20260926.md)).
+  cSEBB thất bại cả trên v1 (CV 0.058 vs 0.154) lẫn v2 seed 1 (0.095 vs 0.190). SED v2 (pool /8,
+  BiGRU 2×256, 30 epoch, augmentation, trần `pos_weight` 10) **đang train**: 1/6 run xong —
+  seed 20260922 CV dev 0.1900 ± 0.0523 (sơ bộ; v1 ensemble C 0.1538 ± 0.0214).
 - **Event-F1 headline là micro** (lệch Q2, evaluation_protocol §3.2) — báo thêm macro (PLAN
   nợ #20).
 - **Mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ dự đoán (`7ada7d7`, `3208dbb`).

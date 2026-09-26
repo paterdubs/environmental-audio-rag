@@ -249,6 +249,7 @@ prediction khác nhau mỗi lần, Δ của chúng trộn với Δ của SED.
 | 3 | Run bị ngắt **không** được ghi `complete = true` |
 | 4 | Artifact thiếu manifest hoặc `complete != true` là **không hợp lệ** cho báo cáo |
 | 5 | `dirty = true` làm run không hợp lệ cho báo cáo cuối |
+| 6 | **Không tin mã thoát của tiến trình train trên Windows.** Model có GRU nhiều lớp với dropout (SED v2), chạy chế độ train trên CUDA, làm tiến trình thoát **127** lúc tắt (cuDNN giải phóng trạng thái dropout; tái hiện được với `nn.GRU(num_layers=2, dropout=0.2)`; chế độ eval thoát 0), **sau khi** mọi artifact đã ghi. Tự động hoá phải xác định thành công bằng `manifest.complete == true` (26/09, ADR-0030 §8) |
 
 ---
 

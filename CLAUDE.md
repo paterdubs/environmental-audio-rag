@@ -67,11 +67,14 @@ mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_N
   - Trần người 0.58 (8 cặp trùng).
   - v1: event-F1 0.159, chỉ onset **0.23**, chỉ offset 0.50, segment F1 0.65. Lỗi nằm ở onset,
     không ở nhận dạng.
-- **cSEBB** (Ebbers 2024) trên posterior v1 **thất bại**: CV 0.058 vs 0.154. Posterior bão hoà
-  vì `pos_weight` tới 50.
+- **cSEBB** (Ebbers 2024) trên posterior v1 **thất bại**: CV 0.058 vs 0.154. Lý do "posterior bão
+  hoà" ở bản đầu **đã bị bác bỏ** (`boundary_errors_20260926.md`): frame âm trung vị p 0.008,
+  onset lệch đối xứng (IQR −0.39…+0.51 s) → lỗi là **biên tản rộng**.
 - **SED v2** (`--recipe v2`: pool /8, BiGRU 2×256, 30 epoch, lr encoder 3e-4, random crop,
-  mixup, FilterAugment, trần 10) **đang train**: hàng đợi 3 seed + 3 ablation từ `e808df4`,
-  mỗi run tự chạy CV hậu xử lý dev. Chưa có số v2. Test chỉ mở sau khi lựa chọn trên dev đã
+  mixup, FilterAugment, trần 10) **đang train**: hàng đợi 3 seed + 3 ablation từ `e808df4`.
+  Run 1 (seed 20260922) xong: CV dev **0.1900 ± 0.0523** (sơ bộ, 1/3 seed; v1 ensemble C
+  0.1538). Mã thoát 127 của run v2 là giả (TRAINING_OPS_PLAN §7 #6) → follower CV ngầm kiểm
+  `manifest.complete`. Test chỉ mở sau khi lựa chọn trên dev đã
   commit (`scripts.dump_predictions`).
 - **Lệch protocol phát hiện 26/09:** event-F1 headline từ trước tới nay là **micro**, trong khi
   Q2 đòi macro → báo thêm macro (PLAN nợ #20).
@@ -238,7 +241,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 
 ### Chưa có ○
 
-Event-F1 macro (nợ #20) · artifact bão hoà posterior (nợ #22) · Track 2 PretrainedSED (chờ duyệt).
+Measurement event-F1 macro (công cụ có ở `550daec`, sinh sau hàng đợi) · Track 2 PretrainedSED (chờ duyệt).
 
 ### Việc tiếp theo — theo thứ tự
 
@@ -250,7 +253,7 @@ Event-F1 macro (nợ #20) · artifact bão hoà posterior (nợ #22) · Track 2 
    4. Cập nhật PAPER_NOTES.
    - **Trong lúc hàng đợi chạy, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree
      ngoài repo, rồi fast-forward.
-2. Event-F1 macro cho mọi hệ thống (nợ #20) và artifact bão hoà posterior (nợ #22).
+2. `scripts.report_event_f1_macro` cho mọi hệ thống (nợ #20) — chạy sau hàng đợi, commit ngay.
 3. Nếu v2 được chọn: chạy lại W5 e2e / W6 RQ3 trên event v2, đổi hệ thống phục vụ.
 
 ---
@@ -438,6 +441,12 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 .venv/Scripts/python.exe -m scripts.evaluate_run ml/runs/<run> --split dev --postproc <file>  # dev in-sample
 .venv/Scripts/python.exe -m scripts.dump_predictions ml/runs/<run> --verify-dev   # đường dump trùng bit?
 .venv/Scripts/python.exe -m scripts.dump_predictions ml/runs/<run> --split test   # CHỈ sau khi lựa chọn đã commit
+.venv/Scripts/python.exe -m scripts.build_ensemble --splits dev --label v2 <runs...>  # ensemble chỉ-dev
+.venv/Scripts/python.exe -m scripts.select_sed_v2 --candidate "nhãn=ml/runs/<run>" ...  # luật ADR-0030 §5, chỉ dev
+.venv/Scripts/python.exe -m scripts.report_sed_v2_ablation --full <3 seed> --ablation "nhãn=<run>" ...
+.venv/Scripts/python.exe -m scripts.report_boundary_errors --run "nhãn=ml/runs/<run>" ...  # xác suất + sai số biên, dev
+.venv/Scripts/python.exe -m scripts.report_event_f1_macro   # macro từ per-class đã lưu, không chạy lại test
+# Thứ tự đầy đủ sau hàng đợi: PLAN, khối "SED v2", mục Runbook
 
 # ==== Retrieval (W6) ====
 docker compose up -d
@@ -464,7 +473,7 @@ Không làm bây giờ. Ghi ở đây để khỏi mở rộng scope giữa ch�
   - Soundscape tổng hợp từ clip DataSEC train (kiểu DESED/Scaper) — cơ chế transfer khác
     pretraining.
   - Train chung nhãn mạnh DataSED + nhãn yếu DataSEC.
-  - Loss focal/asymmetric thay `pos_weight` để chống bão hoà.
+  - Loss focal/asymmetric thay `pos_weight` cho lớp hiếm bị bỏ sót.
   - Frequency dynamic convolution.
 - `logmel_v2` với ref cố định, để giữ mức áp suất âm tuyệt đối.
 - Multi-task: SED + subclass cùng lúc thay vì hai giai đoạn.
@@ -493,6 +502,16 @@ Cuối mỗi block công việc:
 
 ## 10. Nhật ký tiến độ
 
+### 2026-09-26 (chiều) — Chuẩn bị chốt SED v2 trong lúc chờ; đo bác bỏ "posterior bão hoà"
+
+Run 1 v2 xong: CV dev 0.1900 ± 0.0523 (sơ bộ). Mọi run v2 thoát 127 — tái hiện được: cuDNN
+giải phóng GRU nhiều lớp có dropout lúc tắt (Windows), sau khi artifact đã ghi → follower CV
+kiểm `manifest.complete`. Công cụ (`550daec`): luật ADR-0030 §5 thành code *trước* khi có đủ
+seed, ablation, sai số biên, macro, `build_ensemble --splits`, timeout DB (bộ test 13.5 phút
+→ 57 s). **Tự bác bỏ:** `boundary_errors_20260926.md` cho thấy v1 không bão hoà (frame âm
+trung vị 0.008) và onset lệch đối xứng — sửa ADR-0030 §1.2, PAPER_NOTES (S17), protocol §12,
+SYSTEM, STATUS. Runbook sau hàng đợi ở PLAN. Code train không đổi giữa các run (đã kiểm diff).
+
 ### 2026-09-26 (trưa) — SED v2: chẩn đoán, văn liệu, code, hàng đợi; tài liệu cho paper
 
 Người dùng: event-F1 quá thấp, "tự nghĩ cách, tìm hiểu văn liệu".
@@ -502,8 +521,8 @@ Người dùng: event-F1 quá thấp, "tự nghĩ cách, tìm hiểu văn liệu
   chiếu code 26/09.
 - Trần người 0.58.
 - v1 chỉ onset 0.23, chỉ offset 0.50, segment F1 0.65.
-- Posterior bão hoà do `pos_weight` tới 50: cSEBB tự viết theo bài Ebbers 2024 thất bại
-  trên v1, CV 0.058 vs 0.154 (`9dc78dc`).
+- cSEBB tự viết theo bài Ebbers 2024 thất bại trên v1, CV 0.058 vs 0.154 (`9dc78dc`). Giả
+  thuyết "posterior bão hoà" để giải thích việc này sau đó bị đo bác bỏ (xem 26/09 chiều).
 
 **SED v2** (`8b1df60`, ADR-0030 `ead5a2f`):
 - Pool /8, BiGRU sau encoder, 30 epoch cosine, lr encoder 3e-4 (pilot dev), random crop,

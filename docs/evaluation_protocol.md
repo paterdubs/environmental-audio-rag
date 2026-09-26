@@ -466,5 +466,5 @@ Bảng gốc (22/09) liệt kê 8 mục chưa có; **cả 8 đã làm** (cập n
 | 7 | Caption LLM chỉ tất định theo **chuỗi request** trên server mới khởi động — bộ nhớ đệm prompt của llama.cpp đổi phép tính số thực | Tái lập = sinh lại cả file theo đúng thứ tự; không vá lẻ từng caption (ADR-0023 §7) |
 | 8 | Event-F1 headline là **micro**, trong khi Q2 đòi macro (§3.2) | Ghi "micro" ở mọi chỗ trích; báo thêm macro (PLAN nợ #20) |
 | 9 | Kiến trúc v1 có **trần** event-F1 0.63 do pool thời gian /64; nhãn có trần người 0.58 (8 cặp) (§3.3b) | Số v1 phải đọc cạnh trần; cải thiện kiến trúc ở ADR-0030 |
-| 10 | Posterior v1 **bão hoà** (`pos_weight` tới 50): θ tối ưu 0.95, onset trễ; cSEBB mất tác dụng | Mới là quan sát trên trace + CV cSEBB; cần artifact phân bố xác suất (PAPER_NOTES §6 #1) |
+| 10 | Biên v1 **tản rộng, đối xứng** (onset trung vị +0.00 s, IQR −0.39…+0.51 s; chỉ 30% trong ±0.2 s). Giả thuyết "posterior bão hoà làm onset trễ" ở bản đầu ADR-0030 **đã bị đo bác bỏ** (frame âm trung vị p 0.008) | [boundary_errors_20260926.md](measurements/boundary_errors_20260926.md); cSEBB thất bại vì lý do chưa đo (ADR-0030 §1.2) |
 | 11 | Chưa có baseline công bố trên DataSED | Không so trực tiếp được với văn liệu; chỉ định cỡ bằng DCASE 2016 T3 (khác dataset, khác collar) |

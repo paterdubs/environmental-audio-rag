@@ -20,20 +20,35 @@ caption e2e và RAG (khoảng 45% recording được trích dẫn đúng theo gr
 | Segment-based F1 (1 s) của hệ thống hiện tại | **0.654** |
 | Phân rã 886 event dev | 112 khớp · **417 chồng đúng lớp nhưng lệch biên** · 357 bỏ sót |
 
-Đọc: model **nhận ra** âm thanh khá tốt (segment F1 0.65), nhưng **đặt onset sai** và bỏ sót
-40% event. Có ba nguyên nhân đo được:
+Đọc: model **nhận ra** âm thanh khá tốt (segment F1 0.65), nhưng **đặt biên sai** và bỏ sót
+40% event. Nguyên nhân 1 và 3 đo được. Nguyên nhân 2 là giả thuyết ở bản đầu và **đã bị số đo
+bác bỏ** cùng ngày; phần sửa lại nằm ngay trong mục 2.
 
 1. **Độ phân giải thời gian.** `PannsCNN14Encoder` pool thời gian ở cả 6 khối (/64 → 0.64 s
    ở 100 fps). CNN14 gốc **không** pool ở khối 6 (/32). Code gốc
    `audioset_tagging_cnn/pytorch/models.py`, đối chiếu 26/09, dùng `pool_size=(2, 2)` cho
    khối 1–5 và `(1, 1)` cho khối 6, kèm dropout 0.2 sau mỗi khối; encoder của repo không có
    dropout này. Chỉ riêng việc pool thêm đã chặn event-F1 ở 0.63 ngay cả khi model hoàn hảo.
-2. **Posterior bão hoà.** `pos_weight` tới 50 đẩy xác suất lên cao ngay cả ngoài event. Ví dụ
-   S-0021, lớp `vehicle_pass_by`: điểm dao động 0.5–1.0 suốt recording, kể cả đoạn 56–89 s
-   không có event đó. Vì thế CV chọn θ = 0.95, và onset rơi vào chỗ điểm *chạm* 0.95 thay vì
-   chỗ điểm bắt đầu tăng. Hậu xử lý không cứu được: cSEBB (Ebbers và cộng sự 2024, §2) trên
-   posterior v1 chỉ đạt CV **0.058 ± 0.022**, so với 0.154 ± 0.021 của ADR-0024
-   (`sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md`).
+2. **~~Posterior bão hoà làm onset trễ~~ → biên tản rộng, đối xứng.**
+   - *Giả thuyết bản đầu (26/09 sáng):* `pos_weight` tới 50 đẩy xác suất lên cao ngay cả ngoài
+     event, nên θ tối ưu là 0.95 và onset bị trễ. Căn cứ duy nhất là một trace (S-0021,
+     `vehicle_pass_by` 0.5–1.0 suốt recording).
+   - *Đo lại trên toàn dev, cùng ngày*
+     ([boundary_errors_20260926.md](../measurements/boundary_errors_20260926.md)), với v1
+     ensemble C:
+     - Frame âm có trung vị p = 0.008; chỉ 2.3% ≥ 0.5 và 0.3% ≥ 0.95 (macro theo lớp). Lớp tệ
+       nhất là `vehicle_idling` / `vehicle_pass_by`, với 6–7% frame âm ≥ 0.5. Trace S-0021 là
+       ca riêng của nhóm lớp xe, không phải hiện tượng chung.
+     - Sai số onset có dấu: trung vị **+0.00 s**, tứ phân vị [−0.39, +0.51] s; trễ > 0.2 s
+       36.5%, sớm < −0.2 s 33.3%.
+   - → **Không bão hoà, không trễ có hệ thống.** Biên lệch **đối xứng và tản rộng** (IQR
+     khoảng 0.9 s), phù hợp với khối quyết định 0.64 s cộng làm mượt.
+   - cSEBB (Ebbers và cộng sự 2024, §2) trên posterior v1 vẫn chỉ đạt CV **0.058 ± 0.022**, so
+     với 0.154 ± 0.021 của ADR-0024
+     (`sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md`). Lý do thật **chưa đo**.
+     Giả thuyết: điểm dao động bên trong event làm cSEBB cắt vụn, trong khi cSEBB không có
+     `d_min` / `g_max` như hậu xử lý v1.
+   - Trần `pos_weight` 10 trong v2 dựa trên A4 (dev), không dựa trên giả thuyết đã bác bỏ.
 3. **Công thức train tối giản.** 8 epoch, lr 1e-3 cố định cho cả encoder đã pretrain, cửa sổ
    cố định (mỗi epoch thấy đúng các crop cũ), không augmentation.
 
@@ -80,7 +95,7 @@ không đổi (test `tests/test_sed_v2.py`).
 | lr encoder | = lr head | pilot §2 | Encoder đã pretrain |
 | Cửa sổ train | cố định | random crop mỗi epoch | Augmentation thời gian |
 | Augmentation | không | mixup p 0.5 (α 0.2, nhãn mềm) + FilterAugment p 0.5 (±6 dB) | Văn liệu §2 |
-| Trần `pos_weight` | 50 | 10 | Nguyên nhân 2; A4 trên dev: trần 10 tốt nhất (ADR-0028) |
+| Trần `pos_weight` | 50 | 10 | A4 trên dev: trần 10 tốt nhất (ADR-0028). Lý do "bão hoà" ở bản đầu đã bị bác bỏ (Context §1.2) |
 | Chọn checkpoint | frame macro-F1 @0.5 | frame macro-AP dev | Không phụ thuộc ngưỡng |
 
 ### 2. Pilot lr encoder (dev, trước mọi run v2 chính thức)
@@ -171,6 +186,20 @@ một lần. Số cũ vẫn giữ và báo song song. Việc phục vụ (ADR-00
   một họ model và checkpoint ngoài (MIT), cần 16 kHz waveform và cần ADR riêng. Cùng luật chọn
   §5.
 
+### 8. Vận hành (ghi để người phản biện kiểm được)
+
+- **Revision code của các run v2.** Hàng đợi bắt đầu trên `e808df4`. Các commit xen giữa
+  (`439414a` tài liệu; `550daec` công cụ phân tích và `store.connect`) **không chạm code train**
+  (`ml/training`, `ml/models`, `ml/datasets`, `scripts/train_sed.py`). Kiểm bằng
+  `git diff e808df4 <rev> -- <các đường dẫn đó>` rỗng.
+- **Mã thoát 127 không phải lỗi train.** Trên máy Windows này, GRU nhiều lớp có dropout, chạy chế
+  độ train trên CUDA, làm tiến trình thoát với 127 lúc tắt (tái hiện được với
+  `nn.GRU(num_layers=2, dropout=0.2)`; chế độ eval thì thoát 0). Lỗi xảy ra **sau khi** mọi
+  artifact đã ghi. Tự động hoá phải kiểm `manifest.complete`, không tin mã thoát (TRAINING_OPS_PLAN).
+- **Luật §5 thành code** (`scripts/select_sed_v2.py`, commit `550daec`) lúc mới biết CV của 1/3
+  seed v2 (seed 20260922: θ global p25 0.1900 ± 0.0523). Luật không đổi so với bản ghi ở trên.
+- **Việc cần làm theo thứ tự sau khi hàng đợi xong:** PLAN, khối "SED v2", mục "Runbook".
+
 ## Consequences
 
 - Sửa đúng nguyên nhân đo được thay vì dò siêu tham số.
@@ -184,7 +213,7 @@ một lần. Số cũ vẫn giữ và báo song song. Việc phục vụ (ADR-00
 
 | Phương án | Vì sao không chọn (bây giờ) |
 |---|---|
-| Chỉ đổi hậu xử lý (cSEBB, hysteresis) | Đã đo: posterior v1 bão hoà, cSEBB CV 0.058 < 0.154 |
+| Chỉ đổi hậu xử lý (cSEBB, hysteresis) | Đã đo: cSEBB CV 0.058 < 0.154 trên v1 (lý do chưa đo; không phải bão hoà — `boundary_errors_20260926.md`) |
 | Đổi metric chính sang segment-based | Là đổi thước đo sau khi thấy số; segment F1 chỉ báo làm bối cảnh |
 | Per-class θ / luật gộp theo lớp | A2: 21 tham số overfit dev 142 recording |
 | Nhảy thẳng sang transformer (Track 2) | Đổi họ model, checkpoint ngoài, pipeline 16 kHz; làm sau khi v2 cho biết phần còn lại |
