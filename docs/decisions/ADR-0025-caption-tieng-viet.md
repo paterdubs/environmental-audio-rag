@@ -1,6 +1,7 @@
 # ADR-0025 — Caption tiếng Việt: template tất định + lexicon riêng giữ dấu
 
-**Status:** Accepted (25/09) — cách làm đã chốt; **cụm từ tiếng Việt chờ người dùng duyệt**
+**Status:** Accepted (25/09) — cách làm đã chốt; cụm từ tiếng Việt **duyệt tạm 26/09**, xem lại khi
+hoàn thiện giao diện (ADR-0031 §8)
 **Date:** 2026-09-25
 
 ## Context

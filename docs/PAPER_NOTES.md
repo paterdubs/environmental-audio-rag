@@ -21,7 +21,7 @@
 | # | Hướng | Đóng góp chính | Dẫn chứng đã có | Còn thiếu |
 |---|---|---|---|---|
 | **A** | Chẩn đoán + cải thiện SED trên ghi âm môi trường thật (DataSED). Tiêu đề nháp: *"Where does event-level SED fail on real-world environmental recordings? Resolution ceilings, annotator agreement and boundary dispersion"* | Phân rã event-F1 thành trần độ phân giải / trần người / lỗi biên / bỏ sót; sửa từng nguyên nhân (SED v2) với ablation bỏ-từng-phần; baseline đầu tiên *đã báo cáo* trên DataSED (⚠️ phải xác minh chưa ai báo) | §2.2, §3 | Kết quả v2 (đang chạy), systematic search baseline DataSED |
-| **B** | Transfer isolated → continuous **có kiểm soát leakage xuyên dataset** (C3, RQ1) | Đo được trùng nguồn DataSEC–DataSED; RQ1 âm tính có thống kê nhiều seed; ý tưởng thay pretraining bằng soundscape tổng hợp (§5) | §2.1 | RQ1-v2 (ADR-0030 §7), thí nghiệm soundscape tổng hợp |
+| **B** | Transfer isolated → continuous **có kiểm soát leakage xuyên dataset** (C3, RQ1) | Đo được trùng nguồn DataSEC–DataSED; RQ1 âm tính có thống kê nhiều seed; ý tưởng thay pretraining bằng soundscape tổng hợp (§5) | §2.1 | RQ1-v2 (S9, ADR-0031 §2), thí nghiệm soundscape tổng hợp |
 | **C** | Caption có căn cứ kiểm được bằng máy + RAG trên timeline (C1, C2, C4) | Đánh đổi ràng buộc ↔ độ phủ và cách giải; metric hallucination không cần caption người viết; truy vấn có vị từ thời gian | §2.3, §2.4 | Chạy lại trên SED v2 (ADR-0030 §6); systematic search AAC hallucination (RELATED_WORK §4) |
 
 Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". Hướng B và C dùng lại cùng hạ tầng.
@@ -135,11 +135,11 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 
 | Ý tưởng | Vì sao đáng làm | Rủi ro / ràng buộc | Liên quan |
 |---|---|---|---|
-| **Transformer pretrain theo frame** (PretrainedSED: `frame_mn10`, ATST-F/BEATs strong) | 40 ms; DESED PSDS1 0.476–0.492 sau fine-tune (theo bài gốc) | Họ model mới, checkpoint ngoài (MIT), cần 16 kHz / 128 mel; ADR riêng | ADR-0030 §7 (Track 2, chờ duyệt) |
-| **Soundscape tổng hợp từ clip DataSEC** (kiểu DESED/Scaper) | Cơ chế transfer isolated → continuous **khác** pretraining; tạo nhãn mạnh cho lớp hiếm | Chỉ dùng DataSEC **train** và bỏ 130 clip đã loại (leakage); nhãn mạnh nhiễu do khoảng lặng trong clip | RQ1 hướng mới, CLAUDE §8 |
+| **Transformer pretrain theo frame** (PretrainedSED: `frame_mn10`, ATST-F/BEATs strong) | 40 ms; DESED PSDS1 0.476–0.492 sau fine-tune (theo bài gốc) | Họ model mới, checkpoint ngoài (MIT), cần 16 kHz / 128 mel; ADR riêng | **Đã duyệt 26/09** → S10, ADR-0031 §3 (cổng T0 → ADR-0032) |
+| **Soundscape tổng hợp từ clip DataSEC** (kiểu DESED/Scaper) | Cơ chế transfer isolated → continuous **khác** pretraining; tạo nhãn mạnh cho lớp hiếm | Chỉ dùng DataSEC **train** và bỏ 130 clip đã loại (leakage); nhãn mạnh nhiễu do khoảng lặng trong clip | RQ1 hướng mới, CLAUDE §8; ADR-0031 §5: chỉ khi còn ≥ 1 tuần trước mốc 18/10 |
 | Train chung nhãn mạnh (DataSED) + nhãn yếu (DataSEC) | Chuẩn DCASE Task 4 | Ánh xạ 22 → 21 lớp (bỏ `wind_turbine`) | RQ1 hướng mới |
-| RQ1-v2: B vs C dưới recipe v2 | RQ1 âm tính có phải do kiến trúc thô? | +3 run (~4.5 h) | ADR-0030 §7 |
-| Loss hiệu chuẩn tốt hơn (focal / asymmetric) thay `pos_weight` | Lớp hiếm bị bỏ sót (trung vị p trên frame dương: `horn` 0.23, `thunder…` 0.008 — S17); *không* còn động cơ "bão hoà" (đã bác bỏ) | Thêm một núm; chọn trên dev | §4 mục 5 |
+| RQ1-v2: B vs C dưới recipe v2 | RQ1 âm tính có phải do kiến trúc thô? Thêm 3 model khởi tạo khác cho ensemble 6 model | +3 run (4–6 h; run B-v2 mất 78–117 phút) | **Đã duyệt 26/09** → S9, ADR-0031 §2 (phân tích ghi trước; test chỉ sau vòng chọn cuối) |
+| Loss hiệu chuẩn tốt hơn (focal / asymmetric) thay `pos_weight` | Lớp hiếm bị bỏ sót: tỷ lệ frame dương có p < 0.5 của `horn` / `crows_seagulls_magpies` / `thunder_fireworks_gunshot` là 82 / 72 / 58% ở v1 ensemble C và 75 / 73 / 58% ở v2 seed 20260922 (sơ bộ) — v2 chưa sửa (`boundary_errors_20260926.json`); *không* còn động cơ "bão hoà" (đã bác bỏ) | Thêm một núm; chọn trên dev | S11, ADR-0031 §5 (sau Track 2, nếu còn thời gian) |
 | Frequency dynamic convolution | SOTA DESED dòng CNN | Đổi kiến trúc conv, không dùng lại trọng số CNN14 | RELATED_WORK §2 |
 | Hậu xử lý theo lớp khi có thêm dữ liệu | cSEBB gốc tune theo lớp | A2: overfit dev nhỏ | S4 |
 | Báo segment-based metric song song | So được với DCASE 2016/2017 T3 | Không thay primary (không đổi thước đo sau khi thấy số) | evaluation_protocol §3.1 |
@@ -151,10 +151,12 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | # | Việc | Vì sao |
 |---:|---|---|
 | ~~1~~ | ~~Đo bão hoà posterior có artifact~~ — **xong 26/09**: `boundary_errors_20260926.md`; giả thuyết bị bác bỏ (S17) | — |
-| 2 | **Event-F1 macro** bên cạnh micro cho mọi hệ thống — công cụ xong (`report_event_f1_macro`, `evaluate_run` ghi macro, commit `550daec`); measurement sinh sau hàng đợi | evaluation_protocol Q2 đòi macro; mọi số event-F1 headline đến nay là **micro** (`overall` của sed_eval) — lệch protocol, PLAN nợ #20 |
+| 2 | **Event-F1 macro** bên cạnh micro cho mọi hệ thống — công cụ xong (`report_event_f1_macro`, `evaluate_run` ghi macro, commit `550daec`); measurement sinh sau hàng đợi. **Người dùng chốt 26/09:** macro là con số chính, chọn vẫn bằng micro (ADR-0031 §1) | evaluation_protocol Q2 đòi macro; mọi số event-F1 headline đến nay là **micro** (`overall` của sed_eval) — lệch protocol, PLAN nợ #20 |
 | 3 | Đối chiếu trực tiếp các số văn liệu lấy qua tóm tắt WebFetch (V2 → V3) | Bài học ADR-0015: tóm tắt từng báo sai license |
 | 4 | Systematic search: đã có baseline nào trên DataSED chưa | Để được viết "baseline đầu tiên" |
 | 5 | Kết quả v2 (dev → chọn → test một lần) | ADR-0030 §4–§5 |
+| 6 | Vòng chọn cuối 18/10 với ứng viên ghi trước; test RQ1-v2 chỉ mở **sau** khi lựa chọn cuối commit | ADR-0031 §2, §4: không số test nào có trước lựa chọn cuối hay dẫn hướng Track 2 |
+| 7 | PretrainedSED lên V3 (đọc bảng gốc, code, license checkpoint) trước khi trích hay dùng | ADR-0031 §3, cổng T0 |
 
 ---
 
@@ -181,7 +183,9 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 4. Chưa có baseline công bố trên DataSED (bài dataset không có thí nghiệm — theo tóm tắt, cần
    đối chiếu trực tiếp).
 5. Collar 0.2 s chặt hơn độ chính xác của nhãn (D6).
-6. Metric headline là micro, trong khi Q2 đòi macro (§6 #2).
+6. Metric headline trước 26/09 là micro, trong khi Q2 đòi macro (§6 #2). Từ 26/09 báo macro
+   trước, nhưng thước **chọn** hệ thống vẫn là micro (ADR-0031 §1) — paper phải nói rõ hai thước
+   này khác nhau và báo thứ hạng theo macro dev để người đọc tự kiểm.
 7. License checkpoint AudioSet không ghi (ADR-0015); dữ liệu CC-BY-NC-SA → model công bố phải
    cùng license.
 8. Nhiều số văn liệu hiện ở mức V2 (lấy qua tóm tắt) — chưa được trích.
@@ -201,3 +205,4 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 | 26/09 | Mã thoát 127 của mọi run v2: cuDNN khi giải phóng GRU nhiều lớp có dropout (chế độ train) lúc tắt, trên Windows; artifact đã ghi xong. Follower CV kiểm `manifest.complete` | ADR-0030 §8, TRAINING_OPS_PLAN |
 | 26/09 | Đo phân bố xác suất + sai số biên → bác bỏ "bão hoà" (S17) | `boundary_errors_20260926.md` (`550daec`) |
 | 26/09 | Luật chọn §5 thành code + công cụ ablation, macro, `build_ensemble --splits` | `550daec` |
+| 26/09 | Người dùng duyệt lộ trình: macro là con số chính, chọn bằng micro; RQ1-v2 (S9); Track 2 qua cổng T0 (S10); vòng chọn cuối có ứng viên ghi trước, mốc đóng băng 18/10; S8 một lần sau mốc. Kiểm checkpoint DataSEC khớp encoder v2 (74 tensor) | ADR-0031 |

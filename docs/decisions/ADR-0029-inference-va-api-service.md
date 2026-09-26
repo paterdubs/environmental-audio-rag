@@ -1,7 +1,9 @@
 # ADR-0029 — W7: inference service, API service và corpus upload
 
-**Status:** Proposed — agent tự quyết trong chế độ tự động (26/09), **chờ người dùng duyệt**;
-mọi lựa chọn dưới đây đổi được mà không đụng số liệu nghiên cứu đã khoá
+**Status:** Accepted — người dùng duyệt 26/09 (chiều). Agent tự quyết trong chế độ tự động (26/09);
+mọi lựa chọn dưới đây đổi được mà không đụng số liệu nghiên cứu đã khoá. Hệ thống phục vụ (§1) đổi
+một lần sang hệ thống SED cuối ở S8, sau mốc đóng băng 18/10 (ADR-0031 §6); 7.4 (image inference)
+làm trong 19/10–02/11.
 **Date:** 2026-09-26
 
 ## Context

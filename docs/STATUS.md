@@ -1,6 +1,6 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-26 — chẩn đoán trần SED + SED v2 đang chạy (ADR-0030); tài liệu cho paper ([PAPER_NOTES.md](PAPER_NOTES.md))
+**Cập nhật:** 2026-09-26 — chẩn đoán trần SED + SED v2 đang chạy (ADR-0030); tài liệu cho paper ([PAPER_NOTES.md](PAPER_NOTES.md)); lộ trình tới hạn nộp đã duyệt ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md), mốc đóng băng model 18/10)
 **Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 572 pass, 3 skip (test cần PostgreSQL khi Docker tắt), ruff sạch (Windows, `e808df4`); CI Linux chạy lại khi push
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
@@ -11,17 +11,17 @@
 
 ## 0. Tóm tắt
 
-- **W1–W5 xong.** W6 có kết quả RQ3 (ADR-0027 chờ duyệt). W7 chạy được đầu-cuối (ADR-0029
-  chờ duyệt).
-- **Giai đoạn cải thiện SED (26/09, ADR-0030, Proposed).** Chẩn đoán trên dev: trần event-F1
+- **W1–W5 xong.** W6 có kết quả RQ3 (ADR-0027, duyệt 26/09). W7 chạy được đầu-cuối (ADR-0029,
+  duyệt 26/09).
+- **Giai đoạn cải thiện SED (26/09, ADR-0030, duyệt 26/09).** Chẩn đoán trên dev: trần event-F1
   của kiến trúc v1 là 0.63 (pool thời gian /64); trần người 0.58; v1 chỉ onset 0.23, chỉ
   offset 0.50, segment F1 0.65 → lỗi nằm ở biên. Biên lệch **đối xứng, tản rộng** — giả thuyết
   "posterior bão hoà" bị đo bác bỏ ([boundary_errors_20260926.md](measurements/boundary_errors_20260926.md)).
   cSEBB thất bại cả trên v1 (CV 0.058 vs 0.154) lẫn v2 seed 1 (0.095 vs 0.190). SED v2 (pool /8,
   BiGRU 2×256, 30 epoch, augmentation, trần `pos_weight` 10) **đang train**: 1/6 run xong —
   seed 20260922 CV dev 0.1900 ± 0.0523 (sơ bộ; v1 ensemble C 0.1538 ± 0.0214).
-- **Event-F1 headline là micro** (lệch Q2, evaluation_protocol §3.2) — báo thêm macro (PLAN
-  nợ #20).
+- **Event-F1 headline trước 26/09 là micro** (lệch Q2, evaluation_protocol §3.2). Từ 26/09 con
+  số chính là **macro**, micro kèm; chọn hệ thống vẫn bằng micro (ADR-0031 §1, PLAN nợ #20).
 - **Mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ dự đoán (`7ada7d7`, `3208dbb`).
 - **RQ1 âm tính (không đổi sau khi tính lại):** pretraining thêm trên DataSEC **không**
   cải thiện SED so với chỉ AudioSet (5 run/nhánh, không metric nào p < 0.05).
@@ -62,11 +62,11 @@
 | 4.6 `confusable_with` / 4.7 A4 | ✅ | taxonomy.md §8.1, ADR-0028 |
 | Chẩn đoán trần SED (độ phân giải, người, onset/offset) | ✅ dev + ground truth | [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md) |
 | Hậu xử lý cSEBB (Ebbers 2024) | ✅ cài + CV dev; **âm tính** trên v1 (0.0582 vs 0.1538) | [sebb_cv_…_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) |
-| SED v2 (ADR-0030) | ◐ code + pilot xong; 6 run đang train (từ `e808df4`, tree sạch) | ADR-0030, [PAPER_NOTES §9](PAPER_NOTES.md) |
+| SED v2 (ADR-0030) | ◐ code + pilot xong; 6 run đang train (từ `e808df4`, tree sạch); RQ1-v2 và Track 2 duyệt 26/09 (ADR-0031) | ADR-0030, ADR-0031, [PAPER_NOTES §9](PAPER_NOTES.md) |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
-| Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ chờ duyệt | [caption_vi_template_*.md](measurements/), ADR-0025 |
+| Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ duyệt tạm 26/09 | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ dev+test nạp vào PostgreSQL + pgvector, BGE-M3, benchmark RQ3 (test nDCG@10: structured 0.523, hybrid 0.481, vector 0.418; filter exactness 1.000); câu trả lời ràng buộc evidence: unsupported-claim 0.000 | ADR-0027, [retrieval_benchmark_test_20260925.md](measurements/retrieval_benchmark_test_20260925.md) |
 | API / inference / frontend (W7) | ◐ 7.1–7.4 chạy thật; inference chưa đóng image | ADR-0029, [inference_parity_20260925.md](measurements/inference_parity_20260925.md) |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
@@ -172,9 +172,12 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 1. ~~W4: 4.6, 4.7, bootstrap CI cho số trung bình nhiều run~~ — xong 26/09.
 2. ~~W5: kiểm caption lớp gộp theo taxonomy.md §7~~ — xong 25/09 (ADR-0023 §5).
 3. ~~W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark~~ — có kết quả
-   (ADR-0027 chờ duyệt).
-4. W7: 7.4 inference image, 7.5–7.7.
+   (ADR-0027, duyệt 26/09).
+4. W7: 7.4 inference image, 7.5–7.7 — làm 19/10–02/11, sau S8 (ADR-0031 §7).
 5. ~~Cân nhắc chọn lại `g_max` percentile trên dev (A5)~~ — xong 25/09 (ADR-0024).
-6. **SED v2 (ADR-0030):** CV hậu xử lý + ablation trên dev → commit lựa chọn → test một lần
-   → nếu v2 được chọn thì chạy lại W5 e2e / W6 trên event v2.
-7. Event-F1 macro cho mọi hệ thống đã báo (PLAN nợ #20).
+6. **SED v2 (ADR-0030):** CV hậu xử lý + ablation trên dev → commit lựa chọn → test một lần.
+   Chạy lại W5 e2e / W6 (S8) **một lần sau mốc 18/10**, trên hệ thống thắng vòng chọn cuối.
+7. Event-F1 macro cho mọi hệ thống đã báo (PLAN nợ #20) — v1 xong (`event_f1_macro_20260926.md`),
+   v2 sinh sau hàng đợi.
+8. **Lộ trình ADR-0031:** RQ1-v2 (S9), Track 2 PretrainedSED (S10), lớp hiếm (S11), vòng chọn cuối
+   18/10 (S13); sau mốc: bộ lọc từ câu hỏi (L2), viết báo cáo (L3).

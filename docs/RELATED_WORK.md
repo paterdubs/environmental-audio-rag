@@ -186,7 +186,9 @@ Interspeech 2024, tr. 562–566. DOI `10.21437/Interspeech.2024-2075`.** — **V
   `ATST-F_strong_1`, `fpasst_strong_1`, `ASIT_strong_1`, `M2D_strong_1`, `frame_mn06`
   (1.62M tham số), `frame_mn10` (3.83M), đều 447 lớp. Frontend `frame_mn`: 16 kHz, n_fft 512,
   win 400, hop 160, 128 mel.
-- Dùng ở: ADR-0030 §7 (Track 2, chờ duyệt).
+- Dùng ở: ADR-0030 §7; ADR-0031 §3 (Track 2, **duyệt 26/09**). Cổng T0 buộc nâng nguồn này lên V3
+  (đọc bảng gốc, code, license từng checkpoint) trước run đầy đủ đầu tiên. Repo MIT không có nghĩa
+  checkpoint dựng từ model của nhóm khác cũng MIT.
 
 **(3) Kong Q., Cao Y., Iqbal T., Wang Y., Wang W., Plumbley M. D. (2020). *PANNs: Large-Scale
 Pretrained Audio Neural Networks for Audio Pattern Recognition.* IEEE/ACM TASLP (2020);

@@ -16,12 +16,15 @@
 | W3 | 06–12/10 | SED ba nhánh + post-processing | ✅ làm sớm |
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ✅ |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
-| W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 chờ duyệt; Alembic hoãn) |
-| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.3 xong, 7.4 một phần (ADR-0029 chờ duyệt) |
-| W8 | 10–16/11 | Buffer: viết báo cáo, vá lỗ hổng | ○ |
-| SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ◐ đang train |
+| W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 duyệt 26/09; Alembic hoãn) |
+| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.3 xong, 7.4 một phần (ADR-0029 duyệt 26/09); phần còn lại làm 19/10–02/11, sau S8 |
+| W8 | 10–16/11 | Buffer, chỉ dùng khi được gia hạn (viết báo cáo dời lên 19/10) | ○ |
+| SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ◐ đang train; S9, S10 duyệt 26/09 |
+| Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ○ |
+| Viết báo cáo | 19/10–09/11 | Luận văn + slide (ADR-0031 §7) | ○ |
 
-**Nếu không dùng buffer, W7 là tuần cuối.** Mọi thứ phải xong trước 09/11.
+**Nếu không dùng buffer, W7 là tuần cuối.** Mọi thứ phải xong trước 09/11. Từ 26/09 lịch đi theo
+khối "Lộ trình tới hạn nộp" bên dưới: **mốc đóng băng model 18/10**.
 
 ---
 
@@ -164,7 +167,7 @@ này là trễ toàn bộ. E1/E3 (transfer) và E7/E8 (RAG) nằm ngoài đườ
 
 ---
 
-# SED v2 · thêm 26/09 · Cải thiện model ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md), Proposed)
+# SED v2 · thêm 26/09 · Cải thiện model ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md), duyệt 26/09)
 
 Người dùng (26/09): event-F1 0.06–0.09 quá thấp. Đề tài tập trung vào model, nghiên cứu và tối
 ưu, hướng tới paper → mọi kỹ thuật, nguồn và kết quả ghi vào [PAPER_NOTES.md](PAPER_NOTES.md)
@@ -182,9 +185,12 @@ và [RELATED_WORK.md](RELATED_WORK.md).
 | S5 | Chọn hậu xử lý (θ global × p, cSEBB) bằng CV dev cho từng run; ensemble 3 seed; bảng ablation dev | ○ |
 | S6 | Commit lựa chọn hệ thống (ADR-0030 §5) → `dump_predictions --split test` → `evaluate_run` một lần | ○ |
 | S7 | Phân bố xác suất + sai số biên có artifact (v1 vs v2) + event-F1 macro | ◐ công cụ + v1/v2 seed 1 xong (`550daec`, `boundary_errors_20260926.md` — bác bỏ "bão hoà"); macro sinh sau hàng đợi |
-| S8 | Nếu v2 được chọn: chạy lại W5 e2e, W6 RQ3 trên event v2; đổi hệ thống phục vụ | ○ |
-| S9 | Tuỳ chọn, chờ duyệt: RQ1-v2 (nhánh C × 3 seed) | ○ |
-| S10 | Tuỳ chọn, chờ duyệt: Track 2 PretrainedSED (ADR riêng) | ○ |
+| S8 | Chạy lại W5 e2e, W6 RQ3 trên event của hệ thống thắng vòng chọn cuối; đổi hệ thống phục vụ + parity 7.1. **Một lần, sau mốc 18/10** (ADR-0031 §6); không cần nếu ensemble C v1 thắng | ○ sau 18/10 |
+| S9 | RQ1-v2: v2 khởi tạo DataSEC × 3 seed {20260922, 2, 3}; thiết kế và phân tích ghi trước (ADR-0031 §2). Train ngay sau S6; test chỉ sau khi vòng chọn cuối commit. Kèm tuỳ chọn tên file cho `report_rq1_multiseed`, `report_multirun_bootstrap` | ○ duyệt 26/09 |
+| S10 | Track 2 PretrainedSED: T0 cổng khả thi (nguồn V3, license checkpoint, VRAM, 1 epoch dev hết đường ống) → ADR-0032 → `frame_mn10` × 3 seed; BEATs/ATST-F nếu còn thời gian (ADR-0031 §3) | ○ duyệt 26/09 |
+| S11 | Lớp hiếm: loss focal hoặc asymmetric thay `pos_weight` trên họ model đang dẫn; ứng viên ghi trước run (ADR-0031 §5) | ○ sau Track 2, nếu còn thời gian |
+| S12 | Seed thêm (2, 3) cho ablation có \|Δ\| trong 0.5–1.5 lần ngưỡng nhiễu (ADR-0031 §5) | ○ sau bảng ablation |
+| S13 | Vòng chọn cuối tại mốc 18/10: CV dev micro, commit trước test, test một lần mọi ứng viên mới và 6 run RQ1-v2 (ADR-0031 §4) | ○ 18/10 |
 
 ### Nghiệm thu SED v2
 
@@ -225,11 +231,58 @@ git add docs/measurements/sed_v2_* docs/measurements/boundary_errors_* && git co
 .venv/Scripts/python.exe -m scripts.report_test_ledger
 .venv/Scripts/python.exe -m scripts.report_event_f1_macro                               # nợ #20
 
-# 5. PAPER_NOTES §2/§9, ADR-0030 (kết quả), STATUS, CLAUDE; nếu v2 thắng → S8
+# 5. PAPER_NOTES §2/§9, ADR-0030 (kết quả), STATUS, CLAUDE. KHÔNG chạy S8 lúc này (ADR-0031 §6)
+
+# 6. S9 — RQ1-v2 (ADR-0031 §2), ngay sau bước 4. Code train giữ nguyên tới khi 3 run xong
+#    (kiểm git diff như ADR-0030 §8); code Track 2 chỉ vào master sau đó.
+.venv/Scripts/python.exe -m scripts.train_sed --encoder panns --datasec-checkpoint ml/runs/classifier_datasec_20260923T121808Z/checkpoints/best.pt --recipe v2 --seed <s>   # s = 20260922, 2, 3; KHÔNG --evaluate-test
+.venv/Scripts/python.exe -m scripts.select_postproc_cv ml/runs/<c-v2> --modes global --workers 6   # từng run
+.venv/Scripts/python.exe -m scripts.select_sebb_cv ml/runs/<c-v2> --workers 6
+.venv/Scripts/python.exe -m scripts.build_ensemble --splits dev --label c-v2 <3 run C-v2>          # ứng viên (d), rồi CV như bước 1
+.venv/Scripts/python.exe -m scripts.build_ensemble --splits dev --label bc-v2 <3 B-v2> <3 C-v2>    # ứng viên (e), rồi CV như bước 1
+#    Test của 6 run RQ1-v2 (dump + evaluate_run --tag cv + report_rq1_multiseed/multirun_bootstrap)
+#    chỉ chạy SAU khi vòng chọn cuối (S13) đã commit.
 ```
 
 Lưu ý: nếu ứng viên thắng dùng họ **cSEBB**, `evaluate_run` và phục vụ chưa hỗ trợ cSEBB →
 phải cài trước bước 4 (hiện cSEBB thua ở v1 và v2 seed 1).
+
+---
+
+# Lộ trình tới hạn nộp · duyệt 26/09 ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md))
+
+Người dùng (26/09): "làm theo những gì bạn cho là nên làm, nên duyệt, ghi vào kế hoạch"; mục tiêu
+**ưu tiên cải thiện kết quả**. Hôm nay mới là W1 theo lịch gốc, nhưng W1–W6 đã xong sớm; phần dư
+dùng cho cải thiện model, rồi viết báo cáo trước hạn.
+
+| Thời gian | Việc |
+|---|---|
+| 26–27/09 | Chốt v2 theo Runbook (S5–S7); S9 train qua đêm |
+| 28/09–18/10 | Track 2 (S10), lớp hiếm (S11), seed thêm cho ablation (S12) |
+| **18/10** | **Mốc đóng băng model**: vòng chọn cuối (S13), commit, rồi test một lần |
+| 19/10–02/11 | S8 một lần; đóng W7 (7.4–7.7); bộ lọc từ câu hỏi (L2); viết báo cáo (L3) |
+| 03–09/11 | Hoàn thiện báo cáo và slide (L4) |
+| 10–16/11 | Buffer W8, chỉ khi được gia hạn |
+
+**Luật của giai đoạn này:**
+
+- Con số chính là event-F1 **macro**, micro báo kèm; mọi vòng chọn hệ thống vẫn dùng **micro**
+  (ADR-0031 §1).
+- Sau mốc 18/10 không thêm thí nghiệm model. S8 chạy đúng một lần trên hệ thống thắng.
+- Code train đóng băng trong lúc S9 chạy (RQ1-v2 cần cùng code với B-v2). Code Track 2 phát
+  triển trong worktree, chỉ vào master sau khi S9 xong.
+- Ứng viên nào cũng ghi vào ADR-0031 §4 hoặc ADR-0032 **trước** khi có CV dev của nó.
+
+### Tasks ngoài khối SED v2
+
+| # | Task | Khi nào | Trạng thái |
+|---:|---|---|---|
+| L1 | Push nhánh phụ `wip/sed-v2` (sao lưu 43 commit + chạy CI); master trên remote chỉ nhận tuần đã xong | 26/09 | ○ |
+| L2 | Chuyển câu hỏi tự nhiên thành bộ lọc: Qwen + grammar như ADR-0023, ADR riêng; đo độ chính xác parse trên query set v2, rồi RQ3 với bộ lọc parse được. Số RQ3 sẽ **thấp đi** vì hiện dùng bộ lọc có sẵn (evaluation_protocol §12 #6) | 19/10–02/11 | ○ |
+| L3 | Viết báo cáo luận văn (khung: SYSTEM.md; số: measurements; dẫn chứng: PAPER_NOTES) | 19/10–09/11 | ○ |
+| L4 | Slide bảo vệ | 03–09/11 | ○ |
+| L5 | Xem lại cụm từ tiếng Việt (ADR-0025, đang duyệt tạm) | Khi hoàn thiện giao diện | ○ |
+| L6 | Ưu tiên thấp nhất: mở rộng mẫu người cho metric C2 (chỉ nếu paper theo hướng C); xác thực cho demo | Nếu còn thời gian | ○ |
 
 ---
 
@@ -296,8 +349,8 @@ phải cài trước bước 4 (hiện cSEBB thua ở v1 và v2 seed 1).
 | 7.1 | `services/inference`: preprocessing + SED + postproc + caption — ✅ 26/09 (parity 142 recording, ADR-0029 §7) | 6 h |
 | 7.2 | `services/api`: upload, persistence, query (**không import torch**) — ✅ 26/09 | 6 h |
 | 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09 | 8 h |
-| 7.4 | Docker Compose đầu-cuối — ◐ 26/09: db + api (kèm UI) trong compose, inference trên host (ADR-0029 §8); `scripts.serve_demo` | 4 h |
-| 7.5 | **E9: chạy test một lần, config đóng băng** | 4 h |
+| 7.4 | Docker Compose đầu-cuối — ◐ 26/09: db + api (kèm UI) trong compose, inference trên host (ADR-0029 §8); `scripts.serve_demo`. Còn image inference: làm 19/10–02/11 | 4 h |
+| 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | 4 h |
 | 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | 3 h |
 | 7.7 | Đóng băng artifact, hướng dẫn tái lập | 3 h |
 
@@ -312,8 +365,8 @@ phải cài trước bước 4 (hiện cSEBB thua ở v1 và v2 seed 1).
 
 # W8 · 10–16/11 · Buffer
 
-Chỉ dùng nếu được gia hạn. Ưu tiên: viết báo cáo → vá lỗ hổng nghiệm thu →
-hoàn thiện `RELATED_WORK.md` → làm đẹp giao diện.
+Chỉ dùng nếu được gia hạn. Việc viết báo cáo **đã dời lên 19/10–09/11** (ADR-0031 §7), không chờ
+W8. Nếu dùng W8, ưu tiên: vá lỗ hổng nghiệm thu → hoàn thiện `RELATED_WORK.md` → làm đẹp giao diện.
 
 ---
 
@@ -365,11 +418,11 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~17~~ | ~~Relevance lấy từ chính bộ lọc đang đánh giá (`source: temporal_filter`)~~ — **đóng 25/09**: `ml/retrieval/relevance.py` tính từ annotation ground truth, cùng ngữ nghĩa với SQL (test chạy SQL trên SQLite); contract đổi sang `source: ground_truth` | — | ✅ |
 | ~~18~~ | ~~Query set chỉ có câu temporal, 25/100 câu có relevant trên test~~ — **đóng 26/09** (6.7, ADR-0027): query set v2 4 nhóm 21/27/30/22, EN + VI, chọn theo ground truth **train**; 97/100 câu có relevant trên test, 96/100 dev (`retrieval_queryset_v2_20260925.md`) | — | ✅ |
 | ~~19~~ | ~~Test tích hợp PostgreSQL treo ~130 s khi Docker tắt~~ — **đóng 26/09** (`550daec`): `connect_timeout` 5 s (`DB_CONNECT_TIMEOUT`); bộ test 13.5 phút → 57 s | — | ✅ |
-| 20 | **Event-F1 headline là micro** (`overall` của sed_eval), trong khi evaluation_protocol Q2 đòi macro — lệch protocol phát hiện 26/09. Báo thêm macro từ per-class đã có (không chạy lại test); ghi "micro" ở mọi chỗ trích. **26/09:** công cụ xong (`550daec`: `evaluate_run` ghi macro, `scripts.report_event_f1_macro`); còn sinh measurement sau hàng đợi | **CAO** (paper) | Trước khi viết Chương 4 |
-| 21 | Số văn liệu mức V2 (lấy qua tóm tắt WebFetch: PretrainedSED, DCASE 2016 T3, bài DataSED) phải đọc trực tiếp trước khi trích (RELATED_WORK §2.1) | TRUNG BÌNH | Trước khi viết Chương 2 |
+| 20 | **Event-F1 headline là micro** (`overall` của sed_eval), trong khi evaluation_protocol Q2 đòi macro — lệch protocol phát hiện 26/09. Báo thêm macro từ per-class đã có (không chạy lại test); ghi "micro" ở mọi chỗ trích. **26/09:** công cụ xong (`550daec`: `evaluate_run` ghi macro, `scripts.report_event_f1_macro`); người dùng chốt macro là con số chính, chọn vẫn bằng micro (ADR-0031 §1); còn sinh measurement cho v2 sau hàng đợi | **CAO** (paper) | Trước khi viết Chương 4 |
+| 21 | Số văn liệu mức V2 (lấy qua tóm tắt WebFetch: PretrainedSED, DCASE 2016 T3, bài DataSED) phải đọc trực tiếp trước khi trích (RELATED_WORK §2.1). PretrainedSED lên V3 ở cổng T0 (ADR-0031 §3) | TRUNG BÌNH | T0 (PretrainedSED); trước Chương 2 (còn lại) |
 | ~~22~~ | ~~Bão hoà posterior mới là quan sát~~ — **đóng 26/09**: `boundary_errors_20260926.md` đo trên dev → **bác bỏ** (không bão hoà; biên lệch đối xứng) | — | ✅ |
 | 23 | Mã thoát 127 của mọi run v2 (cuDNN giải phóng GRU nhiều lớp có dropout lúc tắt, Windows) — tự động hoá phải kiểm `manifest.complete` (TRAINING_OPS_PLAN §7 #6) | THẤP | Ghi nhận |
-| 24 | `metrics.json` `best_validation` luôn là max frame macro-F1, kể cả khi checkpoint chọn theo macro-AP (v2) — tên gây hiểu nhầm; sửa **sau** hàng đợi (không đổi code train giữa chừng) | THẤP | Sau hàng đợi SED v2 |
+| 24 | `metrics.json` `best_validation` luôn là max frame macro-F1, kể cả khi checkpoint chọn theo macro-AP (v2) — tên gây hiểu nhầm; sửa **sau khi S9 xong** (không đổi code train giữa chừng; RQ1-v2 cần cùng code với B-v2) | THẤP | Sau S9 |
 
 ---
 

@@ -131,6 +131,10 @@ Dùng `sed_eval`, **không tự viết lại**.
 > 2. Báo **thêm macro**, tính lại từ per-class đã có. Đây chỉ là tổng hợp lại số đã có, không
 >    chạy lại test.
 > 3. Metric chọn hệ thống v2 giữ micro để so được với ADR-0024 (ADR-0030 §5).
+> 4. **Người dùng chốt 26/09 ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md) §1):**
+>    báo cáo và paper dẫn **macro trước, micro kèm**, per-class ở phụ lục. Mọi vòng chọn hệ thống
+>    vẫn dùng micro: luật đã ghi trước, các vòng so được với nhau, và micro ít nhiễu hơn trên dev
+>    137 recording.
 >
 > PLAN nợ #20.
 
@@ -458,13 +462,13 @@ Bảng gốc (22/09) liệt kê 8 mục chưa có; **cả 8 đã làm** (cập n
 | # | Giới hạn | Hệ quả |
 |---:|---|---|
 | 1 | Train SED không tất định cùng seed | Mọi số SED báo mean ± sd nhiều run; run đơn không kết luận được |
-| 2 | Metric C2 dựa trên lexicon; đối chiếu với người đọc mù trên mẫu 60 caption test, một người — **phiếu chờ người dùng điền** (`scripts.caption_mention_worksheet`) | Chưa có sai số trích đo được; hallucination là cận trên (7/8 mention "bịa" trên test là lỗi lexicon) |
+| 2 | Metric C2 dựa trên lexicon; đối chiếu với người đọc mù trên mẫu 60 caption test, một người: trích mention precision 0.896, recall 0.936 (ADR-0022 §6) | Mẫu nhỏ, một người đọc; hallucination là cận trên (7/8 mention "bịa" trên test là lỗi lexicon). Mở rộng mẫu chỉ khi paper theo hướng C (ADR-0031 §8) |
 | 3 | Omission tính theo **lớp**, không theo event | Lặp lại cùng lớp mà chỉ nhắc một lần không bị tính bỏ sót |
 | 4 | Thứ tự là tỷ lệ cặp đúng (cặp bằng nhau tính đúng), không phải Kendall τ | Báo kèm bản chỉ tính caption ≥2 mention |
 | 5 | N-gram so với caption template, không có caption người viết | Chỉ tham khảo, không kết luận (§8.3) |
-| 6 | Retrieval chưa có số | RQ3 chưa trả lời (W6) |
+| 6 | RQ3 dùng bộ lọc có sẵn trong query set: `structured_only` và `hybrid` giả định câu hỏi luôn được parse đúng (ADR-0027 §8) | Số RQ3 là cận trên của hệ thống có bộ parse thật; bộ chuyển câu hỏi tự nhiên thành bộ lọc làm sau mốc đóng băng (ADR-0031 §8) |
 | 7 | Caption LLM chỉ tất định theo **chuỗi request** trên server mới khởi động — bộ nhớ đệm prompt của llama.cpp đổi phép tính số thực | Tái lập = sinh lại cả file theo đúng thứ tự; không vá lẻ từng caption (ADR-0023 §7) |
-| 8 | Event-F1 headline là **micro**, trong khi Q2 đòi macro (§3.2) | Ghi "micro" ở mọi chỗ trích; báo thêm macro (PLAN nợ #20) |
+| 8 | Event-F1 headline trước 26/09 là **micro**, trong khi Q2 đòi macro (§3.2) | Số cũ ghi "micro" ở mọi chỗ trích, macro tra ở `event_f1_macro_20260926.md`; từ 26/09 báo macro trước, chọn vẫn bằng micro (ADR-0031 §1) |
 | 9 | Kiến trúc v1 có **trần** event-F1 0.63 do pool thời gian /64; nhãn có trần người 0.58 (8 cặp) (§3.3b) | Số v1 phải đọc cạnh trần; cải thiện kiến trúc ở ADR-0030 |
 | 10 | Biên v1 **tản rộng, đối xứng** (onset trung vị +0.00 s, IQR −0.39…+0.51 s; chỉ 30% trong ±0.2 s). Giả thuyết "posterior bão hoà làm onset trễ" ở bản đầu ADR-0030 **đã bị đo bác bỏ** (frame âm trung vị p 0.008) | [boundary_errors_20260926.md](measurements/boundary_errors_20260926.md); cSEBB thất bại vì lý do chưa đo (ADR-0030 §1.2) |
 | 11 | Chưa có baseline công bố trên DataSED | Không so trực tiếp được với văn liệu; chỉ định cỡ bằng DCASE 2016 T3 (khác dataset, khác collar) |

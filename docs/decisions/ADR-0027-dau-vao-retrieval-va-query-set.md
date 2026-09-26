@@ -1,7 +1,8 @@
 # ADR-0027 — W6: đầu vào retrieval, document và query set v2
 
-**Status:** Proposed — agent tự quyết trong chế độ tự động (26/09 đêm), **chờ người dùng duyệt**;
-mọi lựa chọn dưới đây đảo được mà không phải sinh lại dữ liệu khác
+**Status:** Accepted — người dùng duyệt 26/09 (chiều). Agent tự quyết trong chế độ tự động (26/09
+đêm); mọi lựa chọn dưới đây đảo được mà không phải sinh lại dữ liệu khác. Nguồn event (§2) đổi một
+lần sang hệ thống SED cuối ở S8, sau mốc đóng băng 18/10 (ADR-0031 §6).
 **Date:** 2026-09-26
 
 ## Context

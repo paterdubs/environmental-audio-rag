@@ -1,7 +1,9 @@
 # ADR-0030 — Cải thiện SED (v2): chẩn đoán, văn liệu, kế hoạch và luật chọn ghi trước
 
-**Status:** Proposed — agent đề xuất 26/09 theo yêu cầu người dùng ("SED quá thấp, tự nghĩ cách,
-tìm hiểu văn liệu"); **chờ duyệt**. Luật chọn §5 ghi **trước** khi có bất kỳ số v2 nào.
+**Status:** Accepted — người dùng duyệt 26/09 (chiều), kèm hai mục tuỳ chọn ở §7; lộ trình tiếp
+theo ở [ADR-0031](ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md). Agent đề xuất 26/09 theo
+yêu cầu người dùng ("SED quá thấp, tự nghĩ cách, tìm hiểu văn liệu"). Luật chọn §5 ghi **trước**
+khi có bất kỳ số v2 nào.
 **Date:** 2026-09-26
 
 ## Context
@@ -170,21 +172,27 @@ dùng để chọn (PLAN nợ #20). Lựa chọn được **commit trước** kh
 giá test đúng một lần, và báo **tất cả**, kể cả khi v2 thua v1. Không chọn lại sau khi xem
 test (như ADR-0024 §3).
 
+Người dùng chốt 26/09 (ADR-0031 §1): khi **báo cáo**, macro đứng trước, micro kèm; khi **chọn**,
+vẫn dùng micro như trên. Luật ở đây không đổi.
+
 ### 6. Hạ nguồn
 
 Nếu v2 được chọn: caption e2e (W5) và RQ3 (W6) được chạy lại trên event v2, dev trước, test
 một lần. Số cũ vẫn giữ và báo song song. Việc phục vụ (ADR-0029) đổi sang v2 qua
 `ml/models/sed_factory.py`: kiến trúc đọc từ manifest, v1 khi manifest thiếu khoá.
 
+**Thời điểm đổi (26/09, ADR-0031 §6):** việc hạ nguồn này chạy **một lần**, sau mốc đóng băng
+model 18/10, trên hệ thống thắng vòng chọn cuối; không chạy ngay khi v2 thắng vòng §5.
+
 ### 7. Không đổi và tuỳ chọn
 
 - **RQ1 giữ nguyên** (ADR-0021): mọi số RQ1 là kiến trúc v1.
-- **Tuỳ chọn, chờ duyệt: RQ1-v2.** Chạy v2 đủ với khởi tạo DataSEC (nhánh C) × 3 seed, so với
-  B theo đúng giao thức ADR-0021 (Welch, bootstrap ghép cặp), để trả lời câu hỏi "RQ1 âm tính
-  có phải do kiến trúc thô không".
-- **Track 2, chờ duyệt:** `PretrainedSED` (`frame_mn10`, sau đó ATST-F/BEATs strong). Nó thêm
-  một họ model và checkpoint ngoài (MIT), cần 16 kHz waveform và cần ADR riêng. Cùng luật chọn
-  §5.
+- **RQ1-v2 — đã duyệt 26/09** (thiết kế và phân tích ghi trước ở ADR-0031 §2). Chạy v2 đủ với
+  khởi tạo DataSEC (nhánh C) × 3 seed, so với B theo đúng giao thức ADR-0021 (Welch, bootstrap
+  ghép cặp), để trả lời câu hỏi "RQ1 âm tính có phải do kiến trúc thô không".
+- **Track 2 — đã duyệt 26/09** (cổng khả thi T0 ở ADR-0031 §3; kiến trúc ở ADR-0032):
+  `PretrainedSED` (`frame_mn10`, sau đó ATST-F/BEATs strong). Nó thêm một họ model và checkpoint
+  ngoài (MIT), cần 16 kHz waveform và cần ADR riêng. Vào vòng chọn cuối ADR-0031 §4.
 
 ### 8. Vận hành (ghi để người phản biện kiểm được)
 

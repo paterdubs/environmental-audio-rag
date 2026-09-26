@@ -57,7 +57,7 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 ## 3. Trạng thái hiện tại
 
 **Cập nhật 26/09/2026 — giai đoạn cải thiện SED ([ADR-0030](docs/decisions/ADR-0030-cai-thien-sed-v2.md),
-Proposed).** Người dùng: đề tài tập trung vào model, nghiên cứu và tối ưu, hướng tới paper →
+duyệt 26/09).** Người dùng: đề tài tập trung vào model, nghiên cứu và tối ưu, hướng tới paper →
 mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_NOTES.md) và
 [RELATED_WORK.md](docs/RELATED_WORK.md).
 
@@ -78,6 +78,16 @@ mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_N
   commit (`scripts.dump_predictions`).
 - **Lệch protocol phát hiện 26/09:** event-F1 headline từ trước tới nay là **micro**, trong khi
   Q2 đòi macro → báo thêm macro (PLAN nợ #20).
+- **Người dùng duyệt lộ trình tới hạn nộp 26/09 chiều** ([ADR-0031](docs/decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)),
+  mục tiêu **ưu tiên cải thiện kết quả**:
+  - Con số chính là event-F1 **macro**, micro kèm; mọi vòng chọn vẫn bằng **micro**.
+  - S9 RQ1-v2 (v2 khởi tạo DataSEC × 3 seed) train ngay sau khi chốt v2; test chỉ sau vòng
+    chọn cuối.
+  - S10 Track 2 PretrainedSED: cổng khả thi T0 → ADR-0032 → `frame_mn10` × 3 seed.
+  - **Mốc đóng băng model 18/10**: vòng chọn cuối ghi trước (ADR-0031 §4); S8 (W5/W6 + phục vụ)
+    chạy **một lần** sau mốc; viết báo cáo 19/10–09/11.
+  - ADR-0027, ADR-0029, ADR-0030 → Accepted; cụm từ VI (ADR-0025) duyệt tạm.
+  - Push nhánh phụ `wip/sed-v2`: quyền push bị chặn trong phiên agent → **người dùng tự chạy**.
 
 **Cập nhật:** 25/09/2026 — **mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ
 dự đoán (`7ada7d7`: cửa sổ cuối căn theo cuối audio bị nối thay vì đặt theo offset →
@@ -224,7 +234,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | **W5 5.7–5.8 constrained + đánh giá** | ADR-0023; test: constrained 0 vi phạm bối cảnh/G3/gọi tên quá mức, omission e2e 0.28 vs unconstrained 0.06 |
 | **Tối ưu SED (4.9, ADR-0024)** | `sed_optimization_20260925.md`; chọn trên dev → ensemble C + θ global 0.95 + `g_max` p25; test event-F1 0.0941, PSDS-1 0.3489 |
 | **W5 rà phản biện (26/09)** | CI + hiệu số cặp RQ2; caption constrained hết bị cắt (ngân sách token theo ký tự, ADR-0023 §7); nhánh cover omission 0 (ADR-0026); SED tối ưu: omission constrained 0.284 → 0.036; lexicon vs người 0.896/0.936 (ADR-0022 §6) |
-| **W5 caption tiếng Việt (ADR-0025)** | Template VI + lexicon VI riêng (khớp giữ dấu); timeline thật dev/test oracle+e2e: 0 bịa/sót/G3/gọi tên quá mức; hash EN `6f5634bb…` không đổi — cụm từ VI chờ duyệt |
+| **W5 caption tiếng Việt (ADR-0025)** | Template VI + lexicon VI riêng (khớp giữ dấu); timeline thật dev/test oracle+e2e: 0 bịa/sót/G3/gọi tên quá mức; hash EN `6f5634bb…` không đổi — cụm từ VI duyệt tạm 26/09 (xem lại khi hoàn thiện giao diện) |
 | **W5 n-gram (tham khảo)** | ADR-0023 §6: BLEU-4/CIDEr so với template — chỉ đo độ giống văn phong, không kết luận |
 | **W5 lớp gộp (taxonomy §7)** | ADR-0023 §5; test e2e: template/constrained 0 caption gọi subclass như sự thật, unconstrained 11/18 (`sirens_and_alarms`) và 22/39 (`thunder_fireworks_gunshot`) |
 | **W5 wiring verify xong bộ ba A/B/C (J2/J4/J5/J6)** | 426 recording thật, 0 lệch bất biến G1-G3, `document_builder` 0 lỗi. Sửa 1 bug thật `_temporal_order` |
@@ -234,27 +244,33 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 
 | Hạng mục | Còn thiếu |
 |---|---|
-| W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, **chờ duyệt**); tuỳ chọn: độ nhạy với SED tối ưu, document caption LLM, Alembic |
-| W7 (ứng dụng) | ADR-0029 chờ duyệt; 7.4 inference image, 7.5–7.7 |
-| **SED v2** (ADR-0030) | Hàng đợi 6 run đang chạy; S5–S8 (PLAN, khối "SED v2") |
+| W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
+| W7 (ứng dụng) | ADR-0029 duyệt 26/09; 7.4 image inference, 7.5–7.7 — làm 19/10–02/11, sau S8 |
+| **SED v2** (ADR-0030) | Hàng đợi 6 run đang chạy (run 1, 2 xong); S5–S7 theo Runbook (PLAN, khối "SED v2"); S8 sau mốc 18/10 |
+| **Cải thiện cuối** (ADR-0031) | S9 RQ1-v2 sau S6; S10 Track 2; S11–S12 nếu còn thời gian; S13 vòng chọn cuối 18/10 |
 | Tài liệu | `RELATED_WORK.md`: nhiều nguồn mới ở mức V2 (tóm tắt) — đọc trực tiếp trước khi trích (nợ #21) |
 
 ### Chưa có ○
 
-Measurement event-F1 macro (công cụ có ở `550daec`, sinh sau hàng đợi) · Track 2 PretrainedSED (chờ duyệt).
+Measurement event-F1 macro cho v2 (sinh sau hàng đợi) · ADR-0032 (Track 2, sau T0) · bộ chuyển
+câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo cáo luận văn (L3).
 
 ### Việc tiếp theo — theo thứ tự
 
-1. **SED v2**:
-   1. Khi hàng đợi xong: đọc CV hậu xử lý dev của từng run; ensemble 3 seed; bảng ablation
-      dev.
-   2. Commit lựa chọn theo ADR-0030 §5.
-   3. `dump_predictions --split test`, rồi `evaluate_run` một lần.
-   4. Cập nhật PAPER_NOTES.
-   - **Trong lúc hàng đợi chạy, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree
-     ngoài repo, rồi fast-forward.
-2. `scripts.report_event_f1_macro` cho mọi hệ thống (nợ #20) — chạy sau hàng đợi, commit ngay.
-3. Nếu v2 được chọn: chạy lại W5 e2e / W6 RQ3 trên event v2, đổi hệ thống phục vụ.
+Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 §7).
+
+1. **Chốt SED v2** khi hàng đợi xong: PLAN, khối "SED v2", Runbook bước 1–5.
+   - CV, ablation, `select_sed_v2`, rồi **commit**.
+   - Sau đó mới `dump_predictions --split test` và `evaluate_run` một lần; tiếp theo là
+     `report_event_f1_macro` (nợ #20) và PAPER_NOTES.
+   - **Không chạy S8 lúc này.**
+2. **S9 RQ1-v2** (Runbook bước 6): train 3 run C-v2 qua đêm. Code train giữ nguyên tới khi xong.
+3. **S10 Track 2:** T0 (nguồn V3, license checkpoint, VRAM, 1 epoch dev hết đường ống) → ADR-0032,
+   ghi ứng viên → `frame_mn10` × 3 seed. Code viết trong worktree, vào master sau S9.
+4. S11, S12 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test.
+5. Sau 18/10: S8 một lần → W7 7.4–7.7 → L2 → viết báo cáo.
+- **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
+  repo, rồi fast-forward giữa hai run.
 
 ---
 
@@ -293,6 +309,9 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 | Caption song ngữ | EN benchmark, VI giao diện, embed cả hai | 0004 | So được với văn liệu AAC, truy vấn được tiếng Việt |
 | Caption tiếng Việt | Template tất định + lexicon VI **file riêng**, khớp giữ dấu | [0025](docs/decisions/ADR-0025-caption-tieng-viet.md) | Không đổi hash EN đóng băng của RQ2; bỏ dấu làm G3 khớp nhầm ("tới phạm vi" → "tội phạm") |
 | Hệ thống SED tối ưu | Ensemble C + θ global 0.95 + `g_max` p25, **chọn trên dev** | [0024](docs/decisions/ADR-0024-toi-uu-sed-ensemble-va-chon-hau-xu-ly-tren-dev.md) | Luật chọn ghi trước, commit trước test; ADR-0003 giữ cho số RQ1 |
+| SED v2 | Recipe v2 (pool /8, BiGRU 2×256, 30 epoch, augmentation) + luật chọn ghi trước | [0030](docs/decisions/ADR-0030-cai-thien-sed-v2.md) | Sửa nguyên nhân đo được (pool /64, train ngắn) thay vì dò siêu tham số |
+| Con số chính event-F1 | **Macro** trước, micro kèm; mọi vòng chọn hệ thống vẫn bằng **micro** | [0031](docs/decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md) | Q2 đòi macro; luật chọn đã ghi trước bằng micro; micro ít nhiễu hơn trên dev 137 recording |
+| Mốc đóng băng model | **18/10/2026**; vòng chọn cuối ghi trước; S8 (W5/W6 + phục vụ) chạy **một lần** sau mốc | 0031 | Không chạy lại W5/W6 nhiều lần (mỗi lần thêm một lượt mở test); dành 19/10–09/11 cho viết báo cáo |
 | Không có risk score | Bỏ hoàn toàn | 0001 | Không có cơ sở gán mức nguy hiểm cho nguồn âm |
 
 ---
@@ -469,11 +488,13 @@ Không làm bây giờ. Ghi ở đây để khỏi mở rộng scope giữa ch�
 
 - Hop nhỏ hơn 320 cho class impulsive (`Gunshot` chỉ ~5 frame ở 50 fps).
 - **Từ giai đoạn SED v2 (chi tiết, rủi ro, nguồn ở [PAPER_NOTES §5](docs/PAPER_NOTES.md)):**
-  - Transformer pretrain theo frame (PretrainedSED, 40 ms) — Track 2, chờ duyệt.
+  - ~~Transformer pretrain theo frame (PretrainedSED, 40 ms)~~ — **đã duyệt 26/09**, thành S10
+    (ADR-0031 §3).
   - Soundscape tổng hợp từ clip DataSEC train (kiểu DESED/Scaper) — cơ chế transfer khác
-    pretraining.
+    pretraining. ADR-0031 §5: chỉ làm khi còn ≥ 1 tuần trước mốc 18/10.
   - Train chung nhãn mạnh DataSED + nhãn yếu DataSEC.
-  - Loss focal/asymmetric thay `pos_weight` cho lớp hiếm bị bỏ sót.
+  - ~~Loss focal/asymmetric thay `pos_weight` cho lớp hiếm bị bỏ sót~~ — thành S11 (ADR-0031 §5),
+    nếu còn thời gian.
   - Frequency dynamic convolution.
 - `logmel_v2` với ref cố định, để giữ mức áp suất âm tuyệt đối.
 - Multi-task: SED + subclass cùng lúc thay vì hai giai đoạn.
@@ -501,6 +522,27 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-26 (chiều, tiếp) — Người dùng duyệt lộ trình tới hạn nộp (ADR-0031)
+
+Người dùng nhờ gợi ý cho mọi quyết định đang chờ, với mục tiêu ưu tiên cải thiện kết quả, rồi duyệt
+toàn bộ gợi ý. ADR-0031 ghi:
+- con số chính là macro, chọn vẫn bằng micro;
+- RQ1-v2 (S9) và Track 2 PretrainedSED với cổng khả thi T0 (S10);
+- vòng chọn cuối có ứng viên ghi trước, tại **mốc đóng băng 18/10**;
+- S8 chạy một lần sau mốc; viết báo cáo 19/10–09/11 (trước đó chỉ nằm ở W8).
+
+ADR-0027, 0029, 0030 → Accepted; cụm từ VI duyệt tạm.
+
+Kiểm trước khi ghi:
+- Checkpoint DataSEC khớp encoder v2 đủ 74 tensor (dựng trên thiết bị meta, đọc checkpoint bằng
+  mmap, vì máy chỉ còn 2.6 GB RAM lúc đang train) → S9 không cần sửa code.
+- Hai script báo cáo RQ1 đọc cứng `postproc.json`/`evaluation.json` → cần tuỳ chọn tên file cho
+  RQ1-v2 (ghi vào S9).
+
+Siết thêm: test của RQ1-v2 chỉ mở sau vòng chọn cuối, để số test không dẫn hướng Track 2. Sửa hai
+giới hạn lỗi thời trong protocol §12: mẫu người C2 đã có số; RQ3 đã có số nhưng dùng bộ lọc có sẵn.
+Push nhánh phụ `wip/sed-v2` bị chặn quyền trong phiên agent → người dùng tự chạy.
 
 ### 2026-09-26 (chiều) — Chuẩn bị chốt SED v2 trong lúc chờ; đo bác bỏ "posterior bão hoà"
 
