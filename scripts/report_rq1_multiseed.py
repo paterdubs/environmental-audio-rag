@@ -11,23 +11,30 @@ from pathlib import Path
 import numpy as np
 from scipy.stats import ttest_ind
 
+from scripts.report_event_f1_macro import macro_from_per_class
+
 ROOT = Path(__file__).resolve().parents[1]
-METRICS = ("event_f1", "psds_1", "psds_2")
-LABELS = {"event_f1": "event-based F1", "psds_1": "PSDS-1", "psds_2": "PSDS-2"}
+# Macro first: it is the headline number from 26/09 (ADR-0031 §1); `event_f1` stays the micro
+# key so older reports keep their meaning.
+METRICS = ("event_f1_macro", "event_f1", "psds_1", "psds_2")
+LABELS = {"event_f1_macro": "event-based F1 (macro)", "event_f1": "event-based F1 (micro)",
+          "psds_1": "PSDS-1", "psds_2": "PSDS-2"}
 
 
-def load_metrics(run_dir: Path) -> dict[str, float]:
+def load_metrics(run_dir: Path, evaluation_name: str = "evaluation.json") -> dict[str, float]:
+    """Metrics of one run's test evaluation; `evaluation_name` picks e.g. `evaluation_cv.json`."""
     manifest_path = run_dir / "manifest.json"
-    evaluation_path = run_dir / "evaluation.json"
+    evaluation_path = run_dir / evaluation_name
     if not manifest_path.exists():
         raise SystemExit(f"{run_dir} thiếu manifest.json")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if not manifest.get("complete"):
         raise SystemExit(f"{run_dir} chưa hoàn tất (complete=false)")
     if not evaluation_path.exists():
-        raise SystemExit(f"{run_dir} thiếu evaluation.json — chạy evaluate_run trước")
+        raise SystemExit(f"{run_dir} thiếu {evaluation_name} — chạy evaluate_run trước")
     evaluation = json.loads(evaluation_path.read_text(encoding="utf-8"))
     return {
+        "event_f1_macro": macro_from_per_class(evaluation["event_based_f1_per_class"]),
         "event_f1": float(evaluation["event_based_f1"]["f_measure"]),
         "psds_1": float(evaluation["psds"]["psds_1"]),
         "psds_2": float(evaluation["psds"]["psds_2"]),
@@ -80,6 +87,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--branch-b", nargs="+", type=Path, required=True)
     parser.add_argument("--branch-c", nargs="+", type=Path, required=True)
     parser.add_argument("--branch-a", nargs="+", type=Path)
+    parser.add_argument("--evaluation-name", default="evaluation.json",
+                        help="file đánh giá test trong mỗi run, vd evaluation_cv.json (RQ1-v2)")
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
 
@@ -90,12 +99,13 @@ def _fmt(value: float) -> str:
 
 def main() -> None:
     args = parse_args()
+    name = args.evaluation_name
     loaded = {
-        "B": [load_metrics(path) for path in args.branch_b],
-        "C": [load_metrics(path) for path in args.branch_c],
+        "B": [load_metrics(path, name) for path in args.branch_b],
+        "C": [load_metrics(path, name) for path in args.branch_c],
     }
     if args.branch_a:
-        loaded["A"] = [load_metrics(path) for path in args.branch_a]
+        loaded["A"] = [load_metrics(path, name) for path in args.branch_a]
     paths = {"B": args.branch_b, "C": args.branch_c}
     if args.branch_a:
         paths["A"] = args.branch_a
@@ -110,6 +120,7 @@ def main() -> None:
         for branch, branch_paths in paths.items()
     }
     result = {
+        "evaluation_name": name,
         "branches": summaries,
         "delta_mean_c_minus_b": deltas,
         "welch": tests,
@@ -122,6 +133,7 @@ def main() -> None:
         "# RQ1 — tổng hợp đa seed",
         "",
         "> Welch t-test hai phía, `equal_var=False`; không tính lại metric.",
+        f"> Đọc `{name}` của từng run. Macro = trung bình F theo lớp (bỏ NaN), như sed_eval.",
         "> Cỡ mẫu nhỏ (n được ghi rõ), nên diễn giải thận trọng.",
         "",
         "| Metric | Nhánh | Mean ± SD | Min | Max | n |",

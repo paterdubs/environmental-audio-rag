@@ -186,7 +186,7 @@ và [RELATED_WORK.md](RELATED_WORK.md).
 | S6 | Commit lựa chọn hệ thống (ADR-0030 §5) → `dump_predictions --split test` → `evaluate_run` một lần | ○ |
 | S7 | Phân bố xác suất + sai số biên có artifact (v1 vs v2) + event-F1 macro | ◐ công cụ + v1/v2 seed 1 xong (`550daec`, `boundary_errors_20260926.md` — bác bỏ "bão hoà"); macro sinh sau hàng đợi |
 | S8 | Chạy lại W5 e2e, W6 RQ3 trên event của hệ thống thắng vòng chọn cuối; đổi hệ thống phục vụ + parity 7.1. **Một lần, sau mốc 18/10** (ADR-0031 §6); không cần nếu ensemble C v1 thắng | ○ sau 18/10 |
-| S9 | RQ1-v2: v2 khởi tạo DataSEC × 3 seed {20260922, 2, 3}; thiết kế và phân tích ghi trước (ADR-0031 §2). Train ngay sau S6; test chỉ sau khi vòng chọn cuối commit. Kèm tuỳ chọn tên file cho `report_rq1_multiseed`, `report_multirun_bootstrap` | ○ duyệt 26/09 |
+| S9 | RQ1-v2: v2 khởi tạo DataSEC × 3 seed {20260922, 2, 3}; thiết kế và phân tích ghi trước (ADR-0031 §2). Train ngay sau S6; test chỉ sau khi vòng chọn cuối commit. Công cụ: `--evaluation-name`/`--postproc-name` + cột macro cho `report_rq1_multiseed`, `report_multirun_bootstrap` — ✅ 26/09 (kiểm trên 2 run ADR-0024: khớp measurement macro; cặp file lệch bị chặn); script hàng đợi `s9_queue.sh` (scratchpad) | ○ duyệt 26/09 |
 | S10 | Track 2 PretrainedSED: T0 cổng khả thi (nguồn V3, license checkpoint, VRAM, 1 epoch dev hết đường ống) → ADR-0032 → `frame_mn10` × 3 seed; BEATs/ATST-F nếu còn thời gian (ADR-0031 §3) | ○ duyệt 26/09 |
 | S11 | Lớp hiếm: loss focal hoặc asymmetric thay `pos_weight` trên họ model đang dẫn; ứng viên ghi trước run (ADR-0031 §5) | ○ sau Track 2, nếu còn thời gian |
 | S12 | Seed thêm (2, 3) cho ablation có \|Δ\| trong 0.5–1.5 lần ngưỡng nhiễu (ADR-0031 §5) | ○ sau bảng ablation |
@@ -240,8 +240,11 @@ git add docs/measurements/sed_v2_* docs/measurements/boundary_errors_* && git co
 .venv/Scripts/python.exe -m scripts.select_sebb_cv ml/runs/<c-v2> --workers 6
 .venv/Scripts/python.exe -m scripts.build_ensemble --splits dev --label c-v2 <3 run C-v2>          # ứng viên (d), rồi CV như bước 1
 .venv/Scripts/python.exe -m scripts.build_ensemble --splits dev --label bc-v2 <3 B-v2> <3 C-v2>    # ứng viên (e), rồi CV như bước 1
-#    Test của 6 run RQ1-v2 (dump + evaluate_run --tag cv + report_rq1_multiseed/multirun_bootstrap)
-#    chỉ chạy SAU khi vòng chọn cuối (S13) đã commit.
+#    Test của 6 run RQ1-v2 chỉ chạy SAU khi vòng chọn cuối (S13) đã commit:
+.venv/Scripts/python.exe -m scripts.dump_predictions ml/runs/<c-v2> --split test                  # 3 run C-v2
+.venv/Scripts/python.exe -m scripts.evaluate_run ml/runs/<run> --postproc ml/runs/<run>/postproc_cv.json --tag cv   # 6 run, mỗi run một lần
+.venv/Scripts/python.exe -m scripts.report_rq1_multiseed --branch-b <3 B-v2> --branch-c <3 C-v2> --evaluation-name evaluation_cv.json --output docs/measurements/rq1_v2_multiseed_<ngày>.md
+.venv/Scripts/python.exe -m scripts.report_multirun_bootstrap --branch B <3 B-v2> --branch C <3 C-v2> --postproc-name postproc_cv.json --evaluation-name evaluation_cv.json --tag v2
 ```
 
 Lưu ý: nếu ứng viên thắng dùng họ **cSEBB**, `evaluate_run` và phục vụ chưa hỗ trợ cSEBB →
