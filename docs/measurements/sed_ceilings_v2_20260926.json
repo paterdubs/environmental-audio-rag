@@ -1,0 +1,101 @@
+{
+ "git": {
+  "revision": "0a47915c3df8a9acc730d70574817e431b3c7043",
+  "dirty": true
+ },
+ "resolution_ceiling": [
+  {
+   "block_frames": 1,
+   "block_s": 0.01,
+   "event_f1": 1.0,
+   "event_f1_collar_1s": 1.0
+  },
+  {
+   "block_frames": 4,
+   "block_s": 0.04,
+   "event_f1": 1.0,
+   "event_f1_collar_1s": 1.0
+  },
+  {
+   "block_frames": 8,
+   "block_s": 0.08,
+   "event_f1": 1.0,
+   "event_f1_collar_1s": 1.0
+  },
+  {
+   "block_frames": 16,
+   "block_s": 0.16,
+   "event_f1": 1.0,
+   "event_f1_collar_1s": 1.0
+  },
+  {
+   "block_frames": 32,
+   "block_s": 0.32,
+   "event_f1": 1.0,
+   "event_f1_collar_1s": 1.0
+  },
+  {
+   "block_frames": 64,
+   "block_s": 0.64,
+   "event_f1": 0.6293785310734463,
+   "event_f1_collar_1s": 0.9966101694915254
+  },
+  {
+   "block_frames": 128,
+   "block_s": 1.28,
+   "event_f1": 0.30324074074074076,
+   "event_f1_collar_1s": 0.9548611111111112
+  }
+ ],
+ "human_agreement": {
+  "pairs": [
+   [
+    "S-0569",
+    "S-0572"
+   ],
+   [
+    "S-0397",
+    "S-0585"
+   ],
+   [
+    "S-0621",
+    "S-0623"
+   ],
+   [
+    "S-0108",
+    "S-0589"
+   ],
+   [
+    "S-0062",
+    "S-0198"
+   ],
+   [
+    "S-0570",
+    "S-0571"
+   ],
+   [
+    "S-0289",
+    "S-0500"
+   ],
+   [
+    "S-0606",
+    "S-0622"
+   ]
+  ],
+  "event_f1_collar_0.2s": 0.5785123966942148,
+  "event_f1_collar_1s": 0.7603305785123967
+ },
+ "system": {
+  "run": "sed_ensemble_v2_20260926T150934Z",
+  "postproc": "postproc_cv.json",
+  "n_reference": 886,
+  "n_estimate": 510,
+  "n_collar_match": 148,
+  "n_overlap_but_boundary_miss": 377,
+  "n_deleted": 361,
+  "event_f1": 0.21203438395415475,
+  "event_f1_onset_only": 0.27077363896848133,
+  "event_f1_offset_only": 0.49140401146131807,
+  "segment_f1_1s": 0.6868901145523971
+ }
+}

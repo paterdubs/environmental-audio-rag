@@ -1,0 +1,89 @@
+{
+ "full": [
+  {
+   "label": "v2 đủ (seed 1/3)",
+   "run": "sed_polyphonic_20260926T033312Z",
+   "seed": 20260922,
+   "dirty": false,
+   "family": "theta",
+   "config": "global|25",
+   "cv_mean": 0.18998107484193813,
+   "cv_sd": 0.05226061163065289,
+   "best_dev_ap": 0.6875520058171646
+  },
+  {
+   "label": "v2 đủ (seed 2/3)",
+   "run": "sed_polyphonic_20260926T053024Z",
+   "seed": 2,
+   "dirty": false,
+   "family": "theta",
+   "config": "global|25",
+   "cv_mean": 0.20958600932789329,
+   "cv_sd": 0.05100872117646388,
+   "best_dev_ap": 0.6666474472724639
+  },
+  {
+   "label": "v2 đủ (seed 3/3)",
+   "run": "sed_polyphonic_20260926T064832Z",
+   "seed": 3,
+   "dirty": false,
+   "family": "theta",
+   "config": "global|25",
+   "cv_mean": 0.21693327806517557,
+   "cv_sd": 0.04651634114952017,
+   "best_dev_ap": 0.6709685649726507
+  }
+ ],
+ "ablations": [
+  {
+   "label": "không độ phân giải (pool /64)",
+   "run": "sed_polyphonic_20260926T075611Z",
+   "seed": 20260922,
+   "dirty": false,
+   "family": "theta",
+   "config": "global|25",
+   "cv_mean": 0.10602218168505549,
+   "cv_sd": 0.020237949896900066,
+   "best_dev_ap": 0.6672029425315106
+  },
+  {
+   "label": "trần pos_weight 50",
+   "run": "sed_polyphonic_20260926T085233Z",
+   "seed": 20260922,
+   "dirty": false,
+   "family": "theta",
+   "config": "global|25",
+   "cv_mean": 0.17733918364768006,
+   "cv_sd": 0.055187462634577446,
+   "best_dev_ap": 0.6762181843328684
+  },
+  {
+   "label": "không augmentation",
+   "run": "sed_polyphonic_20260926T100315Z",
+   "seed": 20260922,
+   "dirty": false,
+   "family": "theta",
+   "config": "global|25",
+   "cv_mean": 0.19675618376556608,
+   "cv_sd": 0.05087474104424333,
+   "best_dev_ap": 0.644157547889801
+  }
+ ],
+ "references": [
+  {
+   "label": "ensemble C v1",
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "seed": null,
+   "dirty": true,
+   "family": "theta",
+   "config": "global|25",
+   "cv_mean": 0.15376584436821977,
+   "cv_sd": 0.02141345603217251,
+   "best_dev_ap": null
+  }
+ ],
+ "git": {
+  "revision": "0a47915c3df8a9acc730d70574817e431b3c7043",
+  "dirty": true
+ }
+}
