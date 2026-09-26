@@ -46,7 +46,14 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, default=DEFAULT_RUN)
     parser.add_argument("--postproc", default="postproc_cv.json")
+    parser.add_argument("--tag", default=None,
+                        help="thêm vào tên file (sed_ceilings_<tag>_<ngày>) để không ghi đè "
+                             "measurement của hệ thống khác sinh cùng ngày")
     return parser.parse_args()
+
+
+def output_path(tag: str | None, stamp: str) -> Path:
+    return MEASUREMENTS / (f"sed_ceilings_{tag}_{stamp}.md" if tag else f"sed_ceilings_{stamp}.md")
 
 
 def load_tables() -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -218,8 +225,9 @@ def main() -> None:
         "human_agreement": human_agreement(recordings, events, class_ids),
         "system": system_decomposition(args.run, args.postproc, reference, class_ids),
     }
-    stamp = datetime.now(UTC).strftime("%Y%m%d")
-    out = MEASUREMENTS / f"sed_ceilings_{stamp}.md"
+    out = output_path(args.tag, datetime.now(UTC).strftime("%Y%m%d"))
+    if out.exists() and args.run != DEFAULT_RUN and not args.tag:
+        raise SystemExit(f"{out.name} đã có (có thể là của hệ thống khác) — dùng --tag")
     out.with_suffix(".json").write_text(json.dumps(result, indent=1, ensure_ascii=False),
                                         encoding="utf-8")
     out.write_text(render(result), encoding="utf-8")
