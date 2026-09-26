@@ -1,0 +1,46 @@
+{
+ "winner": {
+  "label": "v2 ensemble 3 seed",
+  "run": "sed_ensemble_v2_20260926T150934Z",
+  "models": 3,
+  "family": "theta",
+  "config": "global|25",
+  "mean": 0.21291738279639624,
+  "sd": 0.062158228213132466
+ },
+ "ranking": [
+  {
+   "label": "v2 ensemble 3 seed",
+   "run": "sed_ensemble_v2_20260926T150934Z",
+   "models": 3,
+   "family": "theta",
+   "config": "global|25",
+   "mean": 0.21291738279639624,
+   "sd": 0.062158228213132466
+  },
+  {
+   "label": "v2 run đơn (seed 20260922)",
+   "run": "sed_polyphonic_20260926T033312Z",
+   "models": 1,
+   "family": "theta",
+   "config": "global|25",
+   "mean": 0.18998107484193813,
+   "sd": 0.05226061163065289
+  },
+  {
+   "label": "ensemble C v1",
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "models": 4,
+   "family": "theta",
+   "config": "global|25",
+   "mean": 0.15376584436821977,
+   "sd": 0.02141345603217251
+  }
+ ],
+ "note": "Chênh với `v2 run đơn (seed 20260922)` là +0.0229, **không** lớn hơn sd giữa fold (0.0622) — không được gọi là tốt hơn ứng viên đó.",
+ "git": {
+  "revision": "879596017ea251c4f2f940ba6f23b38d6e58c9f2",
+  "dirty": false
+ },
+ "metric": "event-F1 micro, CV 5 fold dev"
+}
