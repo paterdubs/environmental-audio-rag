@@ -68,6 +68,48 @@ thêm `inference: condition: service_healthy`. Healthcheck của `inference` g�
 (`start_period` 90 s vì nạp 4 checkpoint + BGE-M3 từ volume mount trước khi `/health` trả 200,
 đúng SYSTEM §4.4).
 
+### 6. Kết quả build và kiểm chứng (27/09 đêm)
+
+**Build và khởi động.**
+- `docker compose --profile app build inference api` thành công ở lần đầu, không phải sửa
+  `requirements-inference.txt`. Image `inference` 1.75 GB (torch `2.14.0+cpu`,
+  `cuda.is_available() = False`), `api` 236 MB. Docker Desktop lưu image trên ổ C, không tốn ổ D.
+- `docker compose --profile app up -d --wait`: cả `db`, `inference`, `api` healthy sau 67 s.
+  `/health` của inference trả `ready`, `/api/v1/models/status` báo đúng
+  `sed_ensemble_C_clean_20260925T045631Z`, 4 member, `postproc_cv.json`, `device: cpu`,
+  `taxonomy_consistent: true`.
+
+**Đầu-cuối qua API** (cổng 8088, recording `S-0001` thuộc split **train** — không chạm test):
+- `POST /api/v1/audio/upload` → HTTP 201 sau 37 s (60 s audio, CPU): 5 event, caption EN + VI
+  constrained có evidence từng event.
+- `GET …/timeline`, `…/audio`, trang giao diện `/` → HTTP 200. Upload lại cùng file → trả
+  `duplicate: true`, không phân tích lại.
+- `POST /api/v1/retrieval/query` (`classes_all: [bells]`, tiếng Việt): cả `hybrid` và
+  `structured_only` trả đúng recording, trích dẫn event `bells` 35,1–50,0 s.
+
+**Parity CPU — đo ngay trong container** (`inference_parity_cpu_20260927.md`, 142 recording
+test, chỉ so với output đã đóng băng). Đo trong container chứ không trên host vì torch khác bản
+(host `2.11.0+cu128`); `check_inference_parity` nhận revision qua `GIT_REVISION` vì image không
+có git.
+
+| | CUDA, host (25/09) | CPU, container (27/09) |
+|---|---:|---:|
+| Log-mel từ WAV trùng file `.npy` | 142/142 | 0/142 (lệch tối đa 0.000488) |
+| Xác suất lệch tối đa / trung vị | 0.0118 / 0.00245 | 0.0118 / 0.00334 |
+| Event phục vụ / đóng băng | 409 / 408 | 408 / 408 |
+| Event trùng khít · trong 1 frame · trong collar 0.2 s | 332 · 377 · 405 | 239 · 343 · 403 |
+
+- Log-mel lệch một bậc làm tròn float16 dù numpy/scipy/librosa/soundfile cùng phiên bản → khác
+  biệt nền tảng (Linux trong container, Windows trên host), không sửa bằng ghim phiên bản.
+- Tầng tái tạo batch không thể trùng bit trên CPU (Δlogit 0.058–0.070): logit tham chiếu sinh
+  bằng autocast fp16 trên GPU, còn CPU chạy fp32.
+- Kết luận: demo trong container cho gần như cùng event với hệ thống đã đo (403/408 trong
+  collar). Vẫn không dùng demo để trích số báo cáo.
+
+**Một test phải sửa.** `test_upload_round_trip…` chạy trên chính DB dev và đòi corpus `upload`
+chỉ có phiên bản embedding của test; lần upload thật ở trên thêm một phiên bản BGE-M3 thật. Test
+giờ chỉ kiểm phiên bản của nó có mặt (demo thật cũng sẽ upload).
+
 ## Consequences
 
 ### Tích cực
@@ -79,8 +121,9 @@ thêm `inference: condition: service_healthy`. Healthcheck của `inference` g�
 ### Đánh đổi
 
 - CPU chậm hơn GPU cho `/v1/analyze` — chấp nhận được cho demo, không cho benchmark.
-- Parity CPU chưa đo (chỉ đo trên CUDA ở ADR-0029 §7) — ghi vào Hạn chế nếu demo được dùng để
-  trích số.
+- Parity CPU đã đo (§6): 403/408 event trong collar, không trùng bit với hệ thống đã đo — ghi
+  vào Hạn chế nếu demo được dùng để minh hoạ số.
+- Phân tích một recording 60 s mất khoảng 37 s trên CPU.
 - `docker compose build inference` cần tải torch CPU (~200–700 MB tuỳ bản) mỗi lần build lại từ
   đầu nếu cache lớp bị xoá — chấp nhận được, một lần.
 

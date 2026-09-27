@@ -17,7 +17,7 @@
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ✅ |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 duyệt 26/09; Alembic hoãn) |
-| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.3 xong, 7.4 một phần (ADR-0029 duyệt 26/09); phần còn lại làm 19/10–02/11, sau S8 |
+| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.4 xong (7.4 đóng 27/09, ADR-0033: db + inference + api đều trong Docker); 7.5–7.7 làm 19/10–02/11, sau S8 |
 | W8 | 10–16/11 | Buffer, chỉ dùng khi được gia hạn (viết báo cáo dời lên 19/10) | ○ |
 | SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ✅ chốt 26/09 tối: v2 ensemble 3 seed được chọn, test micro 0.1476 / macro 0.1369 (v1 0.0941 / 0.0917); S9 đang chạy; S10 T0 bước 1–2 xong |
 | Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ○ |
@@ -352,7 +352,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 | 7.1 | `services/inference`: preprocessing + SED + postproc + caption — ✅ 26/09 (parity 142 recording, ADR-0029 §7) | 6 h |
 | 7.2 | `services/api`: upload, persistence, query (**không import torch**) — ✅ 26/09 | 6 h |
 | 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09 | 8 h |
-| 7.4 | Docker Compose đầu-cuối — ◐ 26/09: db + api (kèm UI) trong compose, inference trên host (ADR-0029 §8); `scripts.serve_demo`. Còn image inference: làm 19/10–02/11 | 4 h |
+| 7.4 | Docker Compose đầu-cuối — ✅ 27/09 (ADR-0033 §6): `docker compose --profile app up -d --build` dựng db + inference (CPU) + api (kèm UI), healthy sau 67 s; upload WAV thật qua :8088 ra timeline + caption EN/VI, truy vấn RAG có trích dẫn; parity CPU 403/408 event trong collar ([inference_parity_cpu_20260927.md](measurements/inference_parity_cpu_20260927.md)). `scripts.serve_demo` vẫn dùng được nếu muốn GPU | 4 h |
 | 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | 4 h |
 | 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | 3 h |
 | 7.7 | Đóng băng artifact, hướng dẫn tái lập | 3 h |
@@ -434,7 +434,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 Người dùng (27/09 22:40): tạm dừng "Cải thiện cuối" ở S10/T2a để hoàn thiện demo (W7 7.4); sau đó
 uỷ quyền chạy tự động hoàn toàn qua đêm. Thứ tự ưu tiên **cố định, không đảo**:
 
-### P1 — Hoàn thành W7 7.4 (container hoá inference, ADR-0033) — CHƯA build/test
+### P1 — Hoàn thành W7 7.4 (container hoá inference, ADR-0033) — ✅ XONG 27/09 23:50 (ADR-0033 §6)
 
 Code đã viết xong, **chưa chạy build lần nào** (`b7c97d4`, đã push `wip/sed-v2`). Trạng thái lúc
 dừng: Docker Desktop vừa khởi động xong (`docker info` trả về server 29.3.1), đĩa D **7.9 GB
