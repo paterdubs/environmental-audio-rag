@@ -1,0 +1,21 @@
+# Image của services/inference (ADR-0033, container hoá 27/09) — mọi gói mà chuỗi import của
+# ml.inference cần, kể cả xuyên qua ml.models/ml.postprocessing/ml.evaluation/ml.captioning/
+# ml.retrieval (đối chiếu bằng grep import trực tiếp, không đoán). Cài torch riêng bằng
+# --extra-index-url để lấy bản CPU, không kéo theo CUDA:
+#
+#   pip install -r requirements-inference.txt --extra-index-url https://download.pytorch.org/whl/cpu
+#
+# KHÔNG có sed_eval/psds_eval (requirements-eval.txt) — ml.evaluation.sed_metrics chỉ import
+# chúng lười bên trong hàm, inference không gọi hàm đó. KHÔNG có psycopg/pgvector — inference
+# không chạm SQL (ADR-0029 §4).
+
+numpy>=2,<3
+pandas>=2.2,<3
+PyYAML>=6,<7
+librosa>=0.11,<1
+soundfile>=0.13,<1
+torch>=2.8,<3
+sentence-transformers>=3,<6
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+python-multipart>=0.0.9,<1

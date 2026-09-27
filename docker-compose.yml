@@ -1,11 +1,15 @@
 # PostgreSQL 16 + pgvector cho event store (ADR-0005) — không cài PostgreSQL native trên
 # Windows: pgvector native đòi biên dịch C extension theo đúng bản build Postgres (H3).
 #
-#   docker compose up -d                      # chỉ db (như trước)
-#   docker compose --profile app up -d --build  # db + api (kèm frontend đã build), W7 7.4
+#   docker compose up -d                        # chỉ db (như trước)
+#   docker compose --profile app up -d --build  # db + inference + api (kèm frontend), W7 7.4
 #
-# Inference (torch + GPU + checkpoint) chạy trên host, không đóng image (ADR-0029 §8):
+# Inference chạy trong container từ 27/09 (ADR-0033), CPU only — GPU trong container trên
+# Windows cần WSL2 + nvidia-container-toolkit cấu hình thêm trên host, ngoài phạm vi demo này.
+# Checkpoint/BGE-M3 không đóng vào image (đĩa gần đầy, weight đổi độc lập với code) — mount
+# ml/runs/ và artifacts/hf/ chỉ đọc. Vẫn chạy trên host được nếu muốn dùng GPU thật:
 #   .venv/Scripts/python.exe -m uvicorn services.inference.app.main:app --host 0.0.0.0 --port 8001
+#   (rồi trỏ INFERENCE_URL của api sang http://host.docker.internal:8001, bỏ service inference)
 # Giao diện: http://localhost:8088  (8000 trên máy dev đã có ứng dụng khác)
 services:
   db:
@@ -26,6 +30,21 @@ services:
       timeout: 5s
       retries: 10
 
+  inference:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: services/inference/Dockerfile
+    volumes:
+      - ./ml/runs:/app/ml/runs:ro
+      - ./artifacts/hf:/app/artifacts/hf:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 90s
+
   api:
     profiles: ["app"]
     build:
@@ -34,13 +53,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      inference:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://app:app@db:5432/environmental_audio
-      INFERENCE_URL: http://host.docker.internal:8001
+      INFERENCE_URL: http://inference:8001
       UPLOAD_DIR: /app/data/uploads
       FRONTEND_DIST: /app/services/frontend/dist
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "8088:8000"
     volumes:
