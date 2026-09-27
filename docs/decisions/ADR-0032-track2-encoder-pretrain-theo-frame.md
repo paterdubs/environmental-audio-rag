@@ -230,6 +230,42 @@ thành 4 frame 10 ms như §2.
 
 Kết quả T0 bước 3–4, pilot và run đầy đủ ghi ở §11 khi có.
 
+### 11. Kết quả T2b (27→28/09, chỉ CV dev — không mở test)
+
+**T0.** Bước 3 (`track2_t0_frame_mn_20260927.md`): đỉnh VRAM một bước train đầy đủ ở batch 24 là
+2400 MB → giữ batch 24. Bước 4 (`sed_polyphonic_20260927T164617Z`, 1 epoch, tree sạch `caeb318`):
+`dump_predictions --verify-dev` **trùng bit**, CV hậu xử lý chạy hết. Đạt.
+
+**Pilot** (`pilot_lr_t2b_20260928.md`, commit `d6c96f6`): macro-AP dev epoch 3 là 0.6566 / 0.7073
+/ 0.6805 cho lr 1e-4 / 3e-4 / 1e-3 → **lr 3e-4**.
+
+**Run đầy đủ** (tree sạch `d6c96f6`, code train không đổi giữa ba run; ~67 s/epoch khi chạy một
+mình, 34–48 phút mỗi seed tuỳ CV chạy song song):
+
+| Ứng viên | CV dev θ global p25 | cSEBB tốt nhất |
+|---|---:|---:|
+| T2b seed 20260922 (`…172924Z`) | 0.2213 ± 0.0426 | 0.2103 (`tau0.64_rel2`) |
+| T2b seed 2 (`…180358Z`) | 0.1936 ± 0.0579 | 0.2056 (`tau0.32_rel2`) |
+| T2b seed 3 (`…185137Z`) | 0.2027 ± 0.0510 | 0.2045 (`tau0.64_rel2`) |
+| **(f2) T2b × 3** (`sed_ensemble_t2b_20260927T200914Z`) | 0.2004 ± 0.0489 | **0.2224 ± 0.0417** |
+| **(f4) T2b × 3 + B-v2 × 3** (`sed_ensemble_t2b_bv2_20260927T200921Z`) | **0.2248 ± 0.0565** | 0.1751 ± 0.0500 |
+
+Điểm theo luật ADR-0031 §4 (CV tốt nhất trong hai họ hậu xử lý): (f4) 0.2248, (d) 0.2230,
+(f2) 0.2224, (c) 0.2129, (f1) 0.2114. Mọi chênh lệch nhỏ hơn sd giữa fold (~0.05) → không ứng
+viên nào "được gọi là tốt hơn". Vòng chọn thật vẫn ở S13 (18/10).
+
+**Đọc kết quả:**
+- Một CNN 3M tham số fine-tune toàn bộ, không có sequence model, đạt ngang CNN14+BiGRU (~80M) và
+  BEATs đóng băng + BiGRU trên dev.
+- **cSEBB thắng θ global lần đầu**: ở seed 2, seed 3 và ensemble (f2). Ba họ trước (v1, v2, T2a)
+  đều có RNN hoặc pool thô trước đầu ra; T2b cho posterior 40 ms thật không qua RNN làm mượt. Kết
+  luận âm tính "tổng quát" của PAPER_NOTES S29 phải thu hẹp: cSEBB thua trên model có tầng làm mượt
+  thời gian, không phải mọi model.
+- **(f4) trộn hai họ lại giúp** dưới θ global (0.2248 > 0.2004), ngược mẫu hình (e) và (f3). Có
+  thể vì T2b và B-v2 sai theo cách ít tương quan hơn; chưa đo, chỉ là giả thuyết.
+
+Không mở test, không đổi hệ thống phục vụ. (f2)/(f4) vào vòng chọn S13 cùng (a)–(f3).
+
 ## Consequences
 
 ### Tích cực

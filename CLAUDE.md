@@ -56,7 +56,11 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 27/09/2026 (tối) — Track 2a (BEATs đóng băng) xong, chỉ CV dev.** Xem khối SED v2 và
+**Cập nhật 28/09/2026 (rạng sáng, phiên tự động) — W7 7.4 xong (demo chạy hoàn toàn trong Docker,
+ADR-0033 §6); Track 2b xong, chỉ CV dev (ADR-0032 §11); phát hiện nợ #25 (14 recording thiếu
+ground truth polyphonic) — cần người dùng quyết trước S13.**
+
+**Trước đó, 27/09/2026 (tối) — Track 2a (BEATs đóng băng) xong, chỉ CV dev.** Xem khối SED v2 và
 Track 2 dưới đây; giai đoạn cải thiện gốc ở [ADR-0030](docs/decisions/ADR-0030-cai-thien-sed-v2.md)
 (duyệt 26/09). Người dùng: đề tài tập trung vào model, nghiên cứu và tối ưu, hướng tới paper →
 mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_NOTES.md) và
@@ -68,9 +72,19 @@ mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_N
   - Ensemble (f1) T2a×3 CV dev **0.2114 ± 0.0491** — gần bằng (c) v2 đã chọn/test
     (0.2129 ± 0.0622), dưới (d) C-v2×3 (0.2230 ± 0.0492, chưa test).
   - (f3) T2a+B-v2 6-model 0.1813 ± 0.0496 — không hơn (f1), lặp lại mẫu hình (e).
-  - cSEBB thua θ global lần thứ ba (v1, v2, giờ T2a) — kết luận âm tính tổng quát.
+  - cSEBB thua θ global lần thứ ba (v1, v2, T2a) — nhưng **thắng ở T2b** (S33), nên kết luận chỉ
+    đúng cho model có tầng làm mượt thời gian.
   - Không mở test. (f1)/(f3) vào vòng chọn cuối S13 (18/10) cùng (a)–(e).
-  - T2b (`frame_mn10` fine-tune toàn bộ) còn lại, cần cổng T0 riêng (VRAM khác — không đóng băng).
+- **Track 2b xong 28/09** (ADR-0032 §11): `frame_mn10_strong_1` fine-tune toàn bộ (3M tham số,
+  không sequence model), T0 đạt (2.4 GB ở batch 24, verify-dev trùng bit), pilot lr **3e-4**.
+  - 3 seed CV dev θ global 0.2213 / 0.1936 / 0.2027.
+  - (f2) T2b×3: cSEBB **0.2224 ± 0.0417** (global 0.2004); (f4) T2b×3 + B-v2×3: global
+    **0.2248 ± 0.0565** — điểm cao nhất tới nay, nhưng chênh (d) 0.2230 < sd → không "tốt hơn".
+  - Không mở test. (f2)/(f4) vào S13 cùng (a)–(f3). S10 đóng.
+- **Nợ #25 (CAO, trước S13):** ground truth polyphonic gốc chỉ phủ 703/717 recording; 14 recording
+  `wind_turbine` S-0704…S-0717 (train 8 / dev 3 / test 3) bị coi là không có sự kiện. Dev: ảnh
+  hưởng +0.002 micro, thứ hạng không đổi (`polyphonic_coverage_20260927.md`). Chưa sửa split —
+  người dùng chọn A/B/C ở PLAN.
 
 - **Chẩn đoán trên dev** (`sed_ceilings_20260926.md`):
   - Trần event-F1 của kiến trúc v1 là **0.63**: CNN14 trong repo pool thời gian /64 = 0.64 s,
@@ -262,14 +276,14 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | Hạng mục | Còn thiếu |
 |---|---|
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
-| W7 (ứng dụng) | ADR-0029 duyệt 26/09; 7.4 image inference, 7.5–7.7 — làm 19/10–02/11, sau S8 |
+| W7 (ứng dụng) | 7.1–7.4 xong (7.4: inference trong Docker 27/09, ADR-0033 §6); 7.5–7.7 — làm 19/10–02/11, sau S8 |
 | **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
-| **Cải thiện cuối** (ADR-0031) | S9 xong 27/09 03:53 (train+CV dev; test chờ S13); S10 T2a xong 27/09 tối (ADR-0032 §9), T2b `frame_mn10` còn lại; nợ #24 đóng; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
-| Tài liệu | PretrainedSED đã V3; còn DCASE 2016 T3, bài DataSED ở V2 (nợ #21) |
+| **Cải thiện cuối** (ADR-0031) | S9 xong 27/09 03:53 (train+CV dev; test chờ S13); S10 xong (T2a 27/09, T2b 28/09 — ADR-0032 §9, §11); nợ #24 đóng; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
+| Tài liệu | Nợ #21 đóng 28/09: PretrainedSED, DCASE 2016 T3, bài DataSED đều V3 |
 
 ### Chưa có ○
 
-T2b `frame_mn10` (fine-tune toàn bộ, cần T0 riêng — VRAM khác hẳn T2a đóng băng) · giải thích vì
+Quyết định nợ #25 (người dùng) · giải thích vì
 sao PSDS không tăng (PAPER_NOTES §6 #8) · bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo
 cáo luận văn (L3).
 
@@ -282,12 +296,14 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
 2. ~~S10 Track 2 — T2a~~ — ✅ 27/09 tối (ADR-0032 §9, PAPER_NOTES S28–S29): BEATs đóng băng +
    head v2, pilot lr=0.001, 3 seed, ensemble (f1) 0.2114±0.0491 (gần bằng (c), dưới (d)), (f3)
    0.1813±0.0496. cSEBB thua θ global lần 3. Chỉ CV dev, chưa mở test.
-   **T2b** (`frame_mn10` fine-tune toàn bộ) còn lại — cần cổng T0 riêng (VRAM không đóng băng
-   khác hẳn T2a) trước khi chạy đủ seed.
+   ~~T2b~~ — ✅ 28/09 03:56 (ADR-0032 §11, PAPER_NOTES S32–S34): (f2) 0.2224 (cSEBB), (f4)
+   0.2248 (global). Chỉ CV dev.
 3. ~~Nợ #24~~ — ✅ 27/09 (`4135d17`). Giải thích S21 (PSDS) trên dev — còn mở.
-4. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)/(f3) đã
+4. **Người dùng quyết nợ #25** (14 recording thiếu GT polyphonic, PLAN) — trước S13, vì phương án
+   (B) đổi tập recording dùng để chấm ở vòng chọn.
+5. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)–(f4) đã
    có CV dev, sẵn sàng vào vòng chọn cùng nhau.
-5. Sau 18/10: S8 một lần → W7 7.4–7.7 → L2 → viết báo cáo.
+6. Sau 18/10: S8 một lần → W7 7.5–7.7 → L2 → viết báo cáo.
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
 
@@ -541,6 +557,37 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-28 (rạng sáng, tự động) — P1 demo Docker, P2 Track 2b, P3 văn liệu; phát hiện nợ #25
+
+Người dùng giao chạy tự động qua đêm theo runbook PLAN (P1 → P2 → P3) và dọn ổ D.
+
+**Dọn ổ D (7.8 → 18.7 GB trống):** xoá 19 file `last.pt` (10.87 GB) của các run SED đã
+`complete` — không code nào đọc lại `last.pt`, `best.pt` giữ nguyên, danh sách lưu ở scratchpad.
+Không đụng dữ liệu cá nhân, `artifacts/llm` (cần cho S8), hay run classifier.
+
+**P1 — W7 7.4 xong** (ADR-0033 §6): build lần đầu thành công (inference 1.75 GB, torch CPU), compose
+healthy sau 67 s, upload WAV thật (S-0001, split train) qua :8088 ra 5 event + caption EN/VI trong
+37 s, RAG hybrid/structured trả đúng có trích dẫn. Parity CPU đo **trong container** (torch khác
+host): 403/408 event trong collar (CUDA 405/408); log-mel lệch một bậc float16 do khác nền tảng.
+Sửa một test DB giả định corpus upload trống. Stack `api`/`inference` đang **dừng** để nhường RAM cho
+train — bật lại bằng `docker compose --profile app up -d`.
+
+**P2 — Track 2b xong** (ADR-0032 §10–§11): vendor `frame_mn` (thay torchvision/torchaudio bằng
+bản tối thiểu, nạp strict 308 tensor), wrapper `FrameMnSED`, `--encoder frame_mn --recipe t2b`,
+luật pilot ghi trước khi có số (`5b2db08`). T0 đạt (2.4 GB, verify-dev trùng bit), pilot lr 3e-4,
+3 seed, (f2)/(f4), CV — hàng đợi tự chạy 23:46 → 03:56 không lỗi, áp đủ 4 bài học đêm trước (lr đọc
+từ JSON và kiểm thuộc tập ứng viên). Kết quả ở §3. Hai điều mới: cSEBB thắng lần đầu (S33) và trộn
+họ giúp ở (f4) (S34).
+
+**P3 — nợ #21 đóng:** tải thẳng HTML bài DataSED và DCASE 2016 T3, đọc toàn văn → V3. Đối chiếu bài
+với archive lộ ra **nợ #25**: ground truth polyphonic gốc chỉ phủ 703 recording, nhưng split benchmark
+gồm cả 14 recording `wind_turbine` → coi là không có sự kiện. Đo trên dev (script mới
+`report_polyphonic_coverage`): ảnh hưởng +0.002 micro, thứ hạng không đổi. **Không tự sửa split** —
+để người dùng chọn. Bài còn cho biết một phần audio lấy từ AudioSet (S31, rủi ro cho kết luận
+pretraining).
+
+Gate 669 pass (DB bật), ruff sạch. Chưa push (quyền push chặn trong phiên agent).
 
 ### 2026-09-27 (tối) — Track 2a (BEATs đóng băng) xong; sự cố hàng đợi tự sửa
 

@@ -1,7 +1,7 @@
 # STATUS.md — Trạng thái có bằng chứng
 
 **Cập nhật:** 2026-09-27 (tối) — Track 2a (BEATs đóng băng + head v2) xong, chỉ CV dev (ADR-0032 §9); S9 xong + ensemble (d)/(e) CV dev; SED v2 chốt và test một lần (ADR-0030 §9); lộ trình tới hạn nộp ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md), mốc đóng băng model 18/10)
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 659 pass (DB bật, 27/09 đêm), ruff sạch (Windows)
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 669 pass (DB bật, 28/09), ruff sạch (Windows)
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -70,7 +70,7 @@
 | Chẩn đoán trần SED (độ phân giải, người, onset/offset) | ✅ dev + ground truth | [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md) |
 | Hậu xử lý cSEBB (Ebbers 2024) | ✅ cài + CV dev; **âm tính** trên v1 (0.0582 vs 0.1538) | [sebb_cv_…_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) |
 | SED v2 (ADR-0030) | ✅ chốt 26/09 tối: ensemble 3 seed chọn trên dev (`ec71b20`); test micro 0.1476, macro 0.1369, PSDS-1 0.3447, PSDS-2 0.6744; v2 − v1 +0.0536 [+0.0261, +0.0853] | [sed_v2_selection_20260926.md](measurements/sed_v2_selection_20260926.md), [sed_ensemble_v2_20260926T155630Z_eval_cv.md](measurements/sed_ensemble_v2_20260926T155630Z_eval_cv.md), [sed_v2_ablation_20260926.md](measurements/sed_v2_ablation_20260926.md), ADR-0030 §9 |
-| RQ1-v2 (S9) / Track 2 (S10) | ✅ S9: 3 run C-v2 + ensemble (d)/(e), CV dev xong (test chờ S13); (d) CV dev 0.2230, cao nhất mọi ứng viên non-Track2. S10 T2a: BEATs đóng băng + head v2 xong, ensemble (f1) CV dev 0.2114±0.0491 (gần (c), dưới (d)), (f3) 0.1813±0.0496; cSEBB thua θ global lần 3. T2b (`frame_mn10`) còn lại | ADR-0031, [ADR-0032 §9](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md), [PAPER_NOTES S26–S29](PAPER_NOTES.md) |
+| RQ1-v2 (S9) / Track 2 (S10) | ✅ S9: 3 run C-v2 + ensemble (d)/(e), CV dev xong (test chờ S13); (d) CV dev 0.2230, cao nhất mọi ứng viên non-Track2. S10 T2a: BEATs đóng băng + head v2 xong, ensemble (f1) CV dev 0.2114±0.0491 (gần (c), dưới (d)), (f3) 0.1813±0.0496. S10 T2b (28/09): `frame_mn10` fine-tune, (f2) T2b×3 0.2224 (cSEBB thắng lần đầu), (f4) T2b+B-v2 0.2248 (global) — cao nhất nhưng trong sd; tất cả chỉ CV dev. Nợ #25: 14 recording thiếu GT polyphonic ([polyphonic_coverage_20260927.md](measurements/polyphonic_coverage_20260927.md)) | ADR-0031, [ADR-0032 §9, §11](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md), [PAPER_NOTES S26–S34](PAPER_NOTES.md) |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
