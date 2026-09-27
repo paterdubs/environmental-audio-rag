@@ -63,7 +63,8 @@ def test_upload_round_trip_keeps_versions_evidence_and_corpus_scope() -> None:
         assert hits == [RID]
         # benchmark corpora never see uploads
         assert RID not in store.search(conn, "vector_only", "test", {}, vector, VERSION)
-        assert recordings.corpus_embedding_versions(conn, "upload") == [VERSION]
+        # the dev database may also hold real demo uploads with the served embedding version
+        assert VERSION in recordings.corpus_embedding_versions(conn, "upload")
     finally:
         conn.rollback()
     try:
