@@ -422,10 +422,11 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~18~~ | ~~Query set chỉ có câu temporal, 25/100 câu có relevant trên test~~ — **đóng 26/09** (6.7, ADR-0027): query set v2 4 nhóm 21/27/30/22, EN + VI, chọn theo ground truth **train**; 97/100 câu có relevant trên test, 96/100 dev (`retrieval_queryset_v2_20260925.md`) | — | ✅ |
 | ~~19~~ | ~~Test tích hợp PostgreSQL treo ~130 s khi Docker tắt~~ — **đóng 26/09** (`550daec`): `connect_timeout` 5 s (`DB_CONNECT_TIMEOUT`); bộ test 13.5 phút → 57 s | — | ✅ |
 | ~~20~~ | ~~Event-F1 headline là micro trong khi Q2 đòi macro~~ — **đóng 26/09 tối**: macro có cho mọi lần đánh giá, kể cả v2 (`event_f1_macro_20260926`); người dùng chốt macro là con số chính, chọn vẫn bằng micro (ADR-0031 §1) | — | ✅ |
-| 21 | Số văn liệu mức V2 (lấy qua tóm tắt WebFetch: PretrainedSED, DCASE 2016 T3, bài DataSED) phải đọc trực tiếp trước khi trích (RELATED_WORK §2.1). **PretrainedSED đã lên V3 (26/09 tối)**; còn DCASE 2016 T3, bài DataSED | TRUNG BÌNH | Trước Chương 2 |
+| ~~21~~ | ~~Số văn liệu mức V2 phải đọc trực tiếp~~ — **đóng 27/09 đêm**: PretrainedSED V3 (26/09), DCASE 2016 T3 V3 (mọi số V2 khớp), bài DataSED V3 — đọc toàn văn lộ ra nguồn một phần từ AudioSet/Freesound có trộn tay (PAPER_NOTES S31) và dẫn tới nợ #25 | — | ✅ |
 | ~~22~~ | ~~Bão hoà posterior mới là quan sát~~ — **đóng 26/09**: `boundary_errors_20260926.md` đo trên dev → **bác bỏ** (không bão hoà; biên lệch đối xứng) | — | ✅ |
 | 23 | Mã thoát 127 của mọi run v2 (cuDNN giải phóng GRU nhiều lớp có dropout lúc tắt, Windows) — tự động hoá phải kiểm `manifest.complete` (TRAINING_OPS_PLAN §7 #6) | THẤP | Ghi nhận |
 | ~~24~~ | ~~`metrics.json` `best_validation` luôn là max frame macro-F1, kể cả khi checkpoint chọn theo macro-AP (v2)~~ — **đóng 27/09** (`4135d17`): dùng đúng `config.select_metric`; v1 không đổi hành vi | — | ✅ |
+| 25 | **14 recording (S-0704…S-0717, tập `wind_turbine`) không có ground truth polyphonic gốc nhưng nằm trong split benchmark** → coi là "không có sự kiện": dự đoán ở đó là FP, sự kiện thật không là FN, khi train là mẫu âm. Train 8 / dev 3 / test 3 (S-0711, S-0716, S-0717); 102 nhãn monophonic thuộc 21 lớp bị bỏ. Dev: bỏ 3 recording nâng micro +0.002 ở (c)/(d)/(f1), thứ hạng không đổi ([polyphonic_coverage_20260927.md](measurements/polyphonic_coverage_20260927.md)). **Người dùng quyết** (chạm split `data-v1.0` và số đã báo): (A) giữ nguyên, ghi Hạn chế — mọi ứng viên cùng chịu nên so sánh vẫn công bằng; (B) từ S13 chỉ đánh giá trên recording có GT polyphonic (137→134 dev, 142→139 test), ghi ADR **trước** vòng chọn 18/10 — không cần train lại; (C) sinh lại split bỏ 14 recording và train lại — tốn, không khuyến nghị. Gợi ý: (B) | **CAO** | Trước S13 (18/10) |
 
 ---
 
@@ -510,7 +511,7 @@ hẳn, không được giả định giống T2a.
 - Trước khi tin một hàng đợi tự động đã chạy đúng, đọc trực tiếp file kết quả (`.json`) chứ đừng
   chỉ tin log/biến shell đã truyền qua nhiều lớp.
 
-### P3 — Nếu còn thời gian sau P1 và P2: nợ kỹ thuật #21
+### P3 — Nếu còn thời gian sau P1 và P2: nợ kỹ thuật #21 — ✅ XONG 28/09 00:20 (làm song song lúc GPU train; lộ ra nợ #25)
 
 Đọc trực tiếp DCASE 2016 Task 3 và bài công bố DataSED (hiện V2, qua tóm tắt) trước khi viết
 Chương 2 — nâng lên V3 trong `RELATED_WORK.md` §2.1, đúng kỷ luật đã áp dụng cho PretrainedSED.
