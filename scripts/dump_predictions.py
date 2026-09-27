@@ -11,6 +11,9 @@ và model (kiến trúc từ manifest, `ml.models.sed_factory`) như lúc train,
 `--verify-dev` sinh lại logit dev vào file tạm và so SHA-256 với `dev_predictions_sha256`
 đã ghi lúc train: khớp nghĩa là đường dump này tái tạo đúng từng bit đường train, nên
 logit test sinh sau cũng là logit của đúng checkpoint đó.
+
+Track 2a (ADR-0032 §2): cùng đường; BEATs đóng băng được dựng lại từ checkpoint ghi trong
+manifest (kiểm SHA-256), đầu vào là cache 16 kHz (kiểm SHA-256 manifest cache).
 """
 
 from __future__ import annotations
@@ -22,15 +25,15 @@ import tempfile
 from pathlib import Path
 
 import torch
-from torch.utils.data import DataLoader
 
 from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
-from ml.models.sed_factory import sed_architecture, sed_model
+from ml.models.embedding_sed import EmbeddingSequenceSED
+from ml.models.sed_factory import embedding_head, sed_architecture, sed_model
 from ml.taxonomy import load_taxonomy
 from ml.training.common import seed_everything, write_json
 from ml.training.sed import collect_predictions
-from scripts.train_sed import load_datased_tables, split_dataset
+from scripts.train_sed import frozen_beats, load_datased_tables, make_loader, split_dataset
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_SPLIT = {"test": "test", "dev": "validation"}  # predictions literal → split CSV
@@ -47,8 +50,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def load_model(run_dir: Path, config: dict, classes: int, device: torch.device
-               ) -> SoundEventDetector:
-    if config["encoder_type"] == "panns":
+               ) -> SoundEventDetector | EmbeddingSequenceSED:
+    if config["encoder_type"] == "beats":
+        model = embedding_head(config, classes)  # Track 2a: head only, BEATs stays frozen
+    elif config["encoder_type"] == "panns":
         model = sed_model(config, classes)
     else:
         architecture = sed_architecture(config)
@@ -72,14 +77,22 @@ def dump(run_dir: Path, split: str, out_path: Path, device: torch.device) -> str
     class_ids = taxonomy.polyphonic_class_ids
     if taxonomy.checksum != manifest["taxonomy_sha256"]:
         raise SystemExit("taxonomy đã đổi so với lúc train")
+    is_beats = config["encoder_type"] == "beats"
     joined, events = load_datased_tables(config["feature_set"])
     dataset = split_dataset(joined, events, CONTRACT_SPLIT[split],
                             feature_set=config["feature_set"], class_ids=class_ids,
                             frame_rate=float(config["frame_rate"]),
                             window_frames=int(config["window_frames"]),
-                            hop_frames=int(config["hop_frames"]))
-    loader = DataLoader(dataset, batch_size=int(config["batch_size"]), shuffle=False,
-                        num_workers=0, pin_memory=device.type == "cuda")
+                            hop_frames=int(config["hop_frames"]), waveform=is_beats)
+    encoder = None
+    if is_beats:
+        encoder, info = frozen_beats(Path(config["checkpoint_path"]),
+                                     expected_sha256=config["checkpoint_sha256"])
+        if info["waveform_manifest_sha256"] != config["waveform_manifest_sha256"]:
+            raise SystemExit("cache waveform 16 kHz đã đổi so với lúc train "
+                             "(data/manifests/datased_wav16k.csv)")
+    loader = make_loader(dataset, batch_size=int(config["batch_size"]), shuffle=False,
+                         device=device, encoder=encoder)
     artifact = collect_predictions(
         load_model(run_dir, config, len(class_ids), device), loader, device=device,
         class_ids=class_ids, split=split,

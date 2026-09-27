@@ -146,12 +146,20 @@ class SedFeatureDataset(Dataset):
 
     def __getitem__(self, index: int) -> tuple[Tensor, Tensor, Tensor]:
         window = self._cropped(self.windows[index])
+        target, valid = self._target_and_valid(window)
+        return self._load_input(window), target, valid
+
+    def _load_input(self, window: SedWindow) -> Tensor:
+        """`[1, mel, window_frames]` log-mel span of the window, zero-padded past its end."""
         feature = np.load(
             self.feature_root / window.feature_relative_path, mmap_mode="r", allow_pickle=False
         )
         fitted = np.zeros((feature.shape[0], self.window_frames), dtype=np.float32)
         stop = window.start_frame + window.available_frames
         fitted[:, : window.available_frames] = feature[:, window.start_frame : stop]
+        return torch.from_numpy(fitted).unsqueeze(0)
+
+    def _target_and_valid(self, window: SedWindow) -> tuple[Tensor, Tensor]:
         target = np.zeros((self.window_frames, len(self.class_index)), dtype=np.float32)
         for event in self.events.get(window.recording_id, pd.DataFrame()).itertuples(index=False):
             onset = math.floor(float(event.onset_s) * self.frame_rate) - window.start_frame
@@ -162,8 +170,4 @@ class SedFeatureDataset(Dataset):
                 target[onset:offset, self.class_index[str(event.class_id)]] = 1.0
         valid = np.zeros(self.window_frames, dtype=np.float32)
         valid[: window.available_frames] = 1.0
-        return (
-            torch.from_numpy(fitted).unsqueeze(0),
-            torch.from_numpy(target),
-            torch.from_numpy(valid),
-        )
+        return torch.from_numpy(target), torch.from_numpy(valid)

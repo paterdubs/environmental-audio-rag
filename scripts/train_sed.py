@@ -21,6 +21,13 @@ checkpoint D1 (ADR-0020 §4).
 3e-4 (pilot ADR-0030 §2), random crop, mixup + FilterAugment, trần `pos_weight` 10, chọn
 checkpoint theo macro-AP dev. Mỗi núm ghi đè được riêng (`--time-pooling`, `--mixup-p`, …).
 Không có `--recipe` = v1, trùng từng tham số với mọi run RQ1.
+
+Track 2a (ADR-0032 §2): BEATs `strong_1` đóng băng + head v2, đầu vào là cache 16 kHz
+(`scripts.cache_waveforms`), cùng lưới cửa sổ/nhãn 100 fps với v2. Không `--evaluate-test`:
+logit test chỉ qua `dump_predictions` sau vòng chọn cuối.
+
+    .venv/Scripts/python.exe -m scripts.train_sed --encoder beats --recipe t2a \
+        --beats-checkpoint artifacts/checkpoints/BEATs_strong_1.pt --seed <s>
 """
 
 from __future__ import annotations
@@ -37,9 +44,11 @@ import torch
 from torch.utils.data import DataLoader
 
 from ml.datasets.features import SedFeatureDataset
+from ml.datasets.waveforms import SedWaveformDataset
 from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
-from ml.models.sed_factory import panns_encoder, sed_model
+from ml.models.beats_frozen import BEATS_STRONG_1_SHA256, EMBED_DIM, FrozenBeatsEncoder
+from ml.models.sed_factory import embedding_head, panns_encoder, sed_model
 from ml.taxonomy import load_taxonomy
 from ml.training.common import (
     create_run_directory,
@@ -49,6 +58,7 @@ from ml.training.common import (
     sha256_file,
     write_json,
 )
+from ml.training.encoded import EncodedLoader
 from ml.training.sed import (
     SedTrainingConfig,
     collect_predictions,
@@ -71,11 +81,22 @@ RECIPES: dict[str, dict[str, object]] = {
            "filter_augment_p": 0.5, "random_crop": True, "pos_weight_cap": 10.0,
            "time_pooling": [2, 2, 2, 1, 1, 1], "rnn_hidden": 256, "rnn_layers": 2,
            "upsample": "after_rnn", "model_version": "sed-v2.0"},
+    # ADR-0032 §2: head v2 trên BEATs đóng băng; không augmentation, lr head chọn bằng pilot.
+    "t2a": {"epochs": 30, "learning_rate": 0.001, "encoder_learning_rate": None,
+            "warmup_epochs": 1, "cosine_decay": True,
+            "select_metric": "macro_average_precision", "mixup_p": 0.0,
+            "filter_augment_p": 0.0, "random_crop": True, "pos_weight_cap": 10.0,
+            "time_pooling": None, "rnn_hidden": 256, "rnn_layers": 2,
+            "upsample": "after_rnn", "model_version": "sed-t2a-v1.0"},
 }
 
-# ADR-0020 §2: feature set đi theo encoder, không tách cờ riêng.
-ENCODER_FEATURE_SET = {"audio": "logmel_v1", "panns": "logmel_panns_v1"}
-ENCODER_FRAME_RATE = {"audio": 50.0, "panns": 100.0}
+# ADR-0020 §2: feature set đi theo encoder, không tách cờ riêng. Với `beats`, feature set chỉ
+# cho lưới cửa sổ/nhãn (trùng v2); đầu vào thật là cache waveform 16 kHz.
+ENCODER_FEATURE_SET = {"audio": "logmel_v1", "panns": "logmel_panns_v1",
+                       "beats": "logmel_panns_v1"}
+ENCODER_FRAME_RATE = {"audio": 50.0, "panns": 100.0, "beats": 100.0}
+WAVEFORM_ROOT = ROOT / "data" / "cache" / "datased_wav16k"
+WAVEFORM_MANIFEST = ROOT / "data" / "manifests" / "datased_wav16k.csv"
 # ADR-0020 §3: cùng cửa sổ/hop THEO GIÂY (10 s / 10 s, không overlap) giữa các nhánh.
 WINDOW_SECONDS = 10.0
 HOP_SECONDS = 10.0
@@ -109,7 +130,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rnn-layers", type=int, default=None)
     parser.add_argument("--upsample", choices=("before_rnn", "after_rnn"), default=None)
     parser.add_argument("--seed", type=int, default=20260922)
-    parser.add_argument("--encoder", choices=("audio", "panns"), default="audio")
+    parser.add_argument("--encoder", choices=("audio", "panns", "beats"), default="audio")
+    parser.add_argument(
+        "--beats-checkpoint", type=Path, default=None,
+        help="Track 2a (--encoder beats): PretrainedSED BEATs_strong_1.pt, kiểm SHA-256",
+    )
     parser.add_argument(
         "--audioset-checkpoint", type=Path, default=None, help="Nhánh B (--encoder panns)"
     )
@@ -132,6 +157,16 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_checkpoint_flags(args: argparse.Namespace) -> None:
+    has_beats = args.beats_checkpoint is not None
+    if args.encoder == "beats":
+        if args.audioset_checkpoint or args.datasec_checkpoint or not has_beats:
+            raise SystemExit(
+                "--encoder beats cần --beats-checkpoint và không nhận checkpoint CNN14 -- "
+                "ADR-0032 §2"
+            )
+        return
+    if has_beats:
+        raise SystemExit("--beats-checkpoint chỉ dùng với --encoder beats")
     if args.encoder == "audio":
         if args.audioset_checkpoint or args.datasec_checkpoint:
             raise SystemExit(
@@ -167,10 +202,33 @@ def load_datased_tables(feature_set: str) -> tuple[pd.DataFrame, pd.DataFrame]:
     return joined, events
 
 
+def validate_track2a(args: argparse.Namespace, knobs: dict[str, object]) -> None:
+    """ADR-0032 §2 guards for the frozen-BEATs branch (and its recipe)."""
+    if (args.recipe == "t2a") != (args.encoder == "beats"):
+        raise SystemExit("--recipe t2a chỉ đi với --encoder beats, và ngược lại (ADR-0032 §2)")
+    if args.encoder != "beats":
+        return
+    if args.evaluate_test:
+        raise SystemExit("Track 2a không --evaluate-test: logit test chỉ qua dump_predictions "
+                         "sau khi vòng chọn cuối đã commit (ADR-0032 §2)")
+    if knobs["mixup_p"] or knobs["filter_augment_p"]:
+        raise SystemExit("Track 2a không augmentation (ADR-0032 §2); FilterAugment cũng không "
+                         "áp được lên embedding")
+    if knobs["encoder_learning_rate"] is not None:
+        raise SystemExit("BEATs đóng băng -- không có lr encoder (ADR-0032 §2)")
+
+
 def split_dataset(joined: pd.DataFrame, events: pd.DataFrame, split: str, *,
                   feature_set: str, class_ids: tuple[str, ...], frame_rate: float,
-                  window_frames: int, hop_frames: int, random_crop: bool = False
-                  ) -> SedFeatureDataset:
+                  window_frames: int, hop_frames: int, random_crop: bool = False,
+                  waveform: bool = False) -> SedFeatureDataset:
+    """`waveform=True`: same windows and labels, 16 kHz waveform input (Track 2a)."""
+    if waveform:
+        return SedWaveformDataset(
+            joined[joined["split"] == split], events, waveform_root=WAVEFORM_ROOT,
+            class_ids=class_ids, frame_rate=frame_rate, window_frames=window_frames,
+            hop_frames=hop_frames, random_crop=random_crop,
+        )
     return SedFeatureDataset(
         joined[joined["split"] == split],
         events,
@@ -251,6 +309,31 @@ def build_encoder(args: argparse.Namespace, knobs: dict[str, object]
     }
 
 
+def frozen_beats(checkpoint: Path, expected_sha256: str = BEATS_STRONG_1_SHA256
+                 ) -> tuple[FrozenBeatsEncoder, dict[str, object]]:
+    """Frozen BEATs (ADR-0032 §2) and the provenance to record in the run manifest."""
+    encoder = FrozenBeatsEncoder()
+    report = encoder.load_pretrained(checkpoint, expected_sha256=expected_sha256)
+    return encoder, {
+        "weight_source": "pretrainedsed:BEATs_strong_1",
+        "checkpoint_path": str(checkpoint),
+        "checkpoint_sha256": report.checkpoint_sha256,
+        "encoder_frozen": True,
+        "encoder_parameters": report.loaded_parameters,
+        "embedding_dim": EMBED_DIM,
+        "input": "waveform_16k",
+        "waveform_manifest_sha256": sha256_file(WAVEFORM_MANIFEST),
+    }
+
+
+def make_loader(dataset: SedFeatureDataset, *, batch_size: int, shuffle: bool,
+                device: torch.device, encoder: FrozenBeatsEncoder | None = None
+                ) -> DataLoader | EncodedLoader:
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=0,
+                        pin_memory=device.type == "cuda")
+    return loader if encoder is None else EncodedLoader(loader, encoder, device)
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args()
@@ -263,11 +346,14 @@ def main() -> None:
     class_ids = taxonomy.polyphonic_class_ids
 
     knobs = resolve_recipe(args)
+    validate_track2a(args, knobs)
+    is_beats = args.encoder == "beats"
     feature_set = ENCODER_FEATURE_SET[args.encoder]
     frame_rate = ENCODER_FRAME_RATE[args.encoder]
     window_frames = round(WINDOW_SECONDS * frame_rate)
     hop_frames = round(HOP_SECONDS * frame_rate)
-    batch_size = args.batch_size or (PANNS_BATCH_SIZE if args.encoder == "panns" else 8)
+    # Track 2a keeps the v2 batch (ADR-0032 §2: same head and training loop as v2).
+    batch_size = args.batch_size or (PANNS_BATCH_SIZE if args.encoder != "audio" else 8)
     config = SedTrainingConfig(
         epochs=int(knobs["epochs"]),
         batch_size=batch_size,
@@ -283,22 +369,19 @@ def main() -> None:
         filter_augment_p=float(knobs["filter_augment_p"]),
     )
 
+    frozen, beats_info = frozen_beats(args.beats_checkpoint) if is_beats else (None, {})
     joined, events = load_datased_tables(feature_set)
-    loaders: dict[str, DataLoader] = {}
+    loaders: dict[str, DataLoader | EncodedLoader] = {}
     for split in ("train", "validation", "test"):
         dataset = split_dataset(
             joined, events, split, feature_set=feature_set, class_ids=class_ids,
             frame_rate=frame_rate, window_frames=config.window_frames,
             hop_frames=config.hop_frames,
             random_crop=bool(knobs["random_crop"]) and split == "train",
+            waveform=is_beats,
         )
-        loaders[split] = DataLoader(
-            dataset,
-            batch_size=config.batch_size,
-            shuffle=split == "train",
-            num_workers=0,
-            pin_memory=device.type == "cuda",
-        )
+        loaders[split] = make_loader(dataset, batch_size=config.batch_size,
+                                     shuffle=split == "train", device=device, encoder=frozen)
 
     train_ids = set(joined.loc[joined["split"] == "train", "recording_id"])
     train_events = events[events["recording_id"].isin(train_ids)]
@@ -308,10 +391,15 @@ def main() -> None:
         float(joined.loc[joined["split"] == "train", "duration_s"].sum()),
         maximum=float(knobs["pos_weight_cap"]),
     )
-    encoder, weight_info = build_encoder(args, knobs)
-    if args.encoder == "panns":
+    if is_beats:
+        weight_info = beats_info
+        model = embedding_head({**knobs, "embedding_dim": EMBED_DIM,
+                                "window_frames": config.window_frames}, len(class_ids))
+    elif args.encoder == "panns":
+        encoder, weight_info = build_encoder(args, knobs)
         model = sed_model(knobs, len(class_ids), encoder)
     else:
+        _, weight_info = build_encoder(args, knobs)
         model = SoundEventDetector(classes=len(class_ids), hidden_size=int(knobs["rnn_hidden"]),
                                    rnn_layers=int(knobs["rnn_layers"]),
                                    upsample=str(knobs["upsample"]))

@@ -5,6 +5,8 @@ pythonpath = ["."]
 [tool.ruff]
 target-version = "py312"
 line-length = 100
+# Third-party model code kept line-comparable to its source (ml/models/external/*/NOTICE.md).
+extend-exclude = ["ml/models/external"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

@@ -12,6 +12,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from ml.models.audio import SoundEventDetector
+from ml.models.embedding_sed import EmbeddingSequenceSED
 from ml.models.panns import PannsCNN14Encoder
 
 V1_ARCHITECTURE: dict[str, Any] = {
@@ -29,6 +30,17 @@ def sed_architecture(config: Mapping[str, Any]) -> dict[str, Any]:
 def panns_encoder(config: Mapping[str, Any], **kwargs: Any) -> PannsCNN14Encoder:
     time_pooling = tuple(int(p) for p in sed_architecture(config)["time_pooling"])
     return PannsCNN14Encoder(time_pooling=time_pooling, **kwargs)
+
+
+def embedding_head(config: Mapping[str, Any], classes: int) -> EmbeddingSequenceSED:
+    """Track 2a head (ADR-0032 §2): the frozen encoder is not part of the model."""
+    return EmbeddingSequenceSED(
+        classes,
+        input_size=int(config["embedding_dim"]),
+        output_frames=int(config["window_frames"]),
+        hidden_size=int(config["rnn_hidden"]),
+        rnn_layers=int(config["rnn_layers"]),
+    )
 
 
 def sed_model(config: Mapping[str, Any], classes: int,
