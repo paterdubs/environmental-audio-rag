@@ -43,16 +43,43 @@
 Nguồn: `data/reference/zenodo_datasec_17033970.json`,
 `data/reference/zenodo_datased_15346092.json`.
 
-### Bài báo mô tả hai dataset — tìm thấy 26/09/2026, mức **V2**
+### Bài báo mô tả hai dataset — tìm thấy 26/09/2026, **V3 từ 27/09** (đọc trực tiếp toàn văn)
 
 | Trường | Giá trị |
 |---|---|
 | Trích dẫn | Fredianelli L., Artuso F., Pompei G., Licitra G., Iannace G., Akbaba A. (2025). *Environmental Noise Dataset for Sound Event Classification and Detection.* **Scientific Data**. |
 | DOI / định danh | `10.1038/s41597-025-05991-w` · PMCID PMC12572321 · PMID 41162415 |
 | URL | https://www.nature.com/articles/s41597-025-05991-w · https://pmc.ncbi.nlm.nih.gov/articles/PMC12572321/ |
-| Truy cập | 26/09/2026, qua tóm tắt `WebFetch` bản PMC — **chưa đọc trực tiếp toàn văn** |
+| Truy cập | 26/09/2026 qua tóm tắt `WebFetch` (V2); **27/09/2026 tải thẳng HTML cả hai bản (curl), trích văn bản bằng code và đọc toàn bộ** (V3). SHA-256 trang: Nature `abbcd099…`, PMC `6211e1f6…` |
 
-Nội dung theo tóm tắt (⚠️ phải đối chiếu toàn văn trước khi trích):
+**Đọc trực tiếp 27/09 — những gì bản tóm tắt bỏ sót hoặc chưa chắc** (số đối chiếu với archive
+bằng `scripts/report_polyphonic_coverage.py` → [polyphonic_coverage_20260927.md](measurements/polyphonic_coverage_20260927.md)):
+
+- **Xác nhận không có baseline:** bài chỉ có Background, Methods, Data Record, Technical
+  Validation, Usage Notes — không model, không metric, không split khuyến nghị.
+- **Nguồn âm thanh có một phần từ Freesound và AudioSet**, và mọi file "đã bị cắt, dán, trộn,
+  sửa tay" (mục Methods). Với DataSED: "trong một số trường hợp track được sửa tay để bỏ đoạn dài
+  không đổi, **hoặc âm thanh được thêm tay** để track sinh động hơn" (Data Record). Hệ quả cho đề
+  tài: (a) encoder pretrain trên AudioSet (CNN14, BEATs, frame_mn) có thể đã thấy một phần âm
+  thanh gốc — không định lượng được vì bài không công bố danh sách nguồn; (b) không phải mọi đồng
+  xuất hiện trong DataSED là tự nhiên. Ghi vào Hạn chế (PAPER_NOTES S31).
+- **Bản polyphonic và monophonic** là hai phiên bản nhãn của cùng tập audio; bài không nói bản
+  polyphonic bỏ recording nào. Archive: `Polyphonic_sound_detection.csv` chỉ phủ **703**
+  recording (S-0001…S-0703), bản monophonic phủ 717. 14 recording S-0704…S-0717 — đúng tập có nhãn
+  `wind_turbine` — không có ground truth polyphonic nhưng nằm trong split benchmark của đề tài
+  (PLAN nợ #25, PAPER_NOTES S30).
+- **Số liệu tự mâu thuẫn trong bài:** văn bản ghi 712 file, dài nhất 285.0 s, tổng ~17.02 h,
+  4309 nhãn monophonic; Bảng 3 của chính bài cộng ra **4323** nhãn. Archive: 717 file, dài nhất
+  818.3 s, 18.68 h — nhưng số nhãn polyphonic (4034) và monophonic (4309) **khớp đúng** văn bản.
+  7/22 lớp trong Bảng 3 lệch archive 1–5 nhãn.
+- DataSEC trong bài: 4292 file, 18 h 26 phút, DOI `10.5281/zenodo.15340689` — đây là phiên bản
+  cũ; đề tài dùng record v3 `17033970` (5,048 file, 23.7082 h). Con số "4,292 / 18h26" từng bị
+  nghi là tóm tắt đọc nhầm (mục dưới) là **số thật của bài**, không phải lỗi tóm tắt.
+- Gán nhãn: nghe bằng tai nghe trong phòng yên tĩnh, công cụ Python tự viết; bài nói có "nghe lại
+  bởi nhiều người vận hành" nhưng **không báo số đo agreement nào** → phép đo 8 cặp trùng của đề
+  tài (0.5785 event-F1 người vs người) vẫn là thông tin mới.
+
+Nội dung theo tóm tắt 26/09 (giữ để truy vết; phần mâu thuẫn đã được đoạn trên thay thế):
 
 - **Không có thí nghiệm baseline nào** (không model, không metric) → nếu đúng, số của đề tài
   có thể là baseline SED đầu tiên được báo cáo trên DataSED. Claim này còn cần systematic
@@ -77,16 +104,14 @@ Nội dung theo tóm tắt (⚠️ phải đối chiếu toàn văn trước khi
       rút ra ở ADR-0015 (tóm tắt WebSearch từng báo sai license), kết quả này
       cần một người **mở trực tiếp trang Zenodo xác nhận lại** trước khi coi là
       chốt. Chưa kiểm DataSED (15346092).
-- [ ] ⚠️ **Chênh lệch cần đối chiếu:** tóm tắt trên báo record DataSEC ghi
-      "4,292 mẫu, 18h26" — khác với `datasec_archive_audit.json` đã đo trực
-      tiếp từ archive (**5,048 file, 23.7082 h**). Nhiều khả năng tóm tắt đọc
-      nhầm phiên bản cũ hơn v3, hoặc lẫn với một con số khác trên trang. **Không
-      dùng số 4,292/18h26 ở bất kỳ đâu** cho tới khi có người xác nhận trực
-      tiếp trên trang Zenodo. Theo nguyên tắc đã ghi ở dòng dưới: archive là sự
-      thật, trang mô tả thì không.
-- [ ] Đối chiếu số file và số giờ trong paper với archive thật.
-      **Archive là sự thật kiểm chứng được; paper thì không.** Chênh lệch phải ghi,
-      không ép số theo paper.
+- [x] ~~⚠️ Chênh lệch "4,292 mẫu, 18h26" của DataSEC~~ — **giải quyết 27/09**: đó là số in
+      trong chính bài *Scientific Data* (DOI Zenodo `15340689`, phiên bản cũ), không phải tóm
+      tắt đọc nhầm. Đề tài dùng record v3 `17033970` (5,048 file, 23.7082 h — đo từ archive).
+      Khi trích bài, ghi rõ bài mô tả phiên bản cũ hơn bản đề tài dùng.
+- [x] Đối chiếu số file và số giờ trong paper với archive thật — **xong 27/09**
+      ([polyphonic_coverage_20260927.md](measurements/polyphonic_coverage_20260927.md)): DataSED
+      712 vs 717 file, 17.02 vs 18.68 h; số nhãn khớp; Bảng 3 của bài tự mâu thuẫn (4323 vs
+      4309). Archive là sự thật, không ép số theo bài.
 - [ ] Xác minh có paper nào đã công bố baseline trên hai dataset này chưa. Nếu có,
       đó là baseline để so sánh trực tiếp → nâng lên V4. **26/09:** bài dataset không có
       baseline (theo tóm tắt); một WebSearch ("DataSED sound event detection results") không
@@ -119,7 +144,7 @@ Nội dung theo tóm tắt (⚠️ phải đối chiếu toàn văn trước khi
 | Threshold calibration và hậu xử lý | V1 → **V3** (cSEBB, 26/09) | Xem [ADR-0003](decisions/ADR-0003-threshold-va-post-processing.md); cSEBB §2.1 |
 | Event-based F1 và collar | V1 → **V2** | `sed_eval`; Mesaros và cộng sự 2016 (từ danh mục tham khảo) §2.1 |
 | **PSDS** và ba tiêu chí DTC/GTC/CTTC | V1 → **V2** | `psds_eval`; tham số ở [evaluation_protocol §3.3](evaluation_protocol.md); Bilen 2020, Ferroni 2021, Ebbers 2022 §2.1 |
-| DCASE task SED — giao thức và baseline | V1 → **V2** | DCASE 2016 T3 (ghi âm thật) §2.1 — mốc định cỡ event-F1 |
+| DCASE task SED — giao thức và baseline | V1 → V2 → **V3** (27/09) | DCASE 2016 T3 (ghi âm thật) §2.1 — mốc định cỡ event-F1 |
 | Data augmentation cho SED (mixup, FilterAugment) | **V2** (26/09) | Dùng trong SED v2 (ADR-0030), §2.1 |
 | Soundscape tổng hợp từ event cô lập (DESED) | **V2** (26/09) | Ý tưởng transfer thay pretraining ([PAPER_NOTES §5](PAPER_NOTES.md)) |
 
@@ -228,12 +253,17 @@ arXiv:1912.10211 (v5 23/08/2020).** — **V2**; chi tiết kiến trúc **V3**
 - Dùng ở: PAPER_NOTES S13, ADR-0030 §1.
 
 **(4) DCASE 2016 Task 3 — *Sound event detection in real life audio*: trang task và trang kết
-quả** (dcase.community/challenge2016/…). Truy cập 26/09. — **V2**
+quả** (dcase.community/challenge2016/…). Truy cập 26/09 (tóm tắt, V2); **27/09 tải thẳng HTML
+hai trang và đọc văn bản trích bằng code — V3**, mọi số dưới đây khớp. SHA-256 trang: task
+`40b64dd2…`, kết quả `6d4a78cf…`.
 
-- Trang task: metric chính là **ER theo đoạn 1 s**; event-based qua `sed_eval` với
-  `t_collar = 0.250`. Hai cảnh (home 11 lớp, residential area 7 lớp).
-- Trang kết quả (tóm tắt WebFetch): cột "Event-based (overall / onset-only evaluation
-  dataset)".
+- Trang task: metric chính là **ER theo đoạn 1 s** ("Error rate will be evaluated in one-second
+  segments over the entire test set"); `sed_eval` khớp baseline với `time_resolution=1`,
+  `t_collar=0.250`. Hai cảnh: home 11 lớp, residential area 7 lớp. Dữ liệu TUT Sound Events 2016:
+  ghi binaural (micro trong tai), mỗi địa điểm 3–5 phút, 44.1 kHz / 24 bit. Chia dev/eval nới
+  khỏi 70-30 (home 40–80%, residential 60–80% instance mỗi lớp vào dev); dev có 4 fold, metric
+  tính sau khi gộp cả 4 fold.
+- Trang kết quả: cột "Event-based (overall / onset-only evaluation dataset)".
   - Baseline (Heittola 2016): segment ER 0.8773 / F1 34.3%; event ER 1.7303 / F1 6.3%.
   - Adavanne_task3_1: 0.8051 / 47.8%; event 5.1248 / 4.8%.
   - Adavanne_task3_2: 0.8887 / 37.9%; event 7.5286 / 4.7%.
@@ -432,4 +462,7 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 26/09 | WebSearch | `Turpault Serizel Shah Salamon "Sound event detection in domestic environments …"` | DESED, DCASE Workshop 2019 | §2.1 (7) |
 | 26/09 | WebFetch | mdpi.com/2076-3417/6/6/162 | **403** — chưa xác minh DOI Mesaros 2016 | §2.1 (8) |
 | 26/09 (tối) | curl + **đọc trực tiếp** | arxiv.org/pdf/2409.09546v2 (PDF 5 trang); raw README, LICENSE, `models/frame_mn/{Frame_MN_wrapper,model}.py`, `inference.py`, `models/prediction_wrapper.py`; API release v0.0.1 | PretrainedSED lên **V3**: Bảng I/II khớp; frozen gần bằng fine-tune; lr decay 0.5 (DESED); `frame_mn` không có trong bài; dòng "checkpoint cũ" của V2 sai phiên bản | §2.1 (2) |
+| 27/09 (đêm) | curl + **đọc trực tiếp** (HTML → văn bản bằng code) | nature.com/articles/s41597-025-05991-w, pmc.ncbi.nlm.nih.gov/articles/PMC12572321 | Bài DataSED lên **V3**: không baseline (xác nhận); nguồn một phần từ Freesound + AudioSet, file bị cắt/trộn/thêm âm thanh tay; Bảng 3 tự mâu thuẫn; DataSEC trong bài là phiên bản cũ (4292 file) | §1 |
+| 27/09 (đêm) | curl + **đọc trực tiếp** | dcase.community/challenge2016/task-sound-event-detection-in-real-life-audio(-results) | DCASE 2016 T3 lên **V3**: mọi số V2 khớp; thêm chi tiết dữ liệu (binaural, 3–5 phút, 4 fold) | §2.1 (4) |
+| 27/09 (đêm) | curl | github.com/fschmid56/PretrainedSED `models/frame_mn/*`, `models/frame_passt/preprocess.py` @1aa47e48; release asset `frame_mn10_strong_1.pt` | Code frame_mn đọc trực tiếp cho T2b: 40 ms thật (stride thời gian ×4), 960 kênh; checkpoint 15,537,114 B | §2.1 (2), ADR-0032 §10 |
 | 26/09 (tối) | GitHub API `/repos/*/license` + đọc LICENSE | microsoft/unilm, Audio-WestlakeU/audiossl, nttcslab/m2d, fschmid56/EfficientAT, kkoutini/PaSST, facebookresearch/deit | MIT / code MIT + checkpoint CC BY 4.0 / PDF riêng / MIT / Apache-2.0 / Apache-2.0 | §2.1 (2) |
