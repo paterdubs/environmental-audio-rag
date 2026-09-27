@@ -1,0 +1,534 @@
+{
+  "date": "2026-09-27",
+  "load": {
+    "checkpoint_sha256": "db13a79ae90a0cfd0f9911a6a1d8cdb89324322bee642dcfe32de022123b8b54",
+    "loaded_tensors": 250,
+    "loaded_parameters": 90354032,
+    "ignored_keys": [
+      "strong_head.bias",
+      "strong_head.weight",
+      "weak_head.bias",
+      "weak_head.weight"
+    ]
+  },
+  "precision": {
+    "fbank_gpu_vs_cpu_max_abs": 0.00012367963790893555,
+    "embedding_fp16_vs_fp32_max_abs": 0.002706289291381836,
+    "embedding_fp16_vs_fp32_min_cosine": 0.9999997019767761
+  },
+  "memory_and_speed": {
+    "encoder_forward_peak_mb": {
+      "8": 771.3,
+      "16": 1186.6,
+      "24": 1603.9,
+      "32": 2019.7
+    },
+    "head_train_step_peak_mb_batch24": 1614.5,
+    "encoder_seconds_per_window_batch24": 0.011072275694443887,
+    "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU",
+    "gpu_total_mb": 8192
+  },
+  "train_windows": 4311,
+  "dev_windows": 1462,
+  "estimated_seconds_per_epoch": 63.92024758402456,
+  "semantic": {
+    "audioset_classes_sha256": "771adb63768b349171a1668b4b0c2f932f6db1b21e10450c7e9136c0397e076f",
+    "rows": [
+      {
+        "class_id": "bells",
+        "recording_id": "S-0022",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "bells",
+          "birds",
+          "vehicle_pass_by"
+        ],
+        "beats_top3": [
+          [
+            "Church bell",
+            0.355
+          ],
+          [
+            "Background noise",
+            0.351
+          ],
+          [
+            "Bell",
+            0.311
+          ]
+        ]
+      },
+      {
+        "class_id": "birds",
+        "recording_id": "S-0009",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "birds",
+          "thunder_fireworks_gunshot"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.28
+          ],
+          [
+            "Thunderstorm",
+            0.268
+          ],
+          [
+            "Wind noise (microphone)",
+            0.253
+          ]
+        ]
+      },
+      {
+        "class_id": "cat_fights_and_moans",
+        "recording_id": "S-0133",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "cat_fights_and_moans"
+        ],
+        "beats_top3": [
+          [
+            "Mechanisms",
+            0.584
+          ],
+          [
+            "Background noise",
+            0.396
+          ],
+          [
+            "Caterwaul",
+            0.307
+          ]
+        ]
+      },
+      {
+        "class_id": "chicken_coop",
+        "recording_id": "S-0060",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "birds",
+          "chicken_coop",
+          "lawn_mower_brush_cutter_olive_shaker"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.329
+          ],
+          [
+            "Background noise",
+            0.269
+          ],
+          [
+            "Generic impact sounds",
+            0.262
+          ]
+        ]
+      },
+      {
+        "class_id": "cicadas_and_crickets",
+        "recording_id": "S-0173",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "cicadas_and_crickets",
+          "dog_barkings_and_howlings"
+        ],
+        "beats_top3": [
+          [
+            "Mechanisms",
+            0.43
+          ],
+          [
+            "Bark",
+            0.403
+          ],
+          [
+            "Wind",
+            0.335
+          ]
+        ]
+      },
+      {
+        "class_id": "crows_seagulls_magpies",
+        "recording_id": "S-0012",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "birds",
+          "crows_seagulls_magpies",
+          "thunder_fireworks_gunshot"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.332
+          ],
+          [
+            "Sound effect",
+            0.313
+          ],
+          [
+            "Background noise",
+            0.246
+          ]
+        ]
+      },
+      {
+        "class_id": "dog_barkings_and_howlings",
+        "recording_id": "S-0074",
+        "window_start_s": 20.0,
+        "labels_in_window": [
+          "dog_barkings_and_howlings",
+          "lawn_mower_brush_cutter_olive_shaker",
+          "voices"
+        ],
+        "beats_top3": [
+          [
+            "Female speech, woman speaking",
+            0.39
+          ],
+          [
+            "Mechanisms",
+            0.351
+          ],
+          [
+            "Wind",
+            0.345
+          ]
+        ]
+      },
+      {
+        "class_id": "glass_breaking",
+        "recording_id": "S-0088",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "glass_breaking"
+        ],
+        "beats_top3": [
+          [
+            "Mechanisms",
+            0.884
+          ],
+          [
+            "Coin (dropping)",
+            0.576
+          ],
+          [
+            "Surface contact",
+            0.561
+          ]
+        ]
+      },
+      {
+        "class_id": "horn",
+        "recording_id": "S-0021",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "horn",
+          "vehicle_pass_by"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.402
+          ],
+          [
+            "Vehicle horn, car horn, honking, toot",
+            0.245
+          ],
+          [
+            "Generic impact sounds",
+            0.165
+          ]
+        ]
+      },
+      {
+        "class_id": "jet_aircrafts",
+        "recording_id": "S-0009",
+        "window_start_s": 20.0,
+        "labels_in_window": [
+          "birds",
+          "jet_aircrafts",
+          "thunder_fireworks_gunshot"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.405
+          ],
+          [
+            "Bird vocalization, bird call, bird song",
+            0.287
+          ],
+          [
+            "Chirp, tweet",
+            0.22
+          ]
+        ]
+      },
+      {
+        "class_id": "lawn_mower_brush_cutter_olive_shaker",
+        "recording_id": "S-0060",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "birds",
+          "chicken_coop",
+          "lawn_mower_brush_cutter_olive_shaker"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.329
+          ],
+          [
+            "Background noise",
+            0.269
+          ],
+          [
+            "Generic impact sounds",
+            0.262
+          ]
+        ]
+      },
+      {
+        "class_id": "music",
+        "recording_id": "S-0025",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "music"
+        ],
+        "beats_top3": [
+          [
+            "Mechanisms",
+            0.514
+          ],
+          [
+            "Music",
+            0.42
+          ],
+          [
+            "Generic impact sounds",
+            0.353
+          ]
+        ]
+      },
+      {
+        "class_id": "propeller_aircrafts",
+        "recording_id": "S-0096",
+        "window_start_s": 100.0,
+        "labels_in_window": [
+          "propeller_aircrafts",
+          "vehicle_idling",
+          "vehicle_pass_by"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.438
+          ],
+          [
+            "Car passing by",
+            0.18
+          ],
+          [
+            "Motor vehicle (road)",
+            0.112
+          ]
+        ]
+      },
+      {
+        "class_id": "sirens_and_alarms",
+        "recording_id": "S-0033",
+        "window_start_s": 60.0,
+        "labels_in_window": [
+          "birds",
+          "crows_seagulls_magpies",
+          "horn",
+          "sirens_and_alarms",
+          "train",
+          "vehicle_pass_by"
+        ],
+        "beats_top3": [
+          [
+            "Background noise",
+            0.343
+          ],
+          [
+            "Mechanisms",
+            0.19
+          ],
+          [
+            "Wind",
+            0.189
+          ]
+        ]
+      },
+      {
+        "class_id": "thunder_fireworks_gunshot",
+        "recording_id": "S-0009",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "birds",
+          "thunder_fireworks_gunshot"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.28
+          ],
+          [
+            "Thunderstorm",
+            0.268
+          ],
+          [
+            "Wind noise (microphone)",
+            0.253
+          ]
+        ]
+      },
+      {
+        "class_id": "train",
+        "recording_id": "S-0033",
+        "window_start_s": 0.0,
+        "labels_in_window": [
+          "crows_seagulls_magpies",
+          "train"
+        ],
+        "beats_top3": [
+          [
+            "Background noise",
+            0.386
+          ],
+          [
+            "Wind",
+            0.326
+          ],
+          [
+            "Motor vehicle (road)",
+            0.257
+          ]
+        ]
+      },
+      {
+        "class_id": "vacuum_cleaner_fan_hairdryer",
+        "recording_id": "S-0061",
+        "window_start_s": 10.0,
+        "labels_in_window": [
+          "bells",
+          "birds",
+          "horn",
+          "vacuum_cleaner_fan_hairdryer"
+        ],
+        "beats_top3": [
+          [
+            "Accelerating, revving, vroom",
+            0.32
+          ],
+          [
+            "Background noise",
+            0.237
+          ],
+          [
+            "Bird vocalization, bird call, bird song",
+            0.197
+          ]
+        ]
+      },
+      {
+        "class_id": "vehicle_idling",
+        "recording_id": "S-0021",
+        "window_start_s": 60.0,
+        "labels_in_window": [
+          "horn",
+          "vehicle_idling",
+          "vehicle_pass_by"
+        ],
+        "beats_top3": [
+          [
+            "Wind",
+            0.421
+          ],
+          [
+            "Mechanisms",
+            0.26
+          ],
+          [
+            "Generic impact sounds",
+            0.209
+          ]
+        ]
+      },
+      {
+        "class_id": "vehicle_pass_by",
+        "recording_id": "S-0009",
+        "window_start_s": 30.0,
+        "labels_in_window": [
+          "birds",
+          "jet_aircrafts",
+          "thunder_fireworks_gunshot",
+          "vehicle_pass_by"
+        ],
+        "beats_top3": [
+          [
+            "Background noise",
+            0.261
+          ],
+          [
+            "Wind",
+            0.225
+          ],
+          [
+            "Bird vocalization, bird call, bird song",
+            0.21
+          ]
+        ]
+      },
+      {
+        "class_id": "voices",
+        "recording_id": "S-0024",
+        "window_start_s": 10.0,
+        "labels_in_window": [
+          "voices"
+        ],
+        "beats_top3": [
+          [
+            "Generic impact sounds",
+            0.457
+          ],
+          [
+            "Mechanisms",
+            0.378
+          ],
+          [
+            "Male speech, man speaking",
+            0.329
+          ]
+        ]
+      },
+      {
+        "class_id": "workshop",
+        "recording_id": "S-0024",
+        "window_start_s": 30.0,
+        "labels_in_window": [
+          "voices",
+          "workshop"
+        ],
+        "beats_top3": [
+          [
+            "Mechanisms",
+            0.588
+          ],
+          [
+            "Male speech, man speaking",
+            0.242
+          ],
+          [
+            "Background noise",
+            0.219
+          ]
+        ]
+      }
+    ]
+  }
+}
