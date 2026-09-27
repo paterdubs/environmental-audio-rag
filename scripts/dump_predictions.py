@@ -14,6 +14,7 @@ logit test sinh sau cũng là logit của đúng checkpoint đó.
 
 Track 2a (ADR-0032 §2): cùng đường; BEATs đóng băng được dựng lại từ checkpoint ghi trong
 manifest (kiểm SHA-256), đầu vào là cache 16 kHz (kiểm SHA-256 manifest cache).
+Track 2b (ADR-0032 §3): cả mạng frame_mn nằm trong `best.pt`, cùng đầu vào cache 16 kHz.
 """
 
 from __future__ import annotations
@@ -29,11 +30,18 @@ import torch
 from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
 from ml.models.embedding_sed import EmbeddingSequenceSED
-from ml.models.sed_factory import embedding_head, sed_architecture, sed_model
+from ml.models.sed_factory import embedding_head, frame_mn_model, sed_architecture, sed_model
 from ml.taxonomy import load_taxonomy
-from ml.training.common import seed_everything, write_json
+from ml.training.common import seed_everything, sha256_file, write_json
 from ml.training.sed import collect_predictions
-from scripts.train_sed import frozen_beats, load_datased_tables, make_loader, split_dataset
+from scripts.train_sed import (
+    WAVEFORM_ENCODERS,
+    WAVEFORM_MANIFEST,
+    frozen_beats,
+    load_datased_tables,
+    make_loader,
+    split_dataset,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_SPLIT = {"test": "test", "dev": "validation"}  # predictions literal → split CSV
@@ -53,6 +61,8 @@ def load_model(run_dir: Path, config: dict, classes: int, device: torch.device
                ) -> SoundEventDetector | EmbeddingSequenceSED:
     if config["encoder_type"] == "beats":
         model = embedding_head(config, classes)  # Track 2a: head only, BEATs stays frozen
+    elif config["encoder_type"] == "frame_mn":
+        model = frame_mn_model(config, classes)  # Track 2b: whole network is in best.pt
     elif config["encoder_type"] == "panns":
         model = sed_model(config, classes)
     else:
@@ -78,19 +88,20 @@ def dump(run_dir: Path, split: str, out_path: Path, device: torch.device) -> str
     if taxonomy.checksum != manifest["taxonomy_sha256"]:
         raise SystemExit("taxonomy đã đổi so với lúc train")
     is_beats = config["encoder_type"] == "beats"
+    is_waveform = config["encoder_type"] in WAVEFORM_ENCODERS
     joined, events = load_datased_tables(config["feature_set"])
     dataset = split_dataset(joined, events, CONTRACT_SPLIT[split],
                             feature_set=config["feature_set"], class_ids=class_ids,
                             frame_rate=float(config["frame_rate"]),
                             window_frames=int(config["window_frames"]),
-                            hop_frames=int(config["hop_frames"]), waveform=is_beats)
+                            hop_frames=int(config["hop_frames"]), waveform=is_waveform)
     encoder = None
     if is_beats:
-        encoder, info = frozen_beats(Path(config["checkpoint_path"]),
-                                     expected_sha256=config["checkpoint_sha256"])
-        if info["waveform_manifest_sha256"] != config["waveform_manifest_sha256"]:
-            raise SystemExit("cache waveform 16 kHz đã đổi so với lúc train "
-                             "(data/manifests/datased_wav16k.csv)")
+        encoder, _ = frozen_beats(Path(config["checkpoint_path"]),
+                                  expected_sha256=config["checkpoint_sha256"])
+    if is_waveform and sha256_file(WAVEFORM_MANIFEST) != config["waveform_manifest_sha256"]:
+        raise SystemExit("cache waveform 16 kHz đã đổi so với lúc train "
+                         "(data/manifests/datased_wav16k.csv)")
     loader = make_loader(dataset, batch_size=int(config["batch_size"]), shuffle=False,
                          device=device, encoder=encoder)
     artifact = collect_predictions(

@@ -13,6 +13,7 @@ from typing import Any
 
 from ml.models.audio import SoundEventDetector
 from ml.models.embedding_sed import EmbeddingSequenceSED
+from ml.models.frame_mn_finetune import FrameMnSED
 from ml.models.panns import PannsCNN14Encoder
 
 V1_ARCHITECTURE: dict[str, Any] = {
@@ -41,6 +42,11 @@ def embedding_head(config: Mapping[str, Any], classes: int) -> EmbeddingSequence
         hidden_size=int(config["rnn_hidden"]),
         rnn_layers=int(config["rnn_layers"]),
     )
+
+
+def frame_mn_model(config: Mapping[str, Any], classes: int) -> FrameMnSED:
+    """Track 2b (ADR-0032 §3): the whole network trains, so the encoder is in the model."""
+    return FrameMnSED(classes, output_frames=int(config["window_frames"]))
 
 
 def sed_model(config: Mapping[str, Any], classes: int,

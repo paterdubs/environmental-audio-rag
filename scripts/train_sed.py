@@ -28,6 +28,13 @@ logit test chỉ qua `dump_predictions` sau vòng chọn cuối.
 
     .venv/Scripts/python.exe -m scripts.train_sed --encoder beats --recipe t2a \
         --beats-checkpoint artifacts/checkpoints/BEATs_strong_1.pt --seed <s>
+
+Track 2b (ADR-0032 §3): `frame_mn10_strong_1` fine-tune toàn bộ (không đóng băng), head 447 → 21
+lớp, không sequence model; cùng cache 16 kHz và lưới cửa sổ/nhãn. Không `--evaluate-test`.
+
+    .venv/Scripts/python.exe -m scripts.train_sed --encoder frame_mn --recipe t2b \
+        --frame-mn-checkpoint artifacts/checkpoints/frame_mn10_strong_1.pt \
+        --learning-rate <lr pilot> --seed <s>
 """
 
 from __future__ import annotations
@@ -48,7 +55,8 @@ from ml.datasets.waveforms import SedWaveformDataset
 from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
 from ml.models.beats_frozen import BEATS_STRONG_1_SHA256, EMBED_DIM, FrozenBeatsEncoder
-from ml.models.sed_factory import embedding_head, panns_encoder, sed_model
+from ml.models.frame_mn_finetune import FRAME_MN10_STRONG_1_SHA256
+from ml.models.sed_factory import embedding_head, frame_mn_model, panns_encoder, sed_model
 from ml.taxonomy import load_taxonomy
 from ml.training.common import (
     create_run_directory,
@@ -88,13 +96,21 @@ RECIPES: dict[str, dict[str, object]] = {
             "filter_augment_p": 0.0, "random_crop": True, "pos_weight_cap": 10.0,
             "time_pooling": None, "rnn_hidden": 256, "rnn_layers": 2,
             "upsample": "after_rnn", "model_version": "sed-t2a-v1.0"},
+    # ADR-0032 §3: frame_mn10 fine-tune toàn bộ, một lr cho cả mạng (pilot chọn); chỉ mixup.
+    "t2b": {"epochs": 30, "learning_rate": 0.0003, "encoder_learning_rate": None,
+            "warmup_epochs": 1, "cosine_decay": True,
+            "select_metric": "macro_average_precision", "mixup_p": 0.5,
+            "filter_augment_p": 0.0, "random_crop": True, "pos_weight_cap": 10.0,
+            "time_pooling": None, "rnn_hidden": None, "rnn_layers": None,
+            "upsample": None, "model_version": "sed-t2b-v1.0"},
 }
 
 # ADR-0020 §2: feature set đi theo encoder, không tách cờ riêng. Với `beats`, feature set chỉ
 # cho lưới cửa sổ/nhãn (trùng v2); đầu vào thật là cache waveform 16 kHz.
 ENCODER_FEATURE_SET = {"audio": "logmel_v1", "panns": "logmel_panns_v1",
-                       "beats": "logmel_panns_v1"}
-ENCODER_FRAME_RATE = {"audio": 50.0, "panns": 100.0, "beats": 100.0}
+                       "beats": "logmel_panns_v1", "frame_mn": "logmel_panns_v1"}
+ENCODER_FRAME_RATE = {"audio": 50.0, "panns": 100.0, "beats": 100.0, "frame_mn": 100.0}
+WAVEFORM_ENCODERS = ("beats", "frame_mn")
 WAVEFORM_ROOT = ROOT / "data" / "cache" / "datased_wav16k"
 WAVEFORM_MANIFEST = ROOT / "data" / "manifests" / "datased_wav16k.csv"
 # ADR-0020 §3: cùng cửa sổ/hop THEO GIÂY (10 s / 10 s, không overlap) giữa các nhánh.
@@ -130,7 +146,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rnn-layers", type=int, default=None)
     parser.add_argument("--upsample", choices=("before_rnn", "after_rnn"), default=None)
     parser.add_argument("--seed", type=int, default=20260922)
-    parser.add_argument("--encoder", choices=("audio", "panns", "beats"), default="audio")
+    parser.add_argument("--encoder", choices=("audio", "panns", "beats", "frame_mn"),
+                        default="audio")
+    parser.add_argument(
+        "--frame-mn-checkpoint", type=Path, default=None,
+        help="Track 2b (--encoder frame_mn): PretrainedSED frame_mn10_strong_1.pt, kiểm SHA-256",
+    )
     parser.add_argument(
         "--beats-checkpoint", type=Path, default=None,
         help="Track 2a (--encoder beats): PretrainedSED BEATs_strong_1.pt, kiểm SHA-256",
@@ -157,6 +178,15 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_checkpoint_flags(args: argparse.Namespace) -> None:
+    has_frame_mn = getattr(args, "frame_mn_checkpoint", None) is not None
+    if args.encoder == "frame_mn":
+        if (args.audioset_checkpoint or args.datasec_checkpoint or args.beats_checkpoint
+                or not has_frame_mn):
+            raise SystemExit("--encoder frame_mn cần --frame-mn-checkpoint và không nhận "
+                             "checkpoint khác -- ADR-0032 §3")
+        return
+    if has_frame_mn:
+        raise SystemExit("--frame-mn-checkpoint chỉ dùng với --encoder frame_mn")
     has_beats = args.beats_checkpoint is not None
     if args.encoder == "beats":
         if args.audioset_checkpoint or args.datasec_checkpoint or not has_beats:
@@ -216,6 +246,38 @@ def validate_track2a(args: argparse.Namespace, knobs: dict[str, object]) -> None
                          "áp được lên embedding")
     if knobs["encoder_learning_rate"] is not None:
         raise SystemExit("BEATs đóng băng -- không có lr encoder (ADR-0032 §2)")
+
+
+def validate_track2b(args: argparse.Namespace, knobs: dict[str, object]) -> None:
+    """ADR-0032 §3 guards for the fine-tuned frame_mn branch (and its recipe)."""
+    if (args.recipe == "t2b") != (args.encoder == "frame_mn"):
+        raise SystemExit("--recipe t2b chỉ đi với --encoder frame_mn, và ngược lại (ADR-0032 §3)")
+    if args.encoder != "frame_mn":
+        return
+    if args.evaluate_test:
+        raise SystemExit("Track 2b không --evaluate-test: logit test chỉ qua dump_predictions "
+                         "sau khi vòng chọn cuối đã commit (ADR-0031 §4)")
+    if knobs["filter_augment_p"]:
+        raise SystemExit("FilterAugment cần log-mel đầu vào; frame_mn tự tính mel trong model")
+    if knobs["encoder_learning_rate"] is not None:
+        raise SystemExit("T2b: một lr cho cả mạng, chọn bằng pilot (ADR-0032 §3)")
+
+
+def fine_tuned_frame_mn(checkpoint: Path, window_frames: int, classes: int,
+                        expected_sha256: str = FRAME_MN10_STRONG_1_SHA256
+                        ) -> tuple[torch.nn.Module, dict[str, object]]:
+    """frame_mn10 with a fresh 21-class head (ADR-0032 §3) and its manifest provenance."""
+    model = frame_mn_model({"window_frames": window_frames}, classes)
+    report = model.load_pretrained(checkpoint, expected_sha256=expected_sha256)
+    return model, {
+        "weight_source": "pretrainedsed:frame_mn10_strong_1",
+        "checkpoint_path": str(checkpoint),
+        "checkpoint_sha256": report.checkpoint_sha256,
+        "encoder_frozen": False,
+        "encoder_parameters": report.loaded_parameters,
+        "input": "waveform_16k",
+        "waveform_manifest_sha256": sha256_file(WAVEFORM_MANIFEST),
+    }
 
 
 def split_dataset(joined: pd.DataFrame, events: pd.DataFrame, split: str, *,
@@ -347,7 +409,9 @@ def main() -> None:
 
     knobs = resolve_recipe(args)
     validate_track2a(args, knobs)
+    validate_track2b(args, knobs)
     is_beats = args.encoder == "beats"
+    is_waveform = args.encoder in WAVEFORM_ENCODERS
     feature_set = ENCODER_FEATURE_SET[args.encoder]
     frame_rate = ENCODER_FRAME_RATE[args.encoder]
     window_frames = round(WINDOW_SECONDS * frame_rate)
@@ -378,7 +442,7 @@ def main() -> None:
             frame_rate=frame_rate, window_frames=config.window_frames,
             hop_frames=config.hop_frames,
             random_crop=bool(knobs["random_crop"]) and split == "train",
-            waveform=is_beats,
+            waveform=is_waveform,
         )
         loaders[split] = make_loader(dataset, batch_size=config.batch_size,
                                      shuffle=split == "train", device=device, encoder=frozen)
@@ -395,6 +459,9 @@ def main() -> None:
         weight_info = beats_info
         model = embedding_head({**knobs, "embedding_dim": EMBED_DIM,
                                 "window_frames": config.window_frames}, len(class_ids))
+    elif args.encoder == "frame_mn":
+        model, weight_info = fine_tuned_frame_mn(args.frame_mn_checkpoint,
+                                                 config.window_frames, len(class_ids))
     elif args.encoder == "panns":
         encoder, weight_info = build_encoder(args, knobs)
         model = sed_model(knobs, len(class_ids), encoder)

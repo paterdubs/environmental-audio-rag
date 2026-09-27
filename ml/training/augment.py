@@ -1,9 +1,10 @@
 """Batch augmentation for SED training (ADR-0030): mixup and FilterAugment.
 
 Both act on a batch of normalised log-mel windows ``[batch, 1, mel, frames]`` on the
-training device, after loading and before the model. Features are `power_to_db` scaled to
-[0, 1] with 1 unit = `top_db` dB (`ml/features/logmel.py`), so a filter gain of g dB is an
-**additive** g / top_db — the log-domain form of applying a filter.
+training device, after loading and before the model. Mixup also accepts 16 kHz waveform
+windows ``[batch, samples]`` (Track 2b computes its own mel inside the model). Features are
+`power_to_db` scaled to [0, 1] with 1 unit = `top_db` dB (`ml/features/logmel.py`), so a filter
+gain of g dB is an **additive** g / top_db — the log-domain form of applying a filter.
 
 * **Mixup** (Zhang et al. 2018; applied to log-mel as in PANNs, Kong et al. 2020): each
   window is mixed with a shuffled partner, λ ~ Beta(α, α); targets mix with the same λ
@@ -27,7 +28,8 @@ def mixup(features: Tensor, targets: Tensor, valid: Tensor, *, alpha: float = 0.
     batch = features.shape[0]
     lam = torch.distributions.Beta(alpha, alpha).sample((batch,)).to(features.device)
     partner = torch.randperm(batch, device=features.device)
-    weight_x = lam.view(batch, 1, 1, 1).to(features.dtype)
+    # log-mel [batch, 1, mel, frames] or waveform [batch, samples] (Track 2b, ADR-0032 §3)
+    weight_x = lam.view(batch, *([1] * (features.dim() - 1))).to(features.dtype)
     weight_y = lam.view(batch, 1, 1).to(targets.dtype)
     mixed = weight_x * features + (1 - weight_x) * features[partner]
     mixed_targets = weight_y * targets + (1 - weight_y) * targets[partner]
