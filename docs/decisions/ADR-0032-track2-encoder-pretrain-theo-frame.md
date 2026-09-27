@@ -192,6 +192,44 @@ vòng lặp cha; `rc=$?` bị lệnh xen giữa ghi đè), chạy lại sạch t
 Không có gì ở đây mở test hay đổi hệ thống đang phục vụ. (f1)/(f3) vào vòng chọn cuối S13 cùng
 (a)–(e), theo đúng ADR-0031 §4.
 
+### 10. Track 2b — nguồn, chỗ làm khác bản nháp §3, luật pilot (ghi 27/09 trước khi có số)
+
+**Nguồn đã ghim.**
+- Checkpoint `frame_mn10_strong_1.pt`, release v0.0.1: 15,537,114 B (khớp kích thước release),
+  SHA-256 `4a0fe320d5369987b772394c51881fb20a602967e6842f72f3e5c8181065ece7`. Code kiểm hash
+  này mỗi lần nạp.
+- Mã chép tối thiểu từ commit `1aa47e48` vào `ml/models/external/frame_mn/` (NOTICE.md: SHA-256
+  file gốc, LICENSE MIT của PretrainedSED và EfficientAT, 4 chỗ sửa).
+- Checkpoint gồm 308 tensor encoder (2,971,664 tham số) và hai head AudioSet 447 lớp (bỏ). Tổng
+  3.83M khớp README của PretrainedSED.
+
+**Độ phân giải, đọc từ code (bài không ghi).** Frontend: STFT n_fft 512, Hann 400, hop 160 ở
+16 kHz, mel Kaldi 128 dải 0–7000 Hz, log, `(x + 4.5) / 5` → 1000 frame / 10 s. Stride thời gian
+chỉ ở conv đầu và block 1 (×4), tần số gộp về 1 qua các stride tần số → **250 bước 40 ms thật**,
+960 kênh. Khác BEATs (§7 mục 4), ở đây 40 ms không phải danh nghĩa. Logit mỗi bước lặp (nearest)
+thành 4 frame 10 ms như §2.
+
+**Chỗ làm khác bản nháp §3, có lý do.**
+1. **Frontend luôn ở dạng eval** (fp32, không autocast). Khi train, `AugmentMelSTFT` gốc rút ngẫu
+   nhiên fmin/fmax — đó là augmentation, §3 chỉ giữ mixup từ recipe v2.
+2. **Mixup trên waveform** thay vì trên log-mel như v2, vì mel được tính trong model. `mixup`
+   nhận `[batch, samples]`; với log-mel số học và RNG giữ nguyên (test).
+3. **Không FilterAugment**: cần log-mel ở đầu vào; code chặn.
+4. **Một lr cho cả mạng** (không tách lr encoder/head như v2), đúng §3.
+5. torchvision/torchaudio không thêm vào phụ thuộc: `ConvNormActivation` viết lại giữ thứ tự khoá
+   (nạp `strict=True` là bằng chứng); mel banks qua `kaldi_mel_banks` đã ghim với torchaudio.
+6. Batch size lấy từ đo T0 bước 3, không giả định 24 như T2a.
+
+**Pilot lr (ghi trước khi chạy).**
+- 3 run × 3 epoch, lr ∈ {1e-4, 3e-4, 1e-3}; lr hằng số (`--warmup-epochs 0 --no-cosine-decay`),
+  seed 0, recipe `t2b` cho mọi núm khác (kể cả mixup 0.5); toàn bộ dev.
+- **Luật:** chọn lr có macro-AP frame dev cao nhất ở epoch 3 (`scripts.report_pilot_lr`).
+- Run đầy đủ: recipe `t2b` với lr đã chọn, seed {20260922, 2, 3}, mỗi run trên tree sạch và code
+  train không đổi giữa ba run. Sau mỗi run: CV cả hai họ hậu xử lý. Sau ba run: (f2) T2b × 3 và
+  (f4) T2b × 3 + B-v2 × 3 bằng `build_ensemble --splits dev`, rồi CV. Không mở test.
+
+Kết quả T0 bước 3–4, pilot và run đầy đủ ghi ở §11 khi có.
+
 ## Consequences
 
 ### Tích cực
