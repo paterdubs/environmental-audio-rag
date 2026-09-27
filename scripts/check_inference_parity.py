@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -132,7 +133,8 @@ def render(result: dict) -> str:
         f"# Parity hệ thống phục vụ — `{result['ensemble']}` + `{result['postproc']}`", "",
         "> Sinh bởi `scripts.check_inference_parity` (ADR-0029 §2). So với output đã đóng băng "
         "trên test; không đánh giá lại, không chọn gì.", "",
-        f"| Tầng | Kết quả (n = {len(rows)} recording test, thiết bị `{result['device']}`) |",
+        f"| Tầng | Kết quả (n = {len(rows)} recording test, thiết bị `{result['device']}`, "
+        f"torch `{result.get('torch', '?')}`) |",
         "|---|---|",
         f"| Đặc trưng WAV → log-mel trùng file `.npy` | {s['feature_equal']}/{len(rows)} "
         f"(lệch lớn nhất {s['feature_max_abs']:.3g}) |",
@@ -151,10 +153,21 @@ def render(result: dict) -> str:
     ]) + "\n"
 
 
+def revision() -> dict:
+    """The inference image has no git binary (ADR-0033): the caller passes the host revision."""
+    try:
+        return git_state(ROOT)
+    except FileNotFoundError:
+        if not os.environ.get("GIT_REVISION"):
+            raise RuntimeError("no git binary: set GIT_REVISION (and GIT_DIRTY)") from None
+        return {"revision": os.environ["GIT_REVISION"],
+                "dirty": os.environ.get("GIT_DIRTY", "unknown"), "source": "env"}
+
+
 def main() -> None:
     args = parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    git = git_state(ROOT)
+    git = revision()
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     sed = ServedSed(ENSEMBLE, POSTPROC, taxonomy, torch.device(args.device))
     artifact = load_predictions(ENSEMBLE / "predictions/test.npz",
@@ -175,10 +188,12 @@ def main() -> None:
                "n_within_collar": sum(r["n_within_collar"] for r in rows),
                "event_mismatches": [r["recording_id"] for r in rows if not r["events_equal"]]}
     result = {"ensemble": ENSEMBLE.name, "postproc": POSTPROC, "device": args.device,
+              "torch": torch.__version__,
               "git": git, "summary": summary, "rows": rows,
               "batch_reproduction": batch_reproduction(sed, taxonomy)}
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    out = ROOT / "docs/measurements" / f"inference_parity_{stamp}.md"
+    suffix = "" if args.device == "cuda" else f"_{args.device}"
+    out = ROOT / "docs/measurements" / f"inference_parity{suffix}_{stamp}.md"
     out.with_suffix(".json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     out.write_text(render(result), encoding="utf-8")
     print(render(result))
