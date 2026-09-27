@@ -1,0 +1,263 @@
+{
+  "date": "2026-09-27",
+  "polyphonic_recordings": 703,
+  "monophonic_recordings": 717,
+  "uncovered": {
+    "recordings": [
+      "S-0704",
+      "S-0705",
+      "S-0706",
+      "S-0707",
+      "S-0708",
+      "S-0709",
+      "S-0710",
+      "S-0711",
+      "S-0712",
+      "S-0713",
+      "S-0714",
+      "S-0715",
+      "S-0716",
+      "S-0717"
+    ],
+    "per_split": {
+      "train": {
+        "recordings": [
+          "S-0704",
+          "S-0705",
+          "S-0707",
+          "S-0709",
+          "S-0710",
+          "S-0712",
+          "S-0713",
+          "S-0715"
+        ],
+        "hours": 0.9894737024439406,
+        "mono_events_in_polyphonic_classes": 49
+      },
+      "validation": {
+        "recordings": [
+          "S-0706",
+          "S-0708",
+          "S-0714"
+        ],
+        "hours": 0.3916784265558075,
+        "mono_events_in_polyphonic_classes": 30
+      },
+      "test": {
+        "recordings": [
+          "S-0711",
+          "S-0716",
+          "S-0717"
+        ],
+        "hours": 0.27997263794406657,
+        "mono_events_in_polyphonic_classes": 23
+      }
+    },
+    "wind_turbine_recordings_equal_uncovered": true
+  },
+  "paper": {
+    "files": 712,
+    "last_id": "S-0712",
+    "min_s": 2.29,
+    "max_s": 285.0,
+    "mean_s": 87.18,
+    "total_h": 17.02,
+    "polyphonic_labels": 4034,
+    "monophonic_labels": 4309
+  },
+  "archive": {
+    "files": 717,
+    "last_id": "S-0717",
+    "min_s": 2.2932879818594105,
+    "max_s": 818.3189342403629,
+    "mean_s": 93.81441152193095,
+    "total_h": 18.684703628117916,
+    "polyphonic_labels": 4034,
+    "monophonic_labels": 4309
+  },
+  "table3": [
+    {
+      "class_name": "Bells",
+      "paper_labels": 123,
+      "archive_labels": 123,
+      "paper_sum_s": 1377.7,
+      "archive_sum_s": 1377.72
+    },
+    {
+      "class_name": "Birds",
+      "paper_labels": 225,
+      "archive_labels": 225,
+      "paper_sum_s": 1590.7,
+      "archive_sum_s": 1590.73
+    },
+    {
+      "class_name": "Cat fights and moans",
+      "paper_labels": 138,
+      "archive_labels": 138,
+      "paper_sum_s": 636.2,
+      "archive_sum_s": 636.22
+    },
+    {
+      "class_name": "Chicken coop",
+      "paper_labels": 169,
+      "archive_labels": 169,
+      "paper_sum_s": 559.4,
+      "archive_sum_s": 559.38
+    },
+    {
+      "class_name": "Cicadas and crickets",
+      "paper_labels": 422,
+      "archive_labels": 421,
+      "paper_sum_s": 2695.7,
+      "archive_sum_s": 2695.37
+    },
+    {
+      "class_name": "Crows seagulls and magpies",
+      "paper_labels": 166,
+      "archive_labels": 166,
+      "paper_sum_s": 802.2,
+      "archive_sum_s": 802.24
+    },
+    {
+      "class_name": "Dog barkings and howlings",
+      "paper_labels": 243,
+      "archive_labels": 240,
+      "paper_sum_s": 1214.1,
+      "archive_sum_s": 1212.8600000000001
+    },
+    {
+      "class_name": "Glass breaking",
+      "paper_labels": 121,
+      "archive_labels": 121,
+      "paper_sum_s": 395.1,
+      "archive_sum_s": 395.01
+    },
+    {
+      "class_name": "Horn",
+      "paper_labels": 135,
+      "archive_labels": 133,
+      "paper_sum_s": 353.5,
+      "archive_sum_s": 352.88
+    },
+    {
+      "class_name": "Jet aircrafts",
+      "paper_labels": 100,
+      "archive_labels": 99,
+      "paper_sum_s": 2709.6,
+      "archive_sum_s": 2709.48
+    },
+    {
+      "class_name": "Lawn mower brush cutter and olive shaker",
+      "paper_labels": 140,
+      "archive_labels": 140,
+      "paper_sum_s": 3182.8,
+      "archive_sum_s": 3182.81
+    },
+    {
+      "class_name": "Music",
+      "paper_labels": 160,
+      "archive_labels": 160,
+      "paper_sum_s": 3433.3,
+      "archive_sum_s": 3433.32
+    },
+    {
+      "class_name": "Propeller aircrafts",
+      "paper_labels": 218,
+      "archive_labels": 217,
+      "paper_sum_s": 5219.6,
+      "archive_sum_s": 5219.12
+    },
+    {
+      "class_name": "Sirens and alarms",
+      "paper_labels": 148,
+      "archive_labels": 148,
+      "paper_sum_s": 2790.9,
+      "archive_sum_s": 2790.82
+    },
+    {
+      "class_name": "Thunder fireworks and gunshot",
+      "paper_labels": 145,
+      "archive_labels": 145,
+      "paper_sum_s": 1475.6,
+      "archive_sum_s": 1475.6100000000001
+    },
+    {
+      "class_name": "Train",
+      "paper_labels": 161,
+      "archive_labels": 156,
+      "paper_sum_s": 4801.5,
+      "archive_sum_s": 4800.49
+    },
+    {
+      "class_name": "Vacuum cleaner fan and hairdryer",
+      "paper_labels": 136,
+      "archive_labels": 136,
+      "paper_sum_s": 2369.0,
+      "archive_sum_s": 2368.9500000000003
+    },
+    {
+      "class_name": "Vehicle idling",
+      "paper_labels": 159,
+      "archive_labels": 159,
+      "paper_sum_s": 2511.9,
+      "archive_sum_s": 2511.94
+    },
+    {
+      "class_name": "Vehicle pass-by",
+      "paper_labels": 318,
+      "archive_labels": 318,
+      "paper_sum_s": 3283.2,
+      "archive_sum_s": 3283.1
+    },
+    {
+      "class_name": "Voices",
+      "paper_labels": 344,
+      "archive_labels": 343,
+      "paper_sum_s": 2011.1,
+      "archive_sum_s": 2011.03
+    },
+    {
+      "class_name": "Wind turbine",
+      "paper_labels": 113,
+      "archive_labels": 113,
+      "paper_sum_s": 3833.8,
+      "archive_sum_s": 3833.8
+    },
+    {
+      "class_name": "Workshop",
+      "paper_labels": 439,
+      "archive_labels": 439,
+      "paper_sum_s": 4818.4,
+      "archive_sum_s": 4818.34
+    }
+  ],
+  "dev_impact": [
+    {
+      "label": "(c) v2 ×3",
+      "run": "sed_ensemble_v2_20260926T155630Z",
+      "dev_recordings": 137,
+      "micro_all": 0.21203438395415475,
+      "micro_without_uncovered": 0.2138728323699422,
+      "predicted_events_in_uncovered": 12,
+      "predicted_events_total": 510
+    },
+    {
+      "label": "(d) C-v2 ×3",
+      "run": "sed_ensemble_cv2_20260926T205405Z",
+      "dev_recordings": 137,
+      "micro_all": 0.22410147991543342,
+      "micro_without_uncovered": 0.22617354196301567,
+      "predicted_events_in_uncovered": 13,
+      "predicted_events_total": 533
+    },
+    {
+      "label": "(f1) T2a ×3",
+      "run": "sed_ensemble_t2a_20260927T141952Z",
+      "dev_recordings": 137,
+      "micro_all": 0.21705426356589144,
+      "micro_without_uncovered": 0.21937321937321935,
+      "predicted_events_in_uncovered": 15,
+      "predicted_events_total": 533
+    }
+  ]
+}
