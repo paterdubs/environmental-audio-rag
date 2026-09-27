@@ -56,10 +56,21 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 26/09/2026 — giai đoạn cải thiện SED ([ADR-0030](docs/decisions/ADR-0030-cai-thien-sed-v2.md),
-duyệt 26/09).** Người dùng: đề tài tập trung vào model, nghiên cứu và tối ưu, hướng tới paper →
+**Cập nhật 27/09/2026 (tối) — Track 2a (BEATs đóng băng) xong, chỉ CV dev.** Xem khối SED v2 và
+Track 2 dưới đây; giai đoạn cải thiện gốc ở [ADR-0030](docs/decisions/ADR-0030-cai-thien-sed-v2.md)
+(duyệt 26/09). Người dùng: đề tài tập trung vào model, nghiên cứu và tối ưu, hướng tới paper →
 mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_NOTES.md) và
 [RELATED_WORK.md](docs/RELATED_WORK.md).
+
+- **Track 2a xong 27/09** ([ADR-0032](docs/decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md)
+  §9, Accepted): checkpoint `BEATs_strong_1.pt` (PretrainedSED v0.0.1) đóng băng + head v2 (BiGRU
+  2×256). Pilot chọn lr head **0.001**; 3 seed train + CV dev xong.
+  - Ensemble (f1) T2a×3 CV dev **0.2114 ± 0.0491** — gần bằng (c) v2 đã chọn/test
+    (0.2129 ± 0.0622), dưới (d) C-v2×3 (0.2230 ± 0.0492, chưa test).
+  - (f3) T2a+B-v2 6-model 0.1813 ± 0.0496 — không hơn (f1), lặp lại mẫu hình (e).
+  - cSEBB thua θ global lần thứ ba (v1, v2, giờ T2a) — kết luận âm tính tổng quát.
+  - Không mở test. (f1)/(f3) vào vòng chọn cuối S13 (18/10) cùng (a)–(e).
+  - T2b (`frame_mn10` fine-tune toàn bộ) còn lại, cần cổng T0 riêng (VRAM khác — không đóng băng).
 
 - **Chẩn đoán trên dev** (`sed_ceilings_20260926.md`):
   - Trần event-F1 của kiến trúc v1 là **0.63**: CNN14 trong repo pool thời gian /64 = 0.64 s,
@@ -88,11 +99,12 @@ mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_N
   - Con số chính là event-F1 **macro**, micro kèm; mọi vòng chọn vẫn bằng **micro**.
   - S9 RQ1-v2 (v2 khởi tạo DataSEC × 3 seed) train ngay sau khi chốt v2; test chỉ sau vòng
     chọn cuối.
-  - S10 Track 2 PretrainedSED: cổng khả thi T0 → ADR-0032 → `frame_mn10` × 3 seed.
+  - S10 Track 2 PretrainedSED: cổng khả thi T0 → ADR-0032 → T2a (xong 27/09) → T2b `frame_mn10`.
   - **Mốc đóng băng model 18/10**: vòng chọn cuối ghi trước (ADR-0031 §4); S8 (W5/W6 + phục vụ)
     chạy **một lần** sau mốc; viết báo cáo 19/10–09/11.
-  - ADR-0027, ADR-0029, ADR-0030 → Accepted; cụm từ VI (ADR-0025) duyệt tạm.
-  - Push nhánh phụ `wip/sed-v2`: quyền push bị chặn trong phiên agent → **người dùng tự chạy**.
+  - ADR-0027, ADR-0029, ADR-0030, ADR-0032 → Accepted; cụm từ VI (ADR-0025) duyệt tạm.
+  - Push nhánh phụ `wip/sed-v2`: quyền push bị chặn trong phiên agent → **người dùng tự chạy** (đã
+    push tới `bbae05b` 27/09; commit Track 2a sau đó chưa push).
 
 **Cập nhật:** 25/09/2026 — **mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ
 dự đoán (`7ada7d7`: cửa sổ cuối căn theo cuối audio bị nối thay vì đặt theo offset →
@@ -252,14 +264,14 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
 | W7 (ứng dụng) | ADR-0029 duyệt 26/09; 7.4 image inference, 7.5–7.7 — làm 19/10–02/11, sau S8 |
 | **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
-| **Cải thiện cuối** (ADR-0031) | S9 xong 27/09 03:53 (train+CV dev; test chờ S13); S10 T0 bước 1–2 xong, bước 3–4 chờ duyệt ADR-0032; nợ #24 đóng; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
+| **Cải thiện cuối** (ADR-0031) | S9 xong 27/09 03:53 (train+CV dev; test chờ S13); S10 T2a xong 27/09 tối (ADR-0032 §9), T2b `frame_mn10` còn lại; nợ #24 đóng; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
 | Tài liệu | PretrainedSED đã V3; còn DCASE 2016 T3, bài DataSED ở V2 (nợ #21) |
 
 ### Chưa có ○
 
-ADR-0032 Accepted (chờ duyệt; T0 bước 3–4, cần tải checkpoint BEATs ~364 MB) · giải thích vì sao
-PSDS không tăng (PAPER_NOTES §6 #8) · bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo cáo
-luận văn (L3).
+T2b `frame_mn10` (fine-tune toàn bộ, cần T0 riêng — VRAM khác hẳn T2a đóng băng) · giải thích vì
+sao PSDS không tăng (PAPER_NOTES §6 #8) · bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo
+cáo luận văn (L3).
 
 ### Việc tiếp theo — theo thứ tự
 
@@ -267,13 +279,14 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
 
 1. ~~S9 RQ1-v2~~ — ✅ 27/09 03:53: 3 run C-v2 xong; ensemble (d)/(e) + CV dev xong 04:42
    (PAPER_NOTES S26–S27). Test 6 run này vẫn **chờ S13**, không mở sớm hơn.
-2. **S10 Track 2** (ADR-0032, còn Proposed): T0 bước 3–4 cho T2a (BEATs đóng băng + head v2) đòi
-   tải checkpoint ngoài và quyết định thiết kế thật (chọn BEATs so với ATST-F, cách cache
-   embedding) — **để người dùng xem ADR-0032 trước khi tôi tải/viết code**, không tự ý làm tiếp
-   trong lúc không ai giám sát. Sau khi duyệt: T0 bước 3–4 → 3 seed T2a → T2b (`frame_mn10`).
+2. ~~S10 Track 2 — T2a~~ — ✅ 27/09 tối (ADR-0032 §9, PAPER_NOTES S28–S29): BEATs đóng băng +
+   head v2, pilot lr=0.001, 3 seed, ensemble (f1) 0.2114±0.0491 (gần bằng (c), dưới (d)), (f3)
+   0.1813±0.0496. cSEBB thua θ global lần 3. Chỉ CV dev, chưa mở test.
+   **T2b** (`frame_mn10` fine-tune toàn bộ) còn lại — cần cổng T0 riêng (VRAM không đóng băng
+   khác hẳn T2a) trước khi chạy đủ seed.
 3. ~~Nợ #24~~ — ✅ 27/09 (`4135d17`). Giải thích S21 (PSDS) trên dev — còn mở.
-4. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e) đã có CV dev,
-   sẵn sàng vào vòng chọn cùng ứng viên Track 2.
+4. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)/(f3) đã
+   có CV dev, sẵn sàng vào vòng chọn cùng nhau.
 5. Sau 18/10: S8 một lần → W7 7.4–7.7 → L2 → viết báo cáo.
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
@@ -528,6 +541,38 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-27 (tối) — Track 2a (BEATs đóng băng) xong; sự cố hàng đợi tự sửa
+
+Người dùng duyệt push (`bbae05b` → `wip/sed-v2`) và duyệt Track 2 thật ("tải checkpoint BEATs và
+làm Track 2 thật"). Tải `BEATs_strong_1.pt` (PretrainedSED v0.0.1), SHA-256 `db13a79a…` khớp kích
+thước release; chép tối thiểu mã BEATs @`1aa47e48` (MIT) vào `ml/models/external/beats/`, viết
+fbank Kaldi bằng torch (`ml/features/kaldi_fbank.py`, trùng bit torchaudio 2.11.0), wrapper đóng
+băng (`ml/models/beats_frozen.py`), head v2 dùng lại trên embedding (`ml/models/embedding_sed.py`),
+dataset waveform cùng lưới cửa sổ/nhãn v2 (`ml/datasets/waveforms.py`), loader chạy encoder đóng
+băng trong đường dữ liệu (`ml/training/encoded.py`). Nối vào `train_sed.py`/`dump_predictions.py`
+qua `--encoder beats --recipe t2a`. Commit `52f2f45`; T0 bước 3–4 xong (`7437760`): VRAM 1.6 GB
+batch 24, ~64 s mã hoá/epoch, 1 epoch dev hết đường ống trùng bit.
+
+**Sự cố tự bắt và tự sửa**: hàng đợi pilot lr đầu tiên hỏng — `report_pilot_lr.py` in bảng tiếng
+Việt ra console cp1252 Windows, vỡ `UnicodeEncodeError` *sau khi* đã ghi đúng file `.json`/`.md`
+(dữ liệu không mất), nhưng làm hàng đợi đọc biến lr ra rỗng và chạy tiếp 3 run "chính thức" với
+`--learning-rate ""` — lỗi argparse ngay lập tức, chưa chạm GPU, không tạo run nào. Kiểm bằng
+`git log`/đọc trực tiếp file report trước khi kết luận: dữ liệu pilot đúng (lr=0.001 chọn đúng
+luật), chỉ commit message và biến shell bị ảnh hưởng. Sửa `sys.stdout.reconfigure(utf-8)`, sửa
+amend message commit pilot, và viết lại script hàng đợi (bug thật thứ hai: `exit` trong subshell
+của command substitution không dừng được vòng lặp cha — mọi lần thất bại chỉ lặng lẽ tiếp tục với
+biến rỗng; bug thứ ba: `rc=$?` bị `$(date …)` xen giữa ghi đè thành 0). Chạy lại sạch từ đầu.
+
+3 seed T2a (lr 0.001) train + CV xong (mỗi seed ~2.5 giờ — chậm hơn ước tính T0 vì T0 chỉ đo
+encoder thuần, chưa tính I/O `num_workers=0` + backward head + eval train/dev mỗi epoch). Ensemble
+(f1) T2a×3 CV dev **0.2114 ± 0.0491** — gần bằng (c) v2 đã chọn/test (0.2129 ± 0.0622), dưới (d)
+C-v2×3 (0.2230 ± 0.0492). (f3) T2a+B-v2 6-model 0.1813 ± 0.0496 — không hơn (f1), lặp lại mẫu hình
+(e). cSEBB thua θ global lần thứ ba liên tiếp (v1, v2, giờ T2a) — đủ chắc để viết thành kết luận
+âm tính tổng quát (PAPER_NOTES S28–S29). Không mở test; (f1)/(f3) vào vòng chọn cuối S13.
+
+Gate 643 pass (thêm 8 test contract từ 5 run mới), 4 skip. T2b (`frame_mn10` fine-tune toàn bộ)
+còn lại, cần cổng T0 riêng vì không đóng băng nên VRAM khác hẳn.
 
 ### 2026-09-27 (đêm, tự động) — S9 xong; ensemble (d)/(e) + CV dev; sửa nợ #24
 

@@ -152,6 +152,46 @@ Ghi ở đây để khỏi mở rộng giữa chừng:
 - Sau ba run: dựng (f1) T2a × 3 và (f3) T2a × 3 + B-v2 × 3 bằng `build_ensemble --splits dev`,
   rồi CV. Không mở test (ADR-0031 §4).
 
+### 9. Kết quả T2a (27/09, chỉ CV dev — không mở test)
+
+Pilot chọn lr **0.001** (AP dev epoch 3: 0.7248 / 0.7372 / 0.7203 cho lr 3e-4/1e-3/3e-3). 3 seed
+train xong trên tree sạch `7036028`, mỗi seed CV cả hai họ hậu xử lý:
+
+| Ứng viên | CV dev global (đã chọn) | cSEBB tốt nhất |
+|---|---:|---:|
+| T2a seed 20260922 | 0.2015 ± 0.0497 | 0.1502 ± 0.0836 |
+| T2a seed 2 | 0.1922 ± 0.0434 | 0.1212 ± 0.0333 |
+| T2a seed 3 | 0.1953 ± 0.0580 | 0.1295 ± 0.0583 |
+| **(f1) T2a × 3 seed** | **0.2114 ± 0.0491** | 0.1333 ± 0.0372 |
+| (f3) T2a + B-v2 (6-model) | 0.1813 ± 0.0496 | 0.1486 ± 0.0676 |
+
+So với các ứng viên đã có (ADR-0030 §9, ADR-0031 §4): (c) v2 ensemble đã chọn/test
+0.2129 ± 0.0622 (test 0.1476); (d) C-v2 ensemble 0.2230 ± 0.0492 (cao nhất tới nay, chưa test).
+
+**Đọc kết quả:**
+- (f1) nằm trong khoảng nhiễu của (c) — một encoder **hoàn toàn đóng băng** (chỉ train
+  BiGRU+linear, ~3.3M/90.4M tham số) đạt gần bằng một CNN14 **fine-tune toàn bộ**. Khớp đúng
+  phát hiện gốc của PretrainedSED (frozen gần fine-tune trên DESED), giờ có thêm bằng chứng
+  trên DataSED/dữ liệu môi trường — miền khác, kiến trúc head khác (BiGRU 2×256 thay vì
+  attention head của bài gốc).
+- (f1) vẫn thấp hơn (d). Không kết luận Track 2 "thắng" — cả (d) và (f1) là ứng viên ngang
+  hàng cho S13, chưa ứng viên nào qua test.
+- (f3) thấp hơn (f1), lặp lại đúng mẫu hình (e) thấp hơn (d): trộn hai họ khởi tạo/encoder khác
+  nhau vào một ensemble không giúp trên CV dev ở giai đoạn này.
+- cSEBB thua θ global ở **mọi** run T2a — lần thứ ba liên tiếp trên ba họ kiến trúc khác hẳn
+  nhau (CNN v1, CNN+GRU cải tiến v2, transformer đóng băng T2a). Đủ chắc để viết thành một kết
+  luận âm tính tổng quát trong paper (PAPER_NOTES S29).
+
+**Sự cố vận hành, không phải khoa học:** hàng đợi pilot đầu tiên (27/09 tối) hỏng vì
+`scripts/report_pilot_lr.py` in bảng tiếng Việt ra console cp1252 (Windows), vỡ
+`UnicodeEncodeError` sau khi đã ghi đúng file `.json`/`.md`, làm hàng đợi đọc ra lr rỗng và 3 run
+"chính thức" đầu tiên lỗi tham số dòng lệnh (chưa chạm GPU, không tạo run, không mất dữ liệu).
+Đã sửa `sys.stdout.reconfigure(utf-8)` và hai lỗi shell (exit trong subshell không dừng được
+vòng lặp cha; `rc=$?` bị lệnh xen giữa ghi đè), chạy lại sạch từ đầu bước 3 seed.
+
+Không có gì ở đây mở test hay đổi hệ thống đang phục vụ. (f1)/(f3) vào vòng chọn cuối S13 cùng
+(a)–(e), theo đúng ADR-0031 §4.
+
 ## Consequences
 
 ### Tích cực

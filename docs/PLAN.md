@@ -187,7 +187,7 @@ và [RELATED_WORK.md](RELATED_WORK.md).
 | S7 | Phân bố xác suất + sai số biên có artifact (v1 vs v2) + event-F1 macro | ✅ `boundary_errors_20260926`, `sed_ceilings_v2_20260926`, `event_f1_macro_20260926`; bootstrap ghép cặp v2 − v1 +0.0536 [+0.0261, +0.0853] |
 | S8 | Chạy lại W5 e2e, W6 RQ3 trên event của hệ thống thắng vòng chọn cuối; đổi hệ thống phục vụ + parity 7.1. **Một lần, sau mốc 18/10** (ADR-0031 §6); không cần nếu ensemble C v1 thắng | ○ sau 18/10 |
 | S9 | RQ1-v2: v2 khởi tạo DataSEC × 3 seed {20260922, 2, 3}; thiết kế và phân tích ghi trước (ADR-0031 §2). Train ngay sau S6; test chỉ sau khi vòng chọn cuối commit. Công cụ: `--evaluation-name`/`--postproc-name` + cột macro cho `report_rq1_multiseed`, `report_multirun_bootstrap` — ✅ 26/09. Script hàng đợi `s9_queue.sh` — ✅ 27/09 03:53: 3 run xong, tree sạch, code train trùng `e808df4`. Ensemble (d)/(e) + CV dev xong 04:42 (PAPER_NOTES S26–S27); **d có CV dev cao nhất trong mọi ứng viên non-Track2 tới nay** | ✅ train+CV dev xong; test 6 run chờ S13 |
-| S10 | Track 2 PretrainedSED: T0 cổng khả thi (nguồn V3, license checkpoint, VRAM, 1 epoch dev hết đường ống) → ADR-0032 → 3 seed. Thứ tự đổi ở [ADR-0032](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md): **T2a BEATs strong đóng băng + head v2** trước, T2b `frame_mn10` fine-tune sau; ứng viên (f1)–(f4) ghi trước | ◐ T0 bước 1–2 xong 26/09 tối (V3 + license); bước 3–4 (GPU rảnh từ 27/09 03:53) chờ ADR-0032 duyệt |
+| S10 | Track 2 PretrainedSED: T0 cổng khả thi (nguồn V3, license checkpoint, VRAM, 1 epoch dev hết đường ống) → ADR-0032 → 3 seed. Thứ tự đổi ở [ADR-0032](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md): **T2a BEATs strong đóng băng + head v2** trước, T2b `frame_mn10` fine-tune sau; ứng viên (f1)–(f4) ghi trước | ◐ T2a **xong 27/09** (T0, pilot lr=0.001, 3 seed, ensemble (f1)/(f3), CV dev — ADR-0032 §9: (f1) 0.2114±0.0491 gần bằng (c), dưới (d)); T2b `frame_mn10` (fine-tune toàn bộ, cần T0 riêng) còn lại |
 | S11 | Lớp hiếm: loss focal hoặc asymmetric thay `pos_weight` trên họ model đang dẫn; ứng viên ghi trước run (ADR-0031 §5) | ○ sau Track 2, nếu còn thời gian |
 | S12 | Seed thêm (2, 3) cho ablation có \|Δ\| trong 0.5–1.5 lần ngưỡng nhiễu (ADR-0031 §5) | ✅ không cần: tỷ lệ 1.6 (pool /64), 0.24 (trần 50), 0.13 (không augmentation) |
 | S13 | Vòng chọn cuối tại mốc 18/10: CV dev micro, commit trước test, test một lần mọi ứng viên mới và 6 run RQ1-v2 (ADR-0031 §4) | ○ 18/10 |
@@ -280,7 +280,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 
 | # | Task | Khi nào | Trạng thái |
 |---:|---|---|---|
-| L1 | Push nhánh phụ `wip/sed-v2` (sao lưu 43 commit + chạy CI); master trên remote chỉ nhận tuần đã xong | 26/09 | ○ |
+| L1 | Push nhánh phụ `wip/sed-v2` (sao lưu commit + chạy CI); master trên remote chỉ nhận tuần đã xong | 26/09 | ◐ push tới `bbae05b` (27/09, người dùng cho phép); commit Track 2a sau đó chưa push |
 | L2 | Chuyển câu hỏi tự nhiên thành bộ lọc: Qwen + grammar như ADR-0023, ADR riêng; đo độ chính xác parse trên query set v2, rồi RQ3 với bộ lọc parse được. Số RQ3 sẽ **thấp đi** vì hiện dùng bộ lọc có sẵn (evaluation_protocol §12 #6) | 19/10–02/11 | ○ |
 | L3 | Viết báo cáo luận văn (khung: SYSTEM.md; số: measurements; dẫn chứng: PAPER_NOTES) | 19/10–09/11 | ○ |
 | L4 | Slide bảo vệ | 03–09/11 | ○ |
