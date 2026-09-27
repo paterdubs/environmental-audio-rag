@@ -429,6 +429,108 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 
 ---
 
+## Runbook đêm 27→28/09 — bàn giao cho phiên tự động
+
+Người dùng (27/09 22:40): tạm dừng "Cải thiện cuối" ở S10/T2a để hoàn thiện demo (W7 7.4); sau đó
+uỷ quyền chạy tự động hoàn toàn qua đêm. Thứ tự ưu tiên **cố định, không đảo**:
+
+### P1 — Hoàn thành W7 7.4 (container hoá inference, ADR-0033) — CHƯA build/test
+
+Code đã viết xong, **chưa chạy build lần nào** (`b7c97d4`, đã push `wip/sed-v2`). Trạng thái lúc
+dừng: Docker Desktop vừa khởi động xong (`docker info` trả về server 29.3.1), đĩa D **7.9 GB
+trống** — theo dõi sát, dừng ngay nếu xuống dưới ~2 GB thay vì cố chạy tiếp.
+
+1. `docker compose --profile app build inference api` — theo dõi `df -h /d` trong lúc build (kéo
+   torch CPU + base image). Nếu lỗi thiếu gói, sửa `requirements-inference.txt` (đối chiếu grep
+   import như ADR-0033 §3 đã làm, không đoán).
+2. `docker compose --profile app up -d --wait` — chờ cả `db`, `inference`, `api` healthy.
+   `inference` không publish port ra host; kiểm bằng
+   `docker compose exec inference curl -f http://localhost:8001/health`, hoặc thêm tạm
+   `ports: ["8001:8001"]` vào compose để debug từ host rồi bỏ lại nếu không cần cho demo cuối.
+3. Test end-to-end thật: đọc `SYSTEM.md §4.4` cho đúng endpoint `api` (`/api/v1/...`), upload một
+   file WAV thật (ví dụ một file trong `data/raw/datased/extracted`, đã mount read-only vào
+   container `api`) qua `curl` tới `http://localhost:8088`, xem có ra timeline + caption +
+   document như phục vụ trên host trước đây (`inference_parity_20260925.md`) không.
+4. Đo parity CPU (ADR-0033 ghi rõ đây là hạn chế chưa đo): chạy
+   `.venv/Scripts/python.exe -m scripts.check_inference_parity --device cpu` **trên host** (không
+   cần qua Docker) để có số so với CUDA đã đo ở ADR-0029 §7. Ghi
+   `docs/measurements/inference_parity_cpu_<ngày>.md`, dẫn vào ADR-0033.
+5. Cập nhật `PLAN.md` W7 7.4 → ✅ kèm bằng chứng, `STATUS.md`, `CLAUDE.md` §3/§10. Gate
+   (`ruff` + `pytest`) trước khi commit. Không push (để người dùng tự chạy khi rảnh, như thường
+   lệ — quyền push của agent bị chặn ngoài phiên có người xác nhận trực tiếp).
+6. Nếu build/parity lộ ra lỗi thật trong `services/inference` hay `ml/inference` (không phải lỗi
+   hạ tầng Docker) — sửa, viết test khoá lại, đúng kỷ luật thường lệ của dự án.
+
+**Không làm ở P1:** không đổi hệ thống SED đang phục vụ (`sed_ensemble_C_clean_20260925T045631Z`,
+ADR-0029 §1) — việc đó chỉ đổi một lần ở S8, sau mốc 18/10.
+
+### P2 — Chỉ khi P1 xong hoàn toàn và còn thời gian: T2b (`frame_mn10`)
+
+Track 2b **chưa bắt đầu gì** — chưa tải checkpoint, chưa viết wrapper. Làm đúng theo khuôn T2a
+(ADR-0032 §2-§4, §7-§8), nhưng **đây là fine-tune toàn bộ, không đóng băng** — hồ sơ VRAM khác
+hẳn, không được giả định giống T2a.
+
+1. Tải `frame_mn10_strong_1.pt` từ `https://github.com/fschmid56/PretrainedSED/releases/download/v0.0.1/frame_mn10_strong_1.pt`
+   vào `artifacts/checkpoints/`, ghi SHA-256 + kích thước vào ADR-0032 (đối chiếu với API GitHub
+   release, như đã làm với BEATs — dùng `curl -s https://api.github.com/repos/fschmid56/PretrainedSED/releases/tags/v0.0.1`,
+   để ý rate-limit ẩn danh 60 request/giờ).
+2. Đọc trực tiếp mã nguồn `models/frame_mn/{model.py,block_types.py,utils.py,Frame_MN_wrapper.py}`
+   tại commit đã ghim `1aa47e482f7e89904cba2338999345025d8b4e36` — xác định đúng độ phân giải thời
+   gian gốc của frame_mn (bảng trong bài không liệt kê S cho frame_mn, phải đọc code) trước khi
+   quyết định cách đưa logit lên lưới 10 ms.
+3. Vendor tối thiểu vào `ml/models/external/frame_mn/` — same kỷ luật NOTICE.md (SHA-256 file
+   gốc, license EfficientAT MIT, danh sách chỗ sửa) như `ml/models/external/beats/`.
+4. `ml/models/frame_mn_finetune.py`: theo ADR-0032 §3 — thay lớp 447 bằng 21, **không** thêm
+   sequence model (kiểu student trong bài, khác T2a). Nối vào `train_sed.py` qua
+   `--encoder frame_mn --recipe t2b`, tương tự nhánh `beats`/`t2a` nhưng **không** cần
+   `EncodedLoader` (không đóng băng, cả mạng train chung một lượt như `panns`/v2).
+5. **Cổng T0 riêng cho T2b** (ADR-0032 §4): đo VRAM thật ở vài batch size (đừng giả định batch 24
+   như T2a) — full fine-tune một CNN thật tốn hơn frozen-encoder-forward nhiều; 1 epoch dev hết
+   đường ống, `dump_predictions --verify-dev` trùng bit. Ghi
+   `docs/measurements/track2_t0_frame_mn_<ngày>.md`. Nếu không vừa 8 GB ở batch hợp lý, giảm
+   batch, ghi vào ADR, không âm thầm đổi kiến trúc.
+6. Pilot lr (ghi luật **trước** khi chạy, dùng `scripts.report_pilot_lr` đã có, đã sửa lỗi
+   encoding cp1252): ứng viên {1e-4, 3e-4, 1e-3} theo ADR-0032 §3.
+7. 3 seed chính thức {20260922, 2, 3} → CV mỗi seed (`select_postproc_cv --modes global`,
+   `select_sebb_cv`) → ensemble (f2) T2b×3 và (f4) T2b+B-v2 6-model → CV cho cả hai. **Không mở
+   test** cho bất kỳ run/ensemble nào (ADR-0031 §4, chờ S13 18/10).
+8. Ghi ADR-0032 §10 (kết quả T2b), PAPER_NOTES (S3x mới), CLAUDE.md, PLAN.md, STATUS.md — đúng
+   mẫu đã làm cho T2a.
+
+**Bài học đêm 27/09 phải áp dụng cho mọi script hàng đợi mới:**
+- Mọi script Python mới in tiếng Việt ra stdout phải có
+  `sys.stdout.reconfigure(encoding="utf-8", errors="replace")` **đầu `main()`** — console
+  Windows mặc định cp1252, vỡ `UnicodeEncodeError` giữa chừng và làm hỏng biến đọc từ stdout của
+  script gọi nó.
+- Trong script bash hàng đợi: bắt `rc=$?` **ngay dòng sau** lệnh cần đo, không để lệnh nào (kể cả
+  `$(date …)`) xen giữa — `$(...)` chạy subshell và ghi đè `$?` trước khi được đọc.
+- `exit` bên trong một hàm bash được gọi qua `run=$(ham ...)` chỉ thoát **subshell của phép thế
+  lệnh**, không dừng được vòng lặp cha — kiểm kết quả rỗng ở nơi gọi (`if [ -z "$run" ]; then
+  exit; fi`) thay vì trông cậy `exit` trong hàm.
+- Trước khi tin một hàng đợi tự động đã chạy đúng, đọc trực tiếp file kết quả (`.json`) chứ đừng
+  chỉ tin log/biến shell đã truyền qua nhiều lớp.
+
+### P3 — Nếu còn thời gian sau P1 và P2: nợ kỹ thuật #21
+
+Đọc trực tiếp DCASE 2016 Task 3 và bài công bố DataSED (hiện V2, qua tóm tắt) trước khi viết
+Chương 2 — nâng lên V3 trong `RELATED_WORK.md` §2.1, đúng kỷ luật đã áp dụng cho PretrainedSED.
+
+### Ranh giới cứng — không được vượt dù tự động hoàn toàn
+
+- **Không mở test** cho bất kỳ ứng viên nào (RQ1-v2, (d), (e), T2a, T2b) trước khi vòng chọn cuối
+  S13 (18/10) đã commit trên dev. Đây là luật đã ghi trước ở ADR-0031 §4, không phải tuỳ chọn.
+- **Không đổi hệ thống SED đang phục vụ demo** (`sed_ensemble_C_clean_20260925T045631Z`) — đổi
+  một lần duy nhất ở S8, sau mốc 18/10 (ADR-0029 §1).
+- **Không push** — quyền push của agent bị chặn ngoài phiên có người xác nhận trực tiếp; cứ
+  commit đầy đủ, để người dùng tự push khi quay lại.
+- Theo dõi đĩa (`df -h /d`) và RAM trước mỗi bước tốn tài nguyên (build Docker, tải checkpoint,
+  train). Đĩa D chỉ còn ~7.9 GB lúc bàn giao — dừng và báo cáo thay vì cố chạy tiếp nếu xuống
+  dưới ~2 GB.
+- Nếu bất kỳ hàng đợi nào lỗi theo cách không hiểu được nguyên nhân trong vài lần thử — dừng lại,
+  ghi rõ vào CLAUDE.md §10, không lặp lại vô hạn.
+
+---
+
 ## Nhịp làm việc hằng tuần
 
 | Khi nào | Làm gì |
