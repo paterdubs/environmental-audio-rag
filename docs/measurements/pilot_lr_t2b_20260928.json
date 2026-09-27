@@ -1,0 +1,69 @@
+{
+  "rule": "max macro_average_precision at last epoch",
+  "pilots": [
+    {
+      "run": "sed_polyphonic_20260927T171752Z",
+      "learning_rate": 0.0001,
+      "curve": [
+        0.52707799633385,
+        0.6158762740288114,
+        0.6565778895066581
+      ],
+      "recipe": "t2b",
+      "encoder_type": "frame_mn",
+      "seed": 0,
+      "epochs": 3,
+      "warmup_epochs": 0,
+      "cosine_decay": false,
+      "batch_size": 24
+    },
+    {
+      "run": "sed_polyphonic_20260927T172128Z",
+      "learning_rate": 0.0003,
+      "curve": [
+        0.6341017925286626,
+        0.6764194243310333,
+        0.7073290132608646
+      ],
+      "recipe": "t2b",
+      "encoder_type": "frame_mn",
+      "seed": 0,
+      "epochs": 3,
+      "warmup_epochs": 0,
+      "cosine_decay": false,
+      "batch_size": 24
+    },
+    {
+      "run": "sed_polyphonic_20260927T172539Z",
+      "learning_rate": 0.001,
+      "curve": [
+        0.595103980485317,
+        0.6337495502028925,
+        0.6805320724559865
+      ],
+      "recipe": "t2b",
+      "encoder_type": "frame_mn",
+      "seed": 0,
+      "epochs": 3,
+      "warmup_epochs": 0,
+      "cosine_decay": false,
+      "batch_size": 24
+    }
+  ],
+  "chosen": {
+    "run": "sed_polyphonic_20260927T172128Z",
+    "learning_rate": 0.0003,
+    "curve": [
+      0.6341017925286626,
+      0.6764194243310333,
+      0.7073290132608646
+    ],
+    "recipe": "t2b",
+    "encoder_type": "frame_mn",
+    "seed": 0,
+    "epochs": 3,
+    "warmup_epochs": 0,
+    "cosine_decay": false,
+    "batch_size": 24
+  }
+}
