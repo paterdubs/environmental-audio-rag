@@ -108,6 +108,7 @@ def test_retrieval_result_allows_empty_evidence_with_applied_filters() -> None:
     result = {
         "question": "Was glass breaking detected?",
         "filters_applied": {"mode": "hybrid"},
+        "filters_source": "user",
         "answer": "No matching event was found.",
         "evidence": [],
         "documents": [],

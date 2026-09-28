@@ -84,7 +84,7 @@ export interface Filters {
 
 export interface QueryRequest {
   question: string;
-  filters: Filters;
+  filters?: Filters;
   mode: Mode;
   corpus: Corpus;
   language: Language;
@@ -104,6 +104,7 @@ export interface RetrievalResult {
   answer: string;
   evidence: AnswerEvidence[];
   filters_applied: { mode: Mode; hard_filters: Filters; k: number; language: Language };
+  filters_source: "user" | "parsed";
   documents: { recording_id: string; score: number }[];
 }
 

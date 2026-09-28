@@ -21,6 +21,7 @@ from fastapi.staticfiles import StaticFiles
 
 from ml.captioning.lexicon import VI_LEXICON_CONFIG, CaptionLexicon
 from ml.retrieval import store
+from ml.retrieval.query_parser import QueryParser
 from ml.taxonomy import load_taxonomy
 from services.api.app import recordings, retrieval
 from services.api.app.inference import InferenceClient, InferenceUnavailable
@@ -57,7 +58,7 @@ def _database_ok(connect: Callable[[], Any]) -> bool:
 
 
 def create_app(settings: Settings | None = None, inference: Any = None,
-               connect: Callable[[], Any] | None = None) -> FastAPI:
+               connect: Callable[[], Any] | None = None, query_parser: Any = None) -> FastAPI:
     settings = settings or Settings.from_env()
     app = FastAPI(title="environmental-audio api")
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
@@ -66,6 +67,10 @@ def create_app(settings: Settings | None = None, inference: Any = None,
     app.state.settings = settings
     app.state.taxonomy = taxonomy
     app.state.class_names = {"en": labels.__getitem__, "vi": vi.canonical_phrase}
+    parser_labels = {class_id: {"en": labels[class_id], "vi": vi.canonical_phrase(class_id)}
+                     for class_id in taxonomy.polyphonic_class_ids}
+    app.state.query_parser = query_parser or QueryParser.from_config(
+        ROOT / "ml/configs/caption_llm.yaml", parser_labels)
     app.state.inference = inference or InferenceClient(settings.inference_url)
     app.state.connect = connect or (lambda: store.connect(settings.database_url))
     app.include_router(recordings.router)

@@ -44,6 +44,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", choices=("validation", "test"), default="validation")
     parser.add_argument("--device", default=None)
+    parser.add_argument("--parsed-filters", type=Path,
+                        help="measurement JSON của evaluate_query_parser; chỉ dùng template")
+    parser.add_argument("--gold-reference", type=Path,
+                        help="measurement retrieval gold để báo delta nDCG ghép cặp")
     return parser.parse_args()
 
 
@@ -68,7 +72,7 @@ def corpus_ground_truth(split: str) -> dict[str, list]:
     return {rid: ground_truth.get(rid, []) for rid in ids}
 
 
-def run_queries(conn, split, queries, vectors, version, indexed) -> list[dict]:
+def run_queries(conn, split, queries, vectors, version, indexed, parsed=None) -> list[dict]:
     rows = []
     ground_truth = corpus_ground_truth(split)
     for index, query in enumerate(queries):
@@ -77,12 +81,21 @@ def run_queries(conn, split, queries, vectors, version, indexed) -> list[dict]:
             continue
         for mode in store.MODES:
             for language in LANGUAGES:
+                filters = (query["filters"] if parsed is None
+                           else parsed.get((query["query_id"], language)))
+                if filters is None:
+                    rows.append({"query_id": query["query_id"], "group": query["group"],
+                                 "mode": mode, "language": language,
+                                 "n_relevant": len(relevant), "retrieved": [],
+                                 **rank_metrics([], relevant, []), "parse_error": True})
+                    continue
                 vector = vectors[language][index] if mode != "structured_only" else None
-                ranked = store.search(conn, mode, split, query["filters"], vector, version, K)
-                exact = [satisfied(indexed.get(rid, []), query["filters"]) for rid in ranked]
+                ranked = store.search(conn, mode, split, filters, vector, version, K)
+                exact = [satisfied(indexed.get(rid, []), filters) for rid in ranked]
                 rows.append({"query_id": query["query_id"], "group": query["group"],
                              "mode": mode, "language": language, "n_relevant": len(relevant),
-                             "retrieved": ranked, **rank_metrics(ranked, relevant, exact)})
+                             "retrieved": ranked, **rank_metrics(ranked, relevant, exact),
+                             "parse_error": False})
     return rows
 
 
@@ -114,6 +127,28 @@ def summarise(rows: list[dict]) -> dict:
     return {"summary": summary, "paired_ndcg@10": paired}
 
 
+def _parsed_filters(path: Path) -> tuple[dict[tuple[str, str], dict | None], str]:
+    text = path.read_text(encoding="utf-8")
+    payload = json.loads(text)
+    parsed = {(row["query_id"], row["language"]): row["predicted"]
+              for row in payload["predictions"] if row["dataset"] == "template"}
+    return parsed, hashlib.sha256(text.encode()).hexdigest()
+
+
+def compare_gold(rows: list[dict], path: Path) -> dict[str, dict]:
+    gold = json.loads(path.read_text(encoding="utf-8"))["per_query"]
+    lookup = {(row["query_id"], row["mode"], row["language"]): row for row in gold}
+    comparison = {}
+    for mode in store.MODES:
+        for language in LANGUAGES:
+            selected = [row for row in rows if row["mode"] == mode and row["language"] == language]
+            deltas = [row["ndcg@10"] - lookup[(row["query_id"], mode, language)]["ndcg@10"]
+                      for row in selected]
+            comparison[f"{mode}/{language}"] = {
+                "n": len(deltas), "parsed_minus_gold": mean(deltas)}
+    return comparison
+
+
 def render(result: dict) -> str:
     lines = [
         f"# Benchmark retrieval RQ3 — corpus `{result['split']}`", "",
@@ -141,6 +176,12 @@ def render(result: dict) -> str:
               "| So sánh | Δ [CI 95%] |", "|---|---:|"]
     for key, ci in result["paired_ndcg@10"].items():
         lines.append(f"| {key} | {ci['estimate']:+.3f} [{ci['lower']:+.3f}, {ci['upper']:+.3f}] |")
+    if "gold_comparison_ndcg@10" in result:
+        lines += ["", "## So với filter gold trên cùng câu", "",
+                  "> Filter parse lỗi được tính retrieval rỗng, không thay bằng gold.", "",
+                  "| Cấu hình / ngôn ngữ | n | Δ nDCG@10 parsed − gold |", "|---|---:|---:|"]
+        for key, row in result["gold_comparison_ndcg@10"].items():
+            lines.append(f"| {key} | {row['n']} | {row['parsed_minus_gold']:+.3f} |")
     return "\n".join(lines) + "\n"
 
 
@@ -150,6 +191,9 @@ def main() -> None:
     git = git_state(ROOT)
     text = QUERYSET.read_text(encoding="utf-8")
     queries = json.loads(text)
+    parsed, parser_sha = (None, None)
+    if args.parsed_filters is not None:
+        parsed, parser_sha = _parsed_filters(args.parsed_filters)
     embedder = Embedder(device=args.device)
     vectors = {lang: embedder.encode([q[field] for q in queries])
                for lang, field in LANGUAGES.items()}
@@ -157,14 +201,21 @@ def main() -> None:
     indexed = store.indexed_events(conn, args.split)
     sed_run = conn.execute("SELECT DISTINCT model_version FROM events e JOIN recordings r "
                            "USING (recording_id) WHERE r.split = %s", (args.split,)).fetchall()
-    rows = run_queries(conn, args.split, queries, vectors, embedder.version, indexed)
+    rows = run_queries(conn, args.split, queries, vectors, embedder.version, indexed, parsed)
     result = {"split": args.split, "queryset_sha256": hashlib.sha256(text.encode()).hexdigest(),
               "n_queries": len(queries), "n_queries_scored": len({r["query_id"] for r in rows}),
               "embedding_version": embedder.version, "sed_run": ",".join(r[0] for r in sed_run),
               "groups": sorted({q["group"] for q in queries}), "git": git,
               **summarise(rows), "per_query": rows}
+    if parsed is not None:
+        result["parser_measurement"] = str(args.parsed_filters)
+        result["parser_measurement_sha256"] = parser_sha
+    if args.gold_reference is not None:
+        result["gold_reference"] = str(args.gold_reference)
+        result["gold_comparison_ndcg@10"] = compare_gold(rows, args.gold_reference)
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    destination = ROOT / "docs/measurements" / f"retrieval_benchmark_{args.split}_{stamp}.md"
+    kind = "_parsed" if parsed is not None else ""
+    destination = ROOT / "docs/measurements" / f"retrieval_benchmark_{args.split}{kind}_{stamp}.md"
     destination.with_suffix(".json").write_text(json.dumps(result, indent=1, ensure_ascii=False),
                                                 encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")

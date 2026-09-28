@@ -5,10 +5,11 @@
   "description": "A grounded retrieval answer with applied filters and event-level evidence.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["question", "filters_applied", "answer", "evidence", "documents"],
+  "required": ["question", "filters_applied", "filters_source", "answer", "evidence", "documents"],
   "properties": {
     "question": {"type": "string", "minLength": 1},
     "filters_applied": {"type": "object"},
+    "filters_source": {"enum": ["user", "parsed"]},
     "answer": {"type": "string"},
     "evidence": {
       "type": "array",

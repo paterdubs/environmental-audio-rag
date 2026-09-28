@@ -19,6 +19,8 @@ from ml.captioning.template import TemplateCaptioner  # noqa: E402
 from ml.captioning.timeline import canonicalize_timeline  # noqa: E402
 from ml.retrieval import store  # noqa: E402
 from ml.retrieval.document_builder import build_document  # noqa: E402
+from ml.retrieval.filters import Filters  # noqa: E402
+from ml.retrieval.query_parser import ParsedFilters, QueryParserUnavailable  # noqa: E402
 from ml.taxonomy import load_taxonomy  # noqa: E402
 from services.api.app.inference import InferenceUnavailable  # noqa: E402
 from services.api.app.main import Settings, create_app  # noqa: E402
@@ -65,6 +67,16 @@ class FakeInference:
                 "audio": {"sha256": hashlib.sha256(path.read_bytes()).hexdigest()}}
 
 
+class FakeQueryParser:
+    def parse(self, question, language):
+        return ParsedFilters(Filters(classes_all=["birds"]), '{"classes_all":["birds"]}')
+
+
+class DownQueryParser:
+    def parse(self, question, language):
+        raise QueryParserUnavailable("llama.cpp tắt")
+
+
 def wav(seed: int) -> bytes:
     buffer = io.BytesIO()
     noise = np.random.default_rng(seed).normal(0, 0.01, 16000).astype(np.float32)
@@ -72,9 +84,10 @@ def wav(seed: int) -> bytes:
     return buffer.getvalue()
 
 
-def client(tmp_path, inference=None, connect=None) -> TestClient:
+def client(tmp_path, inference=None, connect=None, query_parser=None) -> TestClient:
     settings = Settings(None, "http://unused", tmp_path)
-    return TestClient(create_app(settings, inference or FakeInference(), connect))
+    return TestClient(create_app(settings, inference or FakeInference(), connect,
+                                 query_parser or FakeQueryParser()))
 
 
 def test_api_process_never_imports_torch() -> None:
@@ -92,6 +105,18 @@ def test_request_validation_uses_the_envelope(tmp_path) -> None:
     assert unknown.status_code == 422 and unknown.json()["error"]["code"] == "unknown_class"
     assert no_filter.status_code == 422 and not no_filter.json()["success"]
     assert bad_file.status_code == 415
+
+
+def test_parse_endpoint_and_clear_failure_when_llm_is_down(tmp_path) -> None:
+    api = client(tmp_path, connect=lambda: pytest.fail("no database needed"))
+    parsed = api.post("/api/v1/retrieval/parse", json={"question": "tiếng chim", "language": "vi"})
+    assert parsed.json()["data"] == {"filters": {"classes_all": ["birds"]},
+                                      "raw": '{"classes_all":["birds"]}'}
+    down = client(tmp_path, connect=lambda: pytest.fail("no database needed"),
+                  query_parser=DownQueryParser())
+    response = down.post("/api/v1/retrieval/query", json={"question": "tiếng chim"})
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "query_parser_unavailable"
 
 
 def test_taxonomy_endpoint_lists_the_21_sed_classes_with_both_names(tmp_path) -> None:
@@ -179,10 +204,15 @@ def test_upload_then_read_then_query_round_trip(tmp_path) -> None:
                 "filters": {"temporal": {"predicate": "before", "a": "birds", "b": "horn"}}}
         answer = api.post("/api/v1/retrieval/query", json=body).json()
         assert answer["success"]
+        assert answer["data"]["filters_source"] == "user"
         assert {e["recording_id"] for e in answer["data"]["evidence"]} == {rid}
         missing = api.post("/api/v1/retrieval/query", json={
             **body, "filters": {"temporal": {"predicate": "before", "a": "horn", "b": "birds"}}})
         assert missing.json()["data"]["evidence"] == []
+        parsed = api.post("/api/v1/retrieval/query", json={
+            "question": "tiếng chim", "corpus": "upload", "language": "vi"}).json()
+        assert parsed["success"] and parsed["data"]["filters_source"] == "parsed"
+        assert {e["recording_id"] for e in parsed["data"]["evidence"]} == {rid}
         assert api.get("/api/v1/recordings/upload:none").status_code == 404
     finally:
         conn = store.connect()

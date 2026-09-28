@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Callable, Mapping, Sequence
-from typing import Any
+from typing import Any, Literal
 
 from ml.captioning.lexicon import CaptionLexicon
 from ml.retrieval.relevance import satisfied
@@ -60,7 +60,8 @@ def _seconds(value: float, language: str) -> str:
 
 def answer(question: str, filters: Mapping[str, Any], mode: str, ranked: Sequence[str],
            events: Mapping[str, Sequence[Mapping[str, Any]]], language: str,
-           name: Callable[[str], str], k: int) -> dict[str, Any]:
+           name: Callable[[str], str], k: int,
+           filters_source: Literal["user", "parsed"] = "user") -> dict[str, Any]:
     """Retrieval result (contracts/retrieval_result.schema.json) for one query."""
     words = TEXT[language]
     matched = [(rid, s) for rid in ranked
@@ -76,6 +77,7 @@ def answer(question: str, filters: Mapping[str, Any], mode: str, ranked: Sequenc
             off=_seconds(e["offset_s"], language)) for e in support)
         sentences.append(words["cite"].format(rid=rid, items=items))
     return {"question": question, "answer": " ".join(sentences), "evidence": evidence,
+            "filters_source": filters_source,
             "filters_applied": {"mode": mode, "hard_filters": dict(filters), "k": k,
                                 "language": language},
             "documents": [{"recording_id": rid, "text": "", "score": float(len(ranked) - i)}

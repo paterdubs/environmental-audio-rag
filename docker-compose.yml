@@ -62,6 +62,7 @@ services:
     environment:
       DATABASE_URL: postgresql://app:app@db:5432/environmental_audio
       INFERENCE_URL: http://inference:8001
+      EARAG_LLM_ENDPOINT: http://host.docker.internal:8081
       UPLOAD_DIR: /app/data/uploads
       FRONTEND_DIST: /app/services/frontend/dist
     ports:
