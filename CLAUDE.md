@@ -81,10 +81,11 @@ mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_N
   - (f2) T2b×3: cSEBB **0.2224 ± 0.0417** (global 0.2004); (f4) T2b×3 + B-v2×3: global
     **0.2248 ± 0.0565** — điểm cao nhất tới nay, nhưng chênh (d) 0.2230 < sd → không "tốt hơn".
   - Không mở test. (f2)/(f4) vào S13 cùng (a)–(f3). S10 đóng.
-- **Nợ #25 (CAO, trước S13):** ground truth polyphonic gốc chỉ phủ 703/717 recording; 14 recording
+- **Nợ #25 đã quyết 28/09 — phương án (B), ADR-0034:** từ S13 mọi CV/test chỉ chấm recording có GT
+  (`--eval-set annotated`: dev 134, test 142→139); không train lại, split giữ nguyên. Gốc: ground
+  truth polyphonic gốc chỉ phủ 703/717 recording; 14 recording
   `wind_turbine` S-0704…S-0717 (train 8 / dev 3 / test 3) bị coi là không có sự kiện. Dev: ảnh
-  hưởng +0.002 micro, thứ hạng không đổi (`polyphonic_coverage_20260927.md`). Chưa sửa split —
-  người dùng chọn A/B/C ở PLAN.
+  hưởng +0.002 micro, thứ hạng không đổi (`polyphonic_coverage_20260927.md`).
 
 - **Chẩn đoán trên dev** (`sed_ceilings_20260926.md`):
   - Trần event-F1 của kiến trúc v1 là **0.63**: CNN14 trong repo pool thời gian /64 = 0.64 s,
@@ -299,8 +300,8 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
    ~~T2b~~ — ✅ 28/09 03:56 (ADR-0032 §11, PAPER_NOTES S32–S34): (f2) 0.2224 (cSEBB), (f4)
    0.2248 (global). Chỉ CV dev.
 3. ~~Nợ #24~~ — ✅ 27/09 (`4135d17`). Giải thích S21 (PSDS) trên dev — còn mở.
-4. **Người dùng quyết nợ #25** (14 recording thiếu GT polyphonic, PLAN) — trước S13, vì phương án
-   (B) đổi tập recording dùng để chấm ở vòng chọn.
+4. ~~Người dùng quyết nợ #25~~ — ✅ 28/09, phương án (B) (ADR-0034). CV dev annotated cho 9 ứng
+   viên (a)–(f4) đang chạy; S13 dùng số này.
 5. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)–(f4) đã
    có CV dev, sẵn sàng vào vòng chọn cùng nhau.
 6. Sau 18/10: S8 một lần → W7 7.5–7.7 → L2 → viết báo cáo.
