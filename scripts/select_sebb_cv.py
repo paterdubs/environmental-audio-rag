@@ -26,6 +26,7 @@ from statistics import mean, stdev
 import numpy as np
 import pandas as pd
 
+from ml.evaluation.coverage import EVAL_SETS, eval_suffix, restrict
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_counts_per_recording
 from ml.postprocessing.calibration import DEFAULT_THRESHOLD_GRID, stack_predictions_by_recording
@@ -51,6 +52,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--report", action="store_true",
                         help="ghi thêm báo cáo vào docs/measurements (mặc định chỉ ghi vào "
                              "thư mục run, để chạy song song hàng đợi train mà tree vẫn sạch)")
+    parser.add_argument("--eval-set", choices=EVAL_SETS, default="all",
+                        help="annotated: bỏ recording không có GT polyphonic (ADR-0034)")
     return parser.parse_args()
 
 
@@ -92,10 +95,10 @@ def grid() -> list[SebbParams]:
             for tau in STEP_FILTERS_S for kind, value in MERGES]
 
 
-def load_context(run_dir: Path, n_folds: int) -> dict:
+def load_context(run_dir: Path, n_folds: int, eval_set: str = "all") -> dict:
     class_ids = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml").polyphonic_class_ids
     artifact = load_predictions(run_dir / "predictions/dev.npz", expected_class_ids=class_ids)
-    probabilities = stack_predictions_by_recording(artifact)
+    probabilities = restrict(stack_predictions_by_recording(artifact), eval_set)
     splits = pd.read_csv(ROOT / "data/splits/datased_polyphonic.csv")
     groups = dict(zip(splits["recording_id"].astype(str), splits["leakage_group"], strict=True))
     recordings = sorted(probabilities)
@@ -146,9 +149,9 @@ def cross_validate(ctx: dict, table: np.ndarray, n_folds: int) -> dict:
 _CTX: dict | None = None
 
 
-def _init(run_dir: str, n_folds: int) -> None:
+def _init(run_dir: str, n_folds: int, eval_set: str) -> None:
     global _CTX
-    _CTX = load_context(Path(run_dir), n_folds)
+    _CTX = load_context(Path(run_dir), n_folds, eval_set)
 
 
 def _task(params: SebbParams, n_folds: int) -> tuple[str, dict]:
@@ -159,7 +162,7 @@ def _task(params: SebbParams, n_folds: int) -> tuple[str, dict]:
 def run_grid(args: argparse.Namespace) -> dict:
     start, results = time.monotonic(), {}
     with ProcessPoolExecutor(max_workers=args.workers, initializer=_init,
-                             initargs=(str(args.run_dir), args.folds)) as pool:
+                             initargs=(str(args.run_dir), args.folds, args.eval_set)) as pool:
         futures = [pool.submit(_task, params, args.folds) for params in grid()]
         for future in as_completed(futures):
             label, value = future.result()
@@ -172,8 +175,9 @@ def run_grid(args: argparse.Namespace) -> dict:
 def main() -> None:
     args = parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    name = f"sebb_cv_selection{eval_suffix(args.eval_set)}.json"
     if args.render_only:
-        selection = json.loads((args.run_dir / "sebb_cv_selection.json").read_text(
+        selection = json.loads((args.run_dir / name).read_text(
             encoding="utf-8"))
         print(write_report(args.run_dir, selection))
         return
@@ -184,8 +188,8 @@ def main() -> None:
                  "family": "csebb", "shared_across_classes": True,
                  "selected": {"config": best, **results[best]["params"],
                               "threshold": results[best]["lambda_full_dev"]},
-                 "cv": results, "git": git}
-    (args.run_dir / "sebb_cv_selection.json").write_text(
+                 "cv": results, "git": git, "eval_set": args.eval_set}
+    (args.run_dir / name).write_text(
         json.dumps(selection, indent=1), encoding="utf-8")
     print(json.dumps(selection["selected"], indent=1))
     if args.report:

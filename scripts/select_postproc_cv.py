@@ -26,6 +26,7 @@ from statistics import mean, stdev
 
 import pandas as pd
 
+from ml.evaluation.coverage import EVAL_SETS, eval_suffix, restrict
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_based_f1
 from ml.postprocessing import (
@@ -56,6 +57,9 @@ def parse_args() -> argparse.Namespace:
                         help="ADR-0030 §3: v2 chỉ dùng global (A2: per-class overfit dev)")
     parser.add_argument("--workers", type=int, default=1,
                         help="số tiến trình; >1 chạy song song, kết quả y hệt")
+    parser.add_argument("--eval-set", choices=EVAL_SETS, default="all",
+                        help="annotated: bỏ recording không có GT polyphonic (ADR-0034); file ra "
+                             "có hậu tố _annotated, không đè kết quả cũ")
     return parser.parse_args()
 
 
@@ -86,11 +90,11 @@ def score(predictions, reference, thresholds, class_ids, priors, frame_rate) -> 
     return float(value) if value == value else 0.0
 
 
-def load_context(run_dir: Path, n_folds: int) -> dict:
+def load_context(run_dir: Path, n_folds: int, eval_set: str = "all") -> dict:
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     class_ids = taxonomy.polyphonic_class_ids
     artifact = load_predictions(run_dir / "predictions/dev.npz", expected_class_ids=class_ids)
-    probabilities = stack_predictions_by_recording(artifact)
+    probabilities = restrict(stack_predictions_by_recording(artifact), eval_set)
     frame_rate = 1.0 / artifact.frame_hop_s
     splits = pd.read_csv(ROOT / "data/splits/datased_polyphonic.csv")
     groups = dict(zip(splits["recording_id"].astype(str), splits["leakage_group"], strict=True))
@@ -126,9 +130,9 @@ def run_task(ctx: dict, mode: str, p: float, fold: int | None):
 _WORKER_CTX: dict | None = None
 
 
-def _init_worker(run_dir: str, n_folds: int) -> None:
+def _init_worker(run_dir: str, n_folds: int, eval_set: str) -> None:
     global _WORKER_CTX
-    _WORKER_CTX = load_context(Path(run_dir), n_folds)
+    _WORKER_CTX = load_context(Path(run_dir), n_folds, eval_set)
 
 
 def _worker(task: tuple[str, float, int | None]):
@@ -164,7 +168,7 @@ def run_all(args: argparse.Namespace, ctx: dict) -> dict:
             done(task, run_task(ctx, *task))
         return outputs
     with ProcessPoolExecutor(max_workers=args.workers, initializer=_init_worker,
-                             initargs=(str(args.run_dir), args.folds)) as pool:
+                             initargs=(str(args.run_dir), args.folds, args.eval_set)) as pool:
         futures = [pool.submit(_worker, task) for task in tasks]
         try:
             for future in as_completed(futures):
@@ -182,7 +186,8 @@ def main() -> None:
     manifest = json.loads((args.run_dir / "manifest.json").read_text(encoding="utf-8"))
     metrics = json.loads((args.run_dir / "metrics.json").read_text(encoding="utf-8"))
     git = git_state(ROOT)  # code that produced the selection, recorded before the long run
-    ctx = load_context(args.run_dir, args.folds)
+    ctx = load_context(args.run_dir, args.folds, args.eval_set)
+    suffix = eval_suffix(args.eval_set)
     outputs = run_all(args, ctx)
 
     results = {}
@@ -207,11 +212,13 @@ def main() -> None:
         dev_predictions_sha256=metrics["dev_predictions_sha256"], threshold_mode=mode,
         taxonomy=ctx["taxonomy"],
     )
-    write_postproc_json(args.run_dir / "postproc_cv.json", postproc, taxonomy=ctx["taxonomy"])
+    write_postproc_json(args.run_dir / f"postproc_cv{suffix}.json", postproc,
+                        taxonomy=ctx["taxonomy"])
     report = {"run": args.run_dir.name, "folds": args.folds, "grouping": "leakage_group",
               "selected": {"threshold_mode": mode, "g_max_percentile": p},
-              "cv": results, "git": git, "workers": args.workers, "modes": args.modes}
-    (args.run_dir / "postproc_cv_selection.json").write_text(json.dumps(report, indent=2),
+              "cv": results, "git": git, "workers": args.workers, "modes": args.modes,
+              "eval_set": args.eval_set, "dev_recordings": len(ctx["probabilities"])}
+    (args.run_dir / f"postproc_cv_selection{suffix}.json").write_text(json.dumps(report, indent=2),
                                                              encoding="utf-8")
     print(json.dumps(report["selected"]))
 

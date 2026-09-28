@@ -1,0 +1,15 @@
+recording_id,split,reason
+S-0704,train,absent_from_Polyphonic_sound_detection.csv
+S-0705,train,absent_from_Polyphonic_sound_detection.csv
+S-0706,validation,absent_from_Polyphonic_sound_detection.csv
+S-0707,train,absent_from_Polyphonic_sound_detection.csv
+S-0708,validation,absent_from_Polyphonic_sound_detection.csv
+S-0709,train,absent_from_Polyphonic_sound_detection.csv
+S-0710,train,absent_from_Polyphonic_sound_detection.csv
+S-0711,test,absent_from_Polyphonic_sound_detection.csv
+S-0712,train,absent_from_Polyphonic_sound_detection.csv
+S-0713,train,absent_from_Polyphonic_sound_detection.csv
+S-0714,validation,absent_from_Polyphonic_sound_detection.csv
+S-0715,train,absent_from_Polyphonic_sound_detection.csv
+S-0716,test,absent_from_Polyphonic_sound_detection.csv
+S-0717,test,absent_from_Polyphonic_sound_detection.csv

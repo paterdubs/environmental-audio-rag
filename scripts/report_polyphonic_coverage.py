@@ -24,6 +24,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ml.evaluation.coverage import UNANNOTATED_MANIFEST
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_based_f1
 from ml.postprocessing import (
@@ -173,6 +174,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--run", action="append", default=[], help="nhãn=đường dẫn run")
+    parser.add_argument("--manifest-only", action="store_true",
+                        help="chỉ ghi data/manifests/datased_polyphonic_unannotated.csv (ADR-0034)")
     args = parser.parse_args()
     taxonomy = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
     class_ids = taxonomy.polyphonic_class_ids
@@ -183,6 +186,13 @@ def main() -> None:
     poly = pd.read_csv(ROOT / "data" / "annotations" / "datased_polyphonic_events.csv")
     covered = raw_recordings("Polyphonic")
     uncovered = uncovered_summary(recordings, splits, mono, covered, class_ids)
+    if args.manifest_only:
+        pd.DataFrame({"recording_id": uncovered["recordings"],
+                      "split": [splits[rid] for rid in uncovered["recordings"]],
+                      "reason": "absent_from_Polyphonic_sound_detection.csv"}).to_csv(
+            UNANNOTATED_MANIFEST, index=False, lineterminator="\n")
+        print(f"{UNANNOTATED_MANIFEST}: {len(uncovered['recordings'])} recording")
+        return
     result = {
         "date": date.today().isoformat(),
         "polyphonic_recordings": len(covered),

@@ -17,6 +17,7 @@ from pathlib import Path
 import pandas as pd
 
 from ml.evaluation.bootstrap import recording_bootstrap
+from ml.evaluation.coverage import EVAL_SETS, eval_suffix, restrict
 from ml.evaluation.errors import classify_event_errors
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_based_f1, psds_score
@@ -51,6 +52,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", choices=("test", "dev"), default="test",
                         help="dev: chẩn đoán/ablation (ADR-0030), in-sample vì hậu xử lý "
                              "chọn trên dev; ghi dev_evaluation*.json, sổ test không tính")
+    parser.add_argument("--eval-set", choices=EVAL_SETS, default="all",
+                        help="annotated: chỉ chấm recording có GT polyphonic (ADR-0034); "
+                             "file ra có hậu tố _annotated")
     return parser.parse_args()
 
 
@@ -156,7 +160,7 @@ def bootstrap_event_f1(
 
 
 def _paths(args: argparse.Namespace) -> tuple[Path, Path]:
-    suffix = f"_{args.tag}" if args.tag else ""
+    suffix = (f"_{args.tag}" if args.tag else "") + eval_suffix(getattr(args, "eval_set", "all"))
     if args.split == "dev":
         return (args.run_dir / f"dev_evaluation{suffix}.json",
                 ROOT / "docs" / "measurements" / f"{args.run_dir.name}_deveval{suffix}.md")
@@ -192,7 +196,7 @@ def main() -> None:
     if test_artifact.split != args.split:
         raise SystemExit(f"prediction artifact split={test_artifact.split!r}, cần {args.split!r}")
 
-    probabilities = stack_predictions_by_recording(test_artifact)
+    probabilities = restrict(stack_predictions_by_recording(test_artifact), args.eval_set)
     reference = load_events_by_recording(set(probabilities))
     priors = priors_from_postproc(postproc, class_ids)
     thresholds = {class_id: postproc["per_class"][class_id]["theta"] for class_id in class_ids}
@@ -236,6 +240,8 @@ def main() -> None:
     result = {
         "run": str(args.run_dir),
         "split": args.split,
+        "eval_set": args.eval_set,
+        "n_recordings": len(probabilities),
         "postproc": str(postproc_path),
         "event_based_f1": event_f1["f_measure"],
         "event_based_f1_macro": event_f1["macro"],
