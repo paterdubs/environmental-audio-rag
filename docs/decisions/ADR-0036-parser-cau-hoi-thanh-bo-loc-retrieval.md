@@ -114,7 +114,13 @@ không làm đẹp số bằng cách loại mẫu.
 
 ## Verification
 
-ADR và `query_parse_paraphrase_v1.csv` được commit trước code parser và trước lần gọi LLM đầu tiên.
-Nghiệm thu sau triển khai phải có test transport HTTP giả, lớp ngoài taxonomy, API parse/query,
-guard không import torch, lỗi LLM rõ ràng, measurement parse và RQ3 parsed trên validation. Các số
-và artifact sẽ được bổ sung sau, không điền trước trong ADR này.
+ADR và `query_parse_paraphrase_v1.csv` được commit ở `aafd8ec` trước code parser và trước lần gọi
+LLM đầu tiên. Lượt đo đầu ở `dfcafa1` **không hợp lệ để báo như constrained**: llama.cpp b11158
+chấp nhận wrapper `response_format.type=json_schema` nhưng âm thầm bỏ qua schema; `$ref` của
+Pydantic cũng không giữ enum khi thử wrapper đúng. Pydantic hậu kiểm đã chặn output sai nhưng
+không thay thế constrained decoding.
+
+Phiên bản v1.1 chuyển sang extension top-level `json_schema` của llama.cpp và inline ba biến thể
+filter; probe đối nghịch đã xác nhận enum ép `vehicle_pass_by` thay vì chuỗi ngoài taxonomy.
+Measurement parser và RQ3 validation phải chạy lại trên tree sạch trước khi nghiệm thu. Lượt RQ3
+dẫn xuất từ output không constrained đã bị xóa; không được dùng số của lượt đó.

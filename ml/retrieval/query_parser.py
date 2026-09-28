@@ -12,6 +12,7 @@ import os
 import urllib.error
 import urllib.request
 from collections.abc import Callable, Mapping, Sequence
+from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Protocol
@@ -22,7 +23,7 @@ from pydantic import ValidationError
 from ml.retrieval.filters import Filters
 from ml.retrieval.temporal import PREDICATES
 
-PROMPT_VERSION = "query-filter-prompt-v1"
+PROMPT_VERSION = "query-filter-prompt-v1.1"
 SYSTEM_PROMPT = """You convert an environmental-audio search question into one JSON filter.
 Return JSON only. Use only class_id values from the supplied taxonomy and predicates from the
 supplied predicate list. Do not answer the question. Preserve temporal direction: a is the event
@@ -100,18 +101,25 @@ class ParsedFilters:
 
 def filter_json_schema(class_ids: Sequence[str]) -> dict[str, Any]:
     """Build llama.cpp's constrained schema from Pydantic + taxonomy + predicates."""
-    schema = Filters.model_json_schema()
+    pydantic_schema = Filters.model_json_schema()
     allowed = list(class_ids)
-    schema["properties"]["classes_all"]["anyOf"][0]["items"]["enum"] = allowed
-    temporal = schema["$defs"]["Temporal"]
+    classes_all = deepcopy(pydantic_schema["properties"]["classes_all"]["anyOf"][0])
+    classes_all["items"]["enum"] = allowed
+    temporal = deepcopy(pydantic_schema["$defs"]["Temporal"])
     temporal["properties"]["predicate"]["enum"] = list(PREDICATES)
     temporal["properties"]["a"]["enum"] = allowed
     temporal["properties"]["b"]["enum"] = allowed
-    schema["$defs"]["Duration"]["properties"]["class_id"]["enum"] = allowed
-    schema["anyOf"] = [
-        {"required": ["classes_all"]}, {"required": ["temporal"]}, {"required": ["duration"]}
-    ]
-    return schema
+    temporal["required"].append("tolerance_s")
+    duration = deepcopy(pydantic_schema["$defs"]["Duration"])
+    duration["properties"]["class_id"]["enum"] = allowed
+    # llama.cpp b11158 silently loses nested enum constraints through Pydantic's $refs, so
+    # inline the two definitions. Bounds and object contracts still originate in Filters.
+    variants = []
+    for name, shape in (("classes_all", classes_all), ("temporal", temporal),
+                        ("duration", duration)):
+        variants.append({"type": "object", "additionalProperties": False,
+                         "properties": {name: shape}, "required": [name]})
+    return {"title": "Filters", "oneOf": variants}
 
 
 def _messages(question: str, language: str, labels: Mapping[str, Mapping[str, str]]
@@ -154,8 +162,10 @@ class QueryParser:
             "seed": self.config.seed,
             "max_tokens": self.config.max_tokens,
             "chat_template_kwargs": {"enable_thinking": self.config.enable_thinking},
-            "response_format": {"type": "json_schema", "json_schema": {
-                "name": "retrieval_filters", "strict": True, "schema": schema}},
+            # llama.cpp b11158 reads the constrained schema from its top-level json_schema
+            # extension. Its OpenAI-style nested json_schema object is silently ignored.
+            "response_format": {"type": "json_object"},
+            "json_schema": schema,
         }
 
     def parse(self, question: str, language: Literal["en", "vi"]) -> ParsedFilters:

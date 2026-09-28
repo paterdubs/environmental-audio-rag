@@ -34,14 +34,16 @@ class FakeTransport:
 
 def test_schema_and_request_are_derived_from_taxonomy_and_predicates() -> None:
     schema = filter_json_schema(TAXONOMY.polyphonic_class_ids)
-    assert schema["$defs"]["Temporal"]["properties"]["predicate"]["enum"] == list(PREDICATES)
-    assert schema["$defs"]["Duration"]["properties"]["class_id"]["enum"] == list(
-        TAXONOMY.polyphonic_class_ids)
+    temporal = schema["oneOf"][1]["properties"]["temporal"]
+    duration = schema["oneOf"][2]["properties"]["duration"]
+    assert temporal["properties"]["predicate"]["enum"] == list(PREDICATES)
+    assert duration["properties"]["class_id"]["enum"] == list(TAXONOMY.polyphonic_class_ids)
     transport = FakeTransport('{"classes_all":["birds"]}')
     result = QueryParser(transport, CONFIG, LABELS).parse("bird sounds?", "en")
     assert result.filters.as_dict() == {"classes_all": ["birds"]}
     assert transport.body["temperature"] == 0.0 and transport.body["seed"] == 20260922
-    assert transport.body["response_format"]["type"] == "json_schema"
+    assert transport.body["response_format"]["type"] == "json_object"
+    assert transport.body["json_schema"] == schema
 
 
 def test_parser_rejects_unknown_class_even_if_fake_server_ignores_grammar() -> None:
