@@ -56,9 +56,9 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 28/09/2026 (rạng sáng, phiên tự động) — W7 7.4 xong (demo chạy hoàn toàn trong Docker,
-ADR-0033 §6); Track 2b xong, chỉ CV dev (ADR-0032 §11); phát hiện nợ #25 (14 recording thiếu
-ground truth polyphonic) — cần người dùng quyết trước S13.**
+**Cập nhật 28/09/2026 (chiều) — W7 7.4 và Track 2b đã xong; nợ #25 đã đóng theo ADR-0034. Đã
+sinh đủ 18/18 file CV dev `annotated` sạch cho 9 ứng viên và báo cáo xếp hạng chuẩn bị S13; chưa
+chọn hệ thống, chưa mở test.**
 
 **Trước đó, 27/09/2026 (tối) — Track 2a (BEATs đóng băng) xong, chỉ CV dev.** Xem khối SED v2 và
 Track 2 dưới đây; giai đoạn cải thiện gốc ở [ADR-0030](docs/decisions/ADR-0030-cai-thien-sed-v2.md)
@@ -81,11 +81,13 @@ mọi phát hiện, kỹ thuật, nguồn ghi vào [PAPER_NOTES.md](docs/PAPER_N
   - (f2) T2b×3: cSEBB **0.2224 ± 0.0417** (global 0.2004); (f4) T2b×3 + B-v2×3: global
     **0.2248 ± 0.0565** — điểm cao nhất tới nay, nhưng chênh (d) 0.2230 < sd → không "tốt hơn".
   - Không mở test. (f2)/(f4) vào S13 cùng (a)–(f3). S10 đóng.
-- **Nợ #25 đã quyết 28/09 — phương án (B), ADR-0034:** từ S13 mọi CV/test chỉ chấm recording có GT
+- **Nợ #25 đã đóng 28/09 — phương án (B), ADR-0034:** từ S13 mọi CV/test chỉ chấm recording có GT
   (`--eval-set annotated`: dev 134, test 142→139); không train lại, split giữ nguyên. Gốc: ground
   truth polyphonic gốc chỉ phủ 703/717 recording; 14 recording
-  `wind_turbine` S-0704…S-0717 (train 8 / dev 3 / test 3) bị coi là không có sự kiện. Dev: ảnh
-  hưởng +0.002 micro, thứ hạng không đổi (`polyphonic_coverage_20260927.md`).
+  `wind_turbine` S-0704…S-0717 (train 8 / dev 3 / test 3) bị coi là không có sự kiện. CV annotated
+  đủ 9 ứng viên đổi thứ tự từ `f4/d/f2/c/f1/e/b/f3/a` thành `f2/f4/f1/d/e/c/f3/b/a`; f2 0.2383
+  ± 0.0562 và f4 0.2354 ± 0.0585, chênh 0.0029 ≤ sd f2 nên không gọi là tốt hơn
+  (`s13_ranking_annotated_20260928.md`). Chỉ dev, chưa phải lựa chọn S13, không mở test.
 
 - **Chẩn đoán trên dev** (`sed_ceilings_20260926.md`):
   - Trần event-F1 của kiến trúc v1 là **0.63**: CNN14 trong repo pool thời gian /64 = 0.64 s,
@@ -279,13 +281,12 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
 | W7 (ứng dụng) | 7.1–7.4 xong (7.4: inference trong Docker 27/09, ADR-0033 §6); 7.5–7.7 — làm 19/10–02/11, sau S8 |
 | **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
-| **Cải thiện cuối** (ADR-0031) | S9 xong 27/09 03:53 (train+CV dev; test chờ S13); S10 xong (T2a 27/09, T2b 28/09 — ADR-0032 §9, §11); nợ #24 đóng; S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
+| **Cải thiện cuối** (ADR-0031) | S9 và S10 xong; nợ #24/#25 đóng. CV dev annotated cho S13 đủ 18/18 file, bảng tạm thời `f2/f4/f1/d/e/c/f3/b/a` (chưa chọn, chưa test); S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
 | Tài liệu | Nợ #21 đóng 28/09: PretrainedSED, DCASE 2016 T3, bài DataSED đều V3 |
 
 ### Chưa có ○
 
-Quyết định nợ #25 (người dùng) · giải thích vì
-sao PSDS không tăng (PAPER_NOTES §6 #8) · bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo
+Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo
 cáo luận văn (L3).
 
 ### Việc tiếp theo — theo thứ tự
@@ -300,8 +301,8 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
    ~~T2b~~ — ✅ 28/09 03:56 (ADR-0032 §11, PAPER_NOTES S32–S34): (f2) 0.2224 (cSEBB), (f4)
    0.2248 (global). Chỉ CV dev.
 3. ~~Nợ #24~~ — ✅ 27/09 (`4135d17`). Giải thích S21 (PSDS) trên dev — còn mở.
-4. ~~Người dùng quyết nợ #25~~ — ✅ 28/09, phương án (B) (ADR-0034). CV dev annotated cho 9 ứng
-   viên (a)–(f4) đang chạy; S13 dùng số này.
+4. ~~Nợ #25 + CV annotated~~ — ✅ 28/09, phương án (B) (ADR-0034); đủ 18/18 file sạch và
+   measurement 9 ứng viên. Thứ hạng tạm thời `f2/f4/f1/d/e/c/f3/b/a`; chưa chọn, chưa mở test.
 5. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)–(f4) đã
    có CV dev, sẵn sàng vào vòng chọn cùng nhau.
 6. Sau 18/10: S8 một lần → W7 7.5–7.7 → L2 → viết báo cáo.
@@ -558,6 +559,24 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-28 (chiều) — đủ CV annotated cho 9 ứng viên; sinh bảng chuẩn bị S13
+
+Hàng đợi tuần tự chạy 09:29–14:38, cả 18 bước (9 ứng viên × θ/cSEBB) đều `rc=0`. Kiểm trực tiếp
+18/18 JSON: `eval_set="annotated"`, `git.dirty=false`; không còn tiến trình `select_*`. Không đọc
+test. Với ứng viên (c), hai file so sánh `all` còn thiếu nên chạy bổ sung CV **dev-only** trên tree
+sạch; SHA-256 `postproc_cv.json` trước/sau giữ nguyên
+`765F4141FB840249E3765E410D982C5F64C3C3A1A18E338CD4A0B9FB560AA2D6`.
+
+Thêm `scripts.report_s13_ranking` + test fixture, rồi sinh
+`docs/measurements/s13_ranking_annotated_20260928.{md,json}` trên commit sạch. Thứ hạng `all`
+`f4/d/f2/c/f1/e/b/f3/a` đổi thành annotated `f2/f4/f1/d/e/c/f3/b/a`; cả 9 Δ đều dương
+(+0.0054…+0.0257). f2 0.2383 ± 0.0562 đứng trước f4 0.2354 ± 0.0585, nhưng chênh 0.0029 ≤ sd
+f2 nên **không được gọi là tốt hơn**. Ghi PAPER_NOTES S35 và ADR-0034 §5. Đây chỉ là CV dev chuẩn
+bị cho S13 ngày 18/10, chưa chọn hệ thống và chưa mở test.
+
+Gate Windows: ruff sạch; pytest **613 pass, 7 skip, 19 warnings**. Docker Desktop tắt nên test DB
+tự skip. Không push.
 
 ### 2026-09-28 (rạng sáng, tự động) — P1 demo Docker, P2 Track 2b, P3 văn liệu; phát hiện nợ #25
 

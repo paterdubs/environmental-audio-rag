@@ -1,0 +1,20 @@
+# Thứ hạng ứng viên S13 — CV dev `annotated`
+
+> **Chỉ dev, CHƯA phải lựa chọn S13, không mở test.** Sinh bởi `scripts.report_s13_ranking`; event-F1 micro, 5 fold theo `leakage_group`. Điểm là CV mean của họ tốt hơn giữa θ và cSEBB.
+> git `4f5987a`, dirty=false.
+
+| Hạng | Nhãn | Run | Model | Họ chấm | Cấu hình | CV annotated mean ± sd | Fold annotated | Họ all | CV all | Δ annotated − all |
+|---:|---|---|---:|---|---|---:|---|---|---:|---:|
+| 1 | f2 | `sed_ensemble_t2b_20260927T200914Z` | 3 | cSEBB | `tau0.64_rel2` | 0.2383 ± 0.0562 | 0.1860, 0.2889, 0.2358, 0.3008, 0.1799 | cSEBB | 0.2224 | +0.0159 |
+| 2 | f4 | `sed_ensemble_t2b_bv2_20260927T200921Z` | 6 | θ | `global\|25` | 0.2354 ± 0.0585 | 0.1912, 0.2769, 0.3149, 0.2157, 0.1781 | θ | 0.2248 | +0.0105 |
+| 3 | f1 | `sed_ensemble_t2a_20260927T141952Z` | 3 | θ | `global\|25` | 0.2286 ± 0.0601 | 0.1780, 0.2749, 0.3103, 0.1837, 0.1959 | θ | 0.2114 | +0.0171 |
+| 4 | d | `sed_ensemble_cv2_20260926T205405Z` | 3 | θ | `global\|25` | 0.2285 ± 0.0570 | 0.1995, 0.2769, 0.2946, 0.2153, 0.1559 | θ | 0.2230 | +0.0054 |
+| 5 | e | `sed_ensemble_bcv2_20260926T205412Z` | 6 | θ | `global\|25` | 0.2237 ± 0.0665 | 0.1732, 0.2947, 0.2870, 0.2175, 0.1458 | θ | 0.2050 | +0.0186 |
+| 6 | c | `sed_ensemble_v2_20260926T155630Z` | 3 | θ | `global\|25` | 0.2212 ± 0.0498 | 0.1963, 0.2827, 0.2594, 0.2091, 0.1586 | θ | 0.2129 | +0.0083 |
+| 7 | f3 | `sed_ensemble_t2a_bv2_20260927T142003Z` | 6 | θ | `global\|25` | 0.2070 ± 0.0560 | 0.1937, 0.2653, 0.2655, 0.1649, 0.1455 | θ | 0.1813 | +0.0257 |
+| 8 | b | `sed_polyphonic_20260926T033312Z` | 1 | θ | `global\|25` | 0.2031 ± 0.0565 | 0.1639, 0.2176, 0.2894, 0.2014, 0.1433 | θ | 0.1900 | +0.0131 |
+| 9 | a | `sed_ensemble_C_clean_20260925T045631Z` | 4 | θ | `global\|25` | 0.1620 ± 0.0226 | 0.1514, 0.1846, 0.1410, 0.1882, 0.1447 | θ | 0.1538 | +0.0082 |
+
+Chênh lệch hạng 1 (`f2`) − hạng 2 (`f4`) là +0.0029, không lớn hơn sd giữa fold của hạng 1 (0.0562): **không được gọi là tốt hơn hạng 2**.
+
+Cột `all` chỉ để đối chiếu ảnh hưởng của ADR-0034; không tham gia xếp hạng. Kết quả này không chọn hệ thống và không cho phép mở test trước mốc S13.

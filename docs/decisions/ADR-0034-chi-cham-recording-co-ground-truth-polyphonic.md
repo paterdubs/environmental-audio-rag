@@ -51,6 +51,29 @@ RQ1, SED v2 (test micro 0.1476) và mọi số trước 28/09 là trên tập `a
 vậy. Với các hệ thống đã mở test ((a), (c)), bản chấm annotated trên test chỉ tính **sau** khi lựa
 chọn S13 đã commit, cùng lúc với các ứng viên khác — không để số test mới dẫn hướng vòng chọn.
 
+### 5. Kết quả CV annotated (28/09, chưa phải lựa chọn S13)
+
+Hàng đợi đã sinh đủ **18/18** file lựa chọn cho 9 ứng viên (hai họ θ và cSEBB); mọi file đều có
+`eval_set="annotated"` và `git.dirty=false`. Báo cáo sinh tự động:
+[`s13_ranking_annotated_20260928.md`](../measurements/s13_ranking_annotated_20260928.md).
+
+| Hạng annotated | Ứng viên | Model | Họ thắng | CV annotated mean ± sd | CV all | Δ |
+|---:|---|---:|---|---:|---:|---:|
+| 1 | f2 | 3 | cSEBB | 0.2383 ± 0.0562 | 0.2224 | +0.0159 |
+| 2 | f4 | 6 | θ | 0.2354 ± 0.0585 | 0.2248 | +0.0105 |
+| 3 | f1 | 3 | θ | 0.2286 ± 0.0601 | 0.2114 | +0.0171 |
+| 4 | d | 3 | θ | 0.2285 ± 0.0570 | 0.2230 | +0.0054 |
+| 5 | e | 6 | θ | 0.2237 ± 0.0665 | 0.2050 | +0.0186 |
+| 6 | c | 3 | θ | 0.2212 ± 0.0498 | 0.2129 | +0.0083 |
+| 7 | f3 | 6 | θ | 0.2070 ± 0.0560 | 0.1813 | +0.0257 |
+| 8 | b | 1 | θ | 0.2031 ± 0.0565 | 0.1900 | +0.0131 |
+| 9 | a | 4 | θ | 0.1620 ± 0.0226 | 0.1538 | +0.0082 |
+
+Thứ tự đổi từ `f4/d/f2/c/f1/e/b/f3/a` trên `all` thành
+`f2/f4/f1/d/e/c/f3/b/a` trên `annotated`; cả 9 điểm đều tăng. Chênh hạng 1–2 là **0.0029**, nhỏ
+hơn sd giữa fold của f2 (**0.0562**), nên **không được gọi f2 là tốt hơn f4**. Bảng này chỉ chuẩn
+bị dữ liệu cho S13 ngày 18/10; chưa chọn hệ thống và chưa mở test.
+
 ## Consequences
 
 ### Tích cực
