@@ -1,0 +1,5501 @@
+{
+ "model": "Qwen3.5-9B",
+ "endpoint": "http://127.0.0.1:8081",
+ "prompt_version": "query-filter-prompt-v1",
+ "temperature": 0.0,
+ "seed": 20260922,
+ "git": {
+  "revision": "3d67897989884c5075eee71c458e57137ed6477f",
+  "dirty": false
+ },
+ "inputs": {
+  "queryset": {
+   "path": "data\\manifests\\retrieval_queryset_v2.json",
+   "sha256": "1956310b0a7f25857cf4c56c618f0cff3dd2e9eb749305d343d128eda17280a1"
+  },
+  "paraphrase": {
+   "path": "data\\manifests\\query_parse_paraphrase_v1.csv",
+   "sha256": "37e80c864b03309b50879cb98daaeed5abddabee2ec567ff7d6196010c93a477"
+  }
+ },
+ "summary": {
+  "paraphrase": {
+   "n": 40,
+   "parse_success": 0.975,
+   "n_parse_success": 39,
+   "exact_match": 0.925,
+   "n_exact": 37,
+   "class_precision": 1.0,
+   "class_recall": 0.9833333333333333,
+   "predicate_accuracy": 1.0,
+   "n_temporal": 10
+  },
+  "template": {
+   "n": 200,
+   "parse_success": 0.99,
+   "n_parse_success": 198,
+   "exact_match": 0.85,
+   "n_exact": 170,
+   "class_precision": 1.0,
+   "class_recall": 0.9904458598726115,
+   "predicate_accuracy": 0.75,
+   "n_temporal": 60
+  }
+ },
+ "predictions": [
+  {
+   "dataset": "template",
+   "query_id": "q-001",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-001",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-002",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain voices?",
+   "gold": {
+    "classes_all": [
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-002",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-003",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain train?",
+   "gold": {
+    "classes_all": [
+     "train"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "train"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"train\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-003",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng tàu hỏa?",
+   "gold": {
+    "classes_all": [
+     "train"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "train"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"train\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-004",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain workshop?",
+   "gold": {
+    "classes_all": [
+     "workshop"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "workshop"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"workshop\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-004",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy móc của xưởng hoặc công trình?",
+   "gold": {
+    "classes_all": [
+     "workshop"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "workshop"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"workshop\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-005",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain propeller aircrafts?",
+   "gold": {
+    "classes_all": [
+     "propeller_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "propeller_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"propeller_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-005",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng?",
+   "gold": {
+    "classes_all": [
+     "propeller_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "propeller_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"propeller_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-006",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain sirens and alarms?",
+   "gold": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-006",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có âm thanh giống còi hú hoặc chuông báo động?",
+   "gold": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-007",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain birds?",
+   "gold": {
+    "classes_all": [
+     "birds"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-007",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chim?",
+   "gold": {
+    "classes_all": [
+     "birds"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-008",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain vehicle idling?",
+   "gold": {
+    "classes_all": [
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-008",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "classes_all": [
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-009",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain jet aircrafts?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-009",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy bay phản lực?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-010",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain horn?",
+   "gold": {
+    "classes_all": [
+     "horn"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-010",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng còi xe?",
+   "gold": {
+    "classes_all": [
+     "horn"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-011",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain dog barkings and howlings?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-011",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chó sủa hoặc tru?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-012",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain cicadas and crickets?",
+   "gold": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-012",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng côn trùng như ve sầu hoặc dế?",
+   "gold": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-013",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain lawn mower brush cutter and olive shaker?",
+   "gold": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"lawn_mower_brush_cutter_olive_shaker\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-013",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ?",
+   "gold": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"lawn_mower_brush_cutter_olive_shaker\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-014",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain music?",
+   "gold": {
+    "classes_all": [
+     "music"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "music"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"music\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-014",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng nhạc?",
+   "gold": {
+    "classes_all": [
+     "music"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "music"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"music\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-015",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain vacuum cleaner fan and hairdryer?",
+   "gold": {
+    "classes_all": [
+     "vacuum_cleaner_fan_hairdryer"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vacuum_cleaner_fan_hairdryer"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vacuum_cleaner_fan_hairdryer\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-015",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc?",
+   "gold": {
+    "classes_all": [
+     "vacuum_cleaner_fan_hairdryer"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vacuum_cleaner_fan_hairdryer"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vacuum_cleaner_fan_hairdryer\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-016",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain crows seagulls and magpies?",
+   "gold": {
+    "classes_all": [
+     "crows_seagulls_magpies"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "crows_seagulls_magpies"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"crows_seagulls_magpies\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-016",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là?",
+   "gold": {
+    "classes_all": [
+     "crows_seagulls_magpies"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "crows_seagulls_magpies"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"crows_seagulls_magpies\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-017",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain chicken coop?",
+   "gold": {
+    "classes_all": [
+     "chicken_coop"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "chicken_coop"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"chicken_coop\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-017",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng gà trong chuồng?",
+   "gold": {
+    "classes_all": [
+     "chicken_coop"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "chicken_coop"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"chicken_coop\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-018",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain bells?",
+   "gold": {
+    "classes_all": [
+     "bells"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "bells"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"bells\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-018",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chuông?",
+   "gold": {
+    "classes_all": [
+     "bells"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "bells"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"bells\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-019",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain thunder fireworks and gunshot?",
+   "gold": {
+    "classes_all": [
+     "thunder_fireworks_gunshot"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "thunder_fireworks_gunshot"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"thunder_fireworks_gunshot\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-019",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng?",
+   "gold": {
+    "classes_all": [
+     "thunder_fireworks_gunshot"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "thunder_fireworks_gunshot"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"thunder_fireworks_gunshot\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-020",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain cat fight and moans?",
+   "gold": {
+    "classes_all": [
+     "cat_fights_and_moans"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "cat_fights_and_moans"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"cat_fights_and_moans\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-020",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng mèo kêu hoặc đánh nhau?",
+   "gold": {
+    "classes_all": [
+     "cat_fights_and_moans"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "cat_fights_and_moans"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"cat_fights_and_moans\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-021",
+   "group": "single_class",
+   "language": "en",
+   "question": "Which recordings contain glass breaking?",
+   "gold": {
+    "classes_all": [
+     "glass_breaking"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "glass_breaking"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"glass_breaking\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-021",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng kính vỡ?",
+   "gold": {
+    "classes_all": [
+     "glass_breaking"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "glass_breaking"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"glass_breaking\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-022",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both vehicle idling and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "vehicle_idling",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_idling",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_idling\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-022",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng động cơ xe chạy không tải và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "vehicle_idling",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_idling",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_idling\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-023",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both propeller aircrafts and voices?",
+   "gold": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"propeller_aircrafts\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-023",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng máy bay cánh quạt hoặc trực thăng và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"propeller_aircrafts\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-024",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both vehicle pass-by and voices?",
+   "gold": {
+    "classes_all": [
+     "vehicle_pass_by",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_pass_by",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_pass_by\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-024",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng xe chạy qua và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "vehicle_pass_by",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_pass_by",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_pass_by\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-025",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both jet aircrafts and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-025",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng máy bay phản lực và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-026",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both vehicle idling and voices?",
+   "gold": {
+    "classes_all": [
+     "vehicle_idling",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_idling",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_idling\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-026",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng động cơ xe chạy không tải và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "vehicle_idling",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_idling",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_idling\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-027",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both horn and train?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "train"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "train"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"train\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-027",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng còi xe và tiếng tàu hỏa?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "train"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "train"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"train\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-028",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both dog barkings and howlings and voices?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-028",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chó sủa hoặc tru và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-029",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both dog barkings and howlings and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-029",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chó sủa hoặc tru và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-030",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both horn and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-030",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng còi xe và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-031",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both birds and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-031",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chim và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-032",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both music and voices?",
+   "gold": {
+    "classes_all": [
+     "music",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "music",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"music\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-032",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng nhạc và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "music",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "music",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"music\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-033",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both jet aircrafts and vehicle idling?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-033",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng máy bay phản lực và tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-034",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both sirens and alarms and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "sirens_and_alarms",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-034",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả âm thanh giống còi hú hoặc chuông báo động và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "sirens_and_alarms",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-035",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both crows seagulls and magpies and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "crows_seagulls_magpies",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "crows_seagulls_magpies",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"crows_seagulls_magpies\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-035",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "crows_seagulls_magpies",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "crows_seagulls_magpies",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"crows_seagulls_magpies\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-036",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both dog barkings and howlings and vehicle idling?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-036",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chó sủa hoặc tru và tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-037",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both horn and vehicle idling?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-037",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng còi xe và tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-038",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both propeller aircrafts and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"propeller_aircrafts\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-038",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng máy bay cánh quạt hoặc trực thăng và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"propeller_aircrafts\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-039",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both train and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "train",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "train",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"train\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-039",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng tàu hỏa và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "train",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "train",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"train\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-040",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both birds and crows seagulls and magpies?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "crows_seagulls_magpies"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "crows_seagulls_magpies"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"crows_seagulls_magpies\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-040",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chim và tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "crows_seagulls_magpies"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "crows_seagulls_magpies"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"crows_seagulls_magpies\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-041",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both birds and train?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "train"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "train"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"train\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-041",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chim và tiếng tàu hỏa?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "train"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "train"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"train\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-042",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both birds and propeller aircrafts?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "propeller_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "propeller_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"propeller_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-042",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chim và tiếng máy bay cánh quạt hoặc trực thăng?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "propeller_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "propeller_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"propeller_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-043",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both music and vehicle pass-by?",
+   "gold": {
+    "classes_all": [
+     "music",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "music",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"music\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-043",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng nhạc và tiếng xe chạy qua?",
+   "gold": {
+    "classes_all": [
+     "music",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "music",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"music\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-044",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both birds and jet aircrafts?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "jet_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "jet_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"jet_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-044",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chim và tiếng máy bay phản lực?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "jet_aircrafts"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "jet_aircrafts"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"jet_aircrafts\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-045",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both birds and vehicle idling?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-045",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng chim và tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "vehicle_idling"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-046",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both horn and voices?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-046",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng còi xe và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "horn",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "horn",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"horn\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-047",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both jet aircrafts and voices?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-047",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng máy bay phản lực và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-048",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Which recordings contain both lawn mower brush cutter and olive shaker and voices?",
+   "gold": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"lawn_mower_brush_cutter_olive_shaker\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-048",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Bản ghi nào có cả tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ và tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "lawn_mower_brush_cutter_olive_shaker",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"lawn_mower_brush_cutter_olive_shaker\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-049",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by before vehicle idling?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_pass_by\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-049",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua trước tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_pass_by\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-050",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices before vehicle pass-by?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"voices\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-050",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói trước tiếng xe chạy qua?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"voices\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-051",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices before vehicle idling?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"voices\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-051",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói trước tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"voices\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-052",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle idling before vehicle pass-by?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_idling\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-052",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng động cơ xe chạy không tải trước tiếng xe chạy qua?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_idling\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-053",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle idling before voices?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_idling\", \"b\": \"voices\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-053",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng động cơ xe chạy không tải trước tiếng người nói?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_idling",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_idling\", \"b\": \"voices\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-054",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices before dog barkings and howlings?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "dog_barkings_and_howlings",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "dog_barkings_and_howlings",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"voices\", \"b\": \"dog_barkings_and_howlings\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-054",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói trước tiếng chó sủa hoặc tru?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "dog_barkings_and_howlings",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "voices",
+     "b": "dog_barkings_and_howlings",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"voices\", \"b\": \"dog_barkings_and_howlings\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-055",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have horn before vehicle pass-by?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "horn",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "horn",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"horn\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-055",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng còi xe trước tiếng xe chạy qua?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "horn",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "horn",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"horn\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-056",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by before jet aircrafts?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "jet_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "jet_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_pass_by\", \"b\": \"jet_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-056",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua trước tiếng máy bay phản lực?",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "jet_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "vehicle_pass_by",
+     "b": "jet_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_pass_by\", \"b\": \"jet_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-057",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have music after voices?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "music",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"voices\", \"b\": \"music\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-057",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng nhạc sau tiếng người nói?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "music",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"voices\", \"b\": \"music\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-058",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by after birds?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "birds",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "birds",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"birds\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-058",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua sau tiếng chim?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "birds",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "birds",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"vehicle_pass_by\", \"b\": \"birds\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-059",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by after dog barkings and howlings?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "dog_barkings_and_howlings",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "dog_barkings_and_howlings",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"dog_barkings_and_howlings\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-059",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua sau tiếng chó sủa hoặc tru?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "dog_barkings_and_howlings",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "dog_barkings_and_howlings",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"vehicle_pass_by\", \"b\": \"dog_barkings_and_howlings\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-060",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by after jet aircrafts?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "jet_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "jet_aircrafts",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"jet_aircrafts\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-060",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua sau tiếng máy bay phản lực?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "jet_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "jet_aircrafts",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"jet_aircrafts\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-061",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices after vehicle pass-by?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"voices\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-061",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói sau tiếng xe chạy qua?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"voices\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-062",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle idling after horn?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_idling",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_idling",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"vehicle_idling\", \"b\": \"horn\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-062",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng động cơ xe chạy không tải sau tiếng còi xe?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_idling",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_idling",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"vehicle_idling\", \"b\": \"horn\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-063",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by after train?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "train",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"train\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-063",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua sau tiếng tàu hỏa?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "train",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"train\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-064",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have birds after vehicle pass-by?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "birds",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "birds",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"birds\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-064",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chim sau tiếng xe chạy qua?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "birds",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_pass_by",
+     "b": "birds",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"vehicle_pass_by\", \"b\": \"birds\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-065",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have propeller aircrafts overlapping with voices?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "propeller_aircrafts",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "propeller_aircrafts",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"propeller_aircrafts\", \"b\": \"voices\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-065",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng chồng lên tiếng người nói?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "propeller_aircrafts",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "propeller_aircrafts",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"propeller_aircrafts\", \"b\": \"voices\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-066",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices overlapping with propeller aircrafts?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"propeller_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-066",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói chồng lên tiếng máy bay cánh quạt hoặc trực thăng?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"propeller_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-067",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have horn overlapping with train?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"horn\", \"b\": \"train\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-067",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng còi xe chồng lên tiếng tàu hỏa?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"horn\", \"b\": \"train\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-068",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have train overlapping with horn?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "train",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "train",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"train\", \"b\": \"horn\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-068",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng tàu hỏa chồng lên tiếng còi xe?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "train",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "train",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"train\", \"b\": \"horn\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-069",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by overlapping with voices?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "vehicle_pass_by",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "vehicle_pass_by",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"vehicle_pass_by\", \"b\": \"voices\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-069",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua chồng lên tiếng người nói?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "vehicle_pass_by",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "vehicle_pass_by",
+     "b": "voices",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"vehicle_pass_by\", \"b\": \"voices\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-070",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices overlapping with vehicle pass-by?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": null,
+   "raw": null,
+   "error": "lớp ngoài 21 lớp SED: ['vehicle pass-by']",
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-070",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói chồng lên tiếng xe chạy qua?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-071",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have birds overlapping with train?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "birds",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "birds",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"birds\", \"b\": \"train\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-071",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chim chồng lên tiếng tàu hỏa?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "birds",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "birds",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"birds\", \"b\": \"train\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-072",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices during propeller aircrafts?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"propeller_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-072",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói trong lúc có tiếng máy bay cánh quạt hoặc trực thăng?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"propeller_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-073",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have horn during train?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"horn\", \"b\": \"train\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-073",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng còi xe trong lúc có tiếng tàu hỏa?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"horn\", \"b\": \"train\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-074",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have dog barkings and howlings during vehicle idling?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "dog_barkings_and_howlings",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\", \"vehicle_idling\"]}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-074",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chó sủa hoặc tru trong lúc có tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "dog_barkings_and_howlings",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "dog_barkings_and_howlings",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"dog_barkings_and_howlings\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-075",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have dog barkings and howlings during propeller aircrafts?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "dog_barkings_and_howlings",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "dog_barkings_and_howlings",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"dog_barkings_and_howlings\", \"b\": \"propeller_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-075",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chó sủa hoặc tru trong lúc có tiếng máy bay cánh quạt hoặc trực thăng?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "dog_barkings_and_howlings",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "dog_barkings_and_howlings",
+     "b": "propeller_aircrafts",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"dog_barkings_and_howlings\", \"b\": \"propeller_aircrafts\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-076",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have horn during vehicle idling?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "horn",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"horn\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-076",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng còi xe trong lúc có tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "horn",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "horn",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"horn\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-077",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices during music?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"music\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-077",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói trong lúc có tiếng nhạc?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"music\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-078",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have voices during vehicle idling?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-078",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói trong lúc có tiếng động cơ xe chạy không tải?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_idling",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"vehicle_idling\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-079",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have train lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"train\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-079",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng tàu hỏa kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"train\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-080",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have propeller aircrafts lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"propeller_aircrafts\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-080",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"propeller_aircrafts\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-081",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have sirens and alarms lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "sirens_and_alarms",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ],
+    "duration": {
+     "class_id": "sirens_and_alarms",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"], \"duration\": {\"class_id\": \"sirens_and_alarms\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-081",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có âm thanh giống còi hú hoặc chuông báo động kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "sirens_and_alarms",
+     "min_s": 10.0
+    }
+   },
+   "predicted": null,
+   "raw": null,
+   "error": "filter JSON không hợp lệ: 1 validation error for Filters\nduration.class_id\n  Field required [type=missing, input_value={'min_s': 10.0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing",
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-082",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have vehicle pass-by lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_pass_by",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vehicle_pass_by",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vehicle_pass_by\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-082",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng xe chạy qua kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_pass_by",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vehicle_pass_by",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vehicle_pass_by\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-083",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have propeller aircrafts lasting longer than 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"propeller_aircrafts\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-083",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy bay cánh quạt hoặc trực thăng kéo dài hơn 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"propeller_aircrafts\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-084",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have jet aircrafts lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"jet_aircrafts\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-084",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy bay phản lực kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"jet_aircrafts\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-085",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have vehicle idling lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vehicle_idling\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-085",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng động cơ xe chạy không tải kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vehicle_idling\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-086",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have workshop lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "workshop",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "workshop",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"workshop\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-086",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy móc của xưởng hoặc công trình kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "workshop",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "workshop",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"workshop\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-087",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have train lasting longer than 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"train\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-087",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng tàu hỏa kéo dài hơn 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"train\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-088",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have birds lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "birds",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "birds",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"birds\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-088",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chim kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "birds",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "birds",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"birds\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-089",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have jet aircrafts lasting longer than 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"jet_aircrafts\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-089",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy bay phản lực kéo dài hơn 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"jet_aircrafts\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-090",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have lawn mower brush cutter and olive shaker lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"lawn_mower_brush_cutter_olive_shaker\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-090",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"lawn_mower_brush_cutter_olive_shaker\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-091",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have music lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"music\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-091",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng nhạc kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"music\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-092",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have voices lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "voices",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "voices",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"voices\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-092",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng người nói kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "voices",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "voices",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"voices\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-093",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have vacuum cleaner fan and hairdryer lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "vacuum_cleaner_fan_hairdryer",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vacuum_cleaner_fan_hairdryer",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vacuum_cleaner_fan_hairdryer\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-093",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "vacuum_cleaner_fan_hairdryer",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vacuum_cleaner_fan_hairdryer",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vacuum_cleaner_fan_hairdryer\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-094",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have sirens and alarms lasting longer than 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "sirens_and_alarms",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ],
+    "duration": {
+     "class_id": "sirens_and_alarms",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"], \"duration\": {\"class_id\": \"sirens_and_alarms\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-094",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có âm thanh giống còi hú hoặc chuông báo động kéo dài hơn 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "sirens_and_alarms",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "sirens_and_alarms",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"sirens_and_alarms\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-095",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have bells lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "bells",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "bells",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"bells\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-095",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chuông kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "bells",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "bells",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"bells\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-096",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have lawn mower brush cutter and olive shaker lasting longer than 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"lawn_mower_brush_cutter_olive_shaker\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-096",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ kéo dài hơn 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "lawn_mower_brush_cutter_olive_shaker",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"lawn_mower_brush_cutter_olive_shaker\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-097",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have cicadas and crickets lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "cicadas_and_crickets",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ],
+    "duration": {
+     "class_id": "cicadas_and_crickets",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"], \"duration\": {\"class_id\": \"cicadas_and_crickets\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-097",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng côn trùng như ve sầu hoặc dế kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "cicadas_and_crickets",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ],
+    "duration": {
+     "class_id": "cicadas_and_crickets",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"], \"duration\": {\"class_id\": \"cicadas_and_crickets\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-098",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have dog barkings and howlings lasting longer than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "dog_barkings_and_howlings",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings"
+    ],
+    "duration": {
+     "class_id": "dog_barkings_and_howlings",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\"], \"duration\": {\"class_id\": \"dog_barkings_and_howlings\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-098",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng chó sủa hoặc tru kéo dài hơn 10 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "dog_barkings_and_howlings",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "dog_barkings_and_howlings",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"dog_barkings_and_howlings\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-099",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have music lasting longer than 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"music\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-099",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng nhạc kéo dài hơn 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"music\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-100",
+   "group": "duration",
+   "language": "en",
+   "question": "Which recordings have vehicle idling lasting longer than 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vehicle_idling\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "template",
+   "query_id": "q-100",
+   "group": "duration",
+   "language": "vi",
+   "question": "Bản ghi nào có tiếng động cơ xe chạy không tải kéo dài hơn 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vehicle_idling\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-001",
+   "group": "single_class",
+   "language": "en",
+   "question": "Can you find clips where I can hear birds?",
+   "gold": {
+    "classes_all": [
+     "birds"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-002",
+   "group": "single_class",
+   "language": "en",
+   "question": "Show me recordings with a dog barking or howling.",
+   "gold": {
+    "classes_all": [
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-003",
+   "group": "single_class",
+   "language": "en",
+   "question": "Any audio of a train around?",
+   "gold": {
+    "classes_all": [
+     "train"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "train"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"train\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-004",
+   "group": "single_class",
+   "language": "en",
+   "question": "I need sounds with sirens or alarms.",
+   "gold": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-005",
+   "group": "single_class",
+   "language": "en",
+   "question": "Got any clip with ppl talking?",
+   "gold": {
+    "classes_all": [
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-006",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Tìm giúp mình mấy bản có tiếng ve dế với.",
+   "gold": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "cicadas_and_crickets"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-007",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Có đoạn nào nghe tiếng chuông ko?",
+   "gold": {
+    "classes_all": [
+     "bells"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "bells"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"bells\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-008",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Cho tôi file có tiếng kính vỡ.",
+   "gold": {
+    "classes_all": [
+     "glass_breaking"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "glass_breaking"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"glass_breaking\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-009",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Mình muốn nghe âm thanh máy hút bụi hoặc quạt.",
+   "gold": {
+    "classes_all": [
+     "vacuum_cleaner_fan_hairdryer"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vacuum_cleaner_fan_hairdryer"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vacuum_cleaner_fan_hairdryer\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-010",
+   "group": "single_class",
+   "language": "vi",
+   "question": "Kiếm bản ghi có tiếng mèo đánh nhau hay kêu rên.",
+   "gold": {
+    "classes_all": [
+     "cat_fights_and_moans"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "cat_fights_and_moans"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"cat_fights_and_moans\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-011",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Find audio containing both music and voices.",
+   "gold": {
+    "classes_all": [
+     "music",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "music",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"music\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-012",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Where do birds and a lawn mower show up together?",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "lawn_mower_brush_cutter_olive_shaker"
+    ]
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "birds",
+     "b": "lawn_mower_brush_cutter_olive_shaker",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"birds\", \"b\": \"lawn_mower_brush_cutter_olive_shaker\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-013",
+   "group": "multi_class",
+   "language": "en",
+   "question": "I want clips with an idling vehicle plus a horn.",
+   "gold": {
+    "classes_all": [
+     "vehicle_idling",
+     "horn"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_idling",
+     "horn"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_idling\", \"horn\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-014",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Show recordings that have aircraft propellers and voices.",
+   "gold": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "propeller_aircrafts",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"propeller_aircrafts\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-015",
+   "group": "multi_class",
+   "language": "en",
+   "question": "Any sound file with workshop noise and a passing car?",
+   "gold": {
+    "classes_all": [
+     "workshop",
+     "vehicle_pass_by"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "workshop",
+     "vehicle_pass_by"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"workshop\", \"vehicle_pass_by\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-016",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Tìm đoạn vừa có tiếng gà vừa có tiếng chó sủa.",
+   "gold": {
+    "classes_all": [
+     "chicken_coop",
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "chicken_coop",
+     "dog_barkings_and_howlings"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"chicken_coop\", \"dog_barkings_and_howlings\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-017",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Có bản nào nghe cả tàu hỏa lẫn còi xe không?",
+   "gold": {
+    "classes_all": [
+     "train",
+     "horn"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "train",
+     "horn"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"train\", \"horn\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-018",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Cho mình tiếng chim với nhạc trong cùng một bản.",
+   "gold": {
+    "classes_all": [
+     "birds",
+     "music"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "birds",
+     "music"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"birds\", \"music\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-019",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Kiếm audio có máy bay phản lực và còi báo động.",
+   "gold": {
+    "classes_all": [
+     "jet_aircrafts",
+     "sirens_and_alarms"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "jet_aircrafts",
+     "sirens_and_alarms"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"jet_aircrafts\", \"sirens_and_alarms\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-020",
+   "group": "multi_class",
+   "language": "vi",
+   "question": "Đoạn nào có tiếng xe chạy qua kèm tiếng người nói?",
+   "gold": {
+    "classes_all": [
+     "vehicle_pass_by",
+     "voices"
+    ]
+   },
+   "predicted": {
+    "classes_all": [
+     "vehicle_pass_by",
+     "voices"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_pass_by\", \"voices\"]}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-021",
+   "group": "temporal",
+   "language": "en",
+   "question": "Find clips where birds happen before the horn.",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "birds",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "birds",
+     "b": "horn",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"birds\", \"b\": \"horn\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-022",
+   "group": "temporal",
+   "language": "en",
+   "question": "Was there music after the glass broke?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "music",
+     "b": "glass_breaking",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "glass_breaking",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"glass_breaking\", \"b\": \"music\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": false
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-023",
+   "group": "temporal",
+   "language": "en",
+   "question": "Show me speech overlapping a passing vehicle.",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-024",
+   "group": "temporal",
+   "language": "en",
+   "question": "Which recordings have bells entirely during music?",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "bells",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "within",
+     "a": "bells",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"within\", \"a\": \"bells\", \"b\": \"music\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-025",
+   "group": "temporal",
+   "language": "en",
+   "question": "I need dog barking first and sirens later.",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "dog_barkings_and_howlings",
+     "b": "sirens_and_alarms",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "dog_barkings_and_howlings",
+     "b": "sirens_and_alarms",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"dog_barkings_and_howlings\", \"b\": \"sirens_and_alarms\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-026",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Tìm đoạn tiếng còi xe vang lên sau tiếng tàu.",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "horn",
+     "b": "train",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"horn\", \"b\": \"train\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-027",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Có tiếng chim chồng lên tiếng máy cắt cỏ không?",
+   "gold": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "birds",
+     "b": "lawn_mower_brush_cutter_olive_shaker",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "birds",
+     "b": "lawn_mower_brush_cutter_olive_shaker",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"birds\", \"b\": \"lawn_mower_brush_cutter_olive_shaker\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-028",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Cho mình bản tiếng người nằm trọn trong lúc có nhạc.",
+   "gold": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "within",
+     "a": "voices",
+     "b": "music",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"within\", \"a\": \"voices\", \"b\": \"music\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-029",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Tìm tiếng sấm hay pháo nổ trước tiếng còi báo động.",
+   "gold": {
+    "temporal": {
+     "predicate": "before",
+     "a": "thunder_fireworks_gunshot",
+     "b": "sirens_and_alarms",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "before",
+     "a": "thunder_fireworks_gunshot",
+     "b": "sirens_and_alarms",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"thunder_fireworks_gunshot\", \"b\": \"sirens_and_alarms\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-030",
+   "group": "temporal",
+   "language": "vi",
+   "question": "Có đoạn xe nổ máy sau khi kính vỡ ko?",
+   "gold": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_idling",
+     "b": "glass_breaking",
+     "tolerance_s": 0.0
+    }
+   },
+   "predicted": {
+    "temporal": {
+     "predicate": "after",
+     "a": "vehicle_idling",
+     "b": "glass_breaking",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"after\", \"a\": \"vehicle_idling\", \"b\": \"glass_breaking\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-031",
+   "group": "duration",
+   "language": "en",
+   "question": "Find train sounds lasting more than 10 seconds.",
+   "gold": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "train",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"train\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-032",
+   "group": "duration",
+   "language": "en",
+   "question": "Any clip where jet aircraft noise goes on over 30 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "jet_aircrafts",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"jet_aircrafts\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-033",
+   "group": "duration",
+   "language": "en",
+   "question": "Show passing vehicle sounds longer than ten seconds.",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_pass_by",
+     "min_s": 10.0
+    }
+   },
+   "predicted": null,
+   "raw": null,
+   "error": "filter JSON không hợp lệ: 1 validation error for Filters\nduration.class_id\n  Field required [type=missing, input_value={'min_s': 10.0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing",
+   "exact": false
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-034",
+   "group": "duration",
+   "language": "en",
+   "question": "I need workshop noise that lasts over 30 sec.",
+   "gold": {
+    "duration": {
+     "class_id": "workshop",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "workshop",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"workshop\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-035",
+   "group": "duration",
+   "language": "en",
+   "question": "Where does music continue for more than 10 seconds?",
+   "gold": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "music",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"music\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-036",
+   "group": "duration",
+   "language": "vi",
+   "question": "Tìm tiếng ve dế kéo dài hơn 30 giây.",
+   "gold": {
+    "duration": {
+     "class_id": "cicadas_and_crickets",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "cicadas_and_crickets",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"cicadas_and_crickets\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-037",
+   "group": "duration",
+   "language": "vi",
+   "question": "Có tiếng máy bay cánh quạt lâu hơn 10 giây ko?",
+   "gold": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "propeller_aircrafts",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"propeller_aircrafts\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-038",
+   "group": "duration",
+   "language": "vi",
+   "question": "Cho mình đoạn tiếng người nói trên ba mươi giây.",
+   "gold": {
+    "duration": {
+     "class_id": "voices",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "voices",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"voices\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-039",
+   "group": "duration",
+   "language": "vi",
+   "question": "Tìm tiếng xe chạy không tải dài hơn 10 giây.",
+   "gold": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 10.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vehicle_idling",
+     "min_s": 10.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vehicle_idling\", \"min_s\": 10.0}}",
+   "error": null,
+   "exact": true
+  },
+  {
+   "dataset": "paraphrase",
+   "query_id": "p-040",
+   "group": "duration",
+   "language": "vi",
+   "question": "Đoạn nào có tiếng máy hút bụi hay quạt quá 30 giây?",
+   "gold": {
+    "duration": {
+     "class_id": "vacuum_cleaner_fan_hairdryer",
+     "min_s": 30.0
+    }
+   },
+   "predicted": {
+    "duration": {
+     "class_id": "vacuum_cleaner_fan_hairdryer",
+     "min_s": 30.0
+    }
+   },
+   "raw": "{\"duration\": {\"class_id\": \"vacuum_cleaner_fan_hairdryer\", \"min_s\": 30.0}}",
+   "error": null,
+   "exact": true
+  }
+ ]
+}
