@@ -34,3 +34,13 @@ def test_new_losses_have_finite_gradients() -> None:
         loss.backward()
         assert torch.isfinite(loss)
         assert logits.grad is not None and torch.isfinite(logits.grad).all()
+
+
+def test_focal_stays_finite_for_saturated_logits() -> None:
+    logits = torch.tensor([[[1000.0], [-1000.0]]], requires_grad=True)
+    targets = torch.tensor([[[1.0], [0.0]]])
+    valid = torch.ones(1, 2)
+    loss = masked_focal(logits, targets, valid, gamma=0.5)
+    assert torch.isfinite(loss)
+    loss.backward()
+    assert logits.grad is not None and torch.isfinite(logits.grad).all()

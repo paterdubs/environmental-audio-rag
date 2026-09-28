@@ -108,9 +108,10 @@ def masked_focal(logits: Tensor, targets: Tensor, valid: Tensor, gamma: float = 
     if gamma < 0:
         raise ValueError("focal gamma must be non-negative")
     bce = nn.functional.binary_cross_entropy_with_logits(logits, targets, reduction="none")
-    probabilities = logits.sigmoid()
-    p_t = targets * probabilities + (1 - targets) * (1 - probabilities)
-    return _masked_mean(bce * (1 - p_t).clamp_min(0).pow(gamma), targets, valid)
+    # Compute in log-p_t space: BCE * (1-p_t)^gamma can form inf*0 for saturated logits.
+    log_p_t = (-bce).clamp(min=-50.0, max=0.0)
+    modulation = (-torch.expm1(log_p_t)).clamp_min(torch.finfo(logits.dtype).eps).pow(gamma)
+    return _masked_mean(-modulation * log_p_t, targets, valid)
 
 
 def masked_asl(logits: Tensor, targets: Tensor, valid: Tensor, *, gamma_pos: float = 0.0,
