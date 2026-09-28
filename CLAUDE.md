@@ -1751,3 +1751,8 @@ Kèm guard ở `check_leakage`: split đã đóng băng mà file đổi thì c�
 chạy**. Đã kiểm chứng bằng cách sửa split thật — cổng dừng và in cả hai hash.
 Sinh lại split rồi quên chạy lại cổng là cách im lặng nhất để làm hỏng mọi kết
 quả phía sau, vì mọi số đã báo cáo đều gắn với đúng một split.
+### 2026-09-28 (tối, tiếp) — Frontend natural search và DEMO (ADR-0037)
+
+Frontend đã thêm luồng câu hỏi tự nhiên → `/retrieval/parse` → chip filter sửa được → query; parser lỗi/LLM tắt báo rõ và giữ bộ lọc thủ công. `/api/v1/models/status` được hiển thị, `official=false` có nhãn demo; evidence giữ recording + onset/offset để mở đúng timeline/audio. Script `scripts/report_vi_phrasing_review.py` sinh `vi_phrasing_review_20260928.{md,json}` gồm 38 cụm chờ người dùng duyệt, không sửa lexicon VI. `docs/DEMO.md` ghi lệnh llama.cpp/compose, chỉ dùng TRAIN và rollback v1.
+
+Gate frontend: `npm test` 7 pass; `npm run build` xanh. Gate Python sẽ chạy trước commit. Không mở test split và không thêm số metric.

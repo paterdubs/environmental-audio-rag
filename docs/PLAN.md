@@ -351,7 +351,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 |---:|---|---|
 | 7.1 | `services/inference`: preprocessing + SED + postproc + caption — ✅ 26/09 (parity 142 recording, ADR-0029 §7) | 6 h |
 | 7.2 | `services/api`: upload, persistence, query (**không import torch**) — ✅ 26/09 | 6 h |
-| 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09 | 8 h |
+| 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09; natural query → editable chips → query, manual fallback, model badge, phrasing review — ✅ 28/09 (ADR-0037) | 8 h |
 | 7.4 | Docker Compose đầu-cuối — ✅ 27/09 (ADR-0033), cập nhật 28/09 (ADR-0035): profile `app` demo v2 `150934Z`, mặc định code và hệ thống chính thức vẫn v1. Compose healthy; status `official=false`; parity v2 CUDA/CPU đều 425/425 event trong collar; E2E TRAIN có timeline + caption EN/VI + RAG ([demo_v2_e2e_20260928.md](measurements/demo_v2_e2e_20260928.md)) | 4 h |
 | 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | 4 h |
 | 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | 3 h |

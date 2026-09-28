@@ -1,6 +1,6 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-28 (tối) — L2 parser câu hỏi → filter xong sớm theo ADR-0036; RQ3 parsed
+**Cập nhật:** 2026-09-28 (tối, tiếp) — Frontend natural-search/chip/manual fallback, model badge và evidence playback đã thêm theo ADR-0037; phrasing review sinh tự động. L2 parser câu hỏi → filter xong sớm theo ADR-0036; RQ3 parsed
 chỉ chạy validation, không mở test. Demo Compose vẫn phục vụ SED v2 theo ADR-0035; hệ thống chính
 thức vẫn là v1 tới S8.
 **Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 695 pass, 0 skip (PostgreSQL Docker healthy,
@@ -88,7 +88,7 @@ thức vẫn là v1 tới S8.
 | Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ duyệt tạm 26/09 | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ dev+test nạp vào PostgreSQL + pgvector, BGE-M3, benchmark RQ3 (test nDCG@10: structured 0.523, hybrid 0.481, vector 0.418; filter exactness 1.000); câu trả lời ràng buộc evidence: unsupported-claim 0.000 | ADR-0027, [retrieval_benchmark_test_20260925.md](measurements/retrieval_benchmark_test_20260925.md) |
 | Parser câu hỏi → filter (L2) | ✅ constrained hợp schema 240/240; exact template 0.855, paraphrase 0.925; RQ3 parsed chỉ validation, hybrid Δ gold +0.012 EN / −0.002 VI | ADR-0036, [query_parser_20260928.md](measurements/query_parser_20260928.md), [retrieval_benchmark_validation_parsed_20260928.md](measurements/retrieval_benchmark_validation_parsed_20260928.md) |
-| API / inference / frontend (W7) | ◐ 7.1–7.4 xong; Compose demo v2 healthy, status báo `official=false`; parity v2 CUDA/CPU đều 425/425 event trong collar; E2E TRAIN có timeline, caption EN/VI và RAG. Hệ thống chính thức vẫn v1; 7.5–7.7 sau S8 | ADR-0029, ADR-0033 §6, ADR-0035, [inference_parity_v2_cuda_20260928.md](measurements/inference_parity_v2_cuda_20260928.md), [inference_parity_v2_cpu_20260928.md](measurements/inference_parity_v2_cpu_20260928.md), [demo_v2_e2e_20260928.md](measurements/demo_v2_e2e_20260928.md) |
+| API / inference / frontend (W7) | ◐ 7.1–7.4 xong; UI natural search/chip/manual fallback, model badge, timeline/evidence playback và phrasing review đã triển khai; Compose demo v2 healthy, status báo `official=false`; parity v2 CUDA/CPU đều 425/425 event trong collar; E2E TRAIN có timeline, caption EN/VI và RAG. Hệ thống chính thức vẫn v1; 7.5–7.7 sau S8 | ADR-0029, ADR-0033 §6, ADR-0035, ADR-0037, [DEMO.md](DEMO.md), [vi_phrasing_review_20260928.md](measurements/vi_phrasing_review_20260928.md) |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
 
 ---

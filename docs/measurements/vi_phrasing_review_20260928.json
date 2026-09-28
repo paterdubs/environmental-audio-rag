@@ -1,0 +1,185 @@
+{
+  "date": "20260928",
+  "source": "ml\\configs\\caption_lexicon_vi.yaml",
+  "count": 38,
+  "phrases": [
+    {
+      "source": "caption_lexicon_vi.yaml:class.bells",
+      "phrase": "tiếng chuông"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.birds",
+      "phrase": "tiếng chim"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.cat_fights_and_moans",
+      "phrase": "tiếng mèo kêu hoặc đánh nhau"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.chicken_coop",
+      "phrase": "tiếng gà trong chuồng"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.cicadas_and_crickets",
+      "phrase": "tiếng côn trùng như ve sầu hoặc dế"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.crows_seagulls_magpies",
+      "phrase": "tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.dog_barkings_and_howlings",
+      "phrase": "tiếng chó sủa hoặc tru"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.glass_breaking",
+      "phrase": "tiếng kính vỡ"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.horn",
+      "phrase": "tiếng còi xe"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.jet_aircrafts",
+      "phrase": "tiếng máy bay phản lực"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.lawn_mower_brush_cutter_olive_shaker",
+      "phrase": "tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.music",
+      "phrase": "tiếng nhạc"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.propeller_aircrafts",
+      "phrase": "tiếng máy bay cánh quạt hoặc trực thăng"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.sirens_and_alarms",
+      "phrase": "âm thanh giống còi hú hoặc chuông báo động"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.thunder_fireworks_gunshot",
+      "phrase": "âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.train",
+      "phrase": "tiếng tàu hỏa"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.train",
+      "phrase": "tiếng tàu hoả"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.vacuum_cleaner_fan_hairdryer",
+      "phrase": "tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.vehicle_idling",
+      "phrase": "tiếng động cơ xe chạy không tải"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.vehicle_pass_by",
+      "phrase": "tiếng xe chạy qua"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.voices",
+      "phrase": "tiếng người nói"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.wind_turbine",
+      "phrase": "tiếng tua-bin gió"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.wind_turbine",
+      "phrase": "tiếng tuabin gió"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:class.workshop",
+      "phrase": "tiếng máy móc của xưởng hoặc công trình"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:specific.sirens_and_alarms",
+      "phrase": "tiếng còi hú"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:specific.sirens_and_alarms",
+      "phrase": "còi báo động"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:specific.sirens_and_alarms",
+      "phrase": "chuông báo động"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:specific.thunder_fireworks_gunshot",
+      "phrase": "tiếng sấm"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:specific.thunder_fireworks_gunshot",
+      "phrase": "tiếng pháo hoa"
+    },
+    {
+      "source": "caption_lexicon_vi.yaml:specific.thunder_fireworks_gunshot",
+      "phrase": "tiếng súng"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Truy vấn tự nhiên"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Bộ lọc thủ công"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Bộ lọc đã hiểu — có thể sửa trước khi tìm"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Không hiểu được câu hỏi; hãy chọn bộ lọc thủ công"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Đang phân tích… (CPU có thể mất khoảng một phút)"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Demo — SED v2, chưa phải hệ thống chính thức"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Bộ lọc đã áp"
+    },
+    {
+      "source": "services/frontend/src",
+      "phrase": "Đang hiểu câu hỏi…"
+    }
+  ],
+  "forbidden_terms_checked": [
+    "khẩn cấp",
+    "tội phạm",
+    "đột nhập",
+    "kẻ gian",
+    "tai nạn",
+    "nguy hiểm",
+    "tấn công",
+    "nạn nhân",
+    "cảnh sát",
+    "công an",
+    "xe cứu thương",
+    "xe cứu hỏa",
+    "xe cứu hoả",
+    "cứu hộ",
+    "cố ý",
+    "bất hợp pháp",
+    "trái phép",
+    "vũ khí",
+    "cảnh báo",
+    "rủi ro",
+    "nguy cơ",
+    "đe dọa",
+    "đe doạ"
+  ],
+  "decision": "CẦN NGƯỜI DÙNG DUYỆT — không tự sửa lexicon VI"
+}
