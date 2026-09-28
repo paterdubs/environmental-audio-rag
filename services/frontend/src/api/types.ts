@@ -91,6 +91,16 @@ export interface QueryRequest {
   k: number;
 }
 
+export interface ParseRequest {
+  question: string;
+  language: Language;
+}
+
+export interface ParseResult {
+  filters: Filters;
+  raw: string;
+}
+
 export interface AnswerEvidence {
   recording_id: string;
   event_id: number;
@@ -113,4 +123,17 @@ export interface Health {
   database: boolean;
   inference: boolean;
   model_version: string | null;
+}
+
+export interface ModelsStatus {
+  model_version: string;
+  members: string[];
+  served_run: string;
+  official: boolean;
+  postproc: string;
+  threshold_mode: string;
+  taxonomy_version: string;
+  taxonomy_sha256: string;
+  device: string;
+  [key: string]: unknown;
 }

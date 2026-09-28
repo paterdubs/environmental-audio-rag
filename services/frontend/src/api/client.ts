@@ -2,6 +2,9 @@ import type {
   Corpus,
   Envelope,
   Health,
+  ModelsStatus,
+  ParseRequest,
+  ParseResult,
   QueryRequest,
   Recording,
   RecordingDetail,
@@ -36,6 +39,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<{ data: T; 
 
 export const api = {
   health: () => request<Health>("/health"),
+  models: () => request<ModelsStatus>("/api/v1/models/status"),
   taxonomy: () => request<Taxonomy>("/api/v1/taxonomy").then((r) => r.data),
   recordings: (corpus: Corpus, classId: string | null, page: number, limit = 20) => {
     const params = new URLSearchParams({ corpus, page: String(page), limit: String(limit) });
@@ -55,4 +59,10 @@ export const api = {
       body: JSON.stringify(body),
     }),
   audioUrl: (id: string) => `/api/v1/recordings/${encodeURIComponent(id)}/audio`,
+  parse: (body: ParseRequest) =>
+    request<ParseResult>("/api/v1/retrieval/parse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }),
 };
