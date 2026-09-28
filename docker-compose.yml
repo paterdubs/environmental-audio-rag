@@ -38,6 +38,10 @@ services:
     volumes:
       - ./ml/runs:/app/ml/runs:ro
       - ./artifacts/hf:/app/artifacts/hf:ro
+    environment:
+      # ADR-0035: demo dùng v2 trước S8; bỏ hai biến này để quay về mặc định v1 chính thức.
+      EARAG_SERVED_RUN: ml/runs/sed_ensemble_v2_20260926T150934Z
+      EARAG_SERVED_POSTPROC: postproc_cv.json
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s

@@ -15,7 +15,8 @@ class FakeEngine:
         self.calls: list[str] = []
 
     def info(self) -> dict:
-        return {"model_version": "sed-fake", "embedding_version": "emb-fake"}
+        return {"model_version": "sed-fake", "embedding_version": "emb-fake",
+                "served_run": "ml/runs/sed-fake", "official": False}
 
     def analyze(self, recording_id, path):
         self.calls.append(recording_id)
@@ -44,6 +45,12 @@ def test_health_reflects_real_readiness_and_analyze_returns_an_envelope() -> Non
     assert response.status_code == 200 and body["success"] and body["error"] is None
     assert body["data"]["audio"]["duration_s"] == pytest.approx(1.0)
     assert len(body["data"]["audio"]["sha256"]) == 64 and engine.calls == ["upload:a"]
+
+
+def test_models_reports_served_run_and_official_flag() -> None:
+    with TestClient(create_app(FakeEngine)) as client:
+        data = client.get("/v1/models").json()["data"]
+    assert data["served_run"] == "ml/runs/sed-fake" and data["official"] is False
 
 
 def test_not_ready_is_503_not_200() -> None:

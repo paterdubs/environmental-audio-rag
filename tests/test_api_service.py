@@ -40,7 +40,8 @@ class FakeInference:
         return {"model_version": "sed-fake"}
 
     async def models(self):
-        return {"model_version": "sed-fake", "taxonomy_sha256": TAXONOMY.checksum}
+        return {"model_version": "sed-fake", "served_run": "ml/runs/sed-fake",
+                "official": False, "taxonomy_sha256": TAXONOMY.checksum}
 
     async def embed(self, texts):
         vector = np.zeros(1024, np.float32)
@@ -98,6 +99,12 @@ def test_taxonomy_endpoint_lists_the_21_sed_classes_with_both_names(tmp_path) ->
     assert [c["class_id"] for c in data["classes"]] == list(TAXONOMY.polyphonic_class_ids)
     assert all(c["label_en"] and c["label_vi"] for c in data["classes"])
     assert data["sha256"] == TAXONOMY.checksum
+
+
+def test_models_status_exposes_served_run_and_official_flag(tmp_path) -> None:
+    data = client(tmp_path).get("/api/v1/models/status").json()["data"]
+    assert data["served_run"] == "ml/runs/sed-fake" and data["official"] is False
+    assert data["taxonomy_consistent"] is True
 
 
 def test_built_frontend_is_served_without_shadowing_the_api(tmp_path) -> None:

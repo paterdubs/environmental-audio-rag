@@ -19,6 +19,7 @@ import argparse
 import csv
 import json
 import os
+import re
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -30,6 +31,7 @@ from torch.utils.data import DataLoader
 
 from ml.datasets.features import SedFeatureDataset
 from ml.evaluation.predictions import load_predictions
+from ml.inference.engine import DEFAULT_SERVED_POSTPROC, DEFAULT_SERVED_RUN
 from ml.inference.pipeline import served_feature
 from ml.inference.sed import ServedSed
 from ml.postprocessing import stack_predictions_by_recording
@@ -37,18 +39,43 @@ from ml.provenance import git_state
 from ml.taxonomy import load_taxonomy
 
 ROOT = Path(__file__).resolve().parents[1]
-ENSEMBLE = ROOT / "ml/runs/sed_ensemble_C_clean_20260925T045631Z"
-POSTPROC = "postproc_cv.json"
+ENSEMBLE = ROOT / DEFAULT_SERVED_RUN
+POSTPROC = DEFAULT_SERVED_POSTPROC
 TRAIN_BATCH = 24  # batch of the loaders that dumped predictions/test.npz (ADR-0020, C2)
 AUDIO_ROOT = ROOT / "data/raw/datased/extracted"
 FEATURE_ROOT = ROOT / "data/features/datased/logmel_panns_v1"
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
-    return parser.parse_args()
+    parser.add_argument("--run", type=Path, default=DEFAULT_SERVED_RUN,
+                        help="Thư mục run tương đối ROOT (mặc định hệ thống v1 chính thức)")
+    parser.add_argument("--postproc", default=DEFAULT_SERVED_POSTPROC)
+    return parser.parse_args(argv)
+
+
+def resolve_run(path: Path) -> Path:
+    if path.is_absolute():
+        raise ValueError("--run phải là đường dẫn tương đối ROOT")
+    resolved = (ROOT / path).resolve()
+    try:
+        resolved.relative_to(ROOT.resolve())
+    except ValueError:
+        raise ValueError("--run phải nằm trong repository") from None
+    return resolved
+
+
+def output_stem(run_dir: Path, device: str) -> str:
+    """Keep legacy v1 names; custom runs include their manifest label and device."""
+    if run_dir == ENSEMBLE.resolve():
+        suffix = "" if device == "cuda" else f"_{device}"
+        return f"inference_parity{suffix}"
+    manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
+    label = str(manifest.get("config", {}).get("ensemble_label", run_dir.name))
+    label = re.sub(r"[^a-zA-Z0-9_-]+", "_", label).strip("_").lower()
+    return f"inference_parity_{label}_{device}"
 
 
 def feature_paths() -> dict[str, tuple[Path, Path]]:
@@ -165,12 +192,13 @@ def revision() -> dict:
 
 
 def main() -> None:
-    args = parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    args = parse_args()
     git = revision()
+    ensemble = resolve_run(args.run)
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
-    sed = ServedSed(ENSEMBLE, POSTPROC, taxonomy, torch.device(args.device))
-    artifact = load_predictions(ENSEMBLE / "predictions/test.npz",
+    sed = ServedSed(ensemble, args.postproc, taxonomy, torch.device(args.device))
+    artifact = load_predictions(ensemble / "predictions/test.npz",
                                 expected_class_ids=taxonomy.polyphonic_class_ids)
     frozen = stack_predictions_by_recording(artifact)
     paths = feature_paths()
@@ -187,13 +215,12 @@ def main() -> None:
                "n_within_frame": sum(r["n_within_frame"] for r in rows),
                "n_within_collar": sum(r["n_within_collar"] for r in rows),
                "event_mismatches": [r["recording_id"] for r in rows if not r["events_equal"]]}
-    result = {"ensemble": ENSEMBLE.name, "postproc": POSTPROC, "device": args.device,
+    result = {"ensemble": ensemble.name, "postproc": args.postproc, "device": args.device,
               "torch": torch.__version__,
               "git": git, "summary": summary, "rows": rows,
               "batch_reproduction": batch_reproduction(sed, taxonomy)}
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    suffix = "" if args.device == "cuda" else f"_{args.device}"
-    out = ROOT / "docs/measurements" / f"inference_parity{suffix}_{stamp}.md"
+    out = ROOT / "docs/measurements" / f"{output_stem(ensemble, args.device)}_{stamp}.md"
     out.with_suffix(".json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     out.write_text(render(result), encoding="utf-8")
     print(render(result))
