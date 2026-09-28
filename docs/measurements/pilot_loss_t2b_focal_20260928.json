@@ -7,12 +7,12 @@
   "rule": "max dev macro-AP epoch 3; tie lower gamma",
   "pilots": [
     {
-      "run": "sed_polyphonic_20260928T154005Z",
+      "run": "sed_polyphonic_20260928T161127Z",
       "focal_gamma": 0.5,
       "macro_average_precision": [
-        0.5678274634553899,
-        0.6738063916198589,
-        0.6919523790734147
+        0.575442970194223,
+        0.677019793893489,
+        0.6917348448145949
       ],
       "encoder_type": "frame_mn",
       "recipe": "t2b",
@@ -24,12 +24,12 @@
       "loss": "focal"
     },
     {
-      "run": "sed_polyphonic_20260928T155421Z",
+      "run": "sed_polyphonic_20260928T161532Z",
       "focal_gamma": 1.0,
       "macro_average_precision": [
-        0.5770027042418426,
-        0.6700807734347923,
-        0.6892479181977215
+        0.5845796175986833,
+        0.6841509134984216,
+        0.6922779422204236
       ],
       "encoder_type": "frame_mn",
       "recipe": "t2b",
@@ -41,12 +41,12 @@
       "loss": "focal"
     },
     {
-      "run": "sed_polyphonic_20260928T155829Z",
+      "run": "sed_polyphonic_20260928T162033Z",
       "focal_gamma": 2.0,
       "macro_average_precision": [
-        0.5929144859009813,
-        0.6660820007726672,
-        0.678346991559696
+        0.5978232388833609,
+        0.6667026351560567,
+        0.6925043222156116
       ],
       "encoder_type": "frame_mn",
       "recipe": "t2b",
@@ -59,12 +59,12 @@
     }
   ],
   "chosen": {
-    "run": "sed_polyphonic_20260928T154005Z",
-    "focal_gamma": 0.5,
+    "run": "sed_polyphonic_20260928T162033Z",
+    "focal_gamma": 2.0,
     "macro_average_precision": [
-      0.5678274634553899,
-      0.6738063916198589,
-      0.6919523790734147
+      0.5978232388833609,
+      0.6667026351560567,
+      0.6925043222156116
     ],
     "encoder_type": "frame_mn",
     "recipe": "t2b",
