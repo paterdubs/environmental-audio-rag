@@ -89,3 +89,28 @@ parity khai báo nguồn này tường minh bằng `--reference-run` thay vì ch
 | Chờ S8 mới demo v2 | Không đáp ứng duyệt trực tiếp ngày 28/09 |
 | Phân tích lại toàn bộ upload cũ | Làm mất provenance/model_version cũ và thay đổi dữ liệu ngầm |
 | Hardcode một lớp model v2 riêng | Trùng logic train và dễ lệch kiến trúc manifest |
+
+## Verification
+
+Compose build lại từ commit có ADR này và cả `db`, `inference`, `api` đều healthy. Endpoint
+`/api/v1/models/status` báo đúng run `150934Z`, ba member, `postproc_cv.json`, thiết bị CPU,
+`official=false` và taxonomy nhất quán.
+
+Parity đầy đủ 142 recording chỉ so output đóng băng, không tính metric:
+
+| Thiết bị | Event trùng chính xác | Trong collar 0,2 s | Δ xác suất lớn nhất | Δlogit batch/member |
+|---|---:|---:|---:|---|
+| CUDA | 419/425 | 425/425 | 0.000419 | 0 / 0 / 0 |
+| CPU container | 400/425 | 425/425 | 0.0135 | 0.0529 / 0.0237 / 0.0430 |
+
+Artifact:
+[`inference_parity_v2_cuda_20260928.md`](../measurements/inference_parity_v2_cuda_20260928.md),
+[`inference_parity_v2_cpu_20260928.md`](../measurements/inference_parity_v2_cpu_20260928.md).
+CUDA tái tạo đúng batch từng bit; CPU khác đường số học fp32 nhưng toàn bộ event đóng băng vẫn có
+đối ứng cùng lớp và biên trong collar.
+
+E2E compose dùng `S-0016` thuộc TRAIN: upload mới (không duplicate) và phân tích mất 5.113 s,
+timeline có 2 event, caption EN/VI đều có evidence; RAG hybrid mất 0.270 s, trả 2 evidence và có
+recording vừa upload. Xem
+[`demo_v2_e2e_20260928.md`](../measurements/demo_v2_e2e_20260928.md). Đây là thời gian vận hành
+một lượt sau khi model đã warm, không phải benchmark hiệu năng.

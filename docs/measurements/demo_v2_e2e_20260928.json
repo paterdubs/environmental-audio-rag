@@ -1,0 +1,29 @@
+{
+ "source_recording_id": "S-0016",
+ "source_split": "train",
+ "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0016.wav",
+ "recording_id": "upload:cafa517e-ffa5-4932-808c-6eb94317dea8",
+ "served_run": "ml/runs/sed_ensemble_v2_20260926T150934Z",
+ "model_version": [
+  "sed_ensemble_v2_20260926T150934Z"
+ ],
+ "official": false,
+ "postproc": "postproc_cv.json",
+ "device": "cpu",
+ "upload_elapsed_s": 5.113264399995387,
+ "events": 2,
+ "caption_languages": [
+  "en",
+  "vi"
+ ],
+ "captions_with_evidence": 2,
+ "rag_mode": "hybrid",
+ "rag_query_class": "birds",
+ "rag_elapsed_s": 0.26955240000097547,
+ "rag_evidence": 2,
+ "rag_contains_uploaded_recording": true,
+ "git": {
+  "revision": "cd7e045791c76b7b3891b8b0b363ad01fdcf4434",
+  "dirty": false
+ }
+}

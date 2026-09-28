@@ -17,7 +17,7 @@
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ✅ |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 duyệt 26/09; Alembic hoãn) |
-| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.4 xong (7.4 đóng 27/09, ADR-0033: db + inference + api đều trong Docker); 7.5–7.7 làm 19/10–02/11, sau S8 |
+| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.4 xong; 28/09 demo Compose chuyển riêng sang v2 theo ADR-0035, hệ thống chính thức vẫn v1; 7.5–7.7 làm 19/10–02/11, sau S8 |
 | W8 | 10–16/11 | Buffer, chỉ dùng khi được gia hạn (viết báo cáo dời lên 19/10) | ○ |
 | SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ✅ chốt 26/09 tối: v2 ensemble 3 seed được chọn, test micro 0.1476 / macro 0.1369 (v1 0.0941 / 0.0917); S9 đang chạy; S10 T0 bước 1–2 xong |
 | Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ○ |
@@ -352,7 +352,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 | 7.1 | `services/inference`: preprocessing + SED + postproc + caption — ✅ 26/09 (parity 142 recording, ADR-0029 §7) | 6 h |
 | 7.2 | `services/api`: upload, persistence, query (**không import torch**) — ✅ 26/09 | 6 h |
 | 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09 | 8 h |
-| 7.4 | Docker Compose đầu-cuối — ✅ 27/09 (ADR-0033 §6): `docker compose --profile app up -d --build` dựng db + inference (CPU) + api (kèm UI), healthy sau 67 s; upload WAV thật qua :8088 ra timeline + caption EN/VI, truy vấn RAG có trích dẫn; parity CPU 403/408 event trong collar ([inference_parity_cpu_20260927.md](measurements/inference_parity_cpu_20260927.md)). `scripts.serve_demo` vẫn dùng được nếu muốn GPU | 4 h |
+| 7.4 | Docker Compose đầu-cuối — ✅ 27/09 (ADR-0033), cập nhật 28/09 (ADR-0035): profile `app` demo v2 `150934Z`, mặc định code và hệ thống chính thức vẫn v1. Compose healthy; status `official=false`; parity v2 CUDA/CPU đều 425/425 event trong collar; E2E TRAIN có timeline + caption EN/VI + RAG ([demo_v2_e2e_20260928.md](measurements/demo_v2_e2e_20260928.md)) | 4 h |
 | 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | 4 h |
 | 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | 3 h |
 | 7.7 | Đóng băng artifact, hướng dẫn tái lập | 3 h |
@@ -520,8 +520,8 @@ Chương 2 — nâng lên V3 trong `RELATED_WORK.md` §2.1, đúng kỷ luật �
 
 - **Không mở test** cho bất kỳ ứng viên nào (RQ1-v2, (d), (e), T2a, T2b) trước khi vòng chọn cuối
   S13 (18/10) đã commit trên dev. Đây là luật đã ghi trước ở ADR-0031 §4, không phải tuỳ chọn.
-- **Không đổi hệ thống SED đang phục vụ demo** (`sed_ensemble_C_clean_20260925T045631Z`) — đổi
-  một lần duy nhất ở S8, sau mốc 18/10 (ADR-0029 §1).
+- **Dòng bàn giao 27/09 này đã được thay thế có chủ đích ngày 28/09 bởi ADR-0035:** profile demo
+  được dùng v2 ngay, nhưng hệ thống **chính thức** vẫn là v1 và chỉ đổi một lần ở S8.
 - **Không push** — quyền push của agent bị chặn ngoài phiên có người xác nhận trực tiếp; cứ
   commit đầy đủ, để người dùng tự push khi quay lại.
 - Theo dõi đĩa (`df -h /d`) và RAM trước mỗi bước tốn tài nguyên (build Docker, tải checkpoint,

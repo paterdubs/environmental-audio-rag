@@ -56,6 +56,14 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 28/09/2026 (tối) — demo Compose dùng SED v2 theo ADR-0035; hệ thống chính thức vẫn
+v1 tới S8.** `Engine` đọc run/postproc qua env nhưng mặc định giữ v1; profile `app` trỏ
+`sed_ensemble_v2_20260926T150934Z` + `postproc_cv.json`. Compose healthy, status báo ba member,
+CPU, taxonomy nhất quán và `official=false`. Parity với output đóng băng (không ground truth,
+không metric mới): CUDA 419/425 event trùng chính xác, CPU 400/425; cả hai 425/425 trong collar.
+E2E TRAIN `S-0016`: upload+phân tích 5.113 s, 2 event, caption EN/VI có evidence, RAG hybrid trả
+đúng recording (`inference_parity_v2_{cuda,cpu}_20260928`, `demo_v2_e2e_20260928`).
+
 **Cập nhật 28/09/2026 (chiều) — W7 7.4 và Track 2b đã xong; nợ #25 đã đóng theo ADR-0034. Đã
 sinh đủ 18/18 file CV dev `annotated` sạch cho 9 ứng viên và báo cáo xếp hạng chuẩn bị S13; chưa
 chọn hệ thống, chưa mở test.**
@@ -559,6 +567,25 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-28 (tối) — demo phục vụ v2 trước S8, parity CUDA/CPU và E2E
+
+Người dùng duyệt ngoại lệ chỉ cho demo: thêm `EARAG_SERVED_RUN`/`EARAG_SERVED_POSTPROC`, mặc định
+code vẫn là ensemble C v1; `served_run`/`official` được đưa qua inference tới
+`/api/v1/models/status`. `ServedSed` đã dựng đúng v2 từ manifest (pool /8, BiGRU 2×256), không
+hardcode. Compose profile `app` trỏ ensemble v2 ba seed; volume `ml/runs` đã bao phủ đủ member.
+ADR-0035 ghi rõ rollback bằng cách bỏ env và recording cũ không bị phân tích lại ngầm.
+
+Run phục vụ `150934Z` thiếu `test.npz` trên workspace, trong khi bản dựng sạch tương đương
+`155630Z` giữ artifact này. Hai run có cùng ba member, `dev.npz` và `postproc_cv.json` trùng hash;
+parity dùng `--reference-run` để ghi provenance tường minh. Trên 142 recording, CUDA có 419/425
+event trùng chính xác, CPU container 400/425; cả hai 425/425 trong collar. CUDA tái tạo batch từng
+member với Δlogit=0; CPU khác fp32 như ADR-0033. Đây chỉ là so output đóng băng, không tính metric.
+
+Compose build lại và `db`/`inference`/`api` đều healthy. Measurement E2E sinh tự động từ TRAIN
+`S-0016`: upload+phân tích 5.113 s, 2 event, hai caption EN/VI có evidence; RAG hybrid 0.270 s,
+2 evidence và chứa recording vừa upload. Gate sau khi thêm harness: ruff sạch; pytest **688 pass,
+0 skip, 19 warnings** với PostgreSQL Docker bật. Không push.
 
 ### 2026-09-28 (chiều) — đủ CV annotated cho 9 ứng viên; sinh bảng chuẩn bị S13
 

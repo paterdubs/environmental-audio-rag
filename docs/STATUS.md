@@ -1,7 +1,8 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-28 (chiều) — đủ 18/18 file CV dev `annotated` sạch cho 9 ứng viên S13; báo cáo xếp hạng đã sinh, chưa chọn hệ thống và chưa mở test (ADR-0034 §5)
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 613 pass, 7 skip (Docker Desktop tắt; DB tự skip,
+**Cập nhật:** 2026-09-28 (tối) — demo Compose phục vụ SED v2 theo ADR-0035; hệ thống chính thức
+vẫn là v1 tới S8. Parity CUDA/CPU và E2E TRAIN đã có artifact; không tính metric test mới.
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 688 pass, 0 skip (PostgreSQL Docker healthy,
 28/09), ruff sạch (Windows)
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
@@ -14,7 +15,8 @@
 
 - **W1–W5 xong.** W6 có kết quả RQ3 (ADR-0027, duyệt 26/09). W7 chạy được đầu-cuối (ADR-0029,
   duyệt 26/09); từ 27/09 cả inference cũng chạy trong Docker (ADR-0033 §6) — demo trực tiếp bằng
-  một lệnh `docker compose --profile app up -d`.
+  một lệnh `docker compose --profile app up -d`. Từ 28/09 profile demo dùng v2 qua env
+  (ADR-0035), nhưng mặc định code và hệ thống chính thức vẫn v1 tới S8.
 - **Giai đoạn cải thiện SED (26/09, ADR-0030, duyệt 26/09).** Chẩn đoán trên dev: trần event-F1
   của kiến trúc v1 là 0.63 (pool thời gian /64); trần người 0.58; v1 chỉ onset 0.23, chỉ
   offset 0.50, segment F1 0.65 → lỗi nằm ở biên. Biên lệch **đối xứng, tản rộng** — giả thuyết
@@ -80,7 +82,7 @@
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
 | Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ duyệt tạm 26/09 | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ dev+test nạp vào PostgreSQL + pgvector, BGE-M3, benchmark RQ3 (test nDCG@10: structured 0.523, hybrid 0.481, vector 0.418; filter exactness 1.000); câu trả lời ràng buộc evidence: unsupported-claim 0.000 | ADR-0027, [retrieval_benchmark_test_20260925.md](measurements/retrieval_benchmark_test_20260925.md) |
-| API / inference / frontend (W7) | ◐ 7.1–7.4 xong; db + inference (CPU) + api đều trong Docker (27/09), parity CPU 403/408 event trong collar; 7.5–7.7 sau S8 | ADR-0029, ADR-0033 §6, [inference_parity_20260925.md](measurements/inference_parity_20260925.md), [inference_parity_cpu_20260927.md](measurements/inference_parity_cpu_20260927.md) |
+| API / inference / frontend (W7) | ◐ 7.1–7.4 xong; Compose demo v2 healthy, status báo `official=false`; parity v2 CUDA/CPU đều 425/425 event trong collar; E2E TRAIN có timeline, caption EN/VI và RAG. Hệ thống chính thức vẫn v1; 7.5–7.7 sau S8 | ADR-0029, ADR-0033 §6, ADR-0035, [inference_parity_v2_cuda_20260928.md](measurements/inference_parity_v2_cuda_20260928.md), [inference_parity_v2_cpu_20260928.md](measurements/inference_parity_v2_cpu_20260928.md), [demo_v2_e2e_20260928.md](measurements/demo_v2_e2e_20260928.md) |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
 
 ---
