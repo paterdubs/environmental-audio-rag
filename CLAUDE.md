@@ -56,6 +56,13 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 28/09/2026 (tối, tiếp) — L2 parser câu hỏi thành filter xong sớm, chỉ dev.**
+ADR-0036 và tập 40 paraphrase được commit trước code/lần parse đầu. Lượt đo đầu phát hiện llama.cpp
+bỏ qua wrapper schema kiểu OpenAI; đã sửa dùng top-level schema inline v1.1 và chạy lại sạch:
+240/240 output hợp schema, exact template 171/200 (0.855), paraphrase 37/40 (0.925). RQ3
+validation hybrid parsed 0.491 EN / 0.490 VI, Δ gold +0.012 / −0.002; chênh dương không được
+diễn giải là cải thiện. API parse/query và fallback 503 chạy thật qua Compose. Không mở test.
+
 **Cập nhật 28/09/2026 (tối) — demo Compose dùng SED v2 theo ADR-0035; hệ thống chính thức vẫn
 v1 tới S8.** `Engine` đọc run/postproc qua env nhưng mặc định giữ v1; profile `app` trỏ
 `sed_ensemble_v2_20260926T150934Z` + `postproc_cv.json`. Compose healthy, status báo ba member,
@@ -294,8 +301,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 
 ### Chưa có ○
 
-Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · bộ chuyển câu hỏi tự nhiên thành bộ lọc (PLAN L2) · báo
-cáo luận văn (L3).
+Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · báo cáo luận văn (L3).
 
 ### Việc tiếp theo — theo thứ tự
 
@@ -313,7 +319,7 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
    measurement 9 ứng viên. Thứ hạng tạm thời `f2/f4/f1/d/e/c/f3/b/a`; chưa chọn, chưa mở test.
 5. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)–(f4) đã
    có CV dev, sẵn sàng vào vòng chọn cùng nhau.
-6. Sau 18/10: S8 một lần → W7 7.5–7.7 → L2 → viết báo cáo.
+6. ~~L2~~ — ✅ xong sớm 28/09, chỉ validation. Sau 18/10: S8 một lần → W7 7.5–7.7 → viết báo cáo.
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
 
@@ -567,6 +573,26 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-28 (tối, tiếp) — L2 parser câu hỏi → filter và RQ3 parsed validation
+
+Khóa ADR-0036 và `query_parse_paraphrase_v1.csv` (40 câu, 20 EN/20 VI) ở `aafd8ec` trước khi
+viết/chạy parser. Module HTTP torch-free sinh JSON Schema từ 21 lớp + bốn predicate; prompt
+few-shot, temperature 0, seed 20260922. API thêm `/retrieval/parse`; `/retrieval/query` tự parse
+khi thiếu filter, trả `filters_source`, và trả 503 rõ khi llama.cpp tắt.
+
+Lượt đầu `dfcafa1` phát hiện build b11158 âm thầm bỏ qua wrapper OpenAI-style và `$ref`; không dùng
+số/RQ3 dẫn xuất đó. Sửa ở `38bcf53` sang top-level `json_schema` và inline ba biến thể, probe đối
+nghịch xác nhận enum thật sự bị ép. Lượt sạch v1.1 (`query_parser_20260928`) có 240/240 output hợp
+schema: template exact 0.855, paraphrase 0.925; predicate 0.767/1.000. Lỗi semantic vẫn giữ nguyên.
+
+RQ3 chỉ `validation`, 96 câu có relevant: hybrid 0.491 EN / 0.490 VI, Δ gold +0.012 / −0.002;
+structured 0.507/0.502, Δ +0.009/+0.005. Filter sai có thể tình cờ cho thứ hạng tốt hơn nên Δ
+dương không chứng minh parser cải thiện retrieval. Không chạy test, không thay lỗi bằng gold.
+Compose/API thật healthy; RELATED_WORK không đổi vì không dùng nguồn nghiên cứu mới.
+
+Gate sau code: ruff sạch; pytest **695 pass, 0 skip, 19 warnings**, PostgreSQL Docker healthy.
+Không push.
 
 ### 2026-09-28 (tối) — demo phục vụ v2 trước S8, parity CUDA/CPU và E2E
 

@@ -466,7 +466,7 @@ Bảng gốc (22/09) liệt kê 8 mục chưa có; **cả 8 đã làm** (cập n
 | 3 | Omission tính theo **lớp**, không theo event | Lặp lại cùng lớp mà chỉ nhắc một lần không bị tính bỏ sót |
 | 4 | Thứ tự là tỷ lệ cặp đúng (cặp bằng nhau tính đúng), không phải Kendall τ | Báo kèm bản chỉ tính caption ≥2 mention |
 | 5 | N-gram so với caption template, không có caption người viết | Chỉ tham khảo, không kết luận (§8.3) |
-| 6 | RQ3 dùng bộ lọc có sẵn trong query set: `structured_only` và `hybrid` giả định câu hỏi luôn được parse đúng (ADR-0027 §8) | Số RQ3 là cận trên của hệ thống có bộ parse thật; bộ chuyển câu hỏi tự nhiên thành bộ lọc làm sau mốc đóng băng (ADR-0031 §8) |
+| 6 | RQ3 test dùng bộ lọc có sẵn trong query set: `structured_only` và `hybrid` giả định câu hỏi luôn được parse đúng (ADR-0027 §8) | Đây vẫn là cận trên về **độ đúng filter** trên test. Parser thật đã đo theo ADR-0036 và RQ3 parsed chỉ chạy validation: hybrid Δ gold +0.012 EN / −0.002 VI. Δ không luôn âm vì filter sai có thể tình cờ đổi thứ hạng có lợi; chưa chạy test parsed |
 | 7 | Caption LLM chỉ tất định theo **chuỗi request** trên server mới khởi động — bộ nhớ đệm prompt của llama.cpp đổi phép tính số thực | Tái lập = sinh lại cả file theo đúng thứ tự; không vá lẻ từng caption (ADR-0023 §7) |
 | 8 | Event-F1 headline trước 26/09 là **micro**, trong khi Q2 đòi macro (§3.2) | Số cũ ghi "micro" ở mọi chỗ trích, macro tra ở `event_f1_macro_20260926.md`; từ 26/09 báo macro trước, chọn vẫn bằng micro (ADR-0031 §1) |
 | 9 | Kiến trúc v1 có **trần** event-F1 0.63 do pool thời gian /64; nhãn có trần người 0.58 (8 cặp) (§3.3b) | Số v1 phải đọc cạnh trần; cải thiện kiến trúc ở ADR-0030 |

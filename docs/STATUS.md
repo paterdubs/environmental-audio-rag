@@ -1,8 +1,9 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-28 (tối) — demo Compose phục vụ SED v2 theo ADR-0035; hệ thống chính thức
-vẫn là v1 tới S8. Parity CUDA/CPU và E2E TRAIN đã có artifact; không tính metric test mới.
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 688 pass, 0 skip (PostgreSQL Docker healthy,
+**Cập nhật:** 2026-09-28 (tối) — L2 parser câu hỏi → filter xong sớm theo ADR-0036; RQ3 parsed
+chỉ chạy validation, không mở test. Demo Compose vẫn phục vụ SED v2 theo ADR-0035; hệ thống chính
+thức vẫn là v1 tới S8.
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 695 pass, 0 skip (PostgreSQL Docker healthy,
 28/09), ruff sạch (Windows)
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
@@ -17,6 +18,10 @@ vẫn là v1 tới S8. Parity CUDA/CPU và E2E TRAIN đã có artifact; không t
   duyệt 26/09); từ 27/09 cả inference cũng chạy trong Docker (ADR-0033 §6) — demo trực tiếp bằng
   một lệnh `docker compose --profile app up -d`. Từ 28/09 profile demo dùng v2 qua env
   (ADR-0035), nhưng mặc định code và hệ thống chính thức vẫn v1 tới S8.
+- **L2 parser câu hỏi xong 28/09 (ADR-0036), chỉ validation.** Qwen3.5-9B + JSON Schema sinh từ
+  21 lớp/predicate: 240/240 output hợp schema; exact template 171/200 (0.855), paraphrase khóa
+  trước 37/40 (0.925). RQ3 hybrid parsed 0.491 EN / 0.490 VI, Δ gold +0.012 / −0.002; Δ dương
+  không phải cải thiện parser. API tự parse khi thiếu filter và trả lỗi rõ khi llama.cpp tắt.
 - **Giai đoạn cải thiện SED (26/09, ADR-0030, duyệt 26/09).** Chẩn đoán trên dev: trần event-F1
   của kiến trúc v1 là 0.63 (pool thời gian /64); trần người 0.58; v1 chỉ onset 0.23, chỉ
   offset 0.50, segment F1 0.65 → lỗi nằm ở biên. Biên lệch **đối xứng, tản rộng** — giả thuyết
@@ -82,6 +87,7 @@ vẫn là v1 tới S8. Parity CUDA/CPU và E2E TRAIN đã có artifact; không t
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
 | Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ duyệt tạm 26/09 | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ dev+test nạp vào PostgreSQL + pgvector, BGE-M3, benchmark RQ3 (test nDCG@10: structured 0.523, hybrid 0.481, vector 0.418; filter exactness 1.000); câu trả lời ràng buộc evidence: unsupported-claim 0.000 | ADR-0027, [retrieval_benchmark_test_20260925.md](measurements/retrieval_benchmark_test_20260925.md) |
+| Parser câu hỏi → filter (L2) | ✅ constrained hợp schema 240/240; exact template 0.855, paraphrase 0.925; RQ3 parsed chỉ validation, hybrid Δ gold +0.012 EN / −0.002 VI | ADR-0036, [query_parser_20260928.md](measurements/query_parser_20260928.md), [retrieval_benchmark_validation_parsed_20260928.md](measurements/retrieval_benchmark_validation_parsed_20260928.md) |
 | API / inference / frontend (W7) | ◐ 7.1–7.4 xong; Compose demo v2 healthy, status báo `official=false`; parity v2 CUDA/CPU đều 425/425 event trong collar; E2E TRAIN có timeline, caption EN/VI và RAG. Hệ thống chính thức vẫn v1; 7.5–7.7 sau S8 | ADR-0029, ADR-0033 §6, ADR-0035, [inference_parity_v2_cuda_20260928.md](measurements/inference_parity_v2_cuda_20260928.md), [inference_parity_v2_cpu_20260928.md](measurements/inference_parity_v2_cpu_20260928.md), [demo_v2_e2e_20260928.md](measurements/demo_v2_e2e_20260928.md) |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
 
@@ -196,4 +202,4 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
    v2 sinh sau hàng đợi.
 8. **Lộ trình ADR-0031:** RQ1-v2 (S9), Track 2 PretrainedSED (S10), lớp hiếm (S11), vòng chọn cuối
    18/10 (S13). CV dev annotated chuẩn bị S13 đã đủ 18/18 file; chưa chọn hệ thống và chưa mở test.
-   Sau mốc: bộ lọc từ câu hỏi (L2), viết báo cáo (L3).
+   L2 bộ lọc từ câu hỏi đã xong sớm 28/09; sau mốc còn viết báo cáo (L3).

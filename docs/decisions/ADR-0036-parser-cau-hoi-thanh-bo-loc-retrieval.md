@@ -122,5 +122,27 @@ không thay thế constrained decoding.
 
 Phiên bản v1.1 chuyển sang extension top-level `json_schema` của llama.cpp và inline ba biến thể
 filter; probe đối nghịch đã xác nhận enum ép `vehicle_pass_by` thay vì chuỗi ngoài taxonomy.
-Measurement parser và RQ3 validation phải chạy lại trên tree sạch trước khi nghiệm thu. Lượt RQ3
-dẫn xuất từ output không constrained đã bị xóa; không được dùng số của lượt đó.
+Lượt RQ3 dẫn xuất từ output không constrained đã bị xóa; không được dùng số của lượt đó.
+
+Measurement v1.1 chạy lại trên tree sạch revision `38bcf53`; cả 240/240 output qua schema:
+
+| Tập | Exact toàn filter | P/R lớp | Đúng predicate |
+|---|---:|---:|---:|
+| Template (cận trên) | 171/200 = 0.855 | 1.000 / 1.000 | 0.767 (60 câu temporal) |
+| Paraphrase viết tay | 37/40 = 0.925 | 0.984 / 1.000 | 1.000 (10 câu temporal) |
+
+Lỗi template tập trung ở đảo `a`/`b` của `after`, đổi `within` thành `overlaps`, và bỏ điều kiện
+duration; grammar bảo đảm hình thức nhưng không bảo đảm đúng ngữ nghĩa. Nguồn:
+[`query_parser_20260928.md`](../measurements/query_parser_20260928.md).
+
+RQ3 với filter parse chạy **chỉ trên validation** (96/100 câu có relevant). Hybrid nDCG@10 là
+0.491 EN và 0.490 VI; chênh so filter gold trên cùng câu lần lượt +0.012 và −0.002.
+Structured-only là 0.507/0.502, chênh +0.009/+0.005. Filter sai có thể tình cờ làm thứ hạng tốt
+hơn khi vẫn chấm bằng relevance gold; chênh dương **không** phải bằng chứng parser cải thiện
+retrieval. Nguồn:
+[`retrieval_benchmark_validation_parsed_20260928.md`](../measurements/retrieval_benchmark_validation_parsed_20260928.md).
+
+Test transport HTTP giả, lớp lạ, JSON lỗi, API parse/query, fallback 503 và guard torch đều xanh.
+Compose build healthy; `/retrieval/parse` và `/retrieval/query` thật qua cổng 8088 trả filter có
+schema và `filters_source=parsed`. UI vẫn giữ bộ lọc thủ công; khi llama.cpp tắt API trả
+`query_parser_unavailable`, không đoán filter. Không chạy test corpus.

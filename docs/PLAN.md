@@ -281,7 +281,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 | # | Task | Khi nào | Trạng thái |
 |---:|---|---|---|
 | L1 | Push nhánh phụ `wip/sed-v2` (sao lưu commit + chạy CI); master trên remote chỉ nhận tuần đã xong | 26/09 | ◐ push tới `bbae05b` (27/09, người dùng cho phép); commit Track 2a sau đó chưa push |
-| L2 | Chuyển câu hỏi tự nhiên thành bộ lọc: Qwen + grammar như ADR-0023, ADR riêng; đo độ chính xác parse trên query set v2, rồi RQ3 với bộ lọc parse được. Số RQ3 sẽ **thấp đi** vì hiện dùng bộ lọc có sẵn (evaluation_protocol §12 #6) | 19/10–02/11 | ◐ parser v1.1 chờ đo lại |
+| L2 | ~~Chuyển câu hỏi tự nhiên thành bộ lọc: Qwen + grammar như ADR-0023, ADR riêng; đo độ chính xác parse trên query set v2, rồi RQ3 với bộ lọc parse được~~ — **xong sớm 28/09** (ADR-0036): exact template 0.855, paraphrase 0.925; RQ3 validation hybrid Δ gold +0.012 EN / −0.002 VI. Giả định “số sẽ thấp đi” không đúng cho mọi ô: filter sai có thể tình cờ đổi thứ hạng có lợi, không được diễn giải là cải thiện | 19/10–02/11 | ✅ 28/09 |
 | L3 | Viết báo cáo luận văn (khung: SYSTEM.md; số: measurements; dẫn chứng: PAPER_NOTES) | 19/10–09/11 | ○ |
 | L4 | Slide bảo vệ | 03–09/11 | ○ |
 | L5 | Xem lại cụm từ tiếng Việt (ADR-0025, đang duyệt tạm) | Khi hoàn thiện giao diện | ○ |
