@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { api, ApiError } from "./client";
+import { api } from "./client";
 
 const envelope = (data: unknown, success = true) => ({ success, data: success ? data : null, error: success ? null : { code: "query_parser_unavailable", message: "LLM unavailable" }, meta: {} });
 
@@ -18,7 +18,7 @@ describe("natural query API contract", () => {
 
   it("preserves a clear parser error for manual fallback", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(new Response(JSON.stringify(envelope(null, false)), { status: 503 }));
-    await expect(api.parse({ question: "???", language: "en" })).rejects.toMatchObject<ApiError>({ code: "query_parser_unavailable", status: 503 });
+    await expect(api.parse({ question: "???", language: "en" })).rejects.toMatchObject({ code: "query_parser_unavailable", status: 503 });
     fetchMock.mockRestore();
   });
 });
