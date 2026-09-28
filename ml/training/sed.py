@@ -16,6 +16,7 @@ from ml.models import SoundEventDetector
 from ml.training.augment import augment_batch
 
 SELECT_METRICS = ("macro_f1", "macro_average_precision")
+LOSSES = ("bce", "focal", "asl")
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,11 @@ class SedTrainingConfig:
     select_metric: str = "macro_f1"
     mixup_p: float = 0.0
     filter_augment_p: float = 0.0
+    loss: str = "bce"
+    focal_gamma: float = 2.0
+    asl_gamma_pos: float = 0.0
+    asl_gamma_neg: float = 4.0
+    asl_clip: float = 0.05
 
     def __post_init__(self) -> None:
         if self.select_metric not in SELECT_METRICS:
@@ -43,6 +49,12 @@ class SedTrainingConfig:
             raise ValueError("augmentation probabilities must be in [0, 1]")
         if self.warmup_epochs < 0 or self.warmup_epochs > self.epochs:
             raise ValueError("warmup_epochs must be in [0, epochs]")
+        if self.loss not in LOSSES:
+            raise ValueError(f"loss must be one of {LOSSES}")
+        if self.focal_gamma < 0 or self.asl_gamma_pos < 0 or self.asl_gamma_neg < 0:
+            raise ValueError("loss gamma must be non-negative")
+        if not 0 <= self.asl_clip < 1:
+            raise ValueError("asl_clip must be in [0, 1)")
 
 
 def build_optimizer(model: SoundEventDetector, config: SedTrainingConfig
@@ -86,6 +98,51 @@ def masked_bce(logits: Tensor, targets: Tensor, valid: Tensor, pos_weight: Tenso
     return (loss * mask).sum() / (mask.sum() * targets.shape[-1]).clamp_min(1.0)
 
 
+def _masked_mean(loss: Tensor, targets: Tensor, valid: Tensor) -> Tensor:
+    mask = valid.unsqueeze(-1)
+    return (loss * mask).sum() / (mask.sum() * targets.shape[-1]).clamp_min(1.0)
+
+
+def masked_focal(logits: Tensor, targets: Tensor, valid: Tensor, gamma: float = 2.0) -> Tensor:
+    """Binary focal loss on logits; deliberately has no pos_weight rebalancing."""
+    if gamma < 0:
+        raise ValueError("focal gamma must be non-negative")
+    bce = nn.functional.binary_cross_entropy_with_logits(logits, targets, reduction="none")
+    probabilities = logits.sigmoid()
+    p_t = targets * probabilities + (1 - targets) * (1 - probabilities)
+    return _masked_mean(bce * (1 - p_t).clamp_min(0).pow(gamma), targets, valid)
+
+
+def masked_asl(logits: Tensor, targets: Tensor, valid: Tensor, *, gamma_pos: float = 0.0,
+               gamma_neg: float = 4.0, clip: float = 0.05) -> Tensor:
+    """Asymmetric loss for multi-label frame targets, without pos_weight."""
+    if gamma_pos < 0 or gamma_neg < 0 or not 0 <= clip < 1:
+        raise ValueError("ASL parameters ngoài khoảng hợp lệ")
+    probabilities = logits.sigmoid()
+    xs_pos, xs_neg = probabilities, 1 - probabilities
+    if clip > 0:
+        xs_neg = (xs_neg + clip).clamp(max=1)
+    asymmetric_prob = xs_pos * targets + xs_neg * (1 - targets)
+    asymmetric_weight = (1 - asymmetric_prob).clamp_min(0).pow(
+        gamma_pos * targets + gamma_neg * (1 - targets)
+    )
+    loss = -torch.log(asymmetric_prob.clamp_min(torch.finfo(logits.dtype).tiny)) * asymmetric_weight
+    return _masked_mean(loss, targets, valid)
+
+
+def masked_loss(logits: Tensor, targets: Tensor, valid: Tensor, pos_weight: Tensor, *,
+                loss: str = "bce", focal_gamma: float = 2.0, asl_gamma_pos: float = 0.0,
+                asl_gamma_neg: float = 4.0, asl_clip: float = 0.05) -> Tensor:
+    if loss == "bce":
+        return masked_bce(logits, targets, valid, pos_weight)
+    if loss == "focal":
+        return masked_focal(logits, targets, valid, gamma=focal_gamma)
+    if loss == "asl":
+        return masked_asl(logits, targets, valid, gamma_pos=asl_gamma_pos,
+                          gamma_neg=asl_gamma_neg, clip=asl_clip)
+    raise ValueError(f"loss không được hỗ trợ: {loss}")
+
+
 def frame_metrics(targets: np.ndarray, probabilities: np.ndarray, threshold: float) -> dict:
     predictions = probabilities >= threshold
     active = targets.sum(axis=0) > 0
@@ -111,6 +168,11 @@ def run_epoch(
     threshold: float,
     scheduler: torch.optim.lr_scheduler.LambdaLR | None = None,
     augmentation: tuple[float, float] = (0.0, 0.0),
+    loss_name: str = "bce",
+    focal_gamma: float = 2.0,
+    asl_gamma_pos: float = 0.0,
+    asl_gamma_neg: float = 4.0,
+    asl_clip: float = 0.05,
 ) -> dict:
     """One pass; `augmentation` = (mixup_p, filter_augment_p), applied only when training."""
     training = optimizer is not None
@@ -130,7 +192,9 @@ def run_epoch(
                     filter_augment_p=augmentation[1])
         with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
             logits = model(features)
-            loss = masked_bce(logits, targets, valid, pos_weight)
+            loss = masked_loss(logits, targets, valid, pos_weight, loss=loss_name,
+                               focal_gamma=focal_gamma, asl_gamma_pos=asl_gamma_pos,
+                               asl_gamma_neg=asl_gamma_neg, asl_clip=asl_clip)
         if training:
             if scaler is None:
                 loss.backward()
@@ -255,6 +319,9 @@ def train_sed(
             threshold=config.threshold,
             scheduler=scheduler,
             augmentation=(config.mixup_p, config.filter_augment_p),
+            loss_name=config.loss, focal_gamma=config.focal_gamma,
+            asl_gamma_pos=config.asl_gamma_pos, asl_gamma_neg=config.asl_gamma_neg,
+            asl_clip=config.asl_clip,
         )
         with torch.inference_mode():
             validation_metrics = run_epoch(
@@ -265,6 +332,9 @@ def train_sed(
                 optimizer=None,
                 scaler=None,
                 threshold=config.threshold,
+                loss_name=config.loss, focal_gamma=config.focal_gamma,
+                asl_gamma_pos=config.asl_gamma_pos, asl_gamma_neg=config.asl_gamma_neg,
+                asl_clip=config.asl_clip,
             )
         record = {
             "epoch": epoch,

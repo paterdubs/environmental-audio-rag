@@ -68,6 +68,7 @@ from ml.training.common import (
 )
 from ml.training.encoded import EncodedLoader
 from ml.training.sed import (
+    LOSSES,
     SedTrainingConfig,
     collect_predictions,
     estimate_pos_weight,
@@ -172,6 +173,12 @@ def parse_args() -> argparse.Namespace:
         "--pos-weight-cap", type=float, default=None,
         help="Trần pos_weight (ablation A4: 10, 30, 50, inf = không clip); mặc định theo recipe",
     )
+    parser.add_argument("--loss", choices=LOSSES, default="bce",
+                        help="loss đa nhãn: bce (mặc định), focal hoặc asl")
+    parser.add_argument("--focal-gamma", type=float, default=2.0)
+    parser.add_argument("--asl-gamma-pos", type=float, default=0.0)
+    parser.add_argument("--asl-gamma-neg", type=float, default=4.0)
+    parser.add_argument("--asl-clip", type=float, default=0.05)
     parser.add_argument("--evaluate-test", action="store_true")
     parser.add_argument("--device", default="cuda")
     return parser.parse_args()
@@ -431,6 +438,11 @@ def main() -> None:
         select_metric=str(knobs["select_metric"]),
         mixup_p=float(knobs["mixup_p"]),
         filter_augment_p=float(knobs["filter_augment_p"]),
+        loss=args.loss,
+        focal_gamma=args.focal_gamma,
+        asl_gamma_pos=args.asl_gamma_pos,
+        asl_gamma_neg=args.asl_gamma_neg,
+        asl_clip=args.asl_clip,
     )
 
     frozen, beats_info = frozen_beats(args.beats_checkpoint) if is_beats else (None, {})
