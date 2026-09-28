@@ -23,6 +23,28 @@ Sau CV dev annotated của S13, ứng viên T2b `frame_mn` đang dẫn trong nh�
 | Focal trên C-v2 | T2b là họ đang dẫn annotated và có recipe/đầu vào đã kiểm chứng; thử trên họ khác sẽ tăng số run ngoài ngân sách |
 | Giữ `pos_weight` rồi nhân focal | Không đo được tác động của việc thay cơ chế cân bằng; trái mục tiêu S11 |
 
+## Kết quả CV annotated
+
+Pilot được sinh bởi `docs/measurements/pilot_loss_t2b_focal_20260928.json`: lưới γ `{0.5, 1.0, 2.0}`
+trên một seed, 3 epoch, chọn γ=2.0 theo macro-AP dev epoch cuối (0.6925; các giá trị đầy đủ nằm
+trong JSON). Ba seed đầy đủ là `sed_polyphonic_20260928T165635Z`, `173526Z`, `181509Z`; cả ba
+manifest complete và dirty=false, chỉ có predictions dev.
+
+| Ứng viên | Họ được chấm | CV annotated mean ± sd | CV all mean ± sd | Artifact |
+|---|---|---:|---:|---|
+| g1: focal T2b ×3 | θ global p25 | 0.2268 ± 0.0547 | 0.2115 ± 0.0493 | `sed_ensemble_s11_focal_t2b_20260928T185207Z` |
+| g1: focal T2b ×3 | cSEBB tau0.64_rel3 | 0.2265 ± 0.0469 | 0.2093 ± 0.0497 | cùng run |
+| g2: g1 + T2b dẫn đầu | cSEBB tau0.64_rel2 | 0.2319 ± 0.0418 | 0.2200 ± 0.0300 | `sed_ensemble_s11_focal_plus_t2b_20260928T185220Z` |
+
+`report_s13_ranking` với 11 ứng viên cho g2 hạng 3 (0.2319), g1 hạng 6 (0.2268); f2 vẫn hạng 1
+(0.2383), nên S11 **không thay hệ thống** và chưa mở test. Bảng đầy đủ, gồm cả cột `all`, ở
+`docs/measurements/s13_ranking_annotated_20260928.{md,json}`. Per-class frame AP/F1 dev và năm lớp
+ít positive frame nhất ở `docs/measurements/s11_per_class_20260928.{md,json}`; focal tăng AP ở
+chicken_coop, glass_breaking, thunder_fireworks_gunshot nhưng giảm ở horn và crows_seagulls_magpies.
+
+Lần chạy focal γ=2 đầu tiên bị dừng giữa chừng (manifest incomplete) trước khi sửa số học focal
+ổn định; không dùng số dở dang. Pilot và ba seed nêu trên được chạy lại sau sửa, không có NaN.
+
 ## Consequences
 
 Nếu focal không cải thiện, kết quả âm tính được giữ nguyên và g1/g2 bị loại khỏi vòng S13. Nếu cải thiện, chỉ CV dev annotated được dùng để đưa ứng viên vào danh sách; hệ thống phục vụ và số test không đổi. Thêm một loss torch trong `ml/training/sed.py`, nhưng mặc định `bce` phải tái lập đường cũ.

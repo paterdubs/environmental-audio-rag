@@ -56,6 +56,15 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 29/09/2026 — S11 focal hoàn tất trên dev, không mở test.** ADR-0038 đăng ký trước
+mọi run: focal không `pos_weight`, T2b `frame_mn`, pilot γ `{0.5,1,2}` chọn γ=2.0; ba seed
+`sed_polyphonic_20260928T165635Z`, `173526Z`, `181509Z` complete/dirty=false. Dựng g1 (3 seed)
+và g2 (g1 + f2), CV 5-fold annotated và cột all. Ranking 11 ứng viên: f2 vẫn hạng 1
+(0.2383±0.0562), g2 hạng 3 (0.2319±0.0418), g1 hạng 6 (0.2268±0.0547); không đổi hệ thống,
+không mở test. Per-class dev và artifact: `s11_per_class_20260928.{md,json}`; ranking:
+`s13_ranking_annotated_20260928.{md,json}`. Một run focal đầu tiên incomplete/NaN bị loại; pilot
+và ba seed được chạy lại sau sửa số học ổn định.
+
 **Cập nhật 28/09/2026 (tối, tiếp) — L2 parser câu hỏi thành filter xong sớm, chỉ dev.**
 ADR-0036 và tập 40 paraphrase được commit trước code/lần parse đầu. Lượt đo đầu phát hiện llama.cpp
 bỏ qua wrapper schema kiểu OpenAI; đã sửa dùng top-level schema inline v1.1 và chạy lại sạch:
@@ -296,7 +305,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
 | W7 (ứng dụng) | 7.1–7.4 xong (7.4: inference trong Docker 27/09, ADR-0033 §6); 7.5–7.7 — làm 19/10–02/11, sau S8 |
 | **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
-| **Cải thiện cuối** (ADR-0031) | S9 và S10 xong; nợ #24/#25 đóng. CV dev annotated cho S13 đủ 18/18 file, bảng tạm thời `f2/f4/f1/d/e/c/f3/b/a` (chưa chọn, chưa test); S11 nếu còn thời gian; S12 không cần; S13 vòng chọn cuối 18/10 |
+| **Cải thiện cuối** (ADR-0031) | S9, S10 và S11 xong; nợ #24/#25 đóng. CV dev annotated cho S13 đủ 18/18 file + g1/g2; bảng 11 ứng viên `f2/f4/g2/f1/d/g1/e/c/f3/b/a` (chưa chọn, chưa test); S12 không cần; S13 vòng chọn cuối 18/10 |
 | Tài liệu | Nợ #21 đóng 28/09: PretrainedSED, DCASE 2016 T3, bài DataSED đều V3 |
 
 ### Chưa có ○
@@ -317,6 +326,8 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
 3. ~~Nợ #24~~ — ✅ 27/09 (`4135d17`). Giải thích S21 (PSDS) trên dev — còn mở.
 4. ~~Nợ #25 + CV annotated~~ — ✅ 28/09, phương án (B) (ADR-0034); đủ 18/18 file sạch và
    measurement 9 ứng viên. Thứ hạng tạm thời `f2/f4/f1/d/e/c/f3/b/a`; chưa chọn, chưa mở test.
+5. ~~S11 focal~~ — ✅ 29/09 (ADR-0038): γ=2, 3 seed T2b, g1/g2 CV annotated + cột all và per-class dev;
+   g2 hạng 3, g1 hạng 6, âm tính với thay hệ thống. S13 vẫn chờ mốc 18/10 và không mở test.
 5. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)–(f4) đã
    có CV dev, sẵn sàng vào vòng chọn cùng nhau.
 6. ~~L2~~ — ✅ xong sớm 28/09, chỉ validation. Sau 18/10: S8 một lần → W7 7.5–7.7 → viết báo cáo.
@@ -573,6 +584,17 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-29 — S11 focal hoàn tất, CV annotated và ranking 11 ứng viên
+
+ADR-0038 ghi trước focal không `pos_weight`, T2b `frame_mn`, pilot γ `{0.5, 1, 2}` và chọn γ=2.0.
+Ba seed `sed_polyphonic_20260928T165635Z`, `173526Z`, `181509Z` complete/dirty=false; `dump_predictions
+--verify-dev` trùng SHA cho cả ba. Dựng g1 (3 seed) và g2 (g1 + f2), chạy postproc/cSEBB CV 5 fold
+trên `annotated` và `all` (all chỉ đối chiếu). Ranking sinh bằng script: f2 hạng 1 0.2383±0.0562,
+g2 hạng 3 0.2319±0.0418, g1 hạng 6 0.2268±0.0547; không đổi hệ thống, không mở test. Per-class
+dev ở `s11_per_class_20260928.{md,json}`. Một run đầu incomplete/NaN bị loại; không dùng số đó.
+Gate sau script: ruff sạch; pytest 642 passed, 3 skipped, 19 warnings trong worktree, sau merge sẽ chạy
+lại toàn bộ trước commit tài liệu.
 
 ### 2026-09-28 (tối, tiếp) — L2 parser câu hỏi → filter và RQ3 parsed validation
 

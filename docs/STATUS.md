@@ -1,10 +1,10 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-28 (tối, tiếp) — Frontend natural-search/chip/manual fallback, model badge và evidence playback đã thêm theo ADR-0037; phrasing review sinh tự động. L2 parser câu hỏi → filter xong sớm theo ADR-0036; RQ3 parsed
+**Cập nhật:** 2026-09-29 — S11 focal γ=2 trên T2b đã chạy đủ 3 seed, dựng g1/g2 và CV annotated/all; f2 vẫn dẫn, không đổi hệ thống và không mở test. Frontend natural-search/chip/manual fallback, model badge và evidence playback đã thêm theo ADR-0037; phrasing review sinh tự động. L2 parser câu hỏi → filter xong sớm theo ADR-0036; RQ3 parsed
 chỉ chạy validation, không mở test. Demo Compose vẫn phục vụ SED v2 theo ADR-0035; hệ thống chính
 thức vẫn là v1 tới S8.
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 695 pass, 0 skip (PostgreSQL Docker healthy,
-28/09), ruff sạch (Windows)
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 718 pass, 0 skip (Docker DB không cần cho block S11),
+ruff sạch (Windows, 29/09)
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -40,6 +40,10 @@ thức vẫn là v1 tới S8.
 - **Dữ liệu chuẩn bị S13 đã đủ trên dev annotated** (ADR-0034): 18/18 file sạch cho 9 ứng viên.
   Thứ hạng đổi từ `f4/d/f2/c/f1/e/b/f3/a` (`all`) thành `f2/f4/f1/d/e/c/f3/b/a`; f2 hơn f4
   0.0029 ≤ sd fold 0.0562 nên không được gọi là tốt hơn. Đây chưa phải lựa chọn S13; không mở test.
+- **S11 focal (ADR-0038) âm tính với việc thay hệ thống:** pilot chọn γ=2.0; g1 focal T2b×3 đạt
+  0.2268±0.0547 (θ) / 0.2265±0.0469 (cSEBB), g2 đạt 0.2319±0.0418 (cSEBB), thấp hơn f2
+  0.2383±0.0562. Per-class dev ghi ở [s11_per_class_20260928](measurements/s11_per_class_20260928.md);
+  không dùng test.
 - **Mọi số SED đã tính lại** sau khi sửa lỗi ghép cửa sổ dự đoán (`7ada7d7`, `3208dbb`).
 - **RQ1 âm tính (không đổi sau khi tính lại):** pretraining thêm trên DataSEC **không**
   cải thiện SED so với chỉ AudioSet (5 run/nhánh, không metric nào p < 0.05).
@@ -81,7 +85,7 @@ thức vẫn là v1 tới S8.
 | Chẩn đoán trần SED (độ phân giải, người, onset/offset) | ✅ dev + ground truth | [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md) |
 | Hậu xử lý cSEBB (Ebbers 2024) | ✅ cài + CV dev; **âm tính** trên v1 (0.0582 vs 0.1538) | [sebb_cv_…_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) |
 | SED v2 (ADR-0030) | ✅ chốt 26/09 tối: ensemble 3 seed chọn trên dev (`ec71b20`); test micro 0.1476, macro 0.1369, PSDS-1 0.3447, PSDS-2 0.6744; v2 − v1 +0.0536 [+0.0261, +0.0853] | [sed_v2_selection_20260926.md](measurements/sed_v2_selection_20260926.md), [sed_ensemble_v2_20260926T155630Z_eval_cv.md](measurements/sed_ensemble_v2_20260926T155630Z_eval_cv.md), [sed_v2_ablation_20260926.md](measurements/sed_v2_ablation_20260926.md), ADR-0030 §9 |
-| RQ1-v2 (S9) / Track 2 (S10) / chuẩn bị S13 | ✅ S9/S10 xong; test vẫn chờ S13. Nợ #25 đóng theo ADR-0034: đủ 18/18 file CV dev annotated sạch. Hạng tạm thời f2 0.2383±0.0562, f4 0.2354±0.0585, f1 0.2286±0.0601, d 0.2285±0.0570, e 0.2237±0.0665, c 0.2212±0.0498, f3 0.2070±0.0560, b 0.2031±0.0565, a 0.1620±0.0226. f2−f4=0.0029≤sd f2: không gọi là tốt hơn; chưa chọn, chưa test. | [s13_ranking_annotated_20260928.md](measurements/s13_ranking_annotated_20260928.md), ADR-0034 §5, [PAPER_NOTES S35](PAPER_NOTES.md) |
+| RQ1-v2 (S9) / Track 2 (S10) / S11 / chuẩn bị S13 | ✅ S9/S10/S11 xong; test vẫn chờ S13. S11 g1 hạng 6 (0.2268±0.0547), g2 hạng 3 (0.2319±0.0418), f2 vẫn hạng 1 (0.2383±0.0562); không gọi g2 tốt hơn f2. Nợ #25 đóng theo ADR-0034: đủ 18/18 file CV dev annotated sạch; chưa chọn, chưa test. | [s13_ranking_annotated_20260928.md](measurements/s13_ranking_annotated_20260928.md), [s11_per_class_20260928.md](measurements/s11_per_class_20260928.md), ADR-0034 §5, ADR-0038, [PAPER_NOTES S39](PAPER_NOTES.md) |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
