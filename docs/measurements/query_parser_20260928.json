@@ -1,11 +1,11 @@
 {
  "model": "Qwen3.5-9B",
  "endpoint": "http://127.0.0.1:8081",
- "prompt_version": "query-filter-prompt-v1",
+ "prompt_version": "query-filter-prompt-v1.1",
  "temperature": 0.0,
  "seed": 20260922,
  "git": {
-  "revision": "3d67897989884c5075eee71c458e57137ed6477f",
+  "revision": "38bcf536079a16e4f98d5ffe3ddf8d26a0bbdd6b",
   "dirty": false
  },
  "inputs": {
@@ -21,24 +21,24 @@
  "summary": {
   "paraphrase": {
    "n": 40,
-   "parse_success": 0.975,
-   "n_parse_success": 39,
+   "parse_success": 1.0,
+   "n_parse_success": 40,
    "exact_match": 0.925,
    "n_exact": 37,
-   "class_precision": 1.0,
-   "class_recall": 0.9833333333333333,
+   "class_precision": 0.9836065573770492,
+   "class_recall": 1.0,
    "predicate_accuracy": 1.0,
    "n_temporal": 10
   },
   "template": {
    "n": 200,
-   "parse_success": 0.99,
-   "n_parse_success": 198,
-   "exact_match": 0.85,
-   "n_exact": 170,
+   "parse_success": 1.0,
+   "n_parse_success": 200,
+   "exact_match": 0.855,
+   "n_exact": 171,
    "class_precision": 1.0,
-   "class_recall": 0.9904458598726115,
-   "predicate_accuracy": 0.75,
+   "class_recall": 1.0,
+   "predicate_accuracy": 0.7666666666666667,
    "n_temporal": 60
   }
  },
@@ -3177,10 +3177,17 @@
      "tolerance_s": 0.0
     }
    },
-   "predicted": null,
-   "raw": null,
-   "error": "lớp ngoài 21 lớp SED: ['vehicle pass-by']",
-   "exact": false
+   "predicted": {
+    "temporal": {
+     "predicate": "overlaps",
+     "a": "voices",
+     "b": "vehicle_pass_by",
+     "tolerance_s": 0.0
+    }
+   },
+   "raw": "{\"temporal\": {\"predicate\": \"overlaps\", \"a\": \"voices\", \"b\": \"vehicle_pass_by\", \"tolerance_s\": 0.0}}",
+   "error": null,
+   "exact": true
   },
   {
    "dataset": "template",
@@ -3725,13 +3732,9 @@
    "predicted": {
     "classes_all": [
      "sirens_and_alarms"
-    ],
-    "duration": {
-     "class_id": "sirens_and_alarms",
-     "min_s": 10.0
-    }
+    ]
    },
-   "raw": "{\"classes_all\": [\"sirens_and_alarms\"], \"duration\": {\"class_id\": \"sirens_and_alarms\", \"min_s\": 10.0}}",
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"]}",
    "error": null,
    "exact": false
   },
@@ -3747,9 +3750,13 @@
      "min_s": 10.0
     }
    },
-   "predicted": null,
-   "raw": null,
-   "error": "filter JSON không hợp lệ: 1 validation error for Filters\nduration.class_id\n  Field required [type=missing, input_value={'min_s': 10.0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing",
+   "predicted": {
+    "classes_all": [
+     "sirens_and_alarms"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"]}",
+   "error": null,
    "exact": false
   },
   {
@@ -4295,13 +4302,9 @@
    "predicted": {
     "classes_all": [
      "sirens_and_alarms"
-    ],
-    "duration": {
-     "class_id": "sirens_and_alarms",
-     "min_s": 30.0
-    }
+    ]
    },
-   "raw": "{\"classes_all\": [\"sirens_and_alarms\"], \"duration\": {\"class_id\": \"sirens_and_alarms\", \"min_s\": 30.0}}",
+   "raw": "{\"classes_all\": [\"sirens_and_alarms\"]}",
    "error": null,
    "exact": false
   },
@@ -4430,13 +4433,9 @@
    "predicted": {
     "classes_all": [
      "cicadas_and_crickets"
-    ],
-    "duration": {
-     "class_id": "cicadas_and_crickets",
-     "min_s": 10.0
-    }
+    ]
    },
-   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"], \"duration\": {\"class_id\": \"cicadas_and_crickets\", \"min_s\": 10.0}}",
+   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"]}",
    "error": null,
    "exact": false
   },
@@ -4455,13 +4454,9 @@
    "predicted": {
     "classes_all": [
      "cicadas_and_crickets"
-    ],
-    "duration": {
-     "class_id": "cicadas_and_crickets",
-     "min_s": 10.0
-    }
+    ]
    },
-   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"], \"duration\": {\"class_id\": \"cicadas_and_crickets\", \"min_s\": 10.0}}",
+   "raw": "{\"classes_all\": [\"cicadas_and_crickets\"]}",
    "error": null,
    "exact": false
   },
@@ -4480,13 +4475,9 @@
    "predicted": {
     "classes_all": [
      "dog_barkings_and_howlings"
-    ],
-    "duration": {
-     "class_id": "dog_barkings_and_howlings",
-     "min_s": 10.0
-    }
+    ]
    },
-   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\"], \"duration\": {\"class_id\": \"dog_barkings_and_howlings\", \"min_s\": 10.0}}",
+   "raw": "{\"classes_all\": [\"dog_barkings_and_howlings\"]}",
    "error": null,
    "exact": false
   },
@@ -5338,9 +5329,14 @@
      "min_s": 10.0
     }
    },
-   "predicted": null,
-   "raw": null,
-   "error": "filter JSON không hợp lệ: 1 validation error for Filters\nduration.class_id\n  Field required [type=missing, input_value={'min_s': 10.0}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/missing",
+   "predicted": {
+    "classes_all": [
+     "vehicle_pass_by",
+     "vehicle_idling"
+    ]
+   },
+   "raw": "{\"classes_all\": [\"vehicle_pass_by\", \"vehicle_idling\"]}",
+   "error": null,
    "exact": false
   },
   {
