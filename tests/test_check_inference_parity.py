@@ -24,8 +24,10 @@ def test_revision_refuses_without_git_or_env(monkeypatch):
 
 
 def test_cli_accepts_custom_run_and_postproc() -> None:
-    args = parity.parse_args(["--run", "ml/runs/example", "--postproc", "chosen.json"])
+    args = parity.parse_args(["--run", "ml/runs/example", "--reference-run",
+                              "ml/runs/reference", "--postproc", "chosen.json"])
     assert args.run == Path("ml/runs/example") and args.postproc == "chosen.json"
+    assert args.reference_run == Path("ml/runs/reference")
 
 
 def test_custom_v2_output_name_comes_from_manifest(tmp_path) -> None:

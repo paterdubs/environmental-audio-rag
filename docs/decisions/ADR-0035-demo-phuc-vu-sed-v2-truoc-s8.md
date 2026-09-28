@@ -65,7 +65,8 @@ checkpoint.
 Recording đã upload bằng v1 giữ nguyên timeline, caption và `model_version` cũ trong event store.
 Đổi biến môi trường chỉ áp dụng cho upload mới; hệ thống không chạy lại recording cũ ngầm. Parity
 v2 chỉ so đầu ra phục vụ với logit/đầu ra test đã đóng băng, không đọc ground truth để tính metric
-và không tạo số test mới.
+và không tạo số test mới. Workspace hiện lưu `test.npz` của ensemble ở bản dựng sạch `155630Z`;
+parity khai báo nguồn này tường minh bằng `--reference-run` thay vì chép file ngầm vào run phục vụ.
 
 ## Consequences
 
@@ -88,4 +89,3 @@ và không tạo số test mới.
 | Chờ S8 mới demo v2 | Không đáp ứng duyệt trực tiếp ngày 28/09 |
 | Phân tích lại toàn bộ upload cũ | Làm mất provenance/model_version cũ và thay đổi dữ liệu ngầm |
 | Hardcode một lớp model v2 riêng | Trùng logic train và dễ lệch kiến trúc manifest |
-

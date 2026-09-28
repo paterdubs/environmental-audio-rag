@@ -52,6 +52,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--run", type=Path, default=DEFAULT_SERVED_RUN,
                         help="Thư mục run tương đối ROOT (mặc định hệ thống v1 chính thức)")
+    parser.add_argument("--reference-run", type=Path, default=None,
+                        help="Run chứa predictions/test.npz đóng băng (mặc định bằng --run)")
     parser.add_argument("--postproc", default=DEFAULT_SERVED_POSTPROC)
     return parser.parse_args(argv)
 
@@ -160,6 +162,7 @@ def render(result: dict) -> str:
         f"# Parity hệ thống phục vụ — `{result['ensemble']}` + `{result['postproc']}`", "",
         "> Sinh bởi `scripts.check_inference_parity` (ADR-0029 §2). So với output đã đóng băng "
         "trên test; không đánh giá lại, không chọn gì.", "",
+        f"Nguồn output đóng băng: `{result['reference_run']}`.", "",
         f"| Tầng | Kết quả (n = {len(rows)} recording test, thiết bị `{result['device']}`, "
         f"torch `{result.get('torch', '?')}`) |",
         "|---|---|",
@@ -196,9 +199,10 @@ def main() -> None:
     args = parse_args()
     git = revision()
     ensemble = resolve_run(args.run)
+    reference = resolve_run(args.reference_run) if args.reference_run else ensemble
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     sed = ServedSed(ensemble, args.postproc, taxonomy, torch.device(args.device))
-    artifact = load_predictions(ensemble / "predictions/test.npz",
+    artifact = load_predictions(reference / "predictions/test.npz",
                                 expected_class_ids=taxonomy.polyphonic_class_ids)
     frozen = stack_predictions_by_recording(artifact)
     paths = feature_paths()
@@ -215,7 +219,8 @@ def main() -> None:
                "n_within_frame": sum(r["n_within_frame"] for r in rows),
                "n_within_collar": sum(r["n_within_collar"] for r in rows),
                "event_mismatches": [r["recording_id"] for r in rows if not r["events_equal"]]}
-    result = {"ensemble": ensemble.name, "postproc": args.postproc, "device": args.device,
+    result = {"ensemble": ensemble.name, "reference_run": reference.name,
+              "postproc": args.postproc, "device": args.device,
               "torch": torch.__version__,
               "git": git, "summary": summary, "rows": rows,
               "batch_reproduction": batch_reproduction(sed, taxonomy)}
