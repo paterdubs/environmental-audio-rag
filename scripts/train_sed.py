@@ -448,7 +448,10 @@ def main() -> None:
     frozen, beats_info = frozen_beats(args.beats_checkpoint) if is_beats else (None, {})
     joined, events = load_datased_tables(feature_set)
     loaders: dict[str, DataLoader | EncodedLoader] = {}
-    for split in ("train", "validation", "test"):
+    split_names = (
+        ("train", "validation", "test") if args.evaluate_test else ("train", "validation")
+    )
+    for split in split_names:
         dataset = split_dataset(
             joined, events, split, feature_set=feature_set, class_ids=class_ids,
             frame_rate=frame_rate, window_frames=config.window_frames,
