@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
@@ -63,6 +64,21 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--eval-set", choices=EVAL_SETS, default="annotated")
     parser.add_argument("--out-dir", type=Path, default=ROOT / "docs" / "measurements")
+    parser.add_argument(
+        "--final-selection",
+        action="store_true",
+        help="chốt lựa chọn S13 và kiểm trạng thái test trước khi ghi artifact",
+    )
+    parser.add_argument(
+        "--stamp",
+        help="nhãn ngày YYYYMMDD của mốc S13; mặc định là ngày UTC hiện tại",
+    )
+    parser.add_argument(
+        "--previously-tested",
+        action="append",
+        default=[],
+        help="nhãn ứng viên đã có predictions/test.npz trước S13; lặp lại nếu cần",
+    )
     return parser.parse_args()
 
 
@@ -201,13 +217,57 @@ def _folds_cell(values: tuple[float, ...]) -> str:
     return ", ".join(f"{value:.4f}" for value in values)
 
 
-def render(ranking: list[Candidate], note: str, eval_set: str, git: dict) -> str:
+def _test_state(
+    candidates: list[Candidate], previously_tested: list[str]
+) -> dict[str, bool]:
+    labels = {candidate.label for candidate in candidates}
+    declared = set(previously_tested)
+    unknown = declared - labels
+    if unknown:
+        raise ValueError(f"nhãn --previously-tested không có trong ứng viên: {sorted(unknown)}")
+
+    state = {
+        candidate.label: (
+            ROOT / "ml" / "runs" / candidate.run / "predictions" / "test.npz"
+        ).is_file()
+        for candidate in candidates
+    }
+    unexpected = sorted(label for label, exists in state.items() if exists != (label in declared))
+    if unexpected:
+        raise ValueError(
+            "trạng thái predictions/test.npz không khớp khai báo --previously-tested: "
+            f"{unexpected}"
+        )
+    return state
+
+
+def render(
+    ranking: list[Candidate],
+    note: str,
+    eval_set: str,
+    git: dict,
+    *,
+    final_selection: bool = False,
+    test_state: dict[str, bool] | None = None,
+) -> str:
+    title = (
+        f"# Lựa chọn cuối S13 — CV dev `{eval_set}`"
+        if final_selection
+        else f"# Thứ hạng ứng viên S13 — CV dev `{eval_set}`"
+    )
+    status = (
+        f"> **Đã chốt `{ranking[0].label}` trước khi mở test mới.** Sinh bởi "
+        if final_selection
+        else "> **Chỉ dev, CHƯA phải lựa chọn S13, không mở test.** Sinh bởi "
+    )
     lines = [
-        f"# Thứ hạng ứng viên S13 — CV dev `{eval_set}`",
+        title,
         "",
-        "> **Chỉ dev, CHƯA phải lựa chọn S13, không mở test.** Sinh bởi "
-        "`scripts.report_s13_ranking`; event-F1 micro, 5 fold theo `leakage_group`. "
-        "Điểm là CV mean của họ tốt hơn giữa θ và cSEBB.",
+        (
+            status
+            + "`scripts.report_s13_ranking`; event-F1 micro, 5 fold theo `leakage_group`. "
+            + "Điểm là CV mean của họ tốt hơn giữa θ và cSEBB."
+        ),
         f"> git `{git['revision'][:7]}`, dirty={str(git['dirty']).lower()}.",
         "",
         "| Hạng | Nhãn | Run | Model | Họ chấm | Cấu hình | "
@@ -225,10 +285,26 @@ def render(ranking: list[Candidate], note: str, eval_set: str, git: dict) -> str
         )
     if note:
         lines += ["", note]
+    if final_selection:
+        assert test_state is not None
+        already = ", ".join(f"`{label}`" for label, exists in test_state.items() if exists)
+        untouched = ", ".join(f"`{label}`" for label, exists in test_state.items() if not exists)
+        lines += [
+            "",
+            "## Trạng thái test tại lúc chốt",
+            "",
+            f"- Đã có `predictions/test.npz` từ trước: {already or 'không có'}.",
+            f"- Chưa có `predictions/test.npz`: {untouched or 'không có'}.",
+            "- Script chỉ kiểm tra sự tồn tại của đường dẫn, không đọc nội dung prediction test.",
+        ]
     lines += [
         "",
         "Cột `all` chỉ để đối chiếu ảnh hưởng của ADR-0034; không tham gia xếp hạng. "
-        "Kết quả này không chọn hệ thống và không cho phép mở test trước mốc S13.",
+        + (
+            "Không được chọn lại sau khi xem test."
+            if final_selection
+            else "Kết quả này không chọn hệ thống và không cho phép mở test trước mốc S13."
+        ),
     ]
     return "\n".join(lines) + "\n"
 
@@ -259,16 +335,32 @@ def main() -> None:
     candidates = [load_candidate(spec, args.eval_set) for spec in args.candidate]
     ranking, note = rank_candidates(candidates)
     git = git_state(ROOT)
-    stamp = datetime.now(UTC).strftime("%Y%m%d")
-    output = args.out_dir / f"s13_ranking_{args.eval_set}_{stamp}.md"
+    if args.final_selection and args.eval_set != "annotated":
+        raise ValueError("lựa chọn cuối S13 bắt buộc dùng --eval-set annotated")
+    if args.final_selection and git["dirty"]:
+        raise ValueError("lựa chọn cuối S13 phải sinh trên tree sạch")
+    stamp = args.stamp or datetime.now(UTC).strftime("%Y%m%d")
+    if not re.fullmatch(r"\d{8}", stamp):
+        raise ValueError("--stamp phải có dạng YYYYMMDD")
+    test_state = (
+        _test_state(candidates, args.previously_tested) if args.final_selection else None
+    )
+    stem = (
+        f"s13_selection_{stamp}"
+        if args.final_selection
+        else f"s13_ranking_{args.eval_set}_{stamp}"
+    )
+    output = args.out_dir / f"{stem}.md"
     output.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "generated_at_utc": datetime.now(UTC).isoformat(),
         "eval_set": args.eval_set,
         "metric": "event-F1 micro, CV 5 fold dev theo leakage_group",
-        "provisional": True,
+        "provisional": not args.final_selection,
         "test_accessed": False,
         "leader": ranking[0].label,
+        "selected": ranking[0].label if args.final_selection else None,
+        "test_state_before_selection": test_state,
         "ranking": [candidate_dict(rank, candidate) for rank, candidate in enumerate(ranking, 1)],
         "note": note,
         "git": git,
@@ -276,7 +368,14 @@ def main() -> None:
     output.with_suffix(".json").write_text(
         json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    report = render(ranking, note, args.eval_set, git)
+    report = render(
+        ranking,
+        note,
+        args.eval_set,
+        git,
+        final_selection=args.final_selection,
+        test_state=test_state,
+    )
     output.write_text(report, encoding="utf-8")
     print(report)
 

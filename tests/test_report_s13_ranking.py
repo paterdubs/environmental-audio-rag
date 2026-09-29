@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 import scripts.report_s13_ranking as report_s13_ranking
-from scripts.report_s13_ranking import load_candidate, rank_candidates
+from scripts.report_s13_ranking import _test_state, load_candidate, rank_candidates, render
 
 
 def _write(path: Path, payload: dict) -> None:
@@ -137,3 +137,42 @@ def test_main_configures_utf8_before_parsing_cli(monkeypatch: pytest.MonkeyPatch
 
     with pytest.raises(RuntimeError, match="dừng sau khi kiểm thứ tự"):
         report_s13_ranking.main()
+
+
+def test_final_selection_checks_declared_test_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    runs = tmp_path / "ml" / "runs"
+    runs.mkdir(parents=True)
+    tested = _run(runs, "tested", theta=0.21, csebb=0.1)
+    untouched = _run(runs, "untouched", theta=0.20, csebb=0.1)
+    (tested / "predictions").mkdir()
+    (tested / "predictions" / "test.npz").touch()
+    candidates = [load_candidate(f"a={tested}"), load_candidate(f"b={untouched}")]
+    monkeypatch.setattr(report_s13_ranking, "ROOT", tmp_path)
+
+    assert _test_state(candidates, ["a"]) == {"a": True, "b": False}
+    with pytest.raises(ValueError, match="không khớp khai báo"):
+        _test_state(candidates, [])
+
+
+def test_final_render_records_selection_and_test_inventory(tmp_path: Path) -> None:
+    leader = _run(tmp_path, "leader", theta=0.21, csebb=0.1)
+    second = _run(tmp_path, "second", theta=0.20, csebb=0.1)
+    ranking, note = rank_candidates(
+        [load_candidate(f"f2={leader}"), load_candidate(f"f4={second}")]
+    )
+
+    report = render(
+        ranking,
+        note,
+        "annotated",
+        {"revision": "abcdef123", "dirty": False},
+        final_selection=True,
+        test_state={"f2": False, "f4": False},
+    )
+
+    assert "Lựa chọn cuối S13" in report
+    assert "Đã chốt `f2` trước khi mở test mới" in report
+    assert "Chưa có `predictions/test.npz`: `f2`, `f4`" in report
+    assert "Không được chọn lại sau khi xem test" in report
