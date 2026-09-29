@@ -22,6 +22,7 @@ from pathlib import Path
 
 import numpy as np
 
+from ml.evaluation.coverage import restrict
 from ml.evaluation.multirun import micro_f1, paired_branch_bootstrap
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_counts_per_recording
@@ -44,6 +45,11 @@ def parse_args() -> argparse.Namespace:
                         help="file hậu xử lý trong mỗi run, vd postproc_cv.json (RQ1-v2)")
     parser.add_argument("--evaluation-name", default="evaluation.json",
                         help="file đánh giá test dùng để kiểm tổng, vd evaluation_cv.json")
+    parser.add_argument(
+        "--postproc-from-evaluation",
+        action="store_true",
+        help="đọc đường hậu xử lý riêng đã ghi trong từng evaluation thay vì một tên chung",
+    )
     return parser.parse_args()
 
 
@@ -56,19 +62,28 @@ def check_pairing(evaluation: dict, postproc_name: str, run_name: str) -> None:
 
 
 def run_counts(run: Path, taxonomy, split: str = "test", postproc_name: str = "postproc.json",
-               evaluation_name: str = "evaluation.json") -> dict[str, tuple[int, int, int]]:
+               evaluation_name: str = "evaluation.json", *,
+               postproc_from_evaluation: bool = False) -> dict[str, tuple[int, int, int]]:
     """Per-recording sed_eval counts with the run's frozen postproc; test is checked against
     the run's evaluation file (dev has no official evaluation to check against)."""
-    postproc = json.loads((run / postproc_name).read_text(encoding="utf-8"))
     official = None
     if split == "test":  # fail fast on a mismatched file pair, before the expensive recount
         official = json.loads((run / evaluation_name).read_text(encoding="utf-8"))
-        check_pairing(official, postproc_name, run.name)
+    if postproc_from_evaluation:
+        if official is None or not official.get("postproc"):
+            raise SystemExit(f"{run.name}: evaluation không ghi đường postproc")
+        postproc_path = Path(official["postproc"])
+    else:
+        postproc_path = run / postproc_name
+        if official is not None:
+            check_pairing(official, postproc_name, run.name)
+    postproc = json.loads(postproc_path.read_text(encoding="utf-8"))
     class_ids = taxonomy.polyphonic_class_ids
     artifact = load_predictions(run / "predictions" / f"{split}.npz", expected_class_ids=class_ids)
     if artifact.split != split:
         raise SystemExit(f"{run.name}: predictions split={artifact.split!r}, cần {split!r}")
-    probabilities = stack_predictions_by_recording(artifact)
+    eval_set = official.get("eval_set", "all") if official is not None else "all"
+    probabilities = restrict(stack_predictions_by_recording(artifact), eval_set)
     estimate = process_recordings(
         probabilities, class_ids=class_ids,
         thresholds={c: postproc["per_class"][c]["theta"] for c in class_ids},
@@ -113,7 +128,8 @@ def main() -> None:
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     branches = {group[0]: [Path(p) for p in group[1:]] for group in args.branch}
     counts = {run.name: run_counts(run, taxonomy, postproc_name=args.postproc_name,
-                                   evaluation_name=args.evaluation_name)
+                                   evaluation_name=args.evaluation_name,
+                                   postproc_from_evaluation=args.postproc_from_evaluation)
               for runs in branches.values() for run in runs}
     per_run = {run: micro_f1(*(sum(c[i] for c in rec.values()) for i in range(3)))
                for run, rec in counts.items()}
@@ -122,7 +138,8 @@ def main() -> None:
     for b in result["branches"].values():
         values = [per_run[r] for r in b["runs"]]
         b["sd"] = float(np.std(values, ddof=1)) if len(values) > 1 else 0.0
-    result.update({"per_run": per_run, "git": git, "postproc_name": args.postproc_name,
+    postproc_label = "từ từng evaluation" if args.postproc_from_evaluation else args.postproc_name
+    result.update({"per_run": per_run, "git": git, "postproc_name": postproc_label,
                    "evaluation_name": args.evaluation_name})
     stamp = datetime.now(UTC).strftime("%Y%m%d")
     out = ROOT / "docs/measurements" / f"rq1_multirun_bootstrap_{args.tag}_{stamp}.md"
