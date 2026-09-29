@@ -28,6 +28,7 @@ from ml.postprocessing import (
     stack_predictions_by_recording,
 )
 from ml.postprocessing.calibration import DEFAULT_THRESHOLD_GRID, validate_postproc_artifact
+from ml.postprocessing.sebb import SebbParams, sebb_candidates, select_boxes
 from ml.taxonomy import load_taxonomy
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -115,6 +116,49 @@ def psds_operating_points(
     return points
 
 
+def sebb_operating_points(
+    candidates: dict[str, list[object]],
+) -> list[tuple[pd.DataFrame]]:
+    """PSD-ROC từ cùng box cSEBB đã khóa, chỉ quét ngưỡng confidence của box."""
+    points: list[tuple[pd.DataFrame]] = []
+    for threshold in DEFAULT_THRESHOLD_GRID:
+        frame = to_detection_frame(select_boxes(candidates, threshold)).drop(
+            columns=["confidence"]
+        )
+        if len(frame):
+            points.append((frame,))
+    return points
+
+
+def sebb_params(selection: dict, *, eval_set: str) -> tuple[SebbParams, float]:
+    """Đọc cấu hình cSEBB đã chọn trên dev; không fit lại bất kỳ tham số nào."""
+    if selection.get("family") != "csebb":
+        raise ValueError("artifact cSEBB phải có family='csebb'")
+    if selection.get("eval_set") != eval_set:
+        raise ValueError(
+            f"eval_set của cSEBB không khớp: {selection.get('eval_set')!r} != {eval_set!r}"
+        )
+    selected = selection.get("selected")
+    if not isinstance(selected, dict):
+        raise ValueError("artifact cSEBB thiếu selected")
+    try:
+        params = SebbParams(
+            step_filter_s=float(selected["step_filter_s"]),
+            merge_abs=(
+                None if selected.get("merge_abs") is None else float(selected["merge_abs"])
+            ),
+            merge_rel=(
+                None if selected.get("merge_rel") is None else float(selected["merge_rel"])
+            ),
+        )
+        threshold = float(selected["threshold"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("selected của cSEBB không hợp lệ") from exc
+    if not 0.0 <= threshold <= 1.0:
+        raise ValueError("threshold cSEBB phải nằm trong [0, 1]")
+    return params, threshold
+
+
 def to_reference_frame(events_by_recording: dict[str, list[dict[str, object]]]) -> pd.DataFrame:
     rows = [
         {
@@ -185,10 +229,15 @@ def main() -> None:
     postproc_path = args.postproc or (args.run_dir / "postproc.json")
     postproc = json.loads(postproc_path.read_text(encoding="utf-8"))
     taxonomy = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
-    validate_postproc_artifact(postproc, taxonomy=taxonomy)  # từ chối postproc chưa frozen/sai
     class_ids = taxonomy.polyphonic_class_ids
-    if postproc["taxonomy_sha256"] != taxonomy.checksum:
-        raise SystemExit("postproc.json khoá theo taxonomy khác taxonomy đang dùng")
+    family = str(postproc.get("family", "theta"))
+    if family == "csebb":
+        selected_sebb = sebb_params(postproc, eval_set=args.eval_set)
+    else:
+        validate_postproc_artifact(postproc, taxonomy=taxonomy)
+        if postproc["taxonomy_sha256"] != taxonomy.checksum:
+            raise SystemExit("postproc.json khoá theo taxonomy khác taxonomy đang dùng")
+        selected_sebb = None
 
     test_artifact = load_predictions(
         args.run_dir / "predictions" / f"{args.split}.npz", expected_class_ids=class_ids
@@ -198,14 +247,29 @@ def main() -> None:
 
     probabilities = restrict(stack_predictions_by_recording(test_artifact), args.eval_set)
     reference = load_events_by_recording(set(probabilities))
-    priors = priors_from_postproc(postproc, class_ids)
-    thresholds = {class_id: postproc["per_class"][class_id]["theta"] for class_id in class_ids}
     frame_rate = 1.0 / test_artifact.frame_hop_s
-
-    estimate = process_recordings(
-        probabilities, class_ids=class_ids, thresholds=thresholds, priors=priors,
-        frame_rate=frame_rate,
-    )
+    if selected_sebb is not None:
+        params, threshold = selected_sebb
+        candidates = sebb_candidates(
+            probabilities, class_ids=class_ids, frame_rate=frame_rate, params=params
+        )
+        estimate = select_boxes(candidates, threshold)
+        operating_points = sebb_operating_points(candidates)
+    else:
+        priors = priors_from_postproc(postproc, class_ids)
+        thresholds = {
+            class_id: postproc["per_class"][class_id]["theta"] for class_id in class_ids
+        }
+        estimate = process_recordings(
+            probabilities,
+            class_ids=class_ids,
+            thresholds=thresholds,
+            priors=priors,
+            frame_rate=frame_rate,
+        )
+        operating_points = psds_operating_points(
+            probabilities, class_ids=class_ids, priors=priors, frame_rate=frame_rate
+        )
 
     event_f1 = event_based_f1(reference, estimate, event_label_list=list(class_ids))
     ci = bootstrap_event_f1(reference, estimate, class_ids)
@@ -216,9 +280,6 @@ def main() -> None:
         ]}
     )
     ground_truth = to_reference_frame(reference)
-    operating_points = psds_operating_points(
-        probabilities, class_ids=class_ids, priors=priors, frame_rate=frame_rate
-    )
     psds_values = {
         name: (
             psds_score(
@@ -243,6 +304,7 @@ def main() -> None:
         "eval_set": args.eval_set,
         "n_recordings": len(probabilities),
         "postproc": str(postproc_path),
+        "postproc_family": family,
         "event_based_f1": event_f1["f_measure"],
         "event_based_f1_macro": event_f1["macro"],
         "event_based_f1_per_class": {

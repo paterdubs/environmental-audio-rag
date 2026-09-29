@@ -4,6 +4,8 @@ from ml.postprocessing import DurationPrior
 from scripts.evaluate_run import (
     priors_from_postproc,
     psds_operating_points,
+    sebb_operating_points,
+    sebb_params,
     to_detection_frame,
     to_reference_frame,
 )
@@ -77,3 +79,55 @@ def test_report_names_the_postproc_file_used() -> None:
         "n_events_reference": 10, "n_events_estimate": 4,
     }
     assert "Hậu xử lý: `postproc_cv.json`." in _render_report(result)
+
+
+def test_sebb_params_reads_frozen_annotated_selection() -> None:
+    selection = {
+        "family": "csebb",
+        "eval_set": "annotated",
+        "selected": {
+            "step_filter_s": 0.64,
+            "merge_abs": None,
+            "merge_rel": 2.0,
+            "threshold": 0.9,
+        },
+    }
+
+    params, threshold = sebb_params(selection, eval_set="annotated")
+
+    assert params.step_filter_s == 0.64
+    assert params.merge_rel == 2.0
+    assert params.merge_abs is None
+    assert threshold == 0.9
+
+
+def test_sebb_params_rejects_wrong_eval_set() -> None:
+    import pytest
+
+    selection = {
+        "family": "csebb",
+        "eval_set": "all",
+        "selected": {
+            "step_filter_s": 0.64,
+            "merge_abs": 0.2,
+            "merge_rel": None,
+            "threshold": 0.9,
+        },
+    }
+
+    with pytest.raises(ValueError, match="eval_set của cSEBB không khớp"):
+        sebb_params(selection, eval_set="annotated")
+
+
+def test_sebb_operating_points_sweep_box_confidence_without_moving_boundaries() -> None:
+    from ml.postprocessing.events import PostprocessedEvent
+
+    candidates = {
+        "r1": [PostprocessedEvent("r1", "bird", 0.1, 0.4, 0.9)],
+        "r2": [],
+    }
+
+    points = sebb_operating_points(candidates)
+
+    assert len(points) >= 2
+    assert {tuple(frame[["onset", "offset"]].iloc[0]) for (frame,) in points} == {(0.1, 0.4)}
