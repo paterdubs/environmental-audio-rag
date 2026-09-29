@@ -1,0 +1,51 @@
+{
+ "n_recordings": 139,
+ "n_bootstrap": 1000,
+ "confidence": 0.95,
+ "seed": 20260922,
+ "branches": {
+  "B": {
+   "estimate": 0.13235498948794644,
+   "lower": 0.09851662497527207,
+   "upper": 0.16812265654914083,
+   "runs": [
+    "sed_polyphonic_20260926T033312Z",
+    "sed_polyphonic_20260926T053024Z",
+    "sed_polyphonic_20260926T064832Z"
+   ],
+   "sd": 0.006795545575622101
+  },
+  "C": {
+   "estimate": 0.12942754838709247,
+   "lower": 0.09664681501950495,
+   "upper": 0.16444044515894435,
+   "runs": [
+    "sed_polyphonic_20260926T161726Z",
+    "sed_polyphonic_20260926T172229Z",
+    "sed_polyphonic_20260926T185208Z"
+   ],
+   "sd": 0.009866249358794803
+  }
+ },
+ "differences": {
+  "C-B": {
+   "estimate": -0.002927441100853967,
+   "lower": -0.025351090668621186,
+   "upper": 0.0199348493176414
+  }
+ },
+ "per_run": {
+  "sed_polyphonic_20260926T033312Z": 0.12747631352282515,
+  "sed_polyphonic_20260926T053024Z": 0.14011676396997497,
+  "sed_polyphonic_20260926T064832Z": 0.12947189097103917,
+  "sed_polyphonic_20260926T161726Z": 0.1377551020408163,
+  "sed_polyphonic_20260926T172229Z": 0.13199665831244778,
+  "sed_polyphonic_20260926T185208Z": 0.11853088480801335
+ },
+ "git": {
+  "revision": "33c02652700f7df46aba39ff75f96f143e67afbb",
+  "dirty": false
+ },
+ "postproc_name": "t\u1eeb t\u1eebng evaluation",
+ "evaluation_name": "evaluation_cv_annotated.json"
+}
