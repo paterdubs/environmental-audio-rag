@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import librosa
 import numpy as np
 import soundfile
 
@@ -41,6 +42,12 @@ def served_feature(path: Path, feature_set: str) -> np.ndarray:
     return feature.astype(np.float16).astype(np.float32)
 
 
+def served_waveform(path: Path) -> np.ndarray:
+    """Match the Track-2 cache: librosa 16 kHz mono, then deterministic PCM16 quantisation."""
+    waveform, _ = librosa.load(path, sr=16_000, mono=True)
+    return np.clip(np.round(waveform * 32768.0), -32768, 32767).astype(np.int16)
+
+
 class Analyzer:
     def __init__(self, sed: ServedSed, taxonomy: Taxonomy) -> None:
         self.sed = sed
@@ -51,14 +58,18 @@ class Analyzer:
                                                                   config=VI_LEXICON_CONFIG)),
         }
 
-    def timeline(self, recording_id: str, feature: np.ndarray) -> dict[str, Any]:
-        probabilities = self.sed.probabilities(feature)
+    def timeline(self, recording_id: str, signal: np.ndarray, *, total_frames: int | None = None
+                 ) -> dict[str, Any]:
+        probabilities = self.sed.probabilities(signal, total_frames=total_frames)
         duration = probabilities.shape[0] / self.sed.config.frame_rate
         return canonicalize_timeline(recording_id, duration, self.sed.events(probabilities),
                                      self.taxonomy, model_version=self.sed.model_version)
 
     def analyze(self, recording_id: str, path: Path) -> dict[str, Any]:
-        timeline = self.timeline(recording_id, served_feature(path, self.sed.config.feature_set))
+        feature = served_feature(path, self.sed.config.feature_set)
+        signal = (served_waveform(path) if self.sed.config.input_kind == "waveform_16k"
+                  else feature)
+        timeline = self.timeline(recording_id, signal, total_frames=feature.shape[1])
         captions = {lang: c.caption(timeline, language=lang)
                     for lang, c in self.captioners.items()}
         document = build_document(captions["en"]["text"] + "\n" + captions["vi"]["text"],

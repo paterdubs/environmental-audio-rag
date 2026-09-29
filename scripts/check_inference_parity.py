@@ -30,9 +30,10 @@ import torch
 from torch.utils.data import DataLoader
 
 from ml.datasets.features import SedFeatureDataset
+from ml.datasets.waveforms import SedWaveformDataset
 from ml.evaluation.predictions import load_predictions
 from ml.inference.engine import DEFAULT_SERVED_POSTPROC, DEFAULT_SERVED_RUN
-from ml.inference.pipeline import served_feature
+from ml.inference.pipeline import served_feature, served_waveform
 from ml.inference.sed import ServedSed
 from ml.postprocessing import stack_predictions_by_recording
 from ml.provenance import git_state
@@ -44,6 +45,7 @@ POSTPROC = DEFAULT_SERVED_POSTPROC
 TRAIN_BATCH = 24  # batch of the loaders that dumped predictions/test.npz (ADR-0020, C2)
 AUDIO_ROOT = ROOT / "data/raw/datased/extracted"
 FEATURE_ROOT = ROOT / "data/features/datased/logmel_panns_v1"
+WAVEFORM_ROOT = ROOT / "data/cache/datased_wav16k"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -80,11 +82,12 @@ def output_stem(run_dir: Path, device: str) -> str:
     return f"inference_parity_{label}_{device}"
 
 
-def feature_paths() -> dict[str, tuple[Path, Path]]:
+def feature_paths() -> dict[str, tuple[Path, Path, Path]]:
     with (ROOT / "data/manifests/datased_logmel_panns_v1.csv").open(encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
     return {Path(r["audio_relative_path"]).stem: (AUDIO_ROOT / r["audio_relative_path"],
-                                                  FEATURE_ROOT / r["feature_relative_path"])
+                                                  FEATURE_ROOT / r["feature_relative_path"],
+                                                  WAVEFORM_ROOT / r["feature_relative_path"])
             for r in rows}
 
 
@@ -97,12 +100,14 @@ def batch_reproduction(sed: ServedSed, taxonomy) -> dict[str, float]:
     joined = recordings.merge(features[["file_id", "feature_relative_path", "frames"]],
                               on="file_id").merge(splits[["recording_id", "split"]],
                                                   on="recording_id")
-    dataset = SedFeatureDataset(
-        joined[joined["split"] == "test"],
-        pd.read_csv(ROOT / "data/annotations/datased_polyphonic_events.csv"),
-        feature_root=FEATURE_ROOT, class_ids=taxonomy.polyphonic_class_ids,
-        frame_rate=sed.config.frame_rate, window_frames=sed.config.window_frames,
-        hop_frames=sed.config.hop_frames)
+    kwargs = dict(class_ids=taxonomy.polyphonic_class_ids, frame_rate=sed.config.frame_rate,
+                  window_frames=sed.config.window_frames, hop_frames=sed.config.hop_frames)
+    dataset_type = (SedWaveformDataset if sed.config.input_kind == "waveform_16k"
+                    else SedFeatureDataset)
+    dataset = dataset_type(joined[joined["split"] == "test"],
+                           pd.read_csv(ROOT / "data/annotations/datased_polyphonic_events.csv"),
+                           **({"waveform_root": WAVEFORM_ROOT} if dataset_type is SedWaveformDataset
+                              else {"feature_root": FEATURE_ROOT}), **kwargs)
     batch, _, _ = next(iter(DataLoader(dataset, batch_size=TRAIN_BATCH, shuffle=False)))
     out = {}
     for model, member in zip(sed.members, sed.member_ids, strict=True):
@@ -138,15 +143,22 @@ def matched(served: list[tuple], frozen: list[tuple], tolerance: float) -> int:
 
 
 def check(sed: ServedSed, frozen: dict[str, np.ndarray], rid: str, paths) -> dict:
-    audio, stored_path = paths
+    audio, stored_path, waveform_path = paths
     stored = np.load(stored_path, allow_pickle=False).astype(np.float32)
-    from_wav = served_feature(audio, sed.config.feature_set)
-    served = sed.probabilities(stored)
+    if sed.config.input_kind == "waveform_16k":
+        cached = np.load(waveform_path, allow_pickle=False)
+        from_wav = served_waveform(audio)
+        signal, label = cached, "waveform 16 kHz PCM"
+    else:
+        from_wav = served_feature(audio, sed.config.feature_set)
+        signal, label = stored, "log-mel"
+    served = sed.probabilities(signal, total_frames=stored.shape[1])
     served_events, frozen_events = event_key(sed.events(served)), event_key(sed.events(frozen[rid]))
     shared = len(set(served_events) & set(frozen_events))
-    return {"recording_id": rid, "feature_equal": bool(np.array_equal(from_wav, stored)),
-            "feature_max_abs": float(np.abs(from_wav - stored).max())
-            if from_wav.shape == stored.shape else None,
+    return {"recording_id": rid, "input_label": label,
+            "feature_equal": bool(np.array_equal(from_wav, signal)),
+            "feature_max_abs": float(np.abs(from_wav - signal).max())
+            if from_wav.shape == signal.shape else None,
             "frames_equal": served.shape == frozen[rid].shape,
             "prob_max_abs": float(np.abs(served - frozen[rid]).max())
             if served.shape == frozen[rid].shape else None,
@@ -166,7 +178,7 @@ def render(result: dict) -> str:
         f"| Tầng | Kết quả (n = {len(rows)} recording test, thiết bị `{result['device']}`, "
         f"torch `{result.get('torch', '?')}`) |",
         "|---|---|",
-        f"| Đặc trưng WAV → log-mel trùng file `.npy` | {s['feature_equal']}/{len(rows)} "
+        f"| Input WAV → cache/đặc trưng trùng | {s['feature_equal']}/{len(rows)} "
         f"(lệch lớn nhất {s['feature_max_abs']:.3g}) |",
         f"| Số frame khớp | {s['frames_equal']}/{len(rows)} |",
         f"| Xác suất, lệch tuyệt đối lớn nhất | {s['prob_max_abs']:.3g} "

@@ -16,14 +16,14 @@ from ml.retrieval.embedding import Embedder
 from ml.taxonomy import load_taxonomy
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SERVED_RUN = Path("ml/runs/sed_ensemble_C_clean_20260925T045631Z")
-DEFAULT_SERVED_POSTPROC = "postproc_cv.json"
+DEFAULT_SERVED_RUN = Path("ml/runs/sed_ensemble_t2b_20260927T200914Z")
+DEFAULT_SERVED_POSTPROC = "sebb_cv_selection_annotated.json"
 SERVED_ENSEMBLE = ROOT / DEFAULT_SERVED_RUN
 SERVED_POSTPROC = DEFAULT_SERVED_POSTPROC
 
 
 def served_settings() -> tuple[Path, str, bool]:
-    """Resolve the demo selection while keeping ADR-0031's official system unchanged."""
+    """Resolve the frozen S13 winner, with an explicit local override for diagnostics."""
     relative = Path(os.environ.get("EARAG_SERVED_RUN", str(DEFAULT_SERVED_RUN)))
     if relative.is_absolute():
         raise ValueError("EARAG_SERVED_RUN must be relative to the repository root")
@@ -66,7 +66,8 @@ class Engine:
         return {"model_version": self.sed.model_version, "members": self.sed.member_ids,
                 "served_run": self.served_run, "official": self.official,
                 "postproc": self.served_postproc,
-                "threshold_mode": self.sed.postproc["threshold_mode"],
+                "threshold_mode": (self.sed.postproc.get("threshold_mode")
+                                   if self.sed.postproc_family == "theta" else "csebb"),
                 "taxonomy_version": self.taxonomy.version,
                 "taxonomy_sha256": self.taxonomy.checksum,
                 "embedding_version": self.embedder.version, "device": self.device}
