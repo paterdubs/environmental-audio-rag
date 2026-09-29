@@ -56,6 +56,19 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 29/09/2026 — S13 và RQ1-v2 hoàn tất sớm theo cho phép của người dùng.** Báo cáo lựa
+chọn `s13_selection_20261018` được sinh từ CV dev annotated và commit `c3f0033` trước khi mở thêm
+test: **f2** thắng với micro 0.2383±0.0562, nhưng không gọi tốt hơn f4 vì chênh 0.0029 ≤ sd f2.
+Test annotated: f2 macro 0.1206, micro 0.1643 [0.1103, 0.2242]; f1 có micro cao nhất 0.1817 nhưng
+không chọn lại. RQ1-v2 C−B micro −0.0029 [−0.0254, +0.0199], Welch micro p=0.6965: âm tính về
+event-F1; PSDS-2 tăng +0.0279, p=0.0193. Xem ADR-0031 §9, PAPER_NOTES S40–S41 và
+`s13_test_20261018`, `rq1_v2_multiseed_20260929`, `test_ledger_20260929`.
+
+Sai lệch provenance được giữ nguyên và công khai: f2 được đánh giá khi tree sạch, nhưng report
+untracked do script sinh ra làm 15 lượt `evaluate_run` annotated sau đó có porcelain khác rỗng dù
+code/cấu hình tracked không đổi. Không chạy lại test; các báo cáo tổng hợp cuối đã sinh lại từ tree
+sạch. f2 là hệ thống cuối đã khóa; S8 còn phải chạy một lần để đổi caption/RQ3/phục vụ.
+
 **Cập nhật 29/09/2026 — S11 focal hoàn tất trên dev, không mở test.** ADR-0038 đăng ký trước
 mọi run: focal không `pos_weight`, T2b `frame_mn`, pilot γ `{0.5,1,2}` chọn γ=2.0; ba seed
 `sed_polyphonic_20260928T165635Z`, `173526Z`, `181509Z` complete/dirty=false. Dựng g1 (3 seed)
@@ -305,7 +318,7 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
 | W7 (ứng dụng) | 7.1–7.4 xong (7.4: inference trong Docker 27/09, ADR-0033 §6); 7.5–7.7 — làm 19/10–02/11, sau S8 |
 | **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
-| **Cải thiện cuối** (ADR-0031) | S9, S10 và S11 xong; nợ #24/#25 đóng. CV dev annotated cho S13 đủ 18/18 file + g1/g2; bảng 11 ứng viên `f2/f4/g2/f1/d/g1/e/c/f3/b/a` (chưa chọn, chưa test); S12 không cần; S13 vòng chọn cuối 18/10 |
+| **Cải thiện cuối** (ADR-0031) | ✅ S9–S13 hoàn tất sớm 29/09. Commit `c3f0033` khóa f2 trước test; f2 test macro/micro 0.1206/0.1643. Không chọn lại dù f1 micro test 0.1817. RQ1-v2 âm tính về event-F1; S12 không cần. |
 | Tài liệu | Nợ #21 đóng 28/09: PretrainedSED, DCASE 2016 T3, bài DataSED đều V3 |
 
 ### Chưa có ○
@@ -316,21 +329,20 @@ Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · báo cáo luận
 
 Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 §7).
 
-1. ~~S9 RQ1-v2~~ — ✅ 27/09 03:53: 3 run C-v2 xong; ensemble (d)/(e) + CV dev xong 04:42
-   (PAPER_NOTES S26–S27). Test 6 run này vẫn **chờ S13**, không mở sớm hơn.
+1. ~~S9 RQ1-v2~~ — ✅ hoàn tất 29/09: 3 B-v2 vs 3 C-v2 trên test annotated sau commit S13;
+   bootstrap C−B micro −0.0029 [−0.0254, +0.0199], âm tính về event-F1 (PAPER_NOTES S41).
 2. ~~S10 Track 2 — T2a~~ — ✅ 27/09 tối (ADR-0032 §9, PAPER_NOTES S28–S29): BEATs đóng băng +
    head v2, pilot lr=0.001, 3 seed, ensemble (f1) 0.2114±0.0491 (gần bằng (c), dưới (d)), (f3)
    0.1813±0.0496. cSEBB thua θ global lần 3. Chỉ CV dev, chưa mở test.
    ~~T2b~~ — ✅ 28/09 03:56 (ADR-0032 §11, PAPER_NOTES S32–S34): (f2) 0.2224 (cSEBB), (f4)
    0.2248 (global). Chỉ CV dev.
 3. ~~Nợ #24~~ — ✅ 27/09 (`4135d17`). Giải thích S21 (PSDS) trên dev — còn mở.
-4. ~~Nợ #25 + CV annotated~~ — ✅ 28/09, phương án (B) (ADR-0034); đủ 18/18 file sạch và
-   measurement 9 ứng viên. Thứ hạng tạm thời `f2/f4/f1/d/e/c/f3/b/a`; chưa chọn, chưa mở test.
-5. ~~S11 focal~~ — ✅ 29/09 (ADR-0038): γ=2, 3 seed T2b, g1/g2 CV annotated + cột all và per-class dev;
-   g2 hạng 3, g1 hạng 6, âm tính với thay hệ thống. S13 vẫn chờ mốc 18/10 và không mở test.
-5. S11 nếu còn thời gian; **S13 vòng chọn cuối 18/10**, commit trước test — (d)/(e)/(f1)–(f4) đã
-   có CV dev, sẵn sàng vào vòng chọn cùng nhau.
-6. ~~L2~~ — ✅ xong sớm 28/09, chỉ validation. Sau 18/10: S8 một lần → W7 7.5–7.7 → viết báo cáo.
+4. ~~Nợ #25 + CV annotated~~ — ✅ 28/09, phương án (B) (ADR-0034); dữ liệu này đã dùng để
+   khóa lựa chọn S13 ngày 29/09.
+5. ~~S11 focal~~ — ✅ 29/09 (ADR-0038): γ=2, 3 seed T2b, g1/g2; âm tính với thay hệ thống.
+6. ~~S13~~ — ✅ 29/09: f2 khóa trước test; mọi ứng viên và RQ1-v2 đã báo; không chọn lại.
+7. ~~L2~~ — ✅ xong sớm 28/09, chỉ validation. Tiếp theo: S8 một lần trên f2 → W7 7.5–7.7 →
+   viết báo cáo.
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
 
@@ -584,6 +596,27 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-09-29 — S13 khóa f2 trước test; hoàn tất test annotated và RQ1-v2
+
+Người dùng cho phép chạy S13 sớm. Kiểm đủ CV annotated sạch của 11 ứng viên, sinh
+`s13_selection_20261018.{md,json}` và commit `c3f0033` trước khi mở test mới. Tại commit đó,
+(d)/(e)/(f1)–(f4)/(g1)/(g2) chưa có `test.npz`; f2 được khóa theo CV micro 0.2383±0.0562.
+
+Sau commit, sinh test prediction đúng một lần cho các base run chưa chạm test, dựng tám ensemble
+test-only và đánh giá `annotated` bằng hậu xử lý đã chọn trên dev. f2 đạt macro 0.1206, micro
+0.1643 [0.1103, 0.2242]. f1 có micro test cao nhất 0.1817 và g1 có macro cao nhất 0.1617, nhưng
+không chọn lại. Báo cáo giữ nguyên thứ tự CV ở `s13_test_20261018.{md,json}`; sổ có 40 lượt đánh
+giá SED test ở `test_ledger_20260929.{md,json}`.
+
+RQ1-v2: báo cáo đa seed cho B-v2/C-v2 và bootstrap ghép cặp theo 139 recording annotated. C−B
+micro −0.0029 [−0.0254, +0.0199]; Welch micro p=0.6965, macro p=0.4220. PSDS-2 tăng +0.0279,
+p=0.0193. Kết luận về event-F1 vẫn âm tính (PAPER_NOTES S41).
+
+Sai lệch vận hành: sau lượt f2 trên tree sạch, report untracked do `evaluate_run` sinh ra làm 15
+lượt annotated còn lại chạy khi porcelain khác rỗng; code và cấu hình tracked không đổi. Không
+chạy lại test để tránh lần thứ hai. Ghi đầy đủ ở ADR-0031 §9 và PAPER_NOTES §8; các báo cáo tổng
+hợp cuối được sinh lại từ tree sạch. Commit thực thi: `33c0265`, `f642729`.
 
 ### 2026-09-29 — S11 focal hoàn tất, CV annotated và ranking 11 ứng viên
 

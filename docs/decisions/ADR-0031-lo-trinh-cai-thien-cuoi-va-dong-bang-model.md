@@ -142,6 +142,33 @@ Nếu (a) thắng thì không cần S8. Số W5/W6 cũ vẫn giữ và báo song
 - Mở rộng mẫu người cho metric C2 và thêm xác thực: ưu tiên thấp nhất. C2 chỉ mở rộng nếu paper
   theo hướng C (PAPER_NOTES §1).
 
+### 9. Kết quả thực thi S13 và RQ1-v2 (29/09/2026)
+
+Người dùng cho phép thực hiện S13 sớm ngày 29/09. Lựa chọn cuối được sinh từ 5-fold CV dev
+`annotated` và commit ở `c3f0033` **trước khi mở thêm test**. Tại commit đó, các ứng viên mới
+(d), (e), (f1)–(f4), (g1), (g2) chưa có `predictions/test.npz`; (a), (b), (c) đã chạm test từ
+trước. Hạng nhất là **f2** (T2b×3, cSEBB), CV micro 0.2383 ± 0.0562; f4 đứng nhì 0.2354 ±
+0.0585. Chênh 0.0029 không vượt sd của f2, nên không gọi f2 tốt hơn f4.
+
+Kết quả test `annotated` báo macro trước, micro kèm trong
+`docs/measurements/s13_test_20261018.{md,json}`. Hệ thống đã khóa f2 đạt macro **0.1206**, micro
+**0.1643** [0.1103, 0.2242]. f1 có micro test cao nhất **0.1817**, còn g1 có macro cao nhất
+**0.1617**; đây không phải lý do chọn lại. Hệ thống cuối vẫn là **f2** theo luật đã ghi trước.
+
+RQ1-v2 (`docs/measurements/rq1_v2_multiseed_20260929.{md,json}`): B-v2 có macro/micro trung
+bình 0.1221/0.1324; C-v2 0.1147/0.1294. Welch hai phía cho C−B: macro p=0.4220, micro
+p=0.6965, PSDS-1 p=0.4389; chỉ PSDS-2 tăng +0.0279 với p=0.0193. Bootstrap ghép cặp theo
+recording cho micro trung bình cho C−B **−0.0029** [−0.0254, +0.0199]
+(`rq1_multirun_bootstrap_rq1_v2_annotated_20260929.{md,json}`). Vì CI chứa 0, kết luận RQ1-v2
+về event-F1 vẫn âm tính: khởi tạo thêm DataSEC không chứng minh được cải thiện so với AudioSet.
+
+**Sai lệch vận hành phải công khai.** Lượt đánh giá annotated đầu tiên (f2) bắt đầu trên tree
+sạch, nhưng chính script tạo một report untracked trong repo. Do không commit report ngay, 15
+lượt `evaluate_run` annotated còn lại chạy với `git status --porcelain` khác rỗng, dù không có
+thay đổi code/cấu hình tracked nào giữa các lượt. Không chạy lại vì sẽ vi phạm luật test đúng một
+lần; giữ nguyên kết quả và ghi đây là hạn chế provenance. Các báo cáo tổng hợp S13, RQ1-v2 và sổ
+test cuối được sinh/đối chiếu lại từ tree sạch; sổ đầy đủ ở `test_ledger_20260929.{md,json}`.
+
 ## Consequences
 
 ### Tích cực

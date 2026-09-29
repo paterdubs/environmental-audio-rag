@@ -85,6 +85,8 @@ Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". H�
 | S38 | **Frontend natural-search minh bạch và có đường lui thủ công** | UI gọi parse, hiển thị chip sửa được, gọi query với filter đã sửa; parser/LLM lỗi báo rõ và chuyển manual. Evidence giữ recording + onset/offset; nhãn `official=false` hiện rõ | [ADR-0037](decisions/ADR-0037-giao-dien-truy-van-tu-nhien-va-bang-chung.md), [DEMO.md](DEMO.md), [vi_phrasing_review_20260928.md](measurements/vi_phrasing_review_20260928.md) | Chưa tự sửa lexicon VI; 38 cụm UI/caption được lập danh sách chờ người dùng duyệt |
 
 | S39 | **S11 focal γ=2 trên T2b không vượt ứng viên đang dẫn** | Pilot dev chọn γ=2.0. g1 (focal T2b ×3) đạt θ 0.2268±0.0547, cSEBB 0.2265±0.0469; g2 (g1 + f2) đạt cSEBB **0.2319±0.0418**, trong khi f2 vẫn **0.2383±0.0562**. g2 hạng 3, g1 hạng 6 trong 11 ứng viên; không gọi tốt hơn và không mở test. Per-class: năm lớp ít positive frame nhất là chicken_coop, crows_seagulls_magpies, glass_breaking, horn, thunder_fireworks_gunshot; AP focal tăng ở 3 lớp, giảm ở 2 lớp | [pilot_loss_t2b_focal_20260928.md](measurements/pilot_loss_t2b_focal_20260928.md), [s11_per_class_20260928.md](measurements/s11_per_class_20260928.md), [s13_ranking_annotated_20260928.md](measurements/s13_ranking_annotated_20260928.md), ADR-0038 | Âm tính cho việc thay hệ thống; focal vẫn là artifact ứng viên S13, quyết định chính thức chờ mốc 18/10 |
+| S40 | **S13 khóa f2 bằng CV dev nhưng thứ hạng test không trùng thứ hạng CV; không chọn lại** | f2: CV micro 0.2383±0.0562; test annotated macro 0.1206, micro 0.1643 [0.1103, 0.2242]. f1 chỉ hạng 4 CV nhưng có micro test cao nhất 0.1817; g1 hạng 6 CV nhưng có macro test cao nhất 0.1617. Hệ thống cuối vẫn là f2 theo commit trước test `c3f0033` | [s13_selection_20261018.md](measurements/s13_selection_20261018.md), [s13_test_20261018.md](measurements/s13_test_20261018.md), ADR-0031 §9 | Là ví dụ trực tiếp về sai số chọn model trên dev nhỏ; phải báo mọi ứng viên và không diễn giải hệ thống thắng theo test |
+| S41 | **RQ1-v2 vẫn âm tính về event-F1; DataSEC chỉ tăng PSDS-2 trong phép kiểm đa seed** | B-v2/C-v2 macro trung bình 0.1221/0.1147, micro 0.1324/0.1294. Bootstrap C−B micro −0.0029 [−0.0254, +0.0199]; Welch micro p=0.6965, macro p=0.4220. PSDS-2 C−B +0.0279, p=0.0193 | [rq1_v2_multiseed_20260929.md](measurements/rq1_v2_multiseed_20260929.md), [rq1_multirun_bootstrap_rq1_v2_annotated_20260929.md](measurements/rq1_multirun_bootstrap_rq1_v2_annotated_20260929.md), ADR-0031 §9 | Không có bằng chứng khởi tạo DataSEC cải thiện event localization dưới recipe v2; hiệu ứng phụ thuộc metric, nên không được viết “không có tác dụng” chung chung |
 
 ### 2.3 Caption (RQ2 — C1, C2)
 
@@ -222,6 +224,9 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
    seed. Hệ thống được chọn không được gọi là tốt hơn run đơn (S18).
 10. Ablation v2 chỉ 1 seed mỗi biến thể; kết luận "không phân biệt được" (S20) không có nghĩa là
     "không có hiệu ứng".
+11. Trong S13, lượt `evaluate_run` annotated đầu tiên bắt đầu trên tree sạch nhưng report untracked do
+    chính script sinh ra làm 15 lượt còn lại có `git status --porcelain` khác rỗng. Không có code/cấu
+    hình tracked nào đổi và không chạy lại test; đây vẫn là hạn chế provenance phải nêu (ADR-0031 §9).
 
 ---
 

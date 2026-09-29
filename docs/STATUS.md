@@ -1,10 +1,11 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-29 — S11 focal γ=2 trên T2b đã chạy đủ 3 seed, dựng g1/g2 và CV annotated/all; f2 vẫn dẫn, không đổi hệ thống và không mở test. Frontend natural-search/chip/manual fallback, model badge và evidence playback đã thêm theo ADR-0037; phrasing review sinh tự động. L2 parser câu hỏi → filter xong sớm theo ADR-0036; RQ3 parsed
-chỉ chạy validation, không mở test. Demo Compose vẫn phục vụ SED v2 theo ADR-0035; hệ thống chính
-thức vẫn là v1 tới S8.
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 718 pass, 0 skip (Docker DB không cần cho block S11),
-ruff sạch (Windows, 29/09)
+**Cập nhật:** 2026-09-29 — S13 hoàn tất sớm theo cho phép của người dùng. Commit `c3f0033` khóa
+f2 bằng CV dev annotated trước test; test annotated của 11 ứng viên đã báo, không chọn lại dù f1
+có micro test cao hơn. RQ1-v2 3 B-v2 vs 3 C-v2 hoàn tất và âm tính về event-F1. Sổ test đã cập
+nhật. Demo Compose vẫn phục vụ SED v2 theo ADR-0035; hệ thống chính thức chuyển sang f2 ở S8.
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 734 pass, 0 skip, 19 warnings; ruff sạch
+(Windows, 29/09)
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -37,9 +38,12 @@ ruff sạch (Windows, 29/09)
   - S9 (RQ1-v2) chạy từ 23:17.
 - **Event-F1 headline trước 26/09 là micro** (lệch Q2, evaluation_protocol §3.2). Từ 26/09 con
   số chính là **macro**, micro kèm; chọn hệ thống vẫn bằng micro (ADR-0031 §1, PLAN nợ #20).
-- **Dữ liệu chuẩn bị S13 đã đủ trên dev annotated** (ADR-0034): 18/18 file sạch cho 9 ứng viên.
-  Thứ hạng đổi từ `f4/d/f2/c/f1/e/b/f3/a` (`all`) thành `f2/f4/f1/d/e/c/f3/b/a`; f2 hơn f4
-  0.0029 ≤ sd fold 0.0562 nên không được gọi là tốt hơn. Đây chưa phải lựa chọn S13; không mở test.
+- **S13 đã khóa f2 trước test** (`c3f0033`): 11 ứng viên xếp theo CV annotated
+  `f2/f4/g2/f1/d/g1/e/c/f3/b/a`. f2 đạt CV micro 0.2383±0.0562; test annotated macro 0.1206,
+  micro 0.1643 [0.1103, 0.2242]. f1 có micro test cao nhất 0.1817 nhưng không chọn lại.
+- **RQ1-v2 âm tính về event-F1:** C−B micro trung bình −0.0029, bootstrap theo recording
+  [−0.0254, +0.0199]; Welch micro p=0.6965, macro p=0.4220. PSDS-2 tăng +0.0279, p=0.0193,
+  nên kết luận phụ thuộc metric.
 - **S11 focal (ADR-0038) âm tính với việc thay hệ thống:** pilot chọn γ=2.0; g1 focal T2b×3 đạt
   0.2268±0.0547 (θ) / 0.2265±0.0469 (cSEBB), g2 đạt 0.2319±0.0418 (cSEBB), thấp hơn f2
   0.2383±0.0562. Per-class dev ghi ở [s11_per_class_20260928](measurements/s11_per_class_20260928.md);
@@ -85,7 +89,7 @@ ruff sạch (Windows, 29/09)
 | Chẩn đoán trần SED (độ phân giải, người, onset/offset) | ✅ dev + ground truth | [sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md) |
 | Hậu xử lý cSEBB (Ebbers 2024) | ✅ cài + CV dev; **âm tính** trên v1 (0.0582 vs 0.1538) | [sebb_cv_…_20260926.md](measurements/sebb_cv_sed_ensemble_C_clean_20260925T045631Z_20260926.md) |
 | SED v2 (ADR-0030) | ✅ chốt 26/09 tối: ensemble 3 seed chọn trên dev (`ec71b20`); test micro 0.1476, macro 0.1369, PSDS-1 0.3447, PSDS-2 0.6744; v2 − v1 +0.0536 [+0.0261, +0.0853] | [sed_v2_selection_20260926.md](measurements/sed_v2_selection_20260926.md), [sed_ensemble_v2_20260926T155630Z_eval_cv.md](measurements/sed_ensemble_v2_20260926T155630Z_eval_cv.md), [sed_v2_ablation_20260926.md](measurements/sed_v2_ablation_20260926.md), ADR-0030 §9 |
-| RQ1-v2 (S9) / Track 2 (S10) / S11 / chuẩn bị S13 | ✅ S9/S10/S11 xong; test vẫn chờ S13. S11 g1 hạng 6 (0.2268±0.0547), g2 hạng 3 (0.2319±0.0418), f2 vẫn hạng 1 (0.2383±0.0562); không gọi g2 tốt hơn f2. Nợ #25 đóng theo ADR-0034: đủ 18/18 file CV dev annotated sạch; chưa chọn, chưa test. | [s13_ranking_annotated_20260928.md](measurements/s13_ranking_annotated_20260928.md), [s11_per_class_20260928.md](measurements/s11_per_class_20260928.md), ADR-0034 §5, ADR-0038, [PAPER_NOTES S39](PAPER_NOTES.md) |
+| RQ1-v2 (S9) / Track 2 (S10) / S11 / S13 | ✅ Hoàn tất. f2 được khóa bằng CV trước test; test macro/micro 0.1206/0.1643. Không chọn lại dù f1 có micro test 0.1817. RQ1-v2 C−B micro −0.0029 [−0.0254, +0.0199], âm tính về event-F1. | [s13_selection_20261018.md](measurements/s13_selection_20261018.md), [s13_test_20261018.md](measurements/s13_test_20261018.md), [rq1_v2_multiseed_20260929.md](measurements/rq1_v2_multiseed_20260929.md), ADR-0031 §9, [PAPER_NOTES S40–S41](PAPER_NOTES.md) |
 | Caption có căn cứ (W5) | ✅ RQ2: template / constrained / unconstrained × oracle / e2e chấm trên test; ràng buộc đưa bối cảnh/G3/gọi tên quá mức về 0, đổi lại omission e2e 6% → 28% | [caption_grounding_*_test.md](measurements/), ADR-0022/0023 |
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
@@ -204,6 +208,6 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
    Chạy lại W5 e2e / W6 (S8) **một lần sau mốc 18/10**, trên hệ thống thắng vòng chọn cuối.
 7. Event-F1 macro cho mọi hệ thống đã báo (PLAN nợ #20) — v1 xong (`event_f1_macro_20260926.md`),
    v2 sinh sau hàng đợi.
-8. **Lộ trình ADR-0031:** RQ1-v2 (S9), Track 2 PretrainedSED (S10), lớp hiếm (S11), vòng chọn cuối
-   18/10 (S13). CV dev annotated chuẩn bị S13 đã đủ 18/18 file; chưa chọn hệ thống và chưa mở test.
+8. **Lộ trình ADR-0031:** S9–S13 hoàn tất sớm 29/09 theo cho phép của người dùng. f2 là hệ thống
+   SED cuối đã khóa; S8 chạy một lần trên f2 để cập nhật caption/RQ3/phục vụ.
    L2 bộ lọc từ câu hỏi đã xong sớm 28/09; sau mốc còn viết báo cáo (L3).
