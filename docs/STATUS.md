@@ -1,5 +1,13 @@
 # STATUS.md — Trạng thái có bằng chứng
 
+**Cập nhật:** 2026-10-02 — **L3 đã có bộ khung và tài nguyên báo cáo, chưa viết văn xuôi**.
+Tên đề tài trong [outline](thesis/outline.md) giữ đúng nguyên văn đã chốt. Mẫu khoa được lưu tại
+`report/Mau bao cao KLTN_DS.docx` (SHA-256 `9d3bc276…`); 12 bảng trong
+[thesis/tables](thesis/tables/) được sinh từ JSON/manifest có dòng nguồn, 7 hình trong
+[thesis/figures](thesis/figures/) là PNG 300 dpi có manifest provenance. Bibliography hiện chỉ
+gồm 4 nguồn đạt V3 trong RELATED_WORK; nguồn V2 chưa được đưa vào. Không chạy lại metric test,
+không đọc `predictions/test.npz`; ví dụ timeline dùng recording dev S-0009.
+
 **Cập nhật:** 2026-10-02 — **W7 7.6–7.7 hoàn tất và artifact đã đóng băng**: `demo_up.ps1` khởi động llama.cpp,
 Compose f2, parser và history TRAIN; `demo_check.ps1` kiểm tra không khởi động; script kịch bản
 đã chạy thật qua API với 5 câu hỏi EN/VI và evidence; Playwright đã sinh 4 ảnh 1440×900. Compose

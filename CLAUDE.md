@@ -57,6 +57,14 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 02/10/2026 (mới nhất) — L3 có khung và tài nguyên, chưa viết văn xuôi.** Đã đọc mẫu
+khoa `report/Mau bao cao KLTN_DS.docx` và dựng `docs/thesis/outline.md` theo quy cách A4,
+Times New Roman 13, giãn dòng 1,5, lề 3/3/3,5/2 cm. Tên đề tài giữ đúng nguyên văn: "Xây dựng hệ
+thống phát hiện, sinh mô tả và truy vấn sự kiện âm thanh môi trường dựa trên RAG". Hai script
+`build_thesis_tables.py` và `build_thesis_figures.py` sinh 12 bảng có nguồn và 7 PNG 300 dpi từ
+artifact đã khóa; bảng sinh ở git sạch `07fb1a1`, hình ở git sạch `22486f5`. Bibliography chỉ
+gồm 4 nguồn V3; nguồn V2 bị loại. Không chạy lại test hoặc đọc prediction test.
+
 **Cập nhật 02/10/2026 (mới nhất) — W7 hoàn tất.** `artifact_freeze_20261002` đã kiểm SHA-256 và sự
 tồn tại của mọi run/ensemble trích trong báo cáo, checkpoint ngoài, split, taxonomy, lexicon,
 grammar và query set; không có artifact cần thiết nào thiếu. `event_f1_macro_20261002` và
@@ -629,6 +637,14 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-02 — Dựng khung, bảng và hình cho báo cáo L3
+
+Đưa mẫu Word chính thức của khoa vào repo, trích quy cách định dạng và tạo outline 7 chương dùng
+đúng tên đề tài. Thêm hai builder từ artifact: 12 bảng Markdown (dữ liệu đến runtime) và 7 hình
+PNG 300 dpi (kiến trúc, dữ liệu, SED, kết quả, timeline dev, giao diện), đều sinh từ tree sạch và
+có nguồn/provenance. `bibliography.bib` chỉ giữ 4 nguồn mức V3 trong RELATED_WORK. Không viết văn
+chương, không chạy lại metric test và không mở `predictions/test.npz`.
 
 ### 2026-10-02 — Đóng W7: artifact freeze, measurement tổng và tái lập
 

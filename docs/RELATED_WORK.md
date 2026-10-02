@@ -416,11 +416,11 @@ Từ khóa gợi ý: `polyphonic sound event detection`, `environmental noise da
 |---|---|---|---|---|---|---|---|---|---|---|
 | DataSEC (Zenodo) | 2025 | SEC | DataSEC | Clip-level, 2 cấp | — | — | — | §3 dữ liệu | Chưa xác minh có paper | V2 |
 | DataSED (Zenodo) | 2025 | SED | DataSED | Strong | — | — | — | §3 dữ liệu | Chưa xác minh có paper | V2 |
-| Fredianelli et al., *Scientific Data* | 2025 | Mô tả dataset SEC + SED | DataSEC, DataSED | Clip-level; strong mono/poly | — | — | Không có baseline (theo tóm tắt) | §1, §3 dữ liệu | Chưa đọc toàn văn; số giờ/file khác archive | V2 |
+| Fredianelli et al., *Scientific Data* | 2025 | Mô tả dataset SEC + SED | DataSEC, DataSED | Clip-level; strong mono/poly | — | — | Không có baseline; số archive được đề tài đối chiếu riêng | §1, §3 dữ liệu | Bài mô tả phiên bản DataSEC cũ hơn; số DataSED trong bài và archive có sai khác | **V3** |
 | Ebbers et al., Interspeech | 2024 | Hậu xử lý SED (cSEBB) | DCASE 2023 T4a (DESED) | Strong | 13 hệ DCASE 2023 + cSEBB | PSDS1, collar-F1 | +4.1 PSDS1 / +3.4 F1 trung bình so với median filter | ADR-0030, PAPER_NOTES S14 | Tune theo lớp trên validation | **V3** |
 | Schmid et al., ICASSP | 2025 | Pretrain SED theo frame | AudioSet Strong; DESED | Strong (frame) | ATST-F, BEATs, fPaSST, M2D, ASiT | PSDS1 | AS-Strong 45.4–46.5; DESED fine-tune 47.6–49.2, frozen 45.4–49.2 | ADR-0030 §7, ADR-0031 §3, ADR-0032 | Đọc trực tiếp PDF v2 + code + LICENSE (26/09 tối) | **V3** |
 | Kong et al., TASLP | 2020 | Tagging / pretraining | AudioSet | Weak | CNN14 | mAP | — | Encoder nhánh B/C | vol/pages chưa xác minh | V2 (kiến trúc V3) |
-| DCASE 2016 T3 (kết quả) | 2016 | SED ghi âm thật | Dữ liệu DCASE 2016 T3 (home, residential area) | Strong | Baseline + hệ tham gia | Segment ER/F1 1 s; event onset-only 250 ms | Event-F1 4.7–6.3% (top 3 + baseline) | Bảng bối cảnh | Khác dataset, khác collar | V2 |
+| DCASE 2016 T3 (kết quả) | 2016 | SED ghi âm thật | Dữ liệu DCASE 2016 T3 (home, residential area) | Strong | Baseline + hệ tham gia | Segment ER/F1 1 s; event onset-only 250 ms | Event-F1 4.7–6.3% (top 3 + baseline) | Bảng bối cảnh | Khác dataset, khác collar | **V3** |
 | Nam et al., FilterAugment, ICASSP | 2022 | Augmentation SED | DESED | Strong + weak | CRNN | PSDS | +6.50% so với +2.13% (frequency masking) | `augment.py` | Chỉ đọc abstract | V2 |
 | ⚠️ CẦN XÁC MINH | | SED | | | | | | §2.1 | | V0 |
 | ⚠️ CẦN XÁC MINH | | PSDS | | | | | | §2.2 | | V0 |
