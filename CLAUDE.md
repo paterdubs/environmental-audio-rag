@@ -57,13 +57,16 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 02/10/2026 (mới nhất) — L3 có khung và tài nguyên, chưa viết văn xuôi.** Đã đọc mẫu
+**Cập nhật 02/10/2026 (mới nhất) — L3 đã có bản nháp Chương 1–4.** Đã đọc mẫu
 khoa `report/Mau bao cao KLTN_DS.docx` và dựng `docs/thesis/outline.md` theo quy cách A4,
 Times New Roman 13, giãn dòng 1,5, lề 3/3/3,5/2 cm. Tên đề tài giữ đúng nguyên văn: "Xây dựng hệ
 thống phát hiện, sinh mô tả và truy vấn sự kiện âm thanh môi trường dựa trên RAG". Hai script
 `build_thesis_tables.py` và `build_thesis_figures.py` sinh 12 bảng có nguồn và 7 PNG 300 dpi từ
 artifact đã khóa; bảng sinh ở git sạch `07fb1a1`, hình ở git sạch `22486f5`. Bibliography chỉ
-gồm 4 nguồn V3; nguồn V2 bị loại. Không chạy lại test hoặc đọc prediction test.
+gồm 4 nguồn V3; nguồn V2 bị loại. `docs/thesis/ch1.md` đến `ch4.md` đã được viết bằng tiếng Việt
+học thuật, mỗi chương có danh sách chỗ cần người dùng kiểm. Chương 3 công khai D3/D4, trần người
+8 cặp và nợ 14 recording thiếu GT; Chương 4 bám hệ thống cuối f2, G1–G3, RAG/parser và giao thức
+test một lần. Không chạy lại test hoặc đọc prediction test.
 
 **Cập nhật 02/10/2026 (mới nhất) — W7 hoàn tất.** `artifact_freeze_20261002` đã kiểm SHA-256 và sự
 tồn tại của mọi run/ensemble trích trong báo cáo, checkpoint ngoài, split, taxonomy, lexicon,
@@ -353,16 +356,16 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 | Hạng mục | Còn thiếu |
 |---|---|
 | W6 (event store, RAG) | ✅ S8 02/10: corpus validation/test dựng lại từ event f2 (ADR-0040 §3); run B giữ nguyên để đối chiếu |
-| W7 (ứng dụng) | 7.1–7.4 xong; 7.5 xong (test S13+S8 trên f2); **7.6–7.7 còn lại** (đóng băng artifact, REPRODUCE.md) |
+| W7 (ứng dụng) | ✅ 7.1–7.7 hoàn tất 02/10; artifact freeze, measurement tổng và `REPRODUCE.md` đã commit |
 | **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9) |
 | **Cải thiện cuối** (ADR-0031) | ✅ S9–S13 hoàn tất sớm 29/09. Commit `c3f0033` khóa f2 trước test; f2 test macro/micro 0.1206/0.1643. Không chọn lại dù f1 micro test 0.1817. RQ1-v2 âm tính về event-F1; S12 không cần. |
 | **S8** (ADR-0040) | ✅ 02/10: W5 (dev+test, cả 3 nhánh LLM) và W6 (RAG, 8 cấu hình validation+test) xong trên f2; `s8_summary_20261002` |
-| Tài liệu | Nợ #21 đóng 28/09: PretrainedSED, DCASE 2016 T3, bài DataSED đều V3 |
+| Tài liệu | L3 có outline, bảng/hình/bibliography và bản nháp Chương 1–4; còn Chương 5–7, dàn trang và slide |
 
 ### Chưa có ○
 
-Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · W7 7.6–7.7 (đóng băng artifact, hướng dẫn
-tái lập) · bộ dữ liệu demo + lệnh khởi động một bước · báo cáo luận văn (L3).
+Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · Chương 5–7 của báo cáo luận văn · dàn
+trang DOCX theo mẫu khoa · slide bảo vệ.
 
 ### Việc tiếp theo — theo thứ tự
 
@@ -383,7 +386,9 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
 7. ~~L2~~ — ✅ xong sớm 28/09, chỉ validation.
 8. ~~S8~~ — ✅ 02/10 (ADR-0040): W5+W6 trên f2, dev rồi test một lần; `s8_summary_20261002`,
    `test_ledger_20261002`. RQ3 structured/hybrid giảm khi đổi corpus (PAPER_NOTES S43, báo nguyên
-   văn). Tiếp theo: W7 7.6–7.7 → chuẩn bị dữ liệu/kịch bản demo local → viết báo cáo (L3).
+   văn). W7 7.6–7.7 và demo local đã hoàn tất 02/10.
+9. **L3** — ◐ 02/10: outline, 12 bảng, 7 hình, bibliography và bản nháp Chương 1–4 đã có;
+   tiếp theo viết Chương 5–7, đối chiếu số, dàn trang DOCX và làm slide.
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
 
@@ -637,6 +642,15 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-02 — Viết bản nháp Chương 1–4 của báo cáo L3
+
+Viết `docs/thesis/ch1.md` đến `ch4.md` theo outline và ngôi “chúng tôi”, commit riêng từng
+chương. Chương 1 khóa phạm vi environmental monitoring, không an ninh/khẩn cấp/risk score;
+Chương 2 chỉ trích 4 nguồn V3 có trong bibliography; Chương 3 chèn bảng sinh tự động và ghi rõ
+D3/D4, duyệt tay 35 cặp, trần người 8 cặp, nợ 14 recording thiếu GT cùng ADR-0034; Chương 4 mô
+tả v1/v2/Track 2/f2, cSEBB, G1–G3, event store, RAG, parser L2 và luật chọn ghi trước–test một
+lần. Không chạy lại đánh giá test và không đọc `predictions/test.npz`.
 
 ### 2026-10-02 — Dựng khung, bảng và hình cho báo cáo L3
 

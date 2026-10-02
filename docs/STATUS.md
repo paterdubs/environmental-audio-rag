@@ -1,12 +1,14 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-10-02 — **L3 đã có bộ khung và tài nguyên báo cáo, chưa viết văn xuôi**.
+**Cập nhật:** 2026-10-02 — **L3 đã có bộ khung, tài nguyên và bản nháp Chương 1–4**.
 Tên đề tài trong [outline](thesis/outline.md) giữ đúng nguyên văn đã chốt. Mẫu khoa được lưu tại
 `report/Mau bao cao KLTN_DS.docx` (SHA-256 `9d3bc276…`); 12 bảng trong
 [thesis/tables](thesis/tables/) được sinh từ JSON/manifest có dòng nguồn, 7 hình trong
 [thesis/figures](thesis/figures/) là PNG 300 dpi có manifest provenance. Bibliography hiện chỉ
-gồm 4 nguồn đạt V3 trong RELATED_WORK; nguồn V2 chưa được đưa vào. Không chạy lại metric test,
-không đọc `predictions/test.npz`; ví dụ timeline dùng recording dev S-0009.
+gồm 4 nguồn đạt V3 trong RELATED_WORK; nguồn V2 chưa được đưa vào. [Chương 1](thesis/ch1.md) đến
+[Chương 4](thesis/ch4.md) dùng tiếng Việt học thuật, liên kết lựa chọn thiết kế với ADR và có mục
+“Cần người dùng kiểm” ở cuối mỗi chương. Không chạy lại metric test, không đọc
+`predictions/test.npz`; ví dụ timeline dùng recording dev S-0009.
 
 **Cập nhật:** 2026-10-02 — **W7 7.6–7.7 hoàn tất và artifact đã đóng băng**: `demo_up.ps1` khởi động llama.cpp,
 Compose f2, parser và history TRAIN; `demo_check.ps1` kiểm tra không khởi động; script kịch bản
@@ -221,13 +223,14 @@ Chi tiết theo lớp: [data_inventory.md](data_inventory.md).
 2. ~~W5: kiểm caption lớp gộp theo taxonomy.md §7~~ — xong 25/09 (ADR-0023 §5).
 3. ~~W6: nạp event vào pgvector, embedding BGE-M3, retrieval + benchmark~~ — có kết quả
    (ADR-0027, duyệt 26/09).
-4. W7: ~~7.4 inference image~~ — xong 27/09 (ADR-0033 §6); 7.5–7.7 làm 19/10–02/11, sau S8
-   (ADR-0031 §7).
+4. ~~W7 7.4–7.7~~ — xong 02/10: inference image, test cấu hình cuối, measurement tổng,
+   artifact freeze và `REPRODUCE.md`.
 5. ~~Cân nhắc chọn lại `g_max` percentile trên dev (A5)~~ — xong 25/09 (ADR-0024).
-6. ~~SED v2 (ADR-0030): CV + ablation trên dev → commit lựa chọn → test một lần~~ — xong 26/09 tối.
-   Chạy lại W5 e2e / W6 (S8) **một lần sau mốc 18/10**, trên hệ thống thắng vòng chọn cuối.
-7. Event-F1 macro cho mọi hệ thống đã báo (PLAN nợ #20) — v1 xong (`event_f1_macro_20260926.md`),
-   v2 sinh sau hàng đợi.
+6. ~~SED v2 và S8 trên hệ thống cuối~~ — v2 chốt 26/09; S8 chạy một lần trên f2 và hoàn tất
+   02/10 (ADR-0040).
+7. ~~Event-F1 macro cho mọi hệ thống đã báo (PLAN nợ #20)~~ — tổng hợp cuối tại
+   `event_f1_macro_20261002.md`.
 8. **Lộ trình ADR-0031:** S9–S13 hoàn tất sớm 29/09 theo cho phép của người dùng. f2 là hệ thống
    SED cuối đã khóa; S8 chạy một lần trên f2 để cập nhật caption/RQ3/phục vụ.
-   L2 bộ lọc từ câu hỏi đã xong sớm 28/09; sau mốc còn viết báo cáo (L3).
+   L2 bộ lọc từ câu hỏi đã xong sớm 28/09. L3 đã viết nháp Chương 1–4; còn Chương 5–7,
+   dàn trang và slide.

@@ -21,7 +21,7 @@
 | W8 | 10–16/11 | Buffer, chỉ dùng khi được gia hạn (viết báo cáo dời lên 19/10) | ○ |
 | SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ✅ chốt 26/09 tối; là baseline cho S9/S13 |
 | Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ✅ hoàn tất sớm 29/09; f2 khóa trước test |
-| Viết báo cáo | 19/10–09/11 | Luận văn + slide (ADR-0031 §7) | ○ |
+| Viết báo cáo | 19/10–09/11 | Luận văn + slide (ADR-0031 §7) | ◐ 02/10: đã viết nháp học thuật Chương 1–4; còn Chương 5–7, dàn trang và slide |
 
 **Nếu không dùng buffer, W7 là tuần cuối.** Mọi thứ phải xong trước 09/11. Từ 26/09 lịch đi theo
 khối "Lộ trình tới hạn nộp" bên dưới: **mốc đóng băng model 18/10**.
@@ -282,7 +282,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 |---:|---|---|---|
 | L1 | Push nhánh phụ `wip/sed-v2` (sao lưu commit + chạy CI); master trên remote chỉ nhận tuần đã xong | 26/09 | ◐ push tới `bbae05b` (27/09, người dùng cho phép); commit Track 2a sau đó chưa push |
 | L2 | ~~Chuyển câu hỏi tự nhiên thành bộ lọc: Qwen + grammar như ADR-0023, ADR riêng; đo độ chính xác parse trên query set v2, rồi RQ3 với bộ lọc parse được~~ — **xong sớm 28/09** (ADR-0036): exact template 0.855, paraphrase 0.925; RQ3 validation hybrid Δ gold +0.012 EN / −0.002 VI. Giả định “số sẽ thấp đi” không đúng cho mọi ô: filter sai có thể tình cờ đổi thứ hạng có lợi, không được diễn giải là cải thiện | 19/10–02/11 | ✅ 28/09 |
-| L3 | Viết báo cáo luận văn (khung: SYSTEM.md; số: measurements; dẫn chứng: PAPER_NOTES) | 19/10–09/11 | ◐ 02/10: đã có outline theo mẫu khoa, 12 bảng sinh tự động, 7 hình 300 dpi và bibliography chỉ nguồn V3; **chưa viết văn xuôi chương** |
+| L3 | Viết báo cáo luận văn (khung: SYSTEM.md; số: measurements; dẫn chứng: PAPER_NOTES) | 19/10–09/11 | ◐ 02/10: đã có outline theo mẫu khoa, 12 bảng sinh tự động, 7 hình 300 dpi, bibliography chỉ nguồn V3 và văn xuôi Chương 1–4; còn Chương 5–7 và dàn trang DOCX |
 | L4 | Slide bảo vệ | 03–09/11 | ○ |
 | L5 | Xem lại cụm từ tiếng Việt (ADR-0025, đang duyệt tạm) | Khi hoàn thiện giao diện | ○ |
 | L6 | Ưu tiên thấp nhất: mở rộng mẫu người cho metric C2 (chỉ nếu paper theo hướng C); xác thực cho demo | Nếu còn thời gian | ○ |
