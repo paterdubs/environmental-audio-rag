@@ -26,12 +26,12 @@ class:
   propeller_aircrafts: [tiếng máy bay cánh quạt hoặc trực thăng]
   sirens_and_alarms: [âm thanh giống còi hú hoặc chuông báo động]
   thunder_fireworks_gunshot: ["âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng"]
-  train: [tiếng tàu hỏa, tiếng tàu hoả]
+  train: [tiếng tàu hỏa]
   vacuum_cleaner_fan_hairdryer: ["tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc"]
   vehicle_idling: [tiếng động cơ xe chạy không tải]
   vehicle_pass_by: [tiếng xe chạy qua]
   voices: [tiếng người nói]
-  wind_turbine: [tiếng tua-bin gió, tiếng tuabin gió]
+  wind_turbine: [tiếng tua-bin gió]
   workshop: [tiếng máy móc của xưởng hoặc công trình]
 
 # Gọi một subclass của lớp gộp như sự thật — vi phạm taxonomy.md §7 (đếm là over-specific).

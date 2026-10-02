@@ -46,6 +46,9 @@ services:
       - ./data/annotations:/app/data/annotations:ro
       - ./scripts:/app/scripts:ro
       - ./docs/measurements:/app/docs/measurements
+    environment:
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s

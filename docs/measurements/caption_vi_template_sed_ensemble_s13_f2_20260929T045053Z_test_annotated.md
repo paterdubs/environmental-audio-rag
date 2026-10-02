@@ -1,6 +1,6 @@
 # Caption template tiếng Việt — `sed_ensemble_s13_f2_20260929T045053Z` (test)
 
-> Sinh bởi `scripts.report_vi_template`. Lexicon `caption-lexicon-vi-v1` sha256 `dbe6eeb73089ddbb…`; cùng timeline RQ2 đã chấm (ADR-0025).
+> Sinh bởi `scripts.report_vi_template`. Lexicon `caption-lexicon-vi-v1` sha256 `1361a221609a70b2…`; cùng timeline RQ2 đã chấm (ADR-0025).
 
 | Mức | n | Halluc. ↓ | Omission ↓ | Temporal ↑ | Forbidden ↓ | Over-specific ↓ | Evidence ↑ | Mentions |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|

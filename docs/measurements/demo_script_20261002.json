@@ -1,0 +1,362 @@
+{
+  "source_recording_id": "S-0036",
+  "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+  "event_classes": [
+    "vehicle_idling",
+    "horn"
+  ],
+  "questions": [
+    {
+      "language": "vi",
+      "question": "Bản ghi nào có tiếng động cơ xe chạy không tải?",
+      "parsed": {
+        "filters": {
+          "classes_all": [
+            "vehicle_idling"
+          ]
+        },
+        "raw": "{\"classes_all\": [\"vehicle_idling\"]}"
+      },
+      "answer": {
+        "question": "Bản ghi nào có tiếng động cơ xe chạy không tải?",
+        "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong upload:ac892f27-61c1-47df-b7ca-11647677b41b, tiếng động cơ xe chạy không tải ở 110,0–152,8 giây. Trong upload:14602c83-3dc7-43f8-a1e1-01872969341d, tiếng động cơ xe chạy không tải ở 0,0–89,8 giây. Trong upload:a118ce35-fbae-4e6c-bdc2-f06923a9c363, tiếng động cơ xe chạy không tải ở 0,1–10,0 giây.",
+        "evidence": [
+          {
+            "recording_id": "upload:ac892f27-61c1-47df-b7ca-11647677b41b",
+            "event_id": 4704,
+            "class_id": "vehicle_idling",
+            "onset_s": 110.0,
+            "offset_s": 152.75
+          },
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "event_id": 4705,
+            "class_id": "vehicle_idling",
+            "onset_s": 0.04,
+            "offset_s": 89.82
+          },
+          {
+            "recording_id": "upload:a118ce35-fbae-4e6c-bdc2-f06923a9c363",
+            "event_id": 4690,
+            "class_id": "vehicle_idling",
+            "onset_s": 0.08,
+            "offset_s": 10.0
+          }
+        ],
+        "filters_source": "parsed",
+        "filters_applied": {
+          "mode": "hybrid",
+          "hard_filters": {
+            "classes_all": [
+              "vehicle_idling"
+            ]
+          },
+          "k": 5,
+          "language": "vi"
+        },
+        "documents": [
+          {
+            "recording_id": "upload:ac892f27-61c1-47df-b7ca-11647677b41b",
+            "text": "",
+            "score": 5.0
+          },
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "text": "",
+            "score": 4.0
+          },
+          {
+            "recording_id": "upload:a118ce35-fbae-4e6c-bdc2-f06923a9c363",
+            "text": "",
+            "score": 3.0
+          },
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "text": "",
+            "score": 2.0
+          },
+          {
+            "recording_id": "upload:ddabd8f7-4c67-406d-9e38-20e169d48341",
+            "text": "",
+            "score": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "language": "en",
+      "question": "Which recordings contain both vehicle idling and horn?",
+      "parsed": {
+        "filters": {
+          "classes_all": [
+            "vehicle_idling",
+            "horn"
+          ]
+        },
+        "raw": "{\"classes_all\": [\"vehicle_idling\", \"horn\"]}"
+      },
+      "answer": {
+        "question": "Which recordings contain both vehicle idling and horn?",
+        "answer": "3 of the top 3 results satisfy the filters. In upload:14602c83-3dc7-43f8-a1e1-01872969341d, vehicle idling at 0.0–89.8 s, then horn at 4.4–5.0 s. In upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46, vehicle idling at 0.1–10.0 s, then horn at 7.1–7.8 s. In upload:caf44de3-dba2-4bd0-b8c9-a3101f69da8f, horn at 5.4–6.4 s, then vehicle idling at 119.5–130.7 s.",
+        "evidence": [
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "event_id": 4705,
+            "class_id": "vehicle_idling",
+            "onset_s": 0.04,
+            "offset_s": 89.82
+          },
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "event_id": 4706,
+            "class_id": "horn",
+            "onset_s": 4.44,
+            "offset_s": 5.0
+          },
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "event_id": 4685,
+            "class_id": "vehicle_idling",
+            "onset_s": 0.12,
+            "offset_s": 10.0
+          },
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "event_id": 4686,
+            "class_id": "horn",
+            "onset_s": 7.08,
+            "offset_s": 7.84
+          },
+          {
+            "recording_id": "upload:caf44de3-dba2-4bd0-b8c9-a3101f69da8f",
+            "event_id": 4695,
+            "class_id": "horn",
+            "onset_s": 5.4,
+            "offset_s": 6.4
+          },
+          {
+            "recording_id": "upload:caf44de3-dba2-4bd0-b8c9-a3101f69da8f",
+            "event_id": 4697,
+            "class_id": "vehicle_idling",
+            "onset_s": 119.52,
+            "offset_s": 130.72
+          }
+        ],
+        "filters_source": "parsed",
+        "filters_applied": {
+          "mode": "hybrid",
+          "hard_filters": {
+            "classes_all": [
+              "vehicle_idling",
+              "horn"
+            ]
+          },
+          "k": 5,
+          "language": "en"
+        },
+        "documents": [
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "text": "",
+            "score": 3.0
+          },
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "text": "",
+            "score": 2.0
+          },
+          {
+            "recording_id": "upload:caf44de3-dba2-4bd0-b8c9-a3101f69da8f",
+            "text": "",
+            "score": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "language": "vi",
+      "question": "Có tiếng động cơ xe chạy không tải trước tiếng còi xe không?",
+      "parsed": {
+        "filters": {
+          "temporal": {
+            "predicate": "before",
+            "a": "vehicle_idling",
+            "b": "horn",
+            "tolerance_s": 0.0
+          }
+        },
+        "raw": "{\"temporal\": {\"predicate\": \"before\", \"a\": \"vehicle_idling\", \"b\": \"horn\", \"tolerance_s\": 0.0}}"
+      },
+      "answer": {
+        "question": "Có tiếng động cơ xe chạy không tải trước tiếng còi xe không?",
+        "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46, tiếng động cơ xe chạy không tải ở 0,1–10,0 giây, sau đó tiếng còi xe ở 17,0–18,8 giây.",
+        "evidence": [
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "event_id": 4685,
+            "class_id": "vehicle_idling",
+            "onset_s": 0.12,
+            "offset_s": 10.0
+          },
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "event_id": 4688,
+            "class_id": "horn",
+            "onset_s": 17.04,
+            "offset_s": 18.84
+          }
+        ],
+        "filters_source": "parsed",
+        "filters_applied": {
+          "mode": "hybrid",
+          "hard_filters": {
+            "temporal": {
+              "predicate": "before",
+              "a": "vehicle_idling",
+              "b": "horn",
+              "tolerance_s": 0.0
+            }
+          },
+          "k": 5,
+          "language": "vi"
+        },
+        "documents": [
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "text": "",
+            "score": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "language": "en",
+      "question": "Which recordings have vehicle idling lasting longer than 44.89 seconds?",
+      "parsed": {
+        "filters": {
+          "duration": {
+            "class_id": "vehicle_idling",
+            "min_s": 44.89
+          }
+        },
+        "raw": "{\"duration\": {\"class_id\": \"vehicle_idling\", \"min_s\": 44.89}}"
+      },
+      "answer": {
+        "question": "Which recordings have vehicle idling lasting longer than 44.89 seconds?",
+        "answer": "2 of the top 2 results satisfy the filters. In upload:ddabd8f7-4c67-406d-9e38-20e169d48341, vehicle idling at 50.0–147.6 s. In upload:14602c83-3dc7-43f8-a1e1-01872969341d, vehicle idling at 0.0–89.8 s.",
+        "evidence": [
+          {
+            "recording_id": "upload:ddabd8f7-4c67-406d-9e38-20e169d48341",
+            "event_id": 4676,
+            "class_id": "vehicle_idling",
+            "onset_s": 50.0,
+            "offset_s": 147.57
+          },
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "event_id": 4705,
+            "class_id": "vehicle_idling",
+            "onset_s": 0.04,
+            "offset_s": 89.82
+          }
+        ],
+        "filters_source": "parsed",
+        "filters_applied": {
+          "mode": "hybrid",
+          "hard_filters": {
+            "duration": {
+              "class_id": "vehicle_idling",
+              "min_s": 44.89
+            }
+          },
+          "k": 5,
+          "language": "en"
+        },
+        "documents": [
+          {
+            "recording_id": "upload:ddabd8f7-4c67-406d-9e38-20e169d48341",
+            "text": "",
+            "score": 2.0
+          },
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "text": "",
+            "score": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "language": "vi",
+      "question": "Bản ghi nào có tiếng còi xe?",
+      "parsed": {
+        "filters": {
+          "classes_all": [
+            "horn"
+          ]
+        },
+        "raw": "{\"classes_all\": [\"horn\"]}"
+      },
+      "answer": {
+        "question": "Bản ghi nào có tiếng còi xe?",
+        "answer": "3 trong 3 kết quả đầu thoả bộ lọc. Trong upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46, tiếng còi xe ở 7,1–7,8 giây. Trong upload:14602c83-3dc7-43f8-a1e1-01872969341d, tiếng còi xe ở 4,4–5,0 giây. Trong upload:caf44de3-dba2-4bd0-b8c9-a3101f69da8f, tiếng còi xe ở 5,4–6,4 giây.",
+        "evidence": [
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "event_id": 4686,
+            "class_id": "horn",
+            "onset_s": 7.08,
+            "offset_s": 7.84
+          },
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "event_id": 4706,
+            "class_id": "horn",
+            "onset_s": 4.44,
+            "offset_s": 5.0
+          },
+          {
+            "recording_id": "upload:caf44de3-dba2-4bd0-b8c9-a3101f69da8f",
+            "event_id": 4695,
+            "class_id": "horn",
+            "onset_s": 5.4,
+            "offset_s": 6.4
+          }
+        ],
+        "filters_source": "parsed",
+        "filters_applied": {
+          "mode": "hybrid",
+          "hard_filters": {
+            "classes_all": [
+              "horn"
+            ]
+          },
+          "k": 5,
+          "language": "vi"
+        },
+        "documents": [
+          {
+            "recording_id": "upload:d08efaf1-6ada-4bfe-b940-dabff24f9c46",
+            "text": "",
+            "score": 3.0
+          },
+          {
+            "recording_id": "upload:14602c83-3dc7-43f8-a1e1-01872969341d",
+            "text": "",
+            "score": 2.0
+          },
+          {
+            "recording_id": "upload:caf44de3-dba2-4bd0-b8c9-a3101f69da8f",
+            "text": "",
+            "score": 1.0
+          }
+        ]
+      }
+    }
+  ],
+  "grounding_artifact": "docs/measurements/caption_grounding_sed_ensemble_s13_f2_20260929T045053Z_test_annotated.json",
+  "git": {
+    "revision": "9844557de5e74b83d0f74d4b8c5b13cf7ba2e790",
+    "dirty": true
+  }
+}

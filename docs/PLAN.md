@@ -354,15 +354,15 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 | 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09; natural query → editable chips → query, manual fallback, model badge, phrasing review — ✅ 28/09 (ADR-0037) | 8 h |
 | 7.4 | Docker Compose đầu-cuối — ✅ 02/10 (ADR-0033, ADR-0039): profile `app` phục vụ f2, Compose healthy, status `official=true`; parity CUDA 299/299 event trùng khít, CPU 294/299 trong collar; E2E TRAIN S-0016 có timeline + caption EN/VI + RAG ([demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md)) | 4 h |
 | 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | ✅ 02/10, xem S8/ADR-0040 |
-| 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | 3 h |
-| 7.7 | Đóng băng artifact, hướng dẫn tái lập | 3 h |
+| 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | ✅ 02/10: `demo_seed`, `demo_script`, ảnh fallback Playwright |
+| 7.7 | Đóng băng artifact, hướng dẫn tái lập | ✅ 02/10: runbook demo local trong `DEMO.md`; artifact model/cache kiểm tra offline |
 
 ### Nghiệm thu W7
 
 - [x] Demo đầu-cuối: upload → timeline → caption → truy vấn có evidence (chạy thật qua `serve_demo` và qua compose, 26/09)
-- [ ] CI xanh, guard `api` không import torch pass
+- [x] CI xanh, guard `api` không import torch pass
 - [ ] Test chạy **một lần**, mọi cấu hình đã chạy đều được báo cáo
-- [ ] Mọi số trong báo cáo truy được về run manifest + split hash + taxonomy hash
+- [x] Mọi số trong báo cáo truy được về run manifest + split hash + taxonomy hash
 
 ---
 

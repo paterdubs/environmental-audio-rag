@@ -57,6 +57,15 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 02/10/2026 (mới) — Prompt C / W7 7.6–7.7 hoàn tất.** Đã thêm `demo_up.ps1`,
+`demo_down.ps1`, `demo_check.ps1`, seed history TRAIN tự động và `report_demo_script.py`.
+Lượt thật ghi `demo_seed_20261002` (15 lựa chọn phủ 21 lớp) và `demo_script_20261002` (upload
+TRAIN mới, 5 câu hỏi EN/VI, parser filter/evidence). Playwright sinh 4 ảnh 1440×900 trong
+`docs/demo_screenshots/`. Compose đặt `HF_HUB_OFFLINE=1`/`TRANSFORMERS_OFFLINE=1`; model Qwen,
+BGE-M3 và f2 được kiểm tra local. Chuẩn hóa lexicon VI: `tàu hỏa`, `tua-bin gió`; không chạm
+lexicon EN. Caption template VI test f2 sau chuẩn hóa: all n=142 và annotated n=139, oracle/e2e
+đều hallucination/omission/G1–G3 = 0 (artifact `caption_vi_template_*_test*`).
+
 **Cập nhật 02/10/2026 (tiếp) — S8 hoàn tất: W5 + W6 chạy lại trên hệ thống f2, dev rồi test đúng
 một lần (ADR-0040).** RQ2 (test e2e, so ensemble C v1): omission constrained 0.036→0.012,
 hallucination unconstrained 0.005→0.011 (CI chồng lấn); `constrained_cover` giữ omission 0 ở cả
@@ -613,6 +622,13 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-02 (mới) — Hoàn thiện demo local (Prompt C)
+
+Đã chạy Compose với offline flags, seed history chỉ từ split TRAIN, chạy script kịch bản qua API
+và chụp ảnh fallback Playwright. Không sửa raw annotation/split/taxonomy; không train hoặc chọn
+lại hệ thống. Hai cặp lệch chính tả trong lexicon VI được chuẩn hóa đúng yêu cầu, lexicon EN giữ
+nguyên. Xem `DEMO.md`, `demo_seed_20261002`, `demo_script_20261002` và thư mục screenshot.
 
 ### 2026-10-02 (tiếp) — S8 hoàn tất: W5 + W6 chạy lại trên f2
 

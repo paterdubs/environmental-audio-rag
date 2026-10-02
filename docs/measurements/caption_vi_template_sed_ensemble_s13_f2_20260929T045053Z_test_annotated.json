@@ -3,7 +3,7 @@
   "split": "test",
   "eval_set": "annotated",
   "lexicon_version": "caption-lexicon-vi-v1",
-  "lexicon_sha256": "dbe6eeb73089ddbbe2ba4b8111ffacce44eb86466a98c428b2a29cf2b9be5e3d",
+  "lexicon_sha256": "1361a221609a70b2de65ee987c70134b9ef7f34213568bbf5b3db17572035bc6",
   "summary": {
     "e2e": {
       "n": 139,
