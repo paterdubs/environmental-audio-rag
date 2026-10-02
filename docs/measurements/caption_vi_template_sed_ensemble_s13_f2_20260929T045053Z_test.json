@@ -1,0 +1,41 @@
+{
+  "run": "sed_ensemble_s13_f2_20260929T045053Z",
+  "split": "test",
+  "eval_set": "all",
+  "lexicon_version": "caption-lexicon-vi-v1",
+  "lexicon_sha256": "dbe6eeb73089ddbbe2ba4b8111ffacce44eb86466a98c428b2a29cf2b9be5e3d",
+  "summary": {
+    "e2e": {
+      "n": 142,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.0,
+      "temporal_order_accuracy": 1.0,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "evidence_coverage": 1.0,
+      "n_mentions": 2.1056338028169015
+    },
+    "oracle": {
+      "n": 142,
+      "hallucination_rate": 0.0,
+      "omission_rate": 0.0,
+      "temporal_order_accuracy": 1.0,
+      "forbidden_term_rate": 0.0,
+      "over_specific_rate": 0.0,
+      "evidence_coverage": 1.0,
+      "n_mentions": 5.211267605633803
+    }
+  },
+  "examples": {
+    "e2e": [
+      "Có thể nghe thấy tiếng xe chạy qua từ 1,2 đến 20,8 giây. Có thể nghe thấy tiếng người nói từ 20,0 đến 46,8 giây.",
+      "Có thể nghe thấy tiếng người nói từ 0,2 đến 50,8 giây. Có thể nghe thấy tiếng người nói từ 52,2 đến 59,6 giây. Có thể nghe thấy tiếng còi xe từ 73,8 đến 76,1 giây.",
+      "Có thể nghe thấy tiếng xe chạy qua từ 52,7 đến 70,0 giây. Có thể nghe thấy tiếng người nói từ 70,0 đến 81,3 giây."
+    ],
+    "oracle": [
+      "Có thể nghe thấy tiếng xe chạy qua từ 0,0 đến 5,3 giây. Có thể nghe thấy tiếng xe chạy qua từ 17,1 đến 51,5 giây. Có thể nghe thấy tiếng tàu hỏa từ 48,0 đến 67,8 giây. Có thể nghe thấy tiếng xe chạy qua từ 90,8 đến 101,7 giây.",
+      "Có thể nghe thấy âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng từ 2,2 đến 97,5 giây. Có thể nghe thấy âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng từ 104,6 đến 135,7 giây. Có thể nghe thấy tiếng động cơ xe chạy không tải từ 125,0 đến 131,0 giây.",
+      "Có thể nghe thấy tiếng chó sủa hoặc tru từ 18,4 đến 20,8 giây. Có thể nghe thấy tiếng chó sủa hoặc tru từ 26,4 đến 29,0 giây. Có thể nghe thấy tiếng chó sủa hoặc tru từ 30,2 đến 35,2 giây."
+    ]
+  }
+}
