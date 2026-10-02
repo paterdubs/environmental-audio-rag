@@ -1,0 +1,352 @@
+{
+ "rows": [
+  {
+   "run": "sed_ensemble_B_clean_20260925T045606Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.05532503457814661,
+   "macro": 0.05996324520475269
+  },
+  {
+   "run": "sed_ensemble_B_clean_20260925T045606Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.09688581314878893,
+   "macro": 0.08113040157190039
+  },
+  {
+   "run": "sed_ensemble_BC_clean_20260925T045658Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.0695517774343122,
+   "macro": 0.06832138777278045
+  },
+  {
+   "run": "sed_ensemble_BC_clean_20260925T045658Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.10009099181073705,
+   "macro": 0.08544140774689911
+  },
+  {
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "file": "dev_evaluation_cv.json",
+   "split": "dev",
+   "postproc": "postproc_cv.json",
+   "micro": 0.15875265768958186,
+   "macro": 0.13078714636358488
+  },
+  {
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.06356245380635625,
+   "macro": 0.07324671334139336
+  },
+  {
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.09407665505226481,
+   "macro": 0.09174940145456899
+  },
+  {
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.09448818897637795,
+   "macro": 0.0924440419373591
+  },
+  {
+   "run": "sed_ensemble_s13_d_20260929T045021Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.1323024054982818,
+   "macro": 0.11605900642921356
+  },
+  {
+   "run": "sed_ensemble_s13_e_20260929T045030Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.13916146297948262,
+   "macro": 0.12304927924824802
+  },
+  {
+   "run": "sed_ensemble_s13_f1_20260929T045044Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.18166804293971928,
+   "macro": 0.1520788072840562
+  },
+  {
+   "run": "sed_ensemble_s13_f2_20260929T045053Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "sebb_cv_selection_annotated.json",
+   "micro": 0.1642512077294686,
+   "macro": 0.12060188619454669
+  },
+  {
+   "run": "sed_ensemble_s13_f3_20260929T045102Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.1543921916592724,
+   "macro": 0.13871401150394794
+  },
+  {
+   "run": "sed_ensemble_s13_f4_20260929T045115Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.15425065731814197,
+   "macro": 0.13682715852022312
+  },
+  {
+   "run": "sed_ensemble_s13_g1_20260929T045129Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.17743324720068906,
+   "macro": 0.16169685209654847
+  },
+  {
+   "run": "sed_ensemble_s13_g2_20260929T045146Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "sebb_cv_selection_annotated.json",
+   "micro": 0.1722222222222222,
+   "macro": 0.14212351519469518
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T150934Z",
+   "file": "dev_evaluation_cv.json",
+   "split": "dev",
+   "postproc": "postproc_cv.json",
+   "micro": 0.21203438395415475,
+   "macro": 0.14943030831701068
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T155630Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.1476394849785408,
+   "macro": 0.13688426652079558
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T155630Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.14995640802092416,
+   "macro": 0.13892723746734367
+  },
+  {
+   "run": "sed_polyphonic_20260923T173234Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.03601800900450225,
+   "macro": 0.028702910781791373
+  },
+  {
+   "run": "sed_polyphonic_20260924T015736Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.06164874551971326,
+   "macro": 0.0670590983798254
+  },
+  {
+   "run": "sed_polyphonic_20260924T021958Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.05184705119896306,
+   "macro": 0.05851541606974473
+  },
+  {
+   "run": "sed_polyphonic_20260924T031616Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.05717916137229987,
+   "macro": 0.06960100412492214
+  },
+  {
+   "run": "sed_polyphonic_20260924T033537Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.06602475928473178,
+   "macro": 0.0795699739043735
+  },
+  {
+   "run": "sed_polyphonic_20260924T054531Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.06211180124223602,
+   "macro": 0.07708604996570484
+  },
+  {
+   "run": "sed_polyphonic_20260924T054531Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.10479041916167664,
+   "macro": 0.10034747075112242
+  },
+  {
+   "run": "sed_polyphonic_20260924T061000Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.047223994894703254,
+   "macro": 0.055542191186115523
+  },
+  {
+   "run": "sed_polyphonic_20260924T061000Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.0800615858352579,
+   "macro": 0.08198638975086663
+  },
+  {
+   "run": "sed_polyphonic_20260924T070927Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.06514206514206514,
+   "macro": 0.07545247397431874
+  },
+  {
+   "run": "sed_polyphonic_20260924T072736Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.04773561811505508,
+   "macro": 0.06581420782232977
+  },
+  {
+   "run": "sed_polyphonic_20260924T074656Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.055699481865284985,
+   "macro": 0.06201444292536143
+  },
+  {
+   "run": "sed_polyphonic_20260924T080715Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.05463858850313034,
+   "macro": 0.06576163201279746
+  },
+  {
+   "run": "sed_polyphonic_20260925T205837Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.07250755287009063,
+   "macro": 0.06944659568501048
+  },
+  {
+   "run": "sed_polyphonic_20260925T211704Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.0547945205479452,
+   "macro": 0.056937436473964924
+  },
+  {
+   "run": "sed_polyphonic_20260925T213732Z",
+   "file": "evaluation.json",
+   "split": "test",
+   "postproc": "postproc.json",
+   "micro": 0.061374249499666446,
+   "macro": 0.07260346680019879
+  },
+  {
+   "run": "sed_polyphonic_20260926T033312Z",
+   "file": "dev_evaluation_cv.json",
+   "split": "dev",
+   "postproc": "postproc_cv.json",
+   "micro": 0.19466474405191062,
+   "macro": 0.1354177251505996
+  },
+  {
+   "run": "sed_polyphonic_20260926T033312Z",
+   "file": "evaluation_cv.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.1255301102629347,
+   "macro": 0.11976111122919458
+  },
+  {
+   "run": "sed_polyphonic_20260926T033312Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv_annotated.json",
+   "micro": 0.12747631352282515,
+   "macro": 0.1210857743710259
+  },
+  {
+   "run": "sed_polyphonic_20260926T053024Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.140116763969975,
+   "macro": 0.13103885455097095
+  },
+  {
+   "run": "sed_polyphonic_20260926T064832Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.1294718909710392,
+   "macro": 0.11412620096526102
+  },
+  {
+   "run": "sed_polyphonic_20260926T161726Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.13775510204081634,
+   "macro": 0.11958802139531627
+  },
+  {
+   "run": "sed_polyphonic_20260926T172229Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.1319966583124478,
+   "macro": 0.12281104009854404
+  },
+  {
+   "run": "sed_polyphonic_20260926T185208Z",
+   "file": "evaluation_cv_annotated.json",
+   "split": "test",
+   "postproc": "postproc_cv.json",
+   "micro": 0.11853088480801337,
+   "macro": 0.10159964735848304
+  }
+ ],
+ "git": {
+  "revision": "9c5f64dc9ab0c9de1a66e022e9af13dba53b882a",
+  "dirty": false
+ }
+}

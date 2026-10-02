@@ -1,0 +1,49 @@
+# Event-F1 micro và macro cho mọi lần đánh giá SED
+
+> Sinh bởi `scripts.report_event_f1_macro`. Macro = nanmean F1 theo lớp đã lưu (= `class_wise_average` của sed_eval); **không chạy lại test**. git `9c5f64d`.
+
+| Run | File | Split | Hậu xử lý | Event-F1 micro | Event-F1 macro |
+|---|---|---|---|---:|---:|
+| `sed_ensemble_B_clean_20260925T045606Z` | `evaluation.json` | test | `postproc.json` | 0.0553 | 0.0600 |
+| `sed_ensemble_B_clean_20260925T045606Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.0969 | 0.0811 |
+| `sed_ensemble_BC_clean_20260925T045658Z` | `evaluation.json` | test | `postproc.json` | 0.0696 | 0.0683 |
+| `sed_ensemble_BC_clean_20260925T045658Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.1001 | 0.0854 |
+| `sed_ensemble_C_clean_20260925T045631Z` | `dev_evaluation_cv.json` | dev | `postproc_cv.json` | 0.1588 | 0.1308 |
+| `sed_ensemble_C_clean_20260925T045631Z` | `evaluation.json` | test | `postproc.json` | 0.0636 | 0.0732 |
+| `sed_ensemble_C_clean_20260925T045631Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.0941 | 0.0917 |
+| `sed_ensemble_C_clean_20260925T045631Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.0945 | 0.0924 |
+| `sed_ensemble_s13_d_20260929T045021Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1323 | 0.1161 |
+| `sed_ensemble_s13_e_20260929T045030Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1392 | 0.1230 |
+| `sed_ensemble_s13_f1_20260929T045044Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1817 | 0.1521 |
+| `sed_ensemble_s13_f2_20260929T045053Z` | `evaluation_cv_annotated.json` | test | `sebb_cv_selection_annotated.json` | 0.1643 | 0.1206 |
+| `sed_ensemble_s13_f3_20260929T045102Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1544 | 0.1387 |
+| `sed_ensemble_s13_f4_20260929T045115Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1543 | 0.1368 |
+| `sed_ensemble_s13_g1_20260929T045129Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1774 | 0.1617 |
+| `sed_ensemble_s13_g2_20260929T045146Z` | `evaluation_cv_annotated.json` | test | `sebb_cv_selection_annotated.json` | 0.1722 | 0.1421 |
+| `sed_ensemble_v2_20260926T150934Z` | `dev_evaluation_cv.json` | dev | `postproc_cv.json` | 0.2120 | 0.1494 |
+| `sed_ensemble_v2_20260926T155630Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.1476 | 0.1369 |
+| `sed_ensemble_v2_20260926T155630Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1500 | 0.1389 |
+| `sed_polyphonic_20260923T173234Z` | `evaluation.json` | test | `postproc.json` | 0.0360 | 0.0287 |
+| `sed_polyphonic_20260924T015736Z` | `evaluation.json` | test | `postproc.json` | 0.0616 | 0.0671 |
+| `sed_polyphonic_20260924T021958Z` | `evaluation.json` | test | `postproc.json` | 0.0518 | 0.0585 |
+| `sed_polyphonic_20260924T031616Z` | `evaluation.json` | test | `postproc.json` | 0.0572 | 0.0696 |
+| `sed_polyphonic_20260924T033537Z` | `evaluation.json` | test | `postproc.json` | 0.0660 | 0.0796 |
+| `sed_polyphonic_20260924T054531Z` | `evaluation.json` | test | `postproc.json` | 0.0621 | 0.0771 |
+| `sed_polyphonic_20260924T054531Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.1048 | 0.1003 |
+| `sed_polyphonic_20260924T061000Z` | `evaluation.json` | test | `postproc.json` | 0.0472 | 0.0555 |
+| `sed_polyphonic_20260924T061000Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.0801 | 0.0820 |
+| `sed_polyphonic_20260924T070927Z` | `evaluation.json` | test | `postproc.json` | 0.0651 | 0.0755 |
+| `sed_polyphonic_20260924T072736Z` | `evaluation.json` | test | `postproc.json` | 0.0477 | 0.0658 |
+| `sed_polyphonic_20260924T074656Z` | `evaluation.json` | test | `postproc.json` | 0.0557 | 0.0620 |
+| `sed_polyphonic_20260924T080715Z` | `evaluation.json` | test | `postproc.json` | 0.0546 | 0.0658 |
+| `sed_polyphonic_20260925T205837Z` | `evaluation.json` | test | `postproc.json` | 0.0725 | 0.0694 |
+| `sed_polyphonic_20260925T211704Z` | `evaluation.json` | test | `postproc.json` | 0.0548 | 0.0569 |
+| `sed_polyphonic_20260925T213732Z` | `evaluation.json` | test | `postproc.json` | 0.0614 | 0.0726 |
+| `sed_polyphonic_20260926T033312Z` | `dev_evaluation_cv.json` | dev | `postproc_cv.json` | 0.1947 | 0.1354 |
+| `sed_polyphonic_20260926T033312Z` | `evaluation_cv.json` | test | `postproc_cv.json` | 0.1255 | 0.1198 |
+| `sed_polyphonic_20260926T033312Z` | `evaluation_cv_annotated.json` | test | `postproc_cv_annotated.json` | 0.1275 | 0.1211 |
+| `sed_polyphonic_20260926T053024Z` | `evaluation_cv_annotated.json` | test | `postproc_cv.json` | 0.1401 | 0.1310 |
+| `sed_polyphonic_20260926T064832Z` | `evaluation_cv_annotated.json` | test | `postproc_cv.json` | 0.1295 | 0.1141 |
+| `sed_polyphonic_20260926T161726Z` | `evaluation_cv_annotated.json` | test | `postproc_cv.json` | 0.1378 | 0.1196 |
+| `sed_polyphonic_20260926T172229Z` | `evaluation_cv_annotated.json` | test | `postproc_cv.json` | 0.1320 | 0.1228 |
+| `sed_polyphonic_20260926T185208Z` | `evaluation_cv_annotated.json` | test | `postproc_cv.json` | 0.1185 | 0.1016 |
