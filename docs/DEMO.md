@@ -29,8 +29,8 @@ Chỉ dùng WAV thuộc split **train**, ví dụ `S-0016`. Lệnh kiểm chứn
 ```
 
 Artifact đã chạy thật: [demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md). Lượt này
-dùng CPU container, upload + phân tích mất 22.682 s, có 2 event; caption EN/VI đều có evidence;
-RAG hybrid mất 0.294 s và trả 1 evidence. Đây là thời gian của một lượt demo, không phải benchmark.
+dùng CPU container, upload + phân tích mất 2.012 s, có 2 event; caption EN/VI đều có evidence;
+RAG hybrid mất 0.250 s và trả 1 evidence. Đây là thời gian của một lượt demo, không phải benchmark.
 
 ## Kịch bản 5 phút
 

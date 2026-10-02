@@ -71,8 +71,8 @@ sạch. f2 là hệ thống cuối đã khóa; phục vụ Compose đã chuyển
 
 Parity CUDA f2: 299/299 event trùng khít (`inference_parity_20260929`). Parity CPU trong container:
 132/142 recording trùng khít, 294/299 event trong collar; Δ xác suất lớn nhất 0.0239, batch Δlogit
-0.0966/0.0779/0.0559 (`inference_parity_cpu_20261002`). E2E S-0016 thuộc TRAIN: 22.682 s upload +
-phân tích, 2 event, caption EN/VI có evidence, RAG 0.294 s (`demo_f2_e2e_20261002`).
+0.0966/0.0779/0.0559 (`inference_parity_cpu_20261002`). E2E S-0016 thuộc TRAIN: 2.012 s upload +
+phân tích, 2 event, caption EN/VI có evidence, RAG 0.250 s (`demo_f2_e2e_20261002`).
 
 **Cập nhật 29/09/2026 — S11 focal hoàn tất trên dev, không mở test.** ADR-0038 đăng ký trước
 mọi run: focal không `pos_weight`, T2b `frame_mn`, pilot γ `{0.5,1,2}` chọn γ=2.0; ba seed
