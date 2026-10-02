@@ -46,3 +46,4 @@ Thumbs.db
 # pytest-cov
 .coverage
 htmlcov/
+.agent_logs/
