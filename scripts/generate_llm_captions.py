@@ -46,6 +46,7 @@ from ml.captioning.timeline import canonicalize_timeline
 from ml.evaluation.predictions import load_predictions
 from ml.postprocessing import process_recordings, stack_predictions_by_recording
 from ml.postprocessing.calibration import validate_postproc_artifact
+from ml.postprocessing.sebb import SebbParams, sebb_candidates, select_boxes
 from ml.taxonomy import Taxonomy, load_taxonomy
 from ml.training.common import git_state, sha256_file
 from scripts.report_threshold_ablation import priors_from_postproc
@@ -65,6 +66,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--frozen-lexicon-sha256", default=None)
     parser.add_argument("--postproc", type=Path, default=None,
                         help="postproc cho timeline e2e (mặc định <run>/postproc.json)")
+    parser.add_argument(
+        "--predictions-run", type=Path, default=None,
+        help="run chứa predictions/<split>.npz; run_dir vẫn là hệ thống logic",
+    )
     parser.add_argument("--levels", nargs="+", choices=LEVELS, default=list(LEVELS))
     parser.add_argument("--limit", type=int, default=None, help="chỉ để smoke-test")
     return parser.parse_args()
@@ -81,25 +86,49 @@ def check_test_gate(split: str, lexicon_sha: str, frozen_sha: str | None) -> Non
 
 
 def e2e_timelines(
-    run_dir: Path, split: str, taxonomy: Taxonomy, postproc_path: Path | None = None
+    run_dir: Path,
+    split: str,
+    taxonomy: Taxonomy,
+    postproc_path: Path | None = None,
+    predictions_run: Path | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Timeline từ prediction đóng băng — cùng đường đi với `scripts.generate_captions`."""
     postproc_path = postproc_path or run_dir / "postproc.json"
     postproc = json.loads(postproc_path.read_text(encoding="utf-8"))
-    validate_postproc_artifact(postproc, taxonomy=taxonomy)
     class_ids = taxonomy.polyphonic_class_ids
+    prediction_dir = predictions_run or run_dir
     artifact = load_predictions(
-        run_dir / "predictions" / f"{split}.npz", expected_class_ids=class_ids
+        prediction_dir / "predictions" / f"{split}.npz", expected_class_ids=class_ids
     )
     if artifact.split != split:
         raise SystemExit(f"predictions split={artifact.split!r}, cần {split!r}")
     probabilities = stack_predictions_by_recording(artifact)
     frame_rate = 1.0 / artifact.frame_hop_s
-    estimate = process_recordings(
-        probabilities, class_ids=class_ids,
-        thresholds={c: float(postproc["per_class"][c]["theta"]) for c in class_ids},
-        priors=priors_from_postproc(postproc, class_ids), frame_rate=frame_rate,
-    )
+    if postproc.get("family") == "csebb":
+        selected = postproc.get("selected", {})
+        params = SebbParams(
+            step_filter_s=float(selected["step_filter_s"]),
+            merge_abs=(None if selected.get("merge_abs") is None
+                       else float(selected["merge_abs"])),
+            merge_rel=(None if selected.get("merge_rel") is None
+                       else float(selected["merge_rel"])),
+        )
+        threshold = float(selected["threshold"])
+        if postproc.get("eval_set") != "annotated" or not 0.0 <= threshold <= 1.0:
+            raise SystemExit("artifact cSEBB phải là bản annotated đã khóa, ngưỡng trong [0, 1]")
+        estimate = select_boxes(
+            sebb_candidates(
+                probabilities, class_ids=class_ids, frame_rate=frame_rate, params=params
+            ),
+            threshold,
+        )
+    else:
+        validate_postproc_artifact(postproc, taxonomy=taxonomy)
+        estimate = process_recordings(
+            probabilities, class_ids=class_ids,
+            thresholds={c: float(postproc["per_class"][c]["theta"]) for c in class_ids},
+            priors=priors_from_postproc(postproc, class_ids), frame_rate=frame_rate,
+        )
     return {
         rid: canonicalize_timeline(
             f"datased:{rid}", probabilities[rid].shape[0] / frame_rate,
@@ -189,7 +218,13 @@ def main() -> None:
     if model_sha != config.model_sha256:
         raise SystemExit(f"SHA-256 model lệch: {model_sha} != {config.model_sha256}")
 
-    by_level = {"e2e": e2e_timelines(args.run_dir, args.split, taxonomy, args.postproc)}
+    predictions_run = args.predictions_run or args.run_dir
+    prediction_path = predictions_run / "predictions" / f"{args.split}.npz"
+    by_level = {
+        "e2e": e2e_timelines(
+            args.run_dir, args.split, taxonomy, args.postproc, predictions_run
+        )
+    }
     recording_ids = sorted(by_level["e2e"])[: args.limit]
     recordings = pd.read_csv(ROOT / "data/manifests/datased_recordings.csv")
     durations = dict(zip(recordings["recording_id"], recordings["duration_s"], strict=True))
@@ -219,7 +254,10 @@ def main() -> None:
         "branch": args.branch, "captioner_version": captioner.version,
         "timelines_identical_to": compared,
         "sed_run": args.run_dir.name, "split": args.split, "levels": levels,
+        "predictions_run": predictions_run.name,
+        "predictions_sha256": sha256_file(prediction_path),
         "postproc": (args.postproc or args.run_dir / "postproc.json").name,
+        "postproc_sha256": sha256_file(args.postproc or args.run_dir / "postproc.json"),
         "n_recordings": len(recording_ids), "n_captions": len(rows),
         "n_truncated": truncated, "wall_clock_s": round(wall_s, 1),
         "prompt_version": PROMPT_VERSION, "prompt_sha256": prompt_sha256(),

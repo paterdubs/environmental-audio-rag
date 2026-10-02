@@ -25,6 +25,7 @@ from pycocoevalcap.cider.cider import Cider
 
 from ml.captioning.lexicon import CaptionLexicon
 from ml.captioning.template import TemplateCaptioner
+from ml.evaluation.coverage import EVAL_SETS, eval_suffix, unannotated_recordings
 from ml.taxonomy import load_taxonomy
 from scripts.score_captions import LLM_BRANCHES
 
@@ -36,6 +37,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--split", choices=("dev", "test"), default="dev")
+    parser.add_argument("--eval-set", choices=EVAL_SETS, default="all")
     parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
 
@@ -53,17 +55,22 @@ def ngram_scores(references: dict[str, str], hypotheses: dict[str, str]) -> dict
     return {"bleu_1": bleu[0], "bleu_4": bleu[3], "cider": float(cider), "n": len(refs)}
 
 
-def load_pairs(run_dir: Path, split: str) -> dict[str, dict[str, Any]]:
+def load_pairs(
+    run_dir: Path, split: str, eval_set: str = "all"
+) -> dict[str, dict[str, Any]]:
     """{branch/level: {"refs": {...}, "hyps": {...}}} with template references."""
     template = TemplateCaptioner(
         CaptionLexicon.from_taxonomy(load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")))
     pairs: dict[str, dict[str, Any]] = {}
+    excluded = unannotated_recordings() if eval_set == "annotated" else frozenset()
     for branch in LLM_BRANCHES:
         source = run_dir / "captions" / f"{branch}_{split}.jsonl"
         if not source.exists():
             continue
         for line in source.read_text(encoding="utf-8").splitlines():
             row = json.loads(line)
+            if row["recording_id"] in excluded:
+                continue
             key = f"{row['recording_id']}|{row['level']}"
             group = pairs.setdefault(f"{branch}/{row['level']}", {"refs": {}, "hyps": {}})
             group["refs"][key] = template.caption(row["timeline"])["text"]
@@ -93,12 +100,14 @@ def render(result: dict[str, Any]) -> str:
 def main() -> None:
     args = parse_args()
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    pairs = load_pairs(args.run_dir, args.split)
+    pairs = load_pairs(args.run_dir, args.split, args.eval_set)
     scores = {key: ngram_scores(g["refs"], g["hyps"]) for key, g in sorted(pairs.items())}
-    result = {"run": args.run_dir.name, "split": args.split, "reference": "template",
+    result = {"run": args.run_dir.name, "split": args.split, "eval_set": args.eval_set,
+              "reference": "template",
               "tokenizer": TOKEN.pattern, "scores": scores}
     destination = args.output or (
-        ROOT / "docs/measurements" / f"caption_ngram_{args.run_dir.name}_{args.split}.md"
+        ROOT / "docs/measurements"
+        / f"caption_ngram_{args.run_dir.name}_{args.split}{eval_suffix(args.eval_set)}.md"
     )
     destination.with_suffix(".json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")

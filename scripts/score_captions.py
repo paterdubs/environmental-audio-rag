@@ -28,6 +28,7 @@ from typing import Any
 from ml.captioning.lexicon import CaptionLexicon
 from ml.captioning.template import TemplateCaptioner
 from ml.evaluation.caption_stats import CI_METRICS, metric_ci, paired_difference, summarise
+from ml.evaluation.coverage import EVAL_SETS, eval_suffix, unannotated_recordings
 from ml.evaluation.grounding import GroundingMetrics, collapse_enumerations, evaluate_grounding
 from ml.provenance import git_state
 from ml.taxonomy import load_taxonomy
@@ -53,6 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", choices=("dev", "test"), default="dev")
     parser.add_argument("--frozen-lexicon-sha256", default=None)
     parser.add_argument("--audit", action="store_true")
+    parser.add_argument("--eval-set", choices=EVAL_SETS, default="all")
     parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
 
@@ -69,15 +71,20 @@ def uncovered_words(text: str, lexicon: CaptionLexicon) -> list[str]:
     return words
 
 
-def score_sources(sources: list[Path], lexicon: CaptionLexicon) -> tuple[Scored, Counter[str]]:
+def score_sources(
+    sources: list[Path], lexicon: CaptionLexicon, eval_set: str = "all"
+) -> tuple[Scored, Counter[str]]:
     """Score every LLM caption and the template on the identical timelines."""
     scored: Scored = {}
     audit: Counter[str] = Counter()
     reference: dict[tuple[str, str], Any] = {}
+    excluded = unannotated_recordings() if eval_set == "annotated" else frozenset()
     for source in sources:
         branch = source.stem.rsplit("_", 1)[0]
         for line in source.read_text(encoding="utf-8").splitlines():
             row = json.loads(line)
+            if row["recording_id"] in excluded:
+                continue
             key = (row["recording_id"], row["level"])
             if reference.setdefault(key, row["timeline"]) != row["timeline"]:
                 raise SystemExit(f"{source.name}: timeline {key} khác nhánh trước — không so được")
@@ -108,18 +115,39 @@ def statistics(scored: Scored) -> dict[str, Any]:
     return {"summary": summary, "ci": intervals, "paired": paired}
 
 
-def provenance(run_dir: Path, split: str, sources: list[Path], lexicon: CaptionLexicon) -> dict:
+def provenance(
+    run_dir: Path,
+    split: str,
+    sources: list[Path],
+    lexicon: CaptionLexicon,
+    eval_set: str,
+) -> dict:
     manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
     metrics = json.loads((run_dir / "metrics.json").read_text(encoding="utf-8"))
     if manifest["taxonomy_sha256"] != lexicon.taxonomy.checksum:
         raise SystemExit("run khoá theo taxonomy khác taxonomy đang dùng")
     captions = {}
+    prediction_hashes = set()
+    postproc_hashes = set()
     for path in sources:
         meta = json.loads(path.with_suffix(".meta.json").read_text(encoding="utf-8"))
         captions[path.name] = meta["output_sha256"]
+        if "predictions_sha256" in meta:
+            prediction_hashes.add(meta["predictions_sha256"])
+        if "postproc_sha256" in meta:
+            postproc_hashes.add(meta["postproc_sha256"])
+    if len(prediction_hashes) > 1 or len(postproc_hashes) > 1:
+        raise SystemExit("các nhánh caption không cùng prediction/postproc")
+    prediction_sha = (
+        next(iter(prediction_hashes))
+        if prediction_hashes
+        else metrics[f"{split}_predictions_sha256"]
+    )
     return {"run": run_dir.name, "split": split, "split_sha256": manifest["split_sha256"],
+            "eval_set": eval_set,
             "taxonomy_sha256": manifest["taxonomy_sha256"],
-            "predictions_sha256": metrics[f"{split}_predictions_sha256"],
+            "predictions_sha256": prediction_sha,
+            "postproc_sha256": next(iter(postproc_hashes), None),
             "captions_sha256": captions, "lexicon_version": lexicon.version,
             "lexicon_sha256": lexicon.sha256(), "git": git_state(ROOT)}
 
@@ -135,12 +163,16 @@ def main() -> None:
     sources = [path for path in sources if path.exists()]
     if not sources:
         raise SystemExit(f"không có caption nào cho split {args.split}")
-    scored, audit = score_sources(sources, lexicon)
-    result = {**provenance(args.run_dir, args.split, sources, lexicon), **statistics(scored)}
+    scored, audit = score_sources(sources, lexicon, args.eval_set)
+    result = {
+        **provenance(args.run_dir, args.split, sources, lexicon, args.eval_set),
+        **statistics(scored),
+    }
     if args.audit:
         result["uncovered_words"] = audit.most_common(150)
     destination = args.output or (
-        ROOT / "docs/measurements" / f"caption_grounding_{args.run_dir.name}_{args.split}.md")
+        ROOT / "docs/measurements"
+        / f"caption_grounding_{args.run_dir.name}_{args.split}{eval_suffix(args.eval_set)}.md")
     destination.with_suffix(".json").write_text(
         json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")
@@ -157,7 +189,7 @@ def _signed_ci(entry: dict[str, float]) -> str:
 
 def render(result: dict[str, Any]) -> str:
     lines = [
-        f"# Grounding caption — `{result['run']}` ({result['split']})", "",
+        f"# Grounding caption — `{result['run']}` ({result['split']}, {result['eval_set']})", "",
         f"> Sinh bởi `scripts.score_captions`. Lexicon `{result['lexicon_version']}` "
         f"`{result['lexicon_sha256'][:8]}…` · split `{result['split_sha256'][:8]}…` · "
         f"taxonomy `{result['taxonomy_sha256'][:8]}…` · prediction "

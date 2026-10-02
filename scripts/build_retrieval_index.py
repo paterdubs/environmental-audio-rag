@@ -36,6 +36,7 @@ SPLIT_FILE = {"validation": "dev", "test": "test"}  # corpus name -> predictions
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, default=DEFAULT_RUN)
+    parser.add_argument("--predictions-run", type=Path, default=None)
     parser.add_argument("--postproc", type=Path, default=None)
     parser.add_argument("--split", nargs="+", choices=tuple(SPLIT_FILE), default=["validation"])
     parser.add_argument("--device", default=None)
@@ -60,7 +61,13 @@ def recording_rows() -> dict[str, dict]:
 
 
 def build_corpus(args, split: str, taxonomy, embedder: Embedder) -> dict:
-    timelines = e2e_timelines(args.run, SPLIT_FILE[split], taxonomy, args.postproc)
+    timelines = e2e_timelines(
+        args.run,
+        SPLIT_FILE[split],
+        taxonomy,
+        args.postproc,
+        args.predictions_run,
+    )
     en = TemplateCaptioner(CaptionLexicon.from_taxonomy(taxonomy))
     vi = TemplateCaptioner(CaptionLexicon.from_taxonomy(taxonomy, config=VI_LEXICON_CONFIG))
     items = []
@@ -106,6 +113,7 @@ def run_manifest(run_id, args, taxonomy, embedder, loaded, migrations, git) -> d
         "taxonomy_sha256": taxonomy.checksum, "split_sha256": sed["split_sha256"],
         "data_manifest_sha256": sed["data_manifest_sha256"],
         "config": {"sed_run": args.run.name,
+                   "predictions_run": (args.predictions_run or args.run).name,
                    "postproc": (args.postproc or args.run / "postproc.json").name,
                    "embedding_version": embedder.version, "model_revision": embedder.revision,
                    "corpora": loaded, "migrations_applied": migrations},

@@ -19,6 +19,7 @@ from typing import Any
 
 from ml.captioning.lexicon import VI_LEXICON_CONFIG, CaptionLexicon
 from ml.captioning.template import TemplateCaptioner
+from ml.evaluation.coverage import EVAL_SETS, eval_suffix, unannotated_recordings
 from ml.evaluation.grounding import evaluate_grounding
 from ml.taxonomy import load_taxonomy
 
@@ -32,13 +33,19 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--split", choices=("dev", "test"), default="dev")
+    parser.add_argument("--eval-set", choices=EVAL_SETS, default="all")
     parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
 
 
-def load_timelines(run_dir: Path, split: str) -> dict[tuple[str, str], dict[str, Any]]:
+def load_timelines(
+    run_dir: Path, split: str, eval_set: str = "all"
+) -> dict[tuple[str, str], dict[str, Any]]:
     source = run_dir / "captions" / f"unconstrained_{split}.jsonl"
     rows = [json.loads(line) for line in source.read_text(encoding="utf-8").splitlines()]
+    if eval_set == "annotated":
+        excluded = unannotated_recordings()
+        rows = [row for row in rows if row["recording_id"] not in excluded]
     return {(row["recording_id"], row["level"]): row["timeline"] for row in rows}
 
 
@@ -82,11 +89,13 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     lexicon = CaptionLexicon.from_taxonomy(load_taxonomy(ROOT / "ml/configs/taxonomy.yaml"),
                                            config=VI_LEXICON_CONFIG)
-    result = {"run": args.run_dir.name, "split": args.split, "lexicon_version": lexicon.version,
+    result = {"run": args.run_dir.name, "split": args.split, "eval_set": args.eval_set,
+              "lexicon_version": lexicon.version,
               "lexicon_sha256": lexicon.sha256(),
-              **evaluate(load_timelines(args.run_dir, args.split), lexicon)}
+              **evaluate(load_timelines(args.run_dir, args.split, args.eval_set), lexicon)}
     destination = args.output or (
-        ROOT / "docs/measurements" / f"caption_vi_template_{args.run_dir.name}_{args.split}.md")
+        ROOT / "docs/measurements"
+        / f"caption_vi_template_{args.run_dir.name}_{args.split}{eval_suffix(args.eval_set)}.md")
     destination.with_suffix(".json").write_text(
         json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")

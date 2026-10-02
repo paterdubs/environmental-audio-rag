@@ -27,7 +27,7 @@ from ml.retrieval.answer import answer, supporting_events, unsupported_claims
 from ml.retrieval.embedding import Embedder
 from ml.retrieval.relevance import relevant_recordings
 from ml.taxonomy import load_taxonomy
-from scripts.evaluate_retrieval import LANGUAGES, QUERYSET, corpus_ground_truth
+from scripts.evaluate_retrieval import LANGUAGES, QUERYSET, _parsed_filters, corpus_ground_truth
 
 ROOT = Path(__file__).resolve().parents[1]
 MODES = ("structured_only", "hybrid")
@@ -38,16 +38,18 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", choices=("validation", "test"), default="validation")
     parser.add_argument("--device", default=None)
+    parser.add_argument("--parsed-filters", type=Path, default=None)
+    parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
 
 
-def check(result: dict, query: dict, events: dict, lexicon, relevant: set, validator) -> dict:
+def check(result: dict, filters: dict, events: dict, lexicon, relevant: set, validator) -> dict:
     by_id = {e["event_id"]: (rid, e) for rid, evs in events.items() for e in evs}
     real = [e for e in result["evidence"] if e["event_id"] in by_id
             and by_id[e["event_id"]][0] == e["recording_id"]
             and by_id[e["event_id"]][1]["class_id"] == e["class_id"]]
     cited = sorted({e["recording_id"] for e in result["evidence"]})
-    supported = all(supporting_events(events.get(rid, []), query["filters"]) for rid in cited)
+    supported = all(supporting_events(events.get(rid, []), filters) for rid in cited)
     return {"contract_ok": not list(validator.iter_errors(result)),
             "unsupported": unsupported_claims(result, lexicon),
             "evidence_real": len(real) == len(result["evidence"]),
@@ -55,7 +57,7 @@ def check(result: dict, query: dict, events: dict, lexicon, relevant: set, valid
             "cited_relevant": [rid in relevant for rid in cited]}
 
 
-def evaluate(args, queries, vectors, version) -> list[dict]:
+def evaluate(args, queries, vectors, version, parsed=None) -> list[dict]:
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     lexicons = {"en": CaptionLexicon.from_taxonomy(taxonomy),
                 "vi": CaptionLexicon.from_taxonomy(taxonomy, config=VI_LEXICON_CONFIG)}
@@ -73,12 +75,19 @@ def evaluate(args, queries, vectors, version) -> list[dict]:
             continue
         for mode in MODES:
             for language, field in LANGUAGES.items():
+                filters = (query["filters"] if parsed is None
+                           else parsed.get((query["query_id"], language)))
+                if filters is None:
+                    raise SystemExit(
+                        f"thiếu filter parse cho {query['query_id']}/{language}; "
+                        "không thay bằng gold"
+                    )
                 vector = vectors[language][index] if mode == "hybrid" else None
-                ranked = store.search(conn, mode, args.split, query["filters"], vector, version, K)
-                result = answer(query[field], query["filters"], mode, ranked, events, language,
+                ranked = store.search(conn, mode, args.split, filters, vector, version, K)
+                result = answer(query[field], filters, mode, ranked, events, language,
                                 names[language], K)
                 rows.append({"query_id": query["query_id"], "mode": mode, "language": language,
-                             **check(result, query, events, lexicons[language], relevant,
+                             **check(result, filters, events, lexicons[language], relevant,
                                      validator), "answer": result["answer"]})
     return rows
 
@@ -125,15 +134,24 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     git = git_state(ROOT)
     queries = json.loads(QUERYSET.read_text(encoding="utf-8"))
+    parsed, parser_sha = (None, None)
+    if args.parsed_filters is not None:
+        parsed, parser_sha = _parsed_filters(args.parsed_filters)
     embedder = Embedder(device=args.device)
     vectors = {lang: embedder.encode([q[field] for q in queries])
                for lang, field in LANGUAGES.items()}
-    rows = evaluate(args, queries, vectors, embedder.version)
+    rows = evaluate(args, queries, vectors, embedder.version, parsed)
     examples = [r for r in rows if r["mode"] == "hybrid" and r["query_id"] in ("q-001", "q-049")]
     result = {"split": args.split, "summary": summarise(rows), "examples": examples, "git": git,
               "rows": rows}
+    if args.parsed_filters is not None:
+        result["parser_measurement"] = str(args.parsed_filters)
+        result["parser_measurement_sha256"] = parser_sha
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    destination = ROOT / "docs/measurements" / f"retrieval_answers_{args.split}_{stamp}.md"
+    kind = "_parsed" if parsed is not None else ""
+    destination = args.output or (
+        ROOT / "docs/measurements" / f"retrieval_answers_{args.split}{kind}_{stamp}.md"
+    )
     destination.with_suffix(".json").write_text(json.dumps(result, indent=1, ensure_ascii=False),
                                                 encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")

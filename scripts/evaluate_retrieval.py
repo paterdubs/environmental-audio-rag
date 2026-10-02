@@ -48,6 +48,7 @@ def parse_args() -> argparse.Namespace:
                         help="measurement JSON của evaluate_query_parser; chỉ dùng template")
     parser.add_argument("--gold-reference", type=Path,
                         help="measurement retrieval gold để báo delta nDCG ghép cặp")
+    parser.add_argument("--output", type=Path, default=None)
     return parser.parse_args()
 
 
@@ -215,7 +216,9 @@ def main() -> None:
         result["gold_comparison_ndcg@10"] = compare_gold(rows, args.gold_reference)
     stamp = datetime.now(UTC).strftime("%Y%m%d")
     kind = "_parsed" if parsed is not None else ""
-    destination = ROOT / "docs/measurements" / f"retrieval_benchmark_{args.split}{kind}_{stamp}.md"
+    destination = args.output or (
+        ROOT / "docs/measurements" / f"retrieval_benchmark_{args.split}{kind}_{stamp}.md"
+    )
     destination.with_suffix(".json").write_text(json.dumps(result, indent=1, ensure_ascii=False),
                                                 encoding="utf-8")
     destination.write_text(render(result), encoding="utf-8")
