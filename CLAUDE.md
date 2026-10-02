@@ -57,6 +57,13 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 02/10/2026 (mới nhất) — W7 hoàn tất.** `artifact_freeze_20261002` đã kiểm SHA-256 và sự
+tồn tại của mọi run/ensemble trích trong báo cáo, checkpoint ngoài, split, taxonomy, lexicon,
+grammar và query set; không có artifact cần thiết nào thiếu. `event_f1_macro_20261002` và
+`test_ledger_20261002` được tổng hợp lại từ tree sạch, chỉ đọc evaluation/measurement đã khóa.
+`docs/REPRODUCE.md` ghi môi trường, dữ liệu/trọng số và lệnh audit/tái tạo; không cho phép chạy lại
+test trong clone hiện tại. PLAN W7 7.5–7.7 đã đóng.
+
 **Cập nhật 02/10/2026 (mới) — Prompt C / W7 7.6–7.7 hoàn tất.** Đã thêm `demo_up.ps1`,
 `demo_down.ps1`, `demo_check.ps1`, seed history TRAIN tự động và `report_demo_script.py`.
 Lượt thật ghi `demo_seed_20261002` (15 lựa chọn phủ 21 lớp) và `demo_script_20261002` (upload
@@ -622,6 +629,14 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-02 — Đóng W7: artifact freeze, measurement tổng và tái lập
+
+Thêm `scripts.freeze_artifacts` và chạy từ tree sạch: toàn bộ artifact cần thiết cho báo cáo đều
+tồn tại, SHA-256 được ghi ở `artifact_freeze_20261002`. Tổng hợp lại macro Event-F1 và sổ test chỉ
+từ JSON/measurement đã có (`event_f1_macro_20261002`, `test_ledger_20261002`), không mở hay tính lại
+test. `REPRODUCE.md` tách audit an toàn trong clone hiện tại khỏi quy trình tái tạo test trong clone
+mới có phê duyệt. W7 7.5–7.7 được đánh dấu hoàn tất.
 
 ### 2026-10-02 (mới) — Hoàn thiện demo local (Prompt C)
 

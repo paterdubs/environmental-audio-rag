@@ -17,7 +17,7 @@
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ✅ |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 duyệt 26/09; Alembic hoãn) |
-| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.5 xong (7.4 trên f2 theo ADR-0039; 7.5 = S8 test đã chạy trên f2, ADR-0040); **7.6–7.7 còn lại** |
+| W7 | 03–09/11 | API + frontend + test một lần | ✅ hoàn tất sớm 02/10: 7.1–7.5 trên f2; 7.6 measurement tổng tree sạch; 7.7 artifact freeze + REPRODUCE |
 | W8 | 10–16/11 | Buffer, chỉ dùng khi được gia hạn (viết báo cáo dời lên 19/10) | ○ |
 | SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ✅ chốt 26/09 tối; là baseline cho S9/S13 |
 | Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ✅ hoàn tất sớm 29/09; f2 khóa trước test |
@@ -354,14 +354,14 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 | 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09; natural query → editable chips → query, manual fallback, model badge, phrasing review — ✅ 28/09 (ADR-0037) | 8 h |
 | 7.4 | Docker Compose đầu-cuối — ✅ 02/10 (ADR-0033, ADR-0039): profile `app` phục vụ f2, Compose healthy, status `official=true`; parity CUDA 299/299 event trùng khít, CPU 294/299 trong collar; E2E TRAIN S-0016 có timeline + caption EN/VI + RAG ([demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md)) | 4 h |
 | 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | ✅ 02/10, xem S8/ADR-0040 |
-| 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | ✅ 02/10: `demo_seed`, `demo_script`, ảnh fallback Playwright |
-| 7.7 | Đóng băng artifact, hướng dẫn tái lập | ✅ 02/10: runbook demo local trong `DEMO.md`; artifact model/cache kiểm tra offline |
+| 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | ✅ 02/10: `demo_seed`, `demo_script`, ảnh fallback Playwright; `event_f1_macro_20261002` và `test_ledger_20261002` sinh lại từ tree sạch |
+| 7.7 | Đóng băng artifact, hướng dẫn tái lập | ✅ 02/10: `artifact_freeze_20261002` kiểm SHA-256/tồn tại; [`REPRODUCE.md`](REPRODUCE.md) ghi môi trường, dữ liệu, checkpoint và lệnh audit/tái tạo |
 
 ### Nghiệm thu W7
 
 - [x] Demo đầu-cuối: upload → timeline → caption → truy vấn có evidence (chạy thật qua `serve_demo` và qua compose, 26/09)
 - [x] CI xanh, guard `api` không import torch pass
-- [ ] Test chạy **một lần**, mọi cấu hình đã chạy đều được báo cáo
+- [x] Test chạy **một lần**, mọi cấu hình đã chạy đều được báo cáo — `test_ledger_20261002.md`
 - [x] Mọi số trong báo cáo truy được về run manifest + split hash + taxonomy hash
 
 ---

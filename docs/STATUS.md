@@ -1,11 +1,13 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-10-02 — **W7 7.6–7.7 hoàn tất cho demo local**: `demo_up.ps1` khởi động llama.cpp,
+**Cập nhật:** 2026-10-02 — **W7 7.6–7.7 hoàn tất và artifact đã đóng băng**: `demo_up.ps1` khởi động llama.cpp,
 Compose f2, parser và history TRAIN; `demo_check.ps1` kiểm tra không khởi động; script kịch bản
 đã chạy thật qua API với 5 câu hỏi EN/VI và evidence; Playwright đã sinh 4 ảnh 1440×900. Compose
 đặt offline flags cho cache BGE-M3. Lexicon VI chuẩn hóa `tàu hỏa` và `tua-bin gió`, không đổi
 lexicon EN. Artifact: [demo_seed_20261002.md](measurements/demo_seed_20261002.md),
-[demo_script_20261002.md](measurements/demo_script_20261002.md), [DEMO.md](DEMO.md).
+[demo_script_20261002.md](measurements/demo_script_20261002.md), [artifact_freeze_20261002.md](measurements/artifact_freeze_20261002.md),
+[event_f1_macro_20261002.md](measurements/event_f1_macro_20261002.md), [test_ledger_20261002.md](measurements/test_ledger_20261002.md),
+[REPRODUCE.md](REPRODUCE.md).
 
 **Cập nhật trước:** 2026-10-02 — **S8 hoàn tất** (ADR-0040): W5 và W6 chạy lại trên hệ thống f2, dev rồi
 test đúng một lần. RQ2 giữ hướng như hệ thống cũ; RQ3 `structured_only`/`hybrid` giảm nDCG@10 khi
@@ -13,7 +15,7 @@ test đúng một lần. RQ2 giữ hướng như hệ thống cũ; RQ3 `structur
 lợi. Mọi cấu hình câu trả lời: unsupported-claim 0.000. S13 hoàn tất sớm 29/09 theo cho phép của
 người dùng: commit `c3f0033` khóa f2 bằng CV dev annotated trước test; test annotated của 11 ứng
 viên đã báo, không chọn lại dù f1 có micro test cao hơn. RQ1-v2 3 B-v2 vs 3 C-v2 âm tính về
-event-F1. Demo Compose phục vụ f2 theo ADR-0039; status báo `official=true`. Còn lại W7 7.6–7.7.
+event-F1. Demo Compose phục vụ f2 theo ADR-0039; status báo `official=true`.
 **Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 738 pass, 0 skip, 19 warnings; ruff sạch
 (Windows, 02/10)
 
