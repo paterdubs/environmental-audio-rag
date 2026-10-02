@@ -1,0 +1,38 @@
+{
+  "git": {
+    "revision": "22486f584bfe0923f62bfb314b949a22588f9f1d",
+    "dirty": false
+  },
+  "dpi": 300,
+  "font": "DejaVu Sans",
+  "figures": {
+    "01_system_architecture.png": [
+      "docs/SYSTEM.md"
+    ],
+    "02_data_pipeline_d0_d4.png": [
+      "docs/DATA_PLAN.md",
+      "data/manifests/duplicate_audit.json",
+      "data/splits/datased_polyphonic.frozen.json"
+    ],
+    "03_sed_v2_t2b_architecture.png": [
+      "docs/SYSTEM.md",
+      "docs/decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md"
+    ],
+    "04_event_f1_progress.png": [
+      "docs/measurements/s13_test_20261018.json"
+    ],
+    "05_f2_per_class_event_f1.png": [
+      "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+      "ml/configs/caption_lexicon_vi.yaml"
+    ],
+    "06_dev_timeline_caption.png": [
+      "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/captions/constrained_cover_dev.jsonl"
+    ],
+    "07_demo_interface.png": [
+      "docs/demo_screenshots/01-start.png",
+      "docs/demo_screenshots/02-timeline.png",
+      "docs/demo_screenshots/03-filter-chip.png",
+      "docs/demo_screenshots/04-rag-evidence.png"
+    ]
+  }
+}
