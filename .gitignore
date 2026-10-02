@@ -47,3 +47,6 @@ Thumbs.db
 .coverage
 htmlcov/
 .agent_logs/
+
+# Generated thesis previews
+docs/thesis/build/
