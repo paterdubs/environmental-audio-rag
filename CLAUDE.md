@@ -12,7 +12,8 @@
 ## 1. Dự án là gì
 
 **Grounded Environmental Audio Monitoring and RAG-based Event Retrieval**
-Khóa luận tốt nghiệp — Khoa học dữ liệu — IUH K18.
+Tên tiếng Việt (chốt 02/10/2026): **"Xây dựng hệ thống phát hiện, sinh mô tả và truy vấn sự
+kiện âm thanh môi trường dựa trên RAG"**. Khóa luận tốt nghiệp — Khoa học dữ liệu — IUH K18.
 
 Hệ thống nhận recording môi trường liên tục → phát hiện sự kiện có định vị thời
 gian (polyphonic SED) → sinh mô tả **bị ràng buộc vào event timeline** → lưu
@@ -55,6 +56,18 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 ---
 
 ## 3. Trạng thái hiện tại
+
+**Cập nhật 02/10/2026 (tiếp) — S8 hoàn tất: W5 + W6 chạy lại trên hệ thống f2, dev rồi test đúng
+một lần (ADR-0040).** RQ2 (test e2e, so ensemble C v1): omission constrained 0.036→0.012,
+hallucination unconstrained 0.005→0.011 (CI chồng lấn); `constrained_cover` giữ omission 0 ở cả
+hai hệ thống. RQ3 (test, so corpus run B): nDCG@10 structured_only/hybrid **giảm** (vd en
+0.523→0.416, 0.481→0.415) khi đổi corpus sang f2, vector_only tăng (0.418→0.526) — báo nguyên
+văn, không diễn giải có lợi (PAPER_NOTES S43). Mọi cấu hình câu trả lời: unsupported-claim 0.000,
+contract/evidence thật 100%. DB demo validation/test giờ dựng từ event f2; run B giữ nguyên trong
+`ml/runs/` để đối chiếu. Phát hiện và xử lý ngay một sai lệch provenance nhỏ (thư mục log tạm
+`.agent_logs/` làm 2/3 lượt caption test đầu ghi `dirty=true`; đã `.gitignore`, không ảnh hưởng nội
+dung, không chạy lại — xem PAPER_NOTES §8 #12). Còn lại của S8: không có — W7 7.6–7.7 là việc
+tiếp theo. Xem `s8_summary_20261002`, `test_ledger_20261002`, ADR-0040.
 
 **Cập nhật 02/10/2026 — S8 phục vụ f2 và W7 7.4 đã kiểm chứng.** S13 và RQ1-v2 hoàn tất sớm theo cho phép của người dùng. Báo cáo lựa
 chọn `s13_selection_20261018` được sinh từ CV dev annotated và commit `c3f0033` trước khi mở thêm
@@ -315,15 +328,17 @@ thành lỗi chính (dự đoán 408/740 event). ADR-0003 giữ nguyên cho số
 
 | Hạng mục | Còn thiếu |
 |---|---|
-| W6 (event store, RAG) | Nghiệm thu đủ (ADR-0027 §8, duyệt 26/09); nguồn event đổi ở S8; tuỳ chọn: document caption LLM, Alembic |
-| W7 (ứng dụng) | 7.1–7.4 xong (7.4: inference trong Docker 27/09, ADR-0033 §6); 7.5–7.7 — làm 19/10–02/11, sau S8 |
-| **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9); S8 sau mốc 18/10 |
+| W6 (event store, RAG) | ✅ S8 02/10: corpus validation/test dựng lại từ event f2 (ADR-0040 §3); run B giữ nguyên để đối chiếu |
+| W7 (ứng dụng) | 7.1–7.4 xong; 7.5 xong (test S13+S8 trên f2); **7.6–7.7 còn lại** (đóng băng artifact, REPRODUCE.md) |
+| **SED v2** (ADR-0030) | ✅ chốt 26/09 tối (ADR-0030 §9) |
 | **Cải thiện cuối** (ADR-0031) | ✅ S9–S13 hoàn tất sớm 29/09. Commit `c3f0033` khóa f2 trước test; f2 test macro/micro 0.1206/0.1643. Không chọn lại dù f1 micro test 0.1817. RQ1-v2 âm tính về event-F1; S12 không cần. |
+| **S8** (ADR-0040) | ✅ 02/10: W5 (dev+test, cả 3 nhánh LLM) và W6 (RAG, 8 cấu hình validation+test) xong trên f2; `s8_summary_20261002` |
 | Tài liệu | Nợ #21 đóng 28/09: PretrainedSED, DCASE 2016 T3, bài DataSED đều V3 |
 
 ### Chưa có ○
 
-Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · báo cáo luận văn (L3).
+Giải thích vì sao PSDS không tăng (PAPER_NOTES §6 #8) · W7 7.6–7.7 (đóng băng artifact, hướng dẫn
+tái lập) · bộ dữ liệu demo + lệnh khởi động một bước · báo cáo luận văn (L3).
 
 ### Việc tiếp theo — theo thứ tự
 
@@ -341,8 +356,10 @@ Lịch đầy đủ ở PLAN, khối "Lộ trình tới hạn nộp" (ADR-0031 �
    khóa lựa chọn S13 ngày 29/09.
 5. ~~S11 focal~~ — ✅ 29/09 (ADR-0038): γ=2, 3 seed T2b, g1/g2; âm tính với thay hệ thống.
 6. ~~S13~~ — ✅ 29/09: f2 khóa trước test; mọi ứng viên và RQ1-v2 đã báo; không chọn lại.
-7. ~~L2~~ — ✅ xong sớm 28/09, chỉ validation. Tiếp theo: S8 một lần trên f2 → W7 7.5–7.7 →
-   viết báo cáo.
+7. ~~L2~~ — ✅ xong sớm 28/09, chỉ validation.
+8. ~~S8~~ — ✅ 02/10 (ADR-0040): W5+W6 trên f2, dev rồi test một lần; `s8_summary_20261002`,
+   `test_ledger_20261002`. RQ3 structured/hybrid giảm khi đổi corpus (PAPER_NOTES S43, báo nguyên
+   văn). Tiếp theo: W7 7.6–7.7 → chuẩn bị dữ liệu/kịch bản demo local → viết báo cáo (L3).
 - **Trong lúc có run đang train, không để tree bẩn.** Sửa tài liệu thì làm trong git worktree ngoài
   repo, rồi fast-forward giữa hai run.
 
@@ -596,6 +613,43 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-02 (tiếp) — S8 hoàn tất: W5 + W6 chạy lại trên f2
+
+Codex khóa runbook ADR-0040 và bắt đầu chạy W5 trên dev (ba nhánh `unconstrained`,
+`constrained`, `constrained_cover`), rồi bị ngắt giữa chừng do giới hạn phiên lúc đang sinh
+caption `constrained_cover_dev`. llama.cpp (Qwen3.5-9B, build b11158) vẫn chạy khỏe — tiếp tục
+đúng runbook đã khóa, không khởi động lại server để giữ tính tất định (một slot, greedy).
+
+**W5 dev** (`90c8406`): `constrained_cover_dev` hoàn tất (274 caption, 0 bị cắt, 7038 s). Chấm cả
+ba nhánh bằng `score_captions`/`report_caption_per_class`/`report_caption_ngram`/
+`report_vi_template` trên cả hai eval-set (`all`/`annotated`). `constrained_cover` giữ omission
+0.0000 đúng thiết kế ADR-0026.
+
+**W5 test** (`72d425a`) — mở test đúng một lần theo ADR-0040: cần cờ `--frozen-lexicon-sha256`
+(lexicon đã đóng băng từ ADR-0022, không phải lần đóng băng mới). Ba nhánh test (284
+caption/nhánh, 0 bị cắt) chạy tuần tự. **Tự bắt một sai lệch provenance**: hai lượt đầu
+(`unconstrained_test`, `constrained_test`) ghi `git.dirty=true` vì thư mục log tạm của agent
+(`.agent_logs/`, tạo để theo dõi hàng đợi nền) chưa nằm trong `.gitignore` — không phải thay đổi
+code/dữ liệu. Sửa ngay giữa hàng đợi (`2ee5cb2`), nhánh thứ ba (`constrained_cover_test`, nhánh
+quan trọng nhất vì là thiết kế mới) chạy sạch hoàn toàn. Không chạy lại hai lượt đầu.
+
+**W6** (`4a27e3a`): `build_retrieval_index --replace` dựng lại corpus `validation` (từ
+`sed_ensemble_t2b_20260927T200914Z/predictions/dev.npz`) và `test` (từ
+`sed_ensemble_s13_f2_20260929T045053Z/predictions/test.npz`), cùng hậu xử lý cSEBB đã khóa. Bốn
+cấu hình validation (gold/parsed × retrieval/answers) xác nhận wiring sạch (contract 96/96,
+unsupported-claim 0.000) trước khi mở bốn cấu hình tương ứng trên test. `report_s8_summary` tổng
+hợp so với baseline cũ (ensemble C v1 cho RQ2, corpus run B cho RQ3); `report_test_ledger` ghi sổ
+40 lượt SED + 16 caption + 6 retrieval/answers đã chạm test.
+
+**Kết quả chính** (PAPER_NOTES S43): RQ2 giữ hướng cũ, không đổi khi chuyển sang f2. RQ3
+`structured_only`/`hybrid` **giảm** nDCG@10 khi đổi corpus (vd en 0.523→0.416) — ảnh hưởng của
+đổi hệ thống SED/hậu xử lý, không phải lỗi retrieval; `vector_only` tăng. Báo nguyên văn cả hai
+chiều, không diễn giải có lợi. Mọi cấu hình câu trả lời: unsupported-claim 0.000, contract/evidence
+thật 100%.
+
+Gate: ruff sạch; pytest 738 pass, 19 warning. Không push — 6 commit mới từ phiên trước
+(`d102af1`…`4a27e3a`) cộng dồn vào các commit chưa push.
 
 ### 2026-09-29 — S13 khóa f2 trước test; hoàn tất test annotated và RQ1-v2
 

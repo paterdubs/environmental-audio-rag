@@ -17,7 +17,7 @@
 | W4 | 13–19/10 | Event-based F1, PSDS, phân tích lỗi | ✅ |
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 duyệt 26/09; Alembic hoãn) |
-| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.4 xong trên f2 theo ADR-0039; 7.5–7.7 làm 19/10–02/11 |
+| W7 | 03–09/11 | API + frontend + test một lần | ◐ làm sớm: 7.1–7.5 xong (7.4 trên f2 theo ADR-0039; 7.5 = S8 test đã chạy trên f2, ADR-0040); **7.6–7.7 còn lại** |
 | W8 | 10–16/11 | Buffer, chỉ dùng khi được gia hạn (viết báo cáo dời lên 19/10) | ○ |
 | SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ✅ chốt 26/09 tối; là baseline cho S9/S13 |
 | Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ✅ hoàn tất sớm 29/09; f2 khóa trước test |
@@ -185,7 +185,7 @@ và [RELATED_WORK.md](RELATED_WORK.md).
 | S5 | Chọn hậu xử lý (θ global × p, cSEBB) bằng CV dev cho từng run; ensemble 3 seed; bảng ablation dev | ✅ 26/09 tối (`8795960`; `sed_v2_ablation_20260926.md`) |
 | S6 | Commit lựa chọn hệ thống (ADR-0030 §5) → `dump_predictions --split test` → `evaluate_run` một lần | ✅ lựa chọn `ec71b20` → test `43d5847`: v2 ensemble micro 0.1476, macro 0.1369 |
 | S7 | Phân bố xác suất + sai số biên có artifact (v1 vs v2) + event-F1 macro | ✅ `boundary_errors_20260926`, `sed_ceilings_v2_20260926`, `event_f1_macro_20260926`; bootstrap ghép cặp v2 − v1 +0.0536 [+0.0261, +0.0853] |
-| S8 | Chạy lại W5 e2e, W6 RQ3 trên event của hệ thống thắng vòng chọn cuối; đổi hệ thống phục vụ + parity 7.1. **Một lần, sau mốc 18/10** (ADR-0031 §6); không cần nếu ensemble C v1 thắng | ○ sau 18/10 |
+| S8 | Chạy lại W5 e2e, W6 RQ3 trên event của hệ thống thắng vòng chọn cuối; đổi hệ thống phục vụ + parity 7.1 | ✅ 02/10 ([ADR-0040](decisions/ADR-0040-s8-w5-w6-tren-f2.md)): W5 (dev+test, 3 nhánh LLM) và W6 (RAG, 8 cấu hình validation+test) trên f2, phục vụ đã đổi từ 28/09 (ADR-0035/0039). RQ2 giữ hướng cũ; RQ3 structured/hybrid giảm khi đổi corpus, vector_only tăng — báo nguyên văn ([s8_summary_20261002.md](measurements/s8_summary_20261002.md)) |
 | S9 | RQ1-v2: v2 khởi tạo DataSEC × 3 seed {20260922, 2, 3}; thiết kế và phân tích ghi trước (ADR-0031 §2). Train ngay sau S6; test chỉ sau khi vòng chọn cuối commit. Công cụ: `--evaluation-name`/`--postproc-name` + cột macro cho `report_rq1_multiseed`, `report_multirun_bootstrap` — ✅ 26/09. Script hàng đợi `s9_queue.sh` — ✅ 27/09 03:53: 3 run xong, tree sạch, code train trùng `e808df4`. Ensemble (d)/(e) + CV dev xong 04:42. Test annotated 6 run và phân tích xong 29/09 sau commit lựa chọn S13: C−B micro −0.0029 [−0.0254, +0.0199], kết luận event-F1 âm tính (PAPER_NOTES S41) | ✅ hoàn tất |
 | S10 | Track 2 PretrainedSED: T0 cổng khả thi (nguồn V3, license checkpoint, VRAM, 1 epoch dev hết đường ống) → ADR-0032 → 3 seed. Thứ tự đổi ở [ADR-0032](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md): **T2a BEATs strong đóng băng + head v2** trước, T2b `frame_mn10` fine-tune sau; ứng viên (f1)–(f4) ghi trước | ✅ T2a xong 27/09, T2b xong 28/09; test annotated các ứng viên hoàn tất trong S13 ngày 29/09 |
 | S11 | Lớp hiếm: loss focal hoặc asymmetric thay `pos_weight` trên họ model đang dẫn; ứng viên ghi trước run (ADR-0031 §5) | ✅ focal γ=2, 3 seed T2b, g1/g2 CV annotated + per-class dev xong 29/09; không thay hệ thống, không mở test (ADR-0038) |
@@ -353,7 +353,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 | 7.2 | `services/api`: upload, persistence, query (**không import torch**) — ✅ 26/09 | 6 h |
 | 7.3 | Frontend: upload, timeline, caption, search, evidence — ✅ 26/09; natural query → editable chips → query, manual fallback, model badge, phrasing review — ✅ 28/09 (ADR-0037) | 8 h |
 | 7.4 | Docker Compose đầu-cuối — ✅ 02/10 (ADR-0033, ADR-0039): profile `app` phục vụ f2, Compose healthy, status `official=true`; parity CUDA 299/299 event trùng khít, CPU 294/299 trong collar; E2E TRAIN S-0016 có timeline + caption EN/VI + RAG ([demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md)) | 4 h |
-| 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | 4 h |
+| 7.5 | **E9: chạy test một lần, config đóng băng** — sau S8, trên hệ thống SED cuối (ADR-0031 §7) | ✅ 02/10, xem S8/ADR-0040 |
 | 7.6 | Sinh toàn bộ measurement, cập nhật STATUS | 3 h |
 | 7.7 | Đóng băng artifact, hướng dẫn tái lập | 3 h |
 

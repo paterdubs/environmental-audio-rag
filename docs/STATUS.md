@@ -1,11 +1,14 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-10-02 — S8 phục vụ f2 và W7 7.4 đã kiểm chứng. S13 hoàn tất sớm theo cho phép của người dùng. Commit `c3f0033` khóa
-f2 bằng CV dev annotated trước test; test annotated của 11 ứng viên đã báo, không chọn lại dù f1
-có micro test cao hơn. RQ1-v2 3 B-v2 vs 3 C-v2 hoàn tất và âm tính về event-F1. Sổ test đã cập
-nhật. Demo Compose phục vụ f2 theo ADR-0039; status báo `official=true`.
-**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 734 pass, 0 skip, 19 warnings; ruff sạch
-(Windows, 29/09)
+**Cập nhật:** 2026-10-02 — **S8 hoàn tất** (ADR-0040): W5 và W6 chạy lại trên hệ thống f2, dev rồi
+test đúng một lần. RQ2 giữ hướng như hệ thống cũ; RQ3 `structured_only`/`hybrid` giảm nDCG@10 khi
+đổi corpus sang f2 (vd en 0.523→0.416), `vector_only` tăng — báo nguyên văn, không diễn giải có
+lợi. Mọi cấu hình câu trả lời: unsupported-claim 0.000. S13 hoàn tất sớm 29/09 theo cho phép của
+người dùng: commit `c3f0033` khóa f2 bằng CV dev annotated trước test; test annotated của 11 ứng
+viên đã báo, không chọn lại dù f1 có micro test cao hơn. RQ1-v2 3 B-v2 vs 3 C-v2 âm tính về
+event-F1. Demo Compose phục vụ f2 theo ADR-0039; status báo `official=true`. Còn lại W7 7.6–7.7.
+**Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 738 pass, 0 skip, 19 warnings; ruff sạch
+(Windows, 02/10)
 
 > Đây là nguồn chân lý về **phần đã chạy được**. Kiến trúc dự kiến nằm trong
 > [SYSTEM.md](SYSTEM.md). Mọi dòng trong file này trỏ tới một artifact kiểm
@@ -94,9 +97,9 @@ nhật. Demo Compose phục vụ f2 theo ADR-0039; status báo `official=true`.
 | Caption cover + SED tối ưu (W5 cải thiện) | ✅ cover: omission 0 test; trên ensemble C omission constrained 0.284 → 0.036 | ADR-0026, `caption_grounding_sed_ensemble_C_*` |
 | Kiểm lexicon C2 bằng người | ✅ 60 caption, precision 0.896 / recall 0.936, lexicon dễ dãi hơn người | [caption_mention_agreement_20260925.md](measurements/caption_mention_agreement_20260925.md) |
 | Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ duyệt tạm 26/09 | [caption_vi_template_*.md](measurements/), ADR-0025 |
-| Event store + RAG (W6) | ◐ dev+test nạp vào PostgreSQL + pgvector, BGE-M3, benchmark RQ3 (test nDCG@10: structured 0.523, hybrid 0.481, vector 0.418; filter exactness 1.000); câu trả lời ràng buộc evidence: unsupported-claim 0.000 | ADR-0027, [retrieval_benchmark_test_20260925.md](measurements/retrieval_benchmark_test_20260925.md) |
+| Event store + RAG (W6) | ✅ 02/10: corpus validation/test dựng lại từ event f2 (ADR-0040 §3). Test nDCG@10: structured 0.416, hybrid 0.415, vector 0.526 (filter exactness 1.000 ở structured/hybrid) — **giảm** ở structured/hybrid so với baseline run B (0.523/0.481), tăng ở vector (0.418→0.526); câu trả lời: unsupported-claim 0.000 | ADR-0040, [s8_summary_20261002.md](measurements/s8_summary_20261002.md), [retrieval_benchmark_test_20261002.md](measurements/retrieval_benchmark_test_20261002.md) |
 | Parser câu hỏi → filter (L2) | ✅ constrained hợp schema 240/240; exact template 0.855, paraphrase 0.925; RQ3 parsed chỉ validation, hybrid Δ gold +0.012 EN / −0.002 VI | ADR-0036, [query_parser_20260928.md](measurements/query_parser_20260928.md), [retrieval_benchmark_validation_parsed_20260928.md](measurements/retrieval_benchmark_validation_parsed_20260928.md) |
-| API / inference / frontend (W7) | ◐ 7.1–7.4 xong trên f2; UI natural search/chip/manual fallback, model badge, timeline/evidence playback và phrasing review đã triển khai; Compose healthy, status `official=true`; parity f2 CUDA 299/299 event trùng khít, CPU 294/299 trong collar; E2E TRAIN S-0016 có timeline, caption EN/VI và RAG. 7.5–7.7 còn lại | ADR-0029, ADR-0033 §6, ADR-0039, ADR-0037, [DEMO.md](DEMO.md), [inference_parity_20260929.md](measurements/inference_parity_20260929.md), [inference_parity_cpu_20261002.md](measurements/inference_parity_cpu_20261002.md), [demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md) |
+| API / inference / frontend (W7) | ◐ 7.1–7.5 xong trên f2 (7.5 = S8 test, ADR-0040); UI natural search/chip/manual fallback, model badge, timeline/evidence playback và phrasing review đã triển khai; Compose healthy, status `official=true`; parity f2 CUDA 299/299 event trùng khít, CPU 294/299 trong collar; E2E TRAIN S-0016 có timeline, caption EN/VI và RAG. **7.6–7.7 còn lại** | ADR-0029, ADR-0033 §6, ADR-0039, ADR-0037, ADR-0040, [DEMO.md](DEMO.md), [inference_parity_20260929.md](measurements/inference_parity_20260929.md), [inference_parity_cpu_20261002.md](measurements/inference_parity_cpu_20261002.md), [demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md) |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
 
 ---

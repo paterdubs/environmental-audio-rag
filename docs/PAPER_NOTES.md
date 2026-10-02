@@ -88,6 +88,7 @@ Hướng A gần nhất với trọng tâm "model, nghiên cứu, tối ưu". H�
 | S40 | **S13 khóa f2 bằng CV dev nhưng thứ hạng test không trùng thứ hạng CV; không chọn lại** | f2: CV micro 0.2383±0.0562; test annotated macro 0.1206, micro 0.1643 [0.1103, 0.2242]. f1 chỉ hạng 4 CV nhưng có micro test cao nhất 0.1817; g1 hạng 6 CV nhưng có macro test cao nhất 0.1617. Hệ thống cuối vẫn là f2 theo commit trước test `c3f0033` | [s13_selection_20261018.md](measurements/s13_selection_20261018.md), [s13_test_20261018.md](measurements/s13_test_20261018.md), ADR-0031 §9 | Là ví dụ trực tiếp về sai số chọn model trên dev nhỏ; phải báo mọi ứng viên và không diễn giải hệ thống thắng theo test |
 | S41 | **RQ1-v2 vẫn âm tính về event-F1; DataSEC chỉ tăng PSDS-2 trong phép kiểm đa seed** | B-v2/C-v2 macro trung bình 0.1221/0.1147, micro 0.1324/0.1294. Bootstrap C−B micro −0.0029 [−0.0254, +0.0199]; Welch micro p=0.6965, macro p=0.4220. PSDS-2 C−B +0.0279, p=0.0193 | [rq1_v2_multiseed_20260929.md](measurements/rq1_v2_multiseed_20260929.md), [rq1_multirun_bootstrap_rq1_v2_annotated_20260929.md](measurements/rq1_multirun_bootstrap_rq1_v2_annotated_20260929.md), ADR-0031 §9 | Không có bằng chứng khởi tạo DataSEC cải thiện event localization dưới recipe v2; hiệu ứng phụ thuộc metric, nên không được viết “không có tác dụng” chung chung |
 | S42 | **Phục vụ f2 tái tạo event đóng băng trong Compose; CPU lệch số học nhưng vẫn giữ phần lớn event trong collar** | CUDA 299/299 event trùng khít. CPU 132/142 recording trùng khít, 290/299 event trùng khít và 294/299 trong collar; Δ xác suất lớn nhất 0.0239, batch Δlogit 0.0966/0.0779/0.0559. E2E TRAIN S-0016: 2.012 s upload + phân tích, 2 event, caption EN/VI có evidence, RAG 0.250 s | [inference_parity_20260929.md](measurements/inference_parity_20260929.md), [inference_parity_cpu_20261002.md](measurements/inference_parity_cpu_20261002.md), [demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md), ADR-0039 | Parity là tái tạo output đóng băng, không phải metric test mới. CPU container đủ cho lượt S-0016 này; nếu recording dài làm lượt chạy vượt 60 s thì ưu tiên `scripts.serve_demo` trên host GPU |
+| S43 | **S8 xong trên f2: RQ2 giữ nguyên hướng, RQ3 structured/hybrid GIẢM khi đổi corpus sang f2** | RQ2 test e2e so ensemble C v1: constrained omission 0.036→0.012; unconstrained hallucination 0.005→0.011 (CI chồng lấn); constrained_cover vẫn omission 0 ở cả hai hệ thống. RQ3 test so run B: nDCG@10 structured_only/en 0.523→0.416, hybrid/en 0.481→0.415 (**giảm**); vector_only/en 0.418→0.526 (tăng). Bộ lọc parse so gold trên f2: Δ nDCG ∈ [−0.006, +0.000]. Mọi cấu hình answers (gold/parsed × structured/hybrid × EN/VI): unsupported-claim 0.000, contract và evidence thật 100% | [s8_summary_20261002.md](measurements/s8_summary_20261002.md), [retrieval_benchmark_test_20261002.md](measurements/retrieval_benchmark_test_20261002.md), [retrieval_answers_test_20261002.md](measurements/retrieval_answers_test_20261002.md), ADR-0040 | RQ3 giảm ở structured/hybrid là ảnh hưởng đổi corpus (postproc cSEBB + event f2 khác run B), không phải lỗi retrieval — document builder/relevance không đổi. Không diễn giải có lợi; ghi nguyên văn cả chiều giảm |
 
 ### 2.3 Caption (RQ2 — C1, C2)
 
@@ -228,6 +229,13 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 11. Trong S13, lượt `evaluate_run` annotated đầu tiên bắt đầu trên tree sạch nhưng report untracked do
     chính script sinh ra làm 15 lượt còn lại có `git status --porcelain` khác rỗng. Không có code/cấu
     hình tracked nào đổi và không chạy lại test; đây vẫn là hạn chế provenance phải nêu (ADR-0031 §9).
+12. Cùng mẫu hình ở S8 (02/10): lượt test đầu tiên của mỗi nhóm (caption `unconstrained_test`,
+    `constrained_test`; retrieval `retrieval_benchmark_validation`) sạch, nhưng các lượt sau trong
+    cùng batch ghi `git.dirty=true` vì chính measurement trước đó (chưa commit) làm tree có file
+    untracked. Một lần thực sự khác: hai lượt caption đầu còn dính thêm một thư mục log tạm của
+    agent (`.agent_logs/`, đã thêm vào `.gitignore` giữa chừng) — không phải code/dữ liệu nghiên
+    cứu. Không chạy lại. Bài học lặp lại từ ADR-0031 §9: nên commit ngay sau lượt test đầu tiên của
+    mỗi nhóm, trước khi chạy các lượt còn lại, để tránh lặp lại sai lệch này ở S13/S8 sau này.
 
 ---
 
