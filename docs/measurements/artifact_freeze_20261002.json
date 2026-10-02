@@ -1,0 +1,979 @@
+{
+  "git": {
+    "revision": "292571d79929ee5e3c06a3acfa45062c89dd1510",
+    "dirty": false
+  },
+  "runs": [
+    {
+      "label": "v1 A (scratch)",
+      "run_id": "sed_polyphonic_20260923T173234Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_polyphonic_20260923T173234Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "9c9eb5452573b8e358ca22fdfdaedaa4e25a093309761868f3bfea74dc5435ec",
+          "bytes": 2260
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260923T173234Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "fc01a3e14bcf86a9ff016b024dcb7a20d9da4de75a05a8a214737ef0a9636bc0",
+          "bytes": 32111412
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260923T173234Z/predictions/test.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "664b61cc72b7905693151f10d680c4cafca4d2826efb39f4f66cbaa3d8f1a04a",
+          "bytes": 28971567
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260923T173234Z/postproc.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "88bd1df200053c89d121db04d45896cdee7434dc1bd83a4802a445dd0607e8e9",
+          "bytes": 5621
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260923T173234Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "2f0fc26f732b36c90590e2313aeadf95c847d33803e6370263145ddb204227fc",
+          "bytes": 5922054
+        }
+      ],
+      "git": {
+        "revision": "092537165b26cccf23ee0de149f6e38a32480d68",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "v1 B (AudioSet)",
+      "run_id": "sed_polyphonic_20260924T054531Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T054531Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "952d6fd3112fa9ef73a95f359168b561ae909659d5dc971c086328c7b48ee703",
+          "bytes": 2660
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T054531Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "9cd0e7b74aca16d15921de27af390bfa29f5ee7c6324824fdf347067f83ef28f",
+          "bytes": 39780457
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T054531Z/predictions/test.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "42818510d015469a678db5530eee37f51f8b01fd53c6c150a708e870a32fa430",
+          "bytes": 36171915
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T054531Z/postproc.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "3caf552f87c17b2e5b8082466a3823fcab639cf6ed49ad045b612107236522ae",
+          "bytes": 5634
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T054531Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "384b1c588f27b9ba572e1b8fd23d56d4a7e971f665bba69e56f3d2f046377fa9",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T054531Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "e8e7e98c364f5ea7df4ad48cff26dd4d9da0057e1977b0cd9a61bcf8dd06a670",
+          "bytes": 1412
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T054531Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "428896df645e84180e0e28308665c698b5d89c22fe2348c96760e858e37dcdd4",
+          "bytes": 925987834
+        }
+      ],
+      "git": {
+        "revision": "5bf1cf7e47aadbdb20cc5704b341d6f6bee7380e",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "v1 C (AudioSet→DataSEC)",
+      "run_id": "sed_polyphonic_20260924T061000Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "e29ae57720789624867090b98643c2e312c814a9c901504feca0ff351a65d692",
+          "bytes": 2567
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "eb189a28ddcd0eed3f040e559b8d1cf58fa56d4db0efab364a8750b6b2c3524c",
+          "bytes": 41982719
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/predictions/test.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "8561bd0639051114125cc130e8a40768cde79c5e1aa37c4990bcc37c11ffc0b8",
+          "bytes": 38349235
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/postproc.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "0dd954c84218d38e91879f64040110a47a09d84334b486765ed8a987d7b8bac1",
+          "bytes": 5628
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "d929c9073eba8c15bd90e986f46e549964ac86e8e137cee3eb894daf4e05fd7b",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "ee5aaaef637350b06c3035a17040b41fb7eef05b038c673ed0bd210595ff8da0",
+          "bytes": 1401
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "39dd7fe721d5da470f328763c6e26a04a2fa3f521304246eb6e8f7e0bc4ca229",
+          "bytes": 925987834
+        }
+      ],
+      "git": {
+        "revision": "5bf1cf7e47aadbdb20cc5704b341d6f6bee7380e",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "v1 ensemble C",
+      "run_id": "sed_ensemble_C_clean_20260925T045631Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "27f84d8685faab1070751adf241a5ebb3ee5ca3fb4153e5dfc955be3c7c14f05",
+          "bytes": 1920
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "4af86f6d7966773007693e451274bc3608e1b857981ce1b6a78bcd8b300e9574",
+          "bytes": 96461282
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/predictions/test.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "ea87a2ea6c52159729780715825cbac616f756f07643c1d76f7ab1c5fca99f1e",
+          "bytes": 87907624
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/postproc.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "72b89077c7aa6e071d86c4330311e6d6db8e63a60774a86d91b759b4b31ee050",
+          "bytes": 5628
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "d05c7e00ba3c9df7190f88c9a711e4c39d9c1241f40df0ee2556780ef2a1962f",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/postproc_cv_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "d05c7e00ba3c9df7190f88c9a711e4c39d9c1241f40df0ee2556780ef2a1962f",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "3e34c09dcd4756fc14148886f8c28aaa18afcc25d2fd5b08a98d53e2e28e5398",
+          "bytes": 1299
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/postproc_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "a6d9bea572b4ee54474924ae633db53227e7b07ecb15e85d338b4e8fb05653e3",
+          "bytes": 1525
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/sebb_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "595086477ed8d08c2bef9674d07252982bd52270739ec2a4ae51db4939e87c4e",
+          "bytes": 15203
+        },
+        {
+          "path": "ml/runs/sed_ensemble_C_clean_20260925T045631Z/sebb_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "827111907cfdd9f5bf536fa5b639556178797c6166edb1a726382a1103a806df",
+          "bytes": 15486
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T033537Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "33b48f66954aa03013e9e18432c0650cf8bbe1b020d3762c2e0a84e5e9f38938",
+          "bytes": 925987834
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T061000Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "39dd7fe721d5da470f328763c6e26a04a2fa3f521304246eb6e8f7e0bc4ca229",
+          "bytes": 925987834
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T072736Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "62333fa6c40b2030b647cb97965d17febcdc8c5438657b7fe632806f12973124",
+          "bytes": 925987834
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260924T080715Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "99b7c6f0783552bc591d4fb709e594488c424129b74e86204fd50e8cc88c94ab",
+          "bytes": 925987834
+        }
+      ],
+      "git": {
+        "revision": "1ca6bb46b08c838b55b85ea55df9ce80489ab6c8",
+        "dirty": true
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "v2 B",
+      "run_id": "sed_polyphonic_20260926T033312Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "3b23ab0658c219d249a14118185cb427e8e65c5f93e76d18baaf4ffd287b3e46",
+          "bytes": 2972
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "afda4e5c58ccaed641968855a5fa694b2a176ffa61bad05b71711663092e8c88",
+          "bytes": 9208172
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/predictions/test.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "15fa4cef90b561c639417bd761c41db8f53b778e1b3177005a362147e307c555",
+          "bytes": 8301922
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "49d2f412420f33e49824c227c59a194c94d513a4eccb520039640809c2c8c176",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/postproc_cv_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "49d2f412420f33e49824c227c59a194c94d513a4eccb520039640809c2c8c176",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "39811afb908831172e8e15bb1bed1dc4d89d323efe71849bc0b0a26e3f6ecbcd",
+          "bytes": 892
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/postproc_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "428a5fea7ccd6c17a448d43019bd56f362e70d8828215d1ffb942aec82adaea0",
+          "bytes": 944
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/sebb_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "afeaa5437bb5bf220ae8b1136452e4e5f6dbf7a69fd361bb97d13bc3e3480aa5",
+          "bytes": 15368
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/sebb_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "bd6b7951dabaccfeb2460ac740196c3eceae50f3820ccb359f9dff7fd3f39275",
+          "bytes": 15349
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "4c340341c3bd788a42ea542e27c50dc9e2c1efcf09336fdd254d5e2956d52f8d",
+          "bytes": 962683714
+        }
+      ],
+      "git": {
+        "revision": "e808df4e1c3a4b46aeb8883ff958eedb946a06d3",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "v2 ensemble B",
+      "run_id": "sed_ensemble_v2_20260926T155630Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "b645368cd003d713de53050e6a9a4de86bb930618616b557fe64bc8b2ab590e9",
+          "bytes": 1678
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "55ed1fa87d486d7813c9fcae65c863e13039f00dd1ad69425b205787df3abe18",
+          "bytes": 14278691
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/predictions/test.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "86554be67758970d32da8e427feb7e921fb1e7960670d23ed4fe171a864a7597",
+          "bytes": 12857344
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "765f4141fb840249e3765e410d982c5f64c3c3a1a18e338cd4a0b9fb560aa2d6",
+          "bytes": 5609
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/postproc_cv_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "765f4141fb840249e3765e410d982c5f64c3c3a1a18e338cd4a0b9fb560aa2d6",
+          "bytes": 5609
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "bba2b5ec94c801bfe26393935b2903330ed8f12c19e82fd7f9e39dbfd54f5a6a",
+          "bytes": 941
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/postproc_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "2e86c3e5aa486e11f01ca87e99dcf071609eb640dcb996618a8a87d7909902d0",
+          "bytes": 945
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/sebb_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "a7bd0fb402589e5167eb15aa3d947ff9b8afe4fdbcc0caa0faf07196a0f7a9fe",
+          "bytes": 15315
+        },
+        {
+          "path": "ml/runs/sed_ensemble_v2_20260926T155630Z/sebb_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "a4cd11307dc4aefbddb4d2ed9bcde09c48c3bba4431debc25a236e02d7ba9020",
+          "bytes": 15379
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T033312Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "4c340341c3bd788a42ea542e27c50dc9e2c1efcf09336fdd254d5e2956d52f8d",
+          "bytes": 962683714
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T053024Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "2c7fa6ade03840ba6a3f1a199c452aaca2ed16b5406273f643fdbb68db4f61d9",
+          "bytes": 962683714
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T064832Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "fbd9cf2ad81688a2df60c45da65012b78a63ef3a620e3f0adf96c6a07167f0dc",
+          "bytes": 962683714
+        }
+      ],
+      "git": {
+        "revision": "ec71b2016b75afcc88f03a2dbb217e94601a3f2c",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "C-v2 ensemble",
+      "run_id": "sed_ensemble_cv2_20260926T205405Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "d4da4f19529a12813e95095c5ec75847397b2579e2af3bb02438448bc17207bb",
+          "bytes": 1668
+        },
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "e1b5a0f42dfd5c3eac8032fe6bb69ef0db3babad7c4c2e5a9fde1be20f61597b",
+          "bytes": 14267116
+        },
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "7398b397957754cef9ae7050d2c8fc228d88c10b4c187fbf153fe54a57e5c6b5",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/postproc_cv_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "7398b397957754cef9ae7050d2c8fc228d88c10b4c187fbf153fe54a57e5c6b5",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "a060ce0b79cf830728e58a5595d7c60b397863da0a6ff17475b0723aee5f9394",
+          "bytes": 894
+        },
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/postproc_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "f3e8fe2949538205284524508c800f7622eba65a3307a9c1230473395cab128c",
+          "bytes": 947
+        },
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/sebb_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "8faeeeb6beced5cdc85e328d865af989aad1789884b6c7e336024ce8bd0dd88d",
+          "bytes": 15371
+        },
+        {
+          "path": "ml/runs/sed_ensemble_cv2_20260926T205405Z/sebb_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "5c8e889b8218d0219b4ec5f35824a4974222de56601cd79519766060ed976452",
+          "bytes": 15396
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T161726Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "dc357762d087ff6b8326163cdfc2785461c98f6e62e448f77badba241c04a20c",
+          "bytes": 962683714
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T172229Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "cfdc656a8d119450a17a2e4176d9ae3b81f4d8b4b788bdfda672aabd6477e6d4",
+          "bytes": 962683714
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260926T185208Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "6931b599931e128bdddb7058daf6e7b9be9ad73b6bf58ceb62e6d782c2057bc7",
+          "bytes": 962683714
+        }
+      ],
+      "git": {
+        "revision": "464fc85bff39e0a1b96aa63de9cdded2605a63b8",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "T2a ensemble",
+      "run_id": "sed_ensemble_t2a_20260927T141952Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "8d686d26d85741ab3aaf1b2c1d4672f1049cc427477018fe2ca0d4d19bde814a",
+          "bytes": 1668
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "5635f79f2a6bda6f1dc891bc7f2bdaeafcf866e32b550935880805c9ea618e4a",
+          "bytes": 27012983
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "8db423e54224d2c094252891979ecd7c91123db6aafe33ed3af035fe1b2e3c0c",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/postproc_cv_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "8db423e54224d2c094252891979ecd7c91123db6aafe33ed3af035fe1b2e3c0c",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "ee049ad142e737344aced5293a56aac6ff4d813420f35e6e061a33b210124729",
+          "bytes": 893
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/postproc_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "58c5afeacdd9af710ad8ae7ee9cefd98df23599da1fa4a2ca1327eeb1bcce050",
+          "bytes": 947
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/sebb_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "38edef469384ff913fcc5d1fbabdb89d15f61d2cc0da5e1a0ff490694715c422",
+          "bytes": 15205
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2a_20260927T141952Z/sebb_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "d95de8e5c452dbbb9ebc7dc601225f9a141c0b1f74098f5695868bbe48a7a046",
+          "bytes": 15254
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T064341Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "f4190718826de3d5ad611a2ff617ce7517306962f73dd20235d8ab8392a385c5",
+          "bytes": 33250107
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T092605Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "5f69972598923c33eed7ee0a0e04b32118d37514d331ace59dd6eb8512d3f1f2",
+          "bytes": 33250107
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T113910Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "dbe017a7d24ddecf49fac8a4f1370c475b9ab4b90418024d8a1244df7595cc00",
+          "bytes": 33250107
+        }
+      ],
+      "git": {
+        "revision": "7036028f7c416b4ce6efdb45c9d54e7849f71085",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "T2b ensemble (served f2 source)",
+      "run_id": "sed_ensemble_t2b_20260927T200914Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "c21a71f64c32875e4bf7c0750ad762a24746dfa576ff6ec989dc9bc461c6cfdd",
+          "bytes": 1668
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "08b14a95edbda75585156e6c64ba86a73d4afd25371ec10c171482d2ee03bc2a",
+          "bytes": 27604700
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "6c2cdada49c2eaec48460b6b4d94dbf02ba3deabc0674746c1e08fadddaf11fd",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/postproc_cv_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "6c2cdada49c2eaec48460b6b4d94dbf02ba3deabc0674746c1e08fadddaf11fd",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "7e8a2f16637c7188a4ba9ed513304e00b87f1802e10705fa9f6216ae235ceac3",
+          "bytes": 895
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/postproc_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "d8def980349b0925c3c2e7b08412ac88dc46af65f2dbb31437d9028325e09053",
+          "bytes": 930
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/sebb_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "9ee5bed95346f54a74b9cf047160b048923ae5f0f87870a9e2f3964fec5db8b8",
+          "bytes": 15247
+        },
+        {
+          "path": "ml/runs/sed_ensemble_t2b_20260927T200914Z/sebb_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "7187bb30bd03c9d0096ef1679513080c4308fa9266721e0afed4bdb9e6c82ca0",
+          "bytes": 15248
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T172924Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "5090beb60bbd38ae00396506d0d64d910de66dec914ddbf92f1c2bcf39561a8d",
+          "bytes": 36226571
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T180358Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "787e15395f05ef52d219e190286cba35b3d79e8681f974fc87410b825133663d",
+          "bytes": 36226571
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T185137Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "6bfa01b3217387c36f508a7f46d87db391e30060748db680a3bed08662e3a44f",
+          "bytes": 36226571
+        }
+      ],
+      "git": {
+        "revision": "d6c96f6c5f277e0d2e530f6471b6b39bd0920e22",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "S11 focal ensemble",
+      "run_id": "sed_ensemble_s11_focal_t2b_20260928T185207Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "c888a447e76ca6a2ecbfdfa5a33f93fe32c1020a33ae7d01567aed8a7f60f316",
+          "bytes": 1698
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/predictions/dev.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "5dc73d082d11b8be4b40bd56a5b6b74d552998733ba42b0adef8b04af7de2ba2",
+          "bytes": 27309451
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/postproc_cv.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "5ad788b03837e9d9f7553e81c5a8e37363eb0faf6b4d094c654f09a72847a0d2",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/postproc_cv_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "5ad788b03837e9d9f7553e81c5a8e37363eb0faf6b4d094c654f09a72847a0d2",
+          "bytes": 5630
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/postproc_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "aa2c4ea695b494f96ba33538c15142a0f93d57278519f2fdae4dcb414c4567ba",
+          "bytes": 955
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/postproc_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "299295b6637f146d224fac7df2c97a9b4b1c0a18fbabdbdf930db1c3910c7f78",
+          "bytes": 957
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/sebb_cv_selection.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "754ac73ce6bfae7c0b6d82eaa337c261e3bf094b75c0b453d913a9bf089ba87b",
+          "bytes": 15288
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s11_focal_t2b_20260928T185207Z/sebb_cv_selection_annotated.json",
+          "kind": "postproc_or_sebb",
+          "exists": true,
+          "sha256": "1826ae546cbba285ca3f9d4061c06ae9e0f416e38037466432e6c3a251b39e1d",
+          "bytes": 15308
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260928T165635Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "e91cef7d466520c42456d707fbb387ca7267b94ac895f5e0529db1cb473e7654",
+          "bytes": 36226699
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260928T173526Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "fea868afd66177743fb7545584f4ff5a6f5d279b39d27c161ebe10f230531388",
+          "bytes": 36226699
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260928T181509Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "65b70c55516cc3cafe4c1833486417214aee1313a29aea3ff3415edf3a26d846",
+          "bytes": 36226699
+        }
+      ],
+      "git": {
+        "revision": "06287f4b69a090e7e3ff62a7bdc0624318456c63",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    },
+    {
+      "label": "S13 f2 test output",
+      "run_id": "sed_ensemble_s13_f2_20260929T045053Z",
+      "exists": true,
+      "artifacts": [
+        {
+          "path": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/manifest.json",
+          "kind": "run_manifest",
+          "exists": true,
+          "sha256": "6e47cd6a272c972861db9078f74fcb53a4a82b0a7e064ed7259bac5cce1529fd",
+          "bytes": 1678
+        },
+        {
+          "path": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/predictions/test.npz",
+          "kind": "prediction",
+          "exists": true,
+          "sha256": "86b4287d881b515020253d7e0880ecf61f0b39e1fd737bfe3a71243ae1af5dac",
+          "bytes": 24850074
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T172924Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "5090beb60bbd38ae00396506d0d64d910de66dec914ddbf92f1c2bcf39561a8d",
+          "bytes": 36226571
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T180358Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "787e15395f05ef52d219e190286cba35b3d79e8681f974fc87410b825133663d",
+          "bytes": 36226571
+        },
+        {
+          "path": "ml/runs/sed_polyphonic_20260927T185137Z/checkpoints/best.pt",
+          "kind": "best_checkpoint",
+          "exists": true,
+          "sha256": "6bfa01b3217387c36f508a7f46d87db391e30060748db680a3bed08662e3a44f",
+          "bytes": 36226571
+        }
+      ],
+      "git": {
+        "revision": "e656a50221ced2c4cbcb5cd12d562947f7bbd98a",
+        "dirty": false
+      },
+      "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+      "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff"
+    }
+  ],
+  "external": [
+    {
+      "path": "artifacts/checkpoints/Cnn14_mAP=0.431.pth",
+      "kind": "AudioSet_CNN14",
+      "exists": true,
+      "sha256": "7f0ea3a7ad9622f7bdc22439a750e04efdc1641bc4c930ff8727bb92d3141a69",
+      "bytes": 1365409299
+    },
+    {
+      "path": "artifacts/checkpoints/BEATs_strong_1.pt",
+      "kind": "BEATs",
+      "exists": true,
+      "sha256": "db13a79ae90a0cfd0f9911a6a1d8cdb89324322bee642dcfe32de022123b8b54",
+      "bytes": 364091999
+    },
+    {
+      "path": "artifacts/checkpoints/frame_mn10_strong_1.pt",
+      "kind": "frame_mn10",
+      "exists": true,
+      "sha256": "4a0fe320d5369987b772394c51881fb20a602967e6842f72f3e5c8181065ece7",
+      "bytes": 15537114
+    },
+    {
+      "path": "artifacts/llm/Qwen_Qwen3.5-9B-Q4_K_M.gguf",
+      "kind": "Qwen_GGUF",
+      "exists": true,
+      "sha256": "d784ce9eda1a5a7b51e8f705a9e6310844bf4f173654d115823c775fdea56d43",
+      "bytes": 6169341984
+    },
+    {
+      "path": "artifacts/hf/models--BAAI--bge-m3",
+      "kind": "tree",
+      "exists": true,
+      "sha256": "3e942530b983ead63fecf1a36a34b8b581eccf464da7351e19c27f23ddb6b94c",
+      "files": 22,
+      "bytes": 4564396159
+    }
+  ],
+  "frozen_inputs": [
+    {
+      "path": "data/splits/datased_polyphonic.frozen.json",
+      "kind": "frozen_input",
+      "exists": true,
+      "sha256": "c3d29189b5fcd3f407077d032cf48647dd731e695fa96e6b7e23a6f24861a1bf",
+      "bytes": 1243
+    },
+    {
+      "path": "ml/configs/taxonomy.yaml",
+      "kind": "frozen_input",
+      "exists": true,
+      "sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+      "bytes": 1861
+    },
+    {
+      "path": "ml/configs/caption_lexicon.yaml",
+      "kind": "frozen_input",
+      "exists": true,
+      "sha256": "184cdc6af18454a16b885f5cd8ece848c3e635df951f8edb1f8f1b794db2d578",
+      "bytes": 7629
+    },
+    {
+      "path": "ml/configs/caption_lexicon_vi.yaml",
+      "kind": "frozen_input",
+      "exists": true,
+      "sha256": "35ccf58cd888f53025bf7525e28bbaad0dc378ac912abdfd5e8bca886b67ac5e",
+      "bytes": 3057
+    },
+    {
+      "path": "ml/configs/caption_llm.yaml",
+      "kind": "frozen_input",
+      "exists": true,
+      "sha256": "94770dc649568c8b9617a9d1ced135e9abaf89a06a92dd4c92f44467937c91b8",
+      "bytes": 990
+    },
+    {
+      "path": "ml/retrieval/query_set.py",
+      "kind": "frozen_input",
+      "exists": true,
+      "sha256": "3c406f0490a7a115c93af28725678761c11543bf3a285ebd55bd8620a9706a49",
+      "bytes": 5005
+    },
+    {
+      "path": "ml/captioning/constrained.py",
+      "kind": "frozen_input",
+      "exists": true,
+      "sha256": "469f2a2aca30839c0164ef13deb18aa845a21e5ff4f5b356019b9cace94f06ff",
+      "bytes": 8881
+    }
+  ]
+}
