@@ -1,9 +1,9 @@
 # STATUS.md — Trạng thái có bằng chứng
 
-**Cập nhật:** 2026-09-29 — S13 hoàn tất sớm theo cho phép của người dùng. Commit `c3f0033` khóa
+**Cập nhật:** 2026-10-02 — S8 phục vụ f2 và W7 7.4 đã kiểm chứng. S13 hoàn tất sớm theo cho phép của người dùng. Commit `c3f0033` khóa
 f2 bằng CV dev annotated trước test; test annotated của 11 ứng viên đã báo, không chọn lại dù f1
 có micro test cao hơn. RQ1-v2 3 B-v2 vs 3 C-v2 hoàn tất và âm tính về event-F1. Sổ test đã cập
-nhật. Demo Compose vẫn phục vụ SED v2 theo ADR-0035; hệ thống chính thức chuyển sang f2 ở S8.
+nhật. Demo Compose phục vụ f2 theo ADR-0039; status báo `official=true`.
 **Taxonomy:** `0.1` / `67ca8a8c…` · **Test:** 734 pass, 0 skip, 19 warnings; ruff sạch
 (Windows, 29/09)
 
@@ -96,7 +96,7 @@ nhật. Demo Compose vẫn phục vụ SED v2 theo ADR-0035; hệ thống chính
 | Caption tiếng Việt (giao diện) | ✅ template VI, 0 vi phạm G1–G3 trên timeline thật; cụm từ duyệt tạm 26/09 | [caption_vi_template_*.md](measurements/), ADR-0025 |
 | Event store + RAG (W6) | ◐ dev+test nạp vào PostgreSQL + pgvector, BGE-M3, benchmark RQ3 (test nDCG@10: structured 0.523, hybrid 0.481, vector 0.418; filter exactness 1.000); câu trả lời ràng buộc evidence: unsupported-claim 0.000 | ADR-0027, [retrieval_benchmark_test_20260925.md](measurements/retrieval_benchmark_test_20260925.md) |
 | Parser câu hỏi → filter (L2) | ✅ constrained hợp schema 240/240; exact template 0.855, paraphrase 0.925; RQ3 parsed chỉ validation, hybrid Δ gold +0.012 EN / −0.002 VI | ADR-0036, [query_parser_20260928.md](measurements/query_parser_20260928.md), [retrieval_benchmark_validation_parsed_20260928.md](measurements/retrieval_benchmark_validation_parsed_20260928.md) |
-| API / inference / frontend (W7) | ◐ 7.1–7.4 xong; UI natural search/chip/manual fallback, model badge, timeline/evidence playback và phrasing review đã triển khai; Compose demo v2 healthy, status báo `official=false`; parity v2 CUDA/CPU đều 425/425 event trong collar; E2E TRAIN có timeline, caption EN/VI và RAG. Hệ thống chính thức vẫn v1; 7.5–7.7 sau S8 | ADR-0029, ADR-0033 §6, ADR-0035, ADR-0037, [DEMO.md](DEMO.md), [vi_phrasing_review_20260928.md](measurements/vi_phrasing_review_20260928.md) |
+| API / inference / frontend (W7) | ◐ 7.1–7.4 xong trên f2; UI natural search/chip/manual fallback, model badge, timeline/evidence playback và phrasing review đã triển khai; Compose healthy, status `official=true`; parity f2 CUDA 299/299 event trùng khít, CPU 294/299 trong collar; E2E TRAIN S-0016 có timeline, caption EN/VI và RAG. 7.5–7.7 còn lại | ADR-0029, ADR-0033 §6, ADR-0039, ADR-0037, [DEMO.md](DEMO.md), [inference_parity_20260929.md](measurements/inference_parity_20260929.md), [inference_parity_cpu_20261002.md](measurements/inference_parity_cpu_20261002.md), [demo_f2_e2e_20261002.md](measurements/demo_f2_e2e_20261002.md) |
 | CI | ✅ xanh trên GitHub Actions (Linux, Python 3.12) — lần đầu đỏ vì kiểm đường dẫn phụ thuộc hệ điều hành, đã sửa (`de4acc1`) | [https://github.com/paterdubs/environmental-audio-rag/actions](https://github.com/paterdubs/environmental-audio-rag/actions) |
 
 ---

@@ -41,6 +41,11 @@ services:
       - ./data/raw/datased/extracted:/app/data/raw/datased/extracted:ro
       - ./data/features/datased/logmel_panns_v1:/app/data/features/datased/logmel_panns_v1:ro
       - ./data/cache/datased_wav16k:/app/data/cache/datased_wav16k:ro
+      - ./data/manifests:/app/data/manifests:ro
+      - ./data/splits:/app/data/splits:ro
+      - ./data/annotations:/app/data/annotations:ro
+      - ./scripts:/app/scripts:ro
+      - ./docs/measurements:/app/docs/measurements
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s

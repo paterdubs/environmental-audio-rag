@@ -13,9 +13,11 @@ from typing import Any
 
 import httpx
 
-from ml.provenance import git_state
-
+# Allow the documented direct-file invocation to import repository packages.
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from ml.provenance import git_state  # noqa: E402
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -91,7 +93,7 @@ def run(recording_id: str, base_url: str) -> dict[str, Any]:
 
 def render(result: dict[str, Any]) -> str:
     return "\n".join([
-        "# Demo SED v2 đầu-cuối", "",
+        "# Demo SED f2 đầu-cuối", "",
         "> Sinh bởi `scripts.report_demo_e2e`; chỉ upload WAV thuộc TRAIN, không chấm metric.", "",
         "| Kiểm tra | Kết quả |", "|---|---|",
         f"| Nguồn | `{result['source_recording_id']}` (`{result['source_split']}`) |",
@@ -112,7 +114,7 @@ def main() -> None:
     args = parse_args()
     result = run(args.recording_id, args.base_url)
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    out = ROOT / "docs/measurements" / f"demo_v2_e2e_{stamp}.md"
+    out = ROOT / "docs/measurements" / f"demo_f2_e2e_{stamp}.md"
     out.with_suffix(".json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     out.write_text(render(result), encoding="utf-8")
     print(render(result))

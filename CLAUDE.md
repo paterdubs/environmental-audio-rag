@@ -56,7 +56,7 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 29/09/2026 — S13 và RQ1-v2 hoàn tất sớm theo cho phép của người dùng.** Báo cáo lựa
+**Cập nhật 02/10/2026 — S8 phục vụ f2 và W7 7.4 đã kiểm chứng.** S13 và RQ1-v2 hoàn tất sớm theo cho phép của người dùng. Báo cáo lựa
 chọn `s13_selection_20261018` được sinh từ CV dev annotated và commit `c3f0033` trước khi mở thêm
 test: **f2** thắng với micro 0.2383±0.0562, nhưng không gọi tốt hơn f4 vì chênh 0.0029 ≤ sd f2.
 Test annotated: f2 macro 0.1206, micro 0.1643 [0.1103, 0.2242]; f1 có micro cao nhất 0.1817 nhưng
@@ -67,7 +67,12 @@ event-F1; PSDS-2 tăng +0.0279, p=0.0193. Xem ADR-0031 §9, PAPER_NOTES S40–S4
 Sai lệch provenance được giữ nguyên và công khai: f2 được đánh giá khi tree sạch, nhưng report
 untracked do script sinh ra làm 15 lượt `evaluate_run` annotated sau đó có porcelain khác rỗng dù
 code/cấu hình tracked không đổi. Không chạy lại test; các báo cáo tổng hợp cuối đã sinh lại từ tree
-sạch. f2 là hệ thống cuối đã khóa; S8 còn phải chạy một lần để đổi caption/RQ3/phục vụ.
+sạch. f2 là hệ thống cuối đã khóa; phục vụ Compose đã chuyển sang f2 và status báo `official=true`.
+
+Parity CUDA f2: 299/299 event trùng khít (`inference_parity_20260929`). Parity CPU trong container:
+132/142 recording trùng khít, 294/299 event trong collar; Δ xác suất lớn nhất 0.0239, batch Δlogit
+0.0966/0.0779/0.0559 (`inference_parity_cpu_20261002`). E2E S-0016 thuộc TRAIN: 22.682 s upload +
+phân tích, 2 event, caption EN/VI có evidence, RAG 0.294 s (`demo_f2_e2e_20261002`).
 
 **Cập nhật 29/09/2026 — S11 focal hoàn tất trên dev, không mở test.** ADR-0038 đăng ký trước
 mọi run: focal không `pos_weight`, T2b `frame_mn`, pilot γ `{0.5,1,2}` chọn γ=2.0; ba seed
@@ -85,13 +90,8 @@ bỏ qua wrapper schema kiểu OpenAI; đã sửa dùng top-level schema inline 
 validation hybrid parsed 0.491 EN / 0.490 VI, Δ gold +0.012 / −0.002; chênh dương không được
 diễn giải là cải thiện. API parse/query và fallback 503 chạy thật qua Compose. Không mở test.
 
-**Cập nhật 28/09/2026 (tối) — demo Compose dùng SED v2 theo ADR-0035; hệ thống chính thức vẫn
-v1 tới S8.** `Engine` đọc run/postproc qua env nhưng mặc định giữ v1; profile `app` trỏ
-`sed_ensemble_v2_20260926T150934Z` + `postproc_cv.json`. Compose healthy, status báo ba member,
-CPU, taxonomy nhất quán và `official=false`. Parity với output đóng băng (không ground truth,
-không metric mới): CUDA 419/425 event trùng chính xác, CPU 400/425; cả hai 425/425 trong collar.
-E2E TRAIN `S-0016`: upload+phân tích 5.113 s, 2 event, caption EN/VI có evidence, RAG hybrid trả
-đúng recording (`inference_parity_v2_{cuda,cpu}_20260928`, `demo_v2_e2e_20260928`).
+**Cập nhật 28/09/2026 (tối) — thông tin lịch sử demo v2 trước S8; đã bị ADR-0035 supersede bởi
+S13/S8 f2 ngày 29/09.**
 
 **Cập nhật 28/09/2026 (chiều) — W7 7.4 và Track 2b đã xong; nợ #25 đã đóng theo ADR-0034. Đã
 sinh đủ 18/18 file CV dev `annotated` sạch cho 9 ứng viên và báo cáo xếp hạng chuẩn bị S13; chưa
@@ -1811,3 +1811,11 @@ quả phía sau, vì mọi số đã báo cáo đều gắn với đúng một s
 Frontend đã thêm luồng câu hỏi tự nhiên → `/retrieval/parse` → chip filter sửa được → query; parser lỗi/LLM tắt báo rõ và giữ bộ lọc thủ công. `/api/v1/models/status` được hiển thị, `official=false` có nhãn demo; evidence giữ recording + onset/offset để mở đúng timeline/audio. Script `scripts/report_vi_phrasing_review.py` sinh `vi_phrasing_review_20260928.{md,json}` gồm 38 cụm chờ người dùng duyệt, không sửa lexicon VI. `docs/DEMO.md` ghi lệnh llama.cpp/compose, chỉ dùng TRAIN và rollback v1.
 
 Gate frontend: `npm test` 7 pass; `npm run build` xanh. Gate Python sẽ chạy trước commit. Không mở test split và không thêm số metric.
+
+### 2026-10-02 — S8 phục vụ f2 và W7 7.4
+
+Đã commit parity CUDA f2 (`9523e9f`), xác nhận revision `b49bba6` và 299/299 event trùng khít.
+Compose được bổ sung các mount manifest/split/annotation/scripts cần cho parity; build healthy, status
+`served_run=sed_ensemble_t2b_20260927T200914Z`, `official=true`. Parity CPU container và E2E S-0016
+đã sinh artifact f2; UI đổi model badge khi official=true. Không chạy metric test, không train, không
+đổi split/taxonomy/postproc. Cần gate cuối và commit các thay đổi còn lại.

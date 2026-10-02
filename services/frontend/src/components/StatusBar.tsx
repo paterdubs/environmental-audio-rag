@@ -50,7 +50,7 @@ export function StatusBar({ language, onLanguage }: { language: Language; onLang
           )}
         </span>
         {data?.model_version && <code className="provenance" title="model_version">{data.model_version}</code>}
-        {models.data && <span className={`model-badge ${models.data.official ? "" : "demo"}`} role="status">{models.data.official ? models.data.model_version : (language === "vi" ? "Demo — SED v2, chưa phải hệ thống chính thức" : "Demo — SED v2, not the official system")}</span>}
+        {models.data && <span className={`model-badge ${models.data.official ? "" : "demo"}`} role="status">{models.data.official ? (language === "vi" ? "SED f2 — T2b×3 + cSEBB, hệ thống chính thức" : "SED f2 — T2b×3 + cSEBB, official system") : (language === "vi" ? "Demo — SED v2, chưa phải hệ thống chính thức" : "Demo — SED v2, not the official system")}</span>}
         <div className="segmented" role="group" aria-label="Ngôn ngữ / Language">
           {(["vi", "en"] as const).map((lang) => (
             <button key={lang} type="button" aria-pressed={language === lang} onClick={() => onLanguage(lang)}>

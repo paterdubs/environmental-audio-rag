@@ -4,6 +4,8 @@
 không tạo số test mới và không đổi hệ thống chính thức.
 **Date:** 2026-09-28
 
+**Superseded bởi S13/S8 (f2) ngày 29/09.**
+
 ## Context
 
 Hệ thống phục vụ chính thức theo ADR-0029 §1 và ADR-0031 §6 là ensemble C v1
