@@ -50,3 +50,4 @@ htmlcov/
 
 # Generated thesis previews
 docs/thesis/build/
+report/build/

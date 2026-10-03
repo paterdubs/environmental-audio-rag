@@ -63,7 +63,9 @@ def table(
         "| " + " | ".join(headers) + " |",
         "|" + "|".join(align) + "|",
     ]
-    lines.extend("| " + " | ".join(str(cell) for cell in row) + " |" for row in rows)
+    # `|` trong giá trị (vd. cấu hình "global|25") phải escape, nếu không bảng Markdown bị vỡ cột.
+    lines.extend("| " + " | ".join(str(cell).replace("|", "\\|") for cell in row) + " |"
+                 for row in rows)
     lines.extend(
         [
             "",
