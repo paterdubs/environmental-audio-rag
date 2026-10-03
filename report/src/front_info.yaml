@@ -1,0 +1,15 @@
+# Thông tin trang bìa, header, footer. Thay các dòng [CẦN ĐIỀN: ...] rồi dựng lại báo cáo:
+#   .venv/Scripts/python.exe -m scripts.build_midterm_report
+#   powershell -File scripts/update_docx_fields.ps1
+title_vi: "Xây dựng hệ thống phát hiện, sinh mô tả và truy vấn sự kiện âm thanh môi trường dựa trên RAG"
+title_en: "[CẦN ĐIỀN: TÊN ĐỀ TÀI TIẾNG ANH ĐÃ ĐƯỢC DUYỆT]"
+student_1: "[CẦN ĐIỀN: HỌ VÀ TÊN SINH VIÊN 1 – MSSV]"
+student_2: "[CẦN ĐIỀN: HỌ VÀ TÊN SINH VIÊN 2 – MSSV, NẾU CÓ]"
+student_1_en: "[CẦN ĐIỀN: FULL NAME OF STUDENT 1]"
+student_2_en: "[CẦN ĐIỀN: FULL NAME OF STUDENT 2, IF ANY]"
+supervisor: "Giảng viên hướng dẫn: [CẦN ĐIỀN: học hàm/học vị, họ và tên GVHD]"
+supervisor_en: "Supervisor: [CẦN ĐIỀN: title and full name]"
+city_date: "THÀNH PHỐ HỒ CHÍ MINH, THÁNG [CẦN ĐIỀN] NĂM 2026"
+city_date_en: "HO CHI MINH CITY – [CẦN ĐIỀN: MONTH] 2026"
+header: "Báo cáo giữa kỳ khóa luận tốt nghiệp năm 2026 – Ngành Khoa học dữ liệu"
+footer: "[CẦN ĐIỀN: Họ tên sinh viên – MSSV – Lớp]"
