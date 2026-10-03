@@ -258,7 +258,7 @@ def cover_elements(template_body: str, info: FrontInfo) -> list[str]:
             new_text, size = replacements[text]
             element = set_text(element, new_text, size)
             used.add(text)
-            skip_empty = 2 if text in titles else 0
+            skip_empty = (4 if text.startswith("GUIDANCE") else 2) if text in titles else 0
         out.append(element)
     missing = set(replacements) - used
     if missing:

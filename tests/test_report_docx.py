@@ -141,3 +141,47 @@ def test_top_level_split_keeps_nested_paragraphs_inside_tables():
     )
     elements = top_level_elements(body)
     assert len(elements) == 2 and elements[1].startswith("<w:tbl>")
+
+
+_TABLE = """# Bảng thử
+
+| Hệ | Nhóm | Điểm cao | Lỗi thấp |
+|---|---|---:|---:|
+| a | x | 0.10 | 0.30 |
+| b | x | 0.25 | 0.20 |
+| c | y | 0.40 | 0.10 |
+| d | y | 0.40 | 0.50 |
+
+**Nguồn:** `t.json`.
+"""
+
+
+def _include(tmp_path: Path, options: str) -> list[str]:
+    from scripts.report_docx.markdown import USED_MARK, expand_include  # noqa: F401
+
+    path = tmp_path / "t.md"
+    path.write_text(_TABLE, encoding="utf-8")
+    return expand_include(path, options)
+
+
+def test_include_bolds_best_per_column_with_ties_and_groups(tmp_path: Path):
+    plain = _include(tmp_path, "|best=3+,4-")
+    assert "| c | y | **0.40** | **0.10** |" in plain
+    assert "| d | y | **0.40** | 0.50 |" in plain  # hòa nhau đều được in đậm
+    grouped = "\n".join(_include(tmp_path, "|group=2|best=3+"))
+    assert "| a | x | 0.10 | 0.30 |" in grouped and "| b | x | **0.25** | 0.20 |" in grouped
+
+
+def test_include_filters_rows_and_columns_and_marks_used_rows(tmp_path: Path):
+    from scripts.report_docx.markdown import USED_MARK
+
+    lines = _include(tmp_path, "|keep=2:^y$|cols=1,3|used=1:^c$")
+    table = [line for line in lines if line.startswith("|")]
+    assert table[0] == "| Hệ | Điểm cao |"
+    assert table[2] == f"| {USED_MARK}c | 0.40 |" and table[3] == "| d | 0.40 |"
+    assert any("nền xám" in line for line in lines)
+
+
+def test_include_rejects_filter_that_matches_nothing(tmp_path: Path):
+    with pytest.raises(ValueError, match="không khớp"):
+        _include(tmp_path, "|keep=1:^zzz$")

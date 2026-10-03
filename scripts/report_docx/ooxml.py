@@ -8,7 +8,7 @@ import re
 from collections.abc import Callable
 from html import escape, unescape
 
-from scripts.report_docx.markdown import INLINE_REF, LABELS, Registry
+from scripts.report_docx.markdown import INLINE_REF, LABELS, USED_MARK, Registry
 
 TEXT_WIDTH = 8787  # twip: A4 11906 − lề trái 1985 − lề phải 1134
 _BOOKMARK_IDS = itertools.count(9000)
@@ -208,6 +208,8 @@ def transform_table(xml: str, percents: list[float] | None = None) -> str:
     out_rows = []
     for row_index, row in enumerate(rows_xml):
         header = row_index == 0
+        used = USED_MARK in row
+        row = row.replace(USED_MARK, "")
         cells = re.findall(r"<w:tc>.*?</w:tc>", row, re.S)
         new_cells = []
         for col, cell in enumerate(cells):
@@ -227,7 +229,8 @@ def transform_table(xml: str, percents: list[float] | None = None) -> str:
             if header:
                 runs = re.sub(r"<w:r>(?!<w:rPr>)", "<w:r><w:rPr><w:b/></w:rPr>", runs)
                 runs = runs.replace("<w:rPr><w:rStyle", "<w:rPr><w:b/><w:rStyle")
-            shade = '<w:shd w:val="clear" w:color="auto" w:fill="E7E6E6"/>' if header else ""
+            fill = "E7E6E6" if header else ("D9D9D9" if used else "")
+            shade = f'<w:shd w:val="clear" w:color="auto" w:fill="{fill}"/>' if fill else ""
             # Bảng ngắn: giữ mọi hàng cùng trang với hàng sau (và với tiêu đề bảng ở trên).
             keep = "<w:keepNext/>" if len(rows_xml) <= 16 else ""
             new_cells.append(
