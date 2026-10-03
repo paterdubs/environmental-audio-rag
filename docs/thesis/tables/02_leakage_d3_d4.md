@@ -1,6 +1,6 @@
 # Bảng kiểm soát leakage D3/D4
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Cổng | Chỉ báo | Kết quả | Diễn giải |
 |---|---|---:|---|

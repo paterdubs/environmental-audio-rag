@@ -1,6 +1,6 @@
 # Bảng tiến triển SED v1 → v2 → S13 trên test annotated
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Hệ thống | Hậu xử lý | Macro-F1 | Micro-F1 | 95% CI micro | PSDS-1 | PSDS-2 | n |
 |---|---|---:|---:|---|---:|---:|---:|

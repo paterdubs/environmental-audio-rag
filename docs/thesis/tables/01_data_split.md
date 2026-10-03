@@ -1,6 +1,6 @@
 # Bảng dữ liệu và split đóng băng
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Dataset | Bài toán | File | Giờ | Train | Validation | Test | Nhóm leakage | SHA split |
 |---|---|---:|---:|---:|---:|---:|---:|---|

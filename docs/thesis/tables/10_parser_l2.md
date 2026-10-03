@@ -1,6 +1,6 @@
 # Bảng đánh giá parser L2
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Tập | n | Parse success | Exact match | Class precision | Class recall | Predicate accuracy | n temporal |
 |---|---:|---:|---:|---:|---:|---:|---:|

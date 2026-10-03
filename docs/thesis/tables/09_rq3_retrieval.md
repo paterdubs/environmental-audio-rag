@@ -1,6 +1,6 @@
 # Bảng RQ3 — retrieval với bộ lọc gold và parsed
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Corpus/bộ lọc | Mode/ngôn ngữ | n | nDCG@10 | 95% CI | R@1 | R@5 | R@10 | Filter exactness |
 |---|---|---:|---:|---|---:|---:|---:|---:|

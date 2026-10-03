@@ -1,6 +1,6 @@
 # Bảng xếp hạng S13 trên dev và kết quả test một lần
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Hạng CV | Mã | Model | Hậu xử lý | Dev micro | SD fold | Test macro | Test micro | 95% CI test micro |
 |---:|---|---:|---|---:|---:|---:|---:|---|

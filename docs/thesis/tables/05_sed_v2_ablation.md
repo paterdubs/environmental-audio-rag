@@ -1,6 +1,6 @@
 # Bảng ablation SED v2 trên CV dev
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Nhóm | Cấu hình | Micro-F1 CV | SD fold | Δ so với v2 seed 1 | Run |
 |---|---|---:|---:|---:|---|

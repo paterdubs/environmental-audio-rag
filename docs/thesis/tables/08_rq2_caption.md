@@ -1,6 +1,6 @@
 # Bảng RQ2 — grounding caption trên test
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Hệ | Chế độ | n | Hallucination | 95% CI | Omission | 95% CI | G3 |
 |---|---|---:|---:|---|---:|---|---:|

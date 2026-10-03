@@ -1,6 +1,6 @@
 # Bảng parity giữa pipeline nghiên cứu và phục vụ
 
-> Sinh tự động bởi `scripts.build_thesis_tables` tại git `07fb1a1`.
+> Sinh tự động bởi `scripts.build_thesis_tables` tại git `0b2069f`.
 
 | Thiết bị | Torch | Recording trùng event | Tổng recording | Event chuẩn | Event phục vụ | Event trùng | Trong collar | Δp lớn nhất |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
