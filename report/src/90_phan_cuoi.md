@@ -69,7 +69,7 @@ Các lệnh dưới đây chỉ đọc artifact đã khóa. Không lệnh nào c
 
 **Ngày bắt đầu:** 22/09/2026
 
-@@COLWIDTHS:6,12,12,12,40,18@@
+@@COLWIDTHS:5,14,14,11,38,18@@
 
 | Tuần | Từ ngày | Đến ngày | Ngày báo cáo GVHD | Tóm tắt công việc đã thực hiện | Nhận xét của GVHD |
 |---|---|---|---|---|---|
