@@ -1,0 +1,37 @@
+{
+  "git": {
+    "revision": "375bfa863e1d556652e01c822161cfe76a2db3cf",
+    "dirty": false
+  },
+  "dpi": 300,
+  "figures": {
+    "m01_architecture.png": [
+      "services/",
+      "ml/inference/engine.py",
+      "docker-compose.yml",
+      "ml/configs/caption_llm.yaml"
+    ],
+    "m02_sed_architectures.png": [
+      "ml/models/panns.py",
+      "ml/models/frame_mn_finetune.py",
+      "scripts/train_sed.py",
+      "docs/decisions/ADR-0030-cai-thien-sed-v2.md",
+      "docs/measurements/s13_selection_20261018.json"
+    ],
+    "m03_s13_dev_vs_test.png": [
+      "docs/measurements/s13_selection_20261018.json",
+      "docs/measurements/s13_test_20261018.json"
+    ],
+    "m04_data_pipeline.png": [
+      "data/manifests/datasec_inventory_summary.json",
+      "data/manifests/datased_inventory_summary.json",
+      "data/manifests/datased_preparation_audit.json",
+      "data/manifests/duplicate_audit.json",
+      "data/splits/datased_polyphonic.frozen.json",
+      "data/splits/datasec_classification.frozen.json"
+    ],
+    "m05_dev_timeline.png": [
+      "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/captions/constrained_cover_dev.jsonl"
+    ]
+  }
+}
