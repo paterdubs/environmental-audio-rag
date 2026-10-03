@@ -77,3 +77,15 @@ báo cáo đặt đúng 1701/1134/1701/1985 twip cho mọi section.
 | Phụ lục E "Nhật ký làm việc" điền tuần đã qua, cột nhận xét GVHD để trống | Mẫu có trang này; không được tự viết nhận xét của giảng viên |
 | Thông tin cá nhân là `[CẦN ĐIỀN: …]` | Không lấy thông tin minh họa trong mẫu làm thông tin thật |
 | Thuật ngữ tiếng Anh giữ nguyên ở lần đầu trong ngoặc, `class_id` không dịch | Quy ước dự án (CLAUDE §5) |
+
+
+## Bổ sung (03/10/2026): trình bày kết quả trong bảng
+
+- Bảng kết quả chính: **số in đậm** là giá trị tốt nhất trong cột (hoặc trong nhóm hàng cùng loại, ví dụ
+  cùng mức oracle/đầu–cuối); **hàng nền xám nhạt (D9D9D9)** là cấu hình đang dùng trong hệ thống cuối.
+  Dưới bảng có dòng chú thích; in đậm không hàm ý khác biệt có ý nghĩa thống kê. Bảng không có "tốt nhất"
+  rõ ràng (RQ1, bộ phân tích câu hỏi, phân loại) để nguyên.
+- Cách khai báo: tuỳ chọn ở dòng `@@INCLUDE:đường/dẫn|keep=|cols=|best=|group=|used=@@` (xem docstring
+  `scripts/report_docx/markdown.py`). Chỉ đổi cách trình bày; số vẫn lấy nguyên từ bảng do script sinh.
+- Ngôi văn: "nhóm" (hai sinh viên). Tiêu đề chương/mục ngắn, dùng từ phổ thông; thuật ngữ giải thích ở
+  lần dùng đầu và có trong danh mục viết tắt.

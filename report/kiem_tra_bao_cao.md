@@ -1,23 +1,21 @@
 # Báo cáo kiểm tra — báo cáo khóa luận giữa kỳ (DOCX)
 
-> Tệp được kiểm: `report/Bao_cao_KLTN_giua_ky_environmental_audio_rag.docx` (85 trang) và bản PDF
-> xem trước cùng tên, dựng ngày 03/10/2026 từ commit có các bảng/hình sinh trên cây sạch
-> (hình `0b2069f`, bảng luận văn `1eb3012`, bảng bổ sung `028f021`).
+> Tệp được kiểm: `report/Bao_cao_KLTN_giua_ky_environmental_audio_rag.docx` (63 trang) và bản PDF
+> xem trước cùng tên. Đây là **bản viết lại lần 2** (03/10/2026) theo yêu cầu của nhóm: điền thông
+> tin sinh viên, viết lại dễ đọc và ngắn hơn (85 → 63 trang), rút gọn bảng/hình, in đậm kết quả
+> tốt nhất và tô nền cấu hình đang dùng. Các bảng/hình sinh từ artifact không đổi; mọi số vẫn do
+> script sinh (hình `0b2069f`, bảng luận văn `1eb3012`, bảng bổ sung `028f021`).
 
 ## 1. Lệnh đã chạy
 
 | Bước | Lệnh | Kết quả |
 |---|---|---|
 | Lint | `.venv/Scripts/python.exe -m ruff check .` | Sạch |
-| Kiểm thử | `.venv/Scripts/python.exe -m pytest -q` | 744 pass, 4 skip (test cần PostgreSQL, Docker tắt), 19 warning |
-| Kiểm thử bộ dựng | `.venv/Scripts/python.exe -m pytest -q tests/test_report_docx.py` | 10 pass |
-| Hình | `.venv/Scripts/python.exe -m scripts.build_midterm_figures` | 5 hình, `report/figures/manifest.json` ghi `dirty=false` |
-| Bảng luận văn | `.venv/Scripts/python.exe -m scripts.build_thesis_tables` | 12 bảng; chỉ dòng revision và ô `global\|25` đổi, không số nào đổi |
-| Bảng bổ sung | `.venv/Scripts/python.exe -m scripts.build_midterm_tables` | 8 bảng; kiểm tổng sự kiện tham chiếu = 740 khớp evaluation đã lưu |
-| Dựng DOCX | `.venv/Scripts/python.exe -m scripts.build_midterm_report` | 9 tệp nguồn, 48 đối tượng đánh số, 14 tài liệu tham khảo, mọi tài liệu đều được trích |
-| Cập nhật field + PDF | `powershell -ExecutionPolicy Bypass -File scripts/update_docx_fields.ps1` | Microsoft Word 16 (COM) cập nhật mọi field hai lượt, lưu DOCX, xuất PDF 85 trang |
-| Kiểm cấu trúc | `.venv/Scripts/python.exe -m scripts.check_midterm_docx` | Bảng §2, mọi mục đạt |
-| Render để xem | `pdftoppm -r 45` (toàn bộ) và `-r 110` (trang chọn lọc) | Xem §3 |
+| Kiểm thử | `.venv/Scripts/python.exe -m pytest -q` | 747 pass, 4 skip (test cần PostgreSQL, Docker tắt), 19 warning |
+| Kiểm thử bộ dựng | `.venv/Scripts/python.exe -m pytest -q tests/test_report_docx.py` | 13 pass (thêm 3 test cho tuỳ chọn bảng) |
+| Dựng DOCX | `.venv/Scripts/python.exe -m scripts.build_midterm_report` | 9 tệp nguồn, 30 đối tượng đánh số, 14 tài liệu tham khảo, mọi tài liệu đều được trích |
+| Cập nhật field + PDF | `powershell -ExecutionPolicy Bypass -File scripts/update_docx_fields.ps1` | Word (COM) cập nhật field hai lượt, lưu DOCX, xuất PDF 63 trang |
+| Kiểm cấu trúc | `.venv/Scripts/python.exe -m scripts.check_midterm_docx` | Mọi mục đạt (§2) |
 
 **Không** lệnh nào chạy suy luận, huấn luyện hay đánh giá trên tập test; không đọc
 `predictions/test.npz`. Các bảng chỉ đọc measurement/evaluation đã khóa.
@@ -27,82 +25,69 @@
 | Kiểm tra | Kết quả | Đạt |
 |---|---|:---:|
 | Số section | 5 (bìa · phần đầu · nội dung · tài liệu tham khảo · phụ lục) | ✅ |
-| Khổ và lề mọi section | 21,0 × 29,7 cm; trên/dưới 1701, trái 1985, phải 1134 twip (3/3/3,5/2 cm) | ✅ |
-| Đánh số trang | Bìa không số; phần đầu La Mã từ i; nội dung Ả Rập từ 1; tài liệu tham khảo chữ thường từ a; phụ lục tiếp chữ thường, footer không in số | ✅ |
-| Heading 1 | 14 pt, đậm, in hoa, 24/24 pt, giãn 1,15, sang trang mới, đánh số `CHƯƠNG n` | ✅ |
-| Heading 2 / 3 / 4 | 13 pt; 6/12 pt; giãn 1,15; không thụt; H3 đậm nghiêng, H4 nghiêng | ✅ |
-| Content | 13 pt, before 10 pt, after 0, giãn 1,5, căn đều, không thụt | ✅ |
-| Caption | 13 pt, 6/12 pt, giãn 1,15, căn giữa, không nghiêng | ✅ |
-| TOC, Table of Figures | 0/0 pt, giãn 1,15 | ✅ |
-| Font Normal | Times New Roman 13 | ✅ |
-| Field | TOC `\o "1-3"` 1; TOC `\c` 2 (Hình, Bảng); SEQ Bảng 24, SEQ Hình 7, SEQ PT 13; STYLEREF 44; REF 36; PAGEREF 142 (do Word sinh khi cập nhật mục lục) | ✅ |
-| Footer có `PAGE` | Chỉ footer nội dung (`footer2`) | ✅ |
-| Marker nguồn còn sót (`@@`, `⟪`, `[@`) | Không | ✅ |
-| Bảng có hàng tiêu đề lặp | 31/31 | ✅ |
-| PDF: lỗi tham chiếu field ("Error! Reference…") | 0 | ✅ |
-| PDF: thực thể XML lọt ra chữ (`&lt;`…) | 0 | ✅ |
-| Placeholder `[CẦN ĐIỀN` trong DOCX | 18 lần (xem §4) | — |
-| `⚠️ CẦN XÁC MINH` | 0 | — |
+| Khổ và lề mọi section | A4; 3/3/3,5/2 cm | ✅ |
+| Đánh số trang | Bìa không số; phần đầu La Mã; nội dung Ả Rập từ 1; tài liệu tham khảo/phụ lục chữ thường | ✅ |
+| Heading 1–4, Content, Caption, TOC, Font Normal | Đúng thông số trong hướng dẫn chữ của mẫu | ✅ |
+| Field | TOC 1; TOC hình/bảng 2; SEQ Bảng 15, SEQ Hình 4, SEQ PT 7; STYLEREF 26; REF 20; PAGEREF 78 | ✅ |
+| Footer có `PAGE` | Chỉ footer nội dung | ✅ |
+| Marker nguồn còn sót | Không | ✅ |
+| Placeholder `[CẦN ĐIỀN` | **0** | ✅ |
+| `⚠️ CẦN XÁC MINH` | 0 | ✅ |
+| Bảng có hàng tiêu đề lặp | 21/21 | ✅ |
+| PDF: lỗi tham chiếu field / thực thể XML lọt ra chữ | 0 / 0 | ✅ |
 
-## 3. Kiểm tra bố cục bằng mắt
+Số trang trong mục lục được đối chiếu với trang thật trong PDF cho cả 7 chương (tiêu đề chương 1–7:
+trang 1, 5, 10, 16, 25, 29, 41; chênh lệch 0). Tiêu đề cấp 2–3 và danh mục hình/bảng không đối chiếu
+từng mục. Nếu sửa nội dung trong Word, chọn toàn bộ (Ctrl+A) rồi nhấn F9 để cập nhật lại.
 
-Đã render toàn bộ 85 trang PDF (do chính Word xuất) thành ảnh và xem từng trang ở độ phân giải thấp,
-một số trang ở độ phân giải cao. Các lỗi phát hiện và đã sửa trong quá trình dựng:
+## 3. Thay đổi của lần viết lại
 
-| Lỗi | Cách sửa |
+| Yêu cầu | Đã làm |
 |---|---|
-| Ngày tháng trên bìa tràn sang trang 2 (tiêu đề dài hơn mẫu) | Bỏ hai dòng trống sau tiêu đề trên bìa |
-| Abstract và Tóm tắt dài quá một trang | Rút gọn còn 232 từ (EN) và 323 âm tiết (VI) |
-| Cột bảng bị ép thành chữ dọc (bảng 3.2, 6.x) | Thuật toán độ rộng cột theo từ dài nhất; tỷ lệ cột tường minh cho bảng phụ lục |
-| Bảng ngắn và dòng "Nguồn" bị tách sang trang sau | `keepNext` cho mọi hàng của bảng ≤ 16 hàng |
-| Ô `global\|25` làm vỡ cột bảng cSEBB | Escape `\|` trong builder bảng |
-| `p &lt; 0,05` (escape hai lần) | Bỏ escape trước khi tách run tham chiếu |
-| Chữ trong sơ đồ quá nhỏ khi co về 15,5 cm | Vẽ lại sơ đồ ở khổ 6,6 inch |
-| Hình pipeline cũ (`02_data_pipeline_d0_d4.png`) chữ ~4 pt; hình theo lớp cũ (`05_…`) báo F1 cho lớp 9 sự kiện | Thay bằng hình mới (đọc manifest) và bảng phụ lục C |
+| Điền thông tin | Phạm Hoàng Phát – 22703861; Thân Trọng Tính – 22665711; TS. Huỳnh Công Bằng; lớp KHDL18A (footer); tháng 10/2026; tên đề tài tiếng Anh; ngày báo cáo GVHD 04/10/2026 |
+| Lời cảm ơn | Viết ngắn, chỉ cảm ơn thầy hướng dẫn, khoa/trường, tác giả dữ liệu, gia đình bạn bè (không thêm chi tiết cá nhân) |
+| Tiêu đề và văn phong | Tiêu đề ngắn, từ phổ thông; ngôi "nhóm"; chương 1–7 viết lại, thuật ngữ giải thích ở lần dùng đầu; bảy chương còn khoảng 15.100 từ so với 19.900 (đếm theo `wc`, gồm cả ký hiệu Markdown) |
+| 85 → khoảng 60 trang | 63 trang |
+| Bảng/hình | 31 → 21 bảng, 7 → 4 hình trong thân; bảng bỏ khỏi thân: trần chẩn đoán, ablation, cSEBB, parity, điểm cuối API, thời gian chạy, mục tiêu O1–O7, bảng artifact (số liệu vẫn nằm trong văn bản hoặc tệp measurement) |
+| Tô đậm | Số in đậm = tốt nhất trong cột (hoặc trong nhóm hàng cùng loại); nền xám = cấu hình đang dùng (f2; mô tả template; kho f2 + hybrid). Có dòng chú thích dưới bảng, ghi rõ in đậm không hàm ý khác biệt có ý nghĩa |
 
-Còn lại, chấp nhận được:
+Cách làm tô đậm: bộ dựng (`scripts/report_docx/markdown.py::expand_include`) nhận tuỳ chọn
+`keep`, `cols`, `best`, `group`, `used` ở dòng `@@INCLUDE@@`, chỉ đổi cách trình bày; tệp bảng gốc do
+script sinh không bị sửa. Bảng RQ1 không in đậm vì C−B không có ý nghĩa thống kê.
 
-- Một số trang có khoảng trắng cuối trang do giữ bảng/hình cùng caption.
-- Bảng RQ3 (18 hàng) trải sang trang sau, có lặp hàng tiêu đề.
-- Công thức (4.1) dài hơn một dòng nên số công thức xuống dòng dưới, căn phải, đúng quy định của mẫu.
-- Ảnh chụp giao diện (Hình 5.1) ghép bốn ảnh nên chữ trong ảnh nhỏ; ảnh chỉ mang tính minh họa.
+## 4. Kiểm tra số liệu và nội dung
 
-**Giới hạn của việc kiểm tra:**
+- Đã so tập các số xuất hiện trong từng chương giữa bản cũ (HEAD) và bản mới. Số bị bỏ là số mục,
+  chiều rộng hình, chi tiết cấu hình phụ (độ cao dải mel, lưới siêu tham số cSEBB…) hoặc con số
+  trung gian của bảng bị bỏ; **không có kết quả thực nghiệm nào bị đổi giá trị**. Hai con số
+  (Δ lọc trung vị, "không chỉ số nào có p < 0,05") đã được đưa lại sau khi phát hiện bị lược.
+- Mọi kết quả âm tính hoặc kém đi vẫn còn: RQ1 âm tính (cả hai công thức), f2 không được gọi là tốt
+  hơn v2 (macro và PSDS-1 thấp hơn), RQ3 giảm khi đổi kho sang f2, ECE tăng sau hiệu chuẩn, PSDS không
+  tăng, 10/40 lượt đánh giá SED ghi `dirty`.
+- Lớp có n_test < 10 vẫn chỉ báo số tuyệt đối (Phụ lục C).
+- Vẫn tách "bám sát danh sách sự kiện dự đoán" với "đúng với âm thanh thật".
 
-- Bố cục được kiểm trên bản PDF do Word trên máy này xuất (font Times New Roman cài sẵn). Máy khác có
-  thể ngắt trang lệch đôi chút.
-- Không kiểm bằng LibreOffice.
-- Mục lục và danh mục đã được Word cập nhật. Số trang trong mục lục đã được đối chiếu qua Word COM
-  (`Range.Information`) với trang thật của **mọi** tiêu đề cấp 1, tiêu đề không đánh số và tiêu đề
-  phụ lục: 17/17 khớp (chương 1–7: 1, 7, 15, 22, 36, 43, 60; tài liệu tham khảo a; phụ lục c–g).
-  Tiêu đề cấp 2–3 và danh mục hình/bảng không được đối chiếu từng mục. Nếu sửa nội dung trong Word,
-  chọn toàn bộ (Ctrl+A) rồi nhấn F9 để cập nhật lại.
+## 5. Lỗi gặp khi làm và đã sửa
 
-## 4. Mục người dùng cần hoàn thiện
+| Lỗi | Xử lý |
+|---|---|
+| Lệnh `sed` làm mất một số cụm "f2" trong Chương 6 | Phát hiện qua soát chữ dính nhau, khôi phục 8 chỗ, đã rà lại |
+| Bìa tiếng Anh tràn một dòng sang trang riêng (tên đề tài dài hơn mẫu) | Bỏ thêm dòng trống sau tiêu đề trên bìa EN (`package.py`) |
+| Màu nền F2F2F2 quá nhạt, khó thấy khi in | Đổi sang D9D9D9 |
+| Cột bảng RQ3/tiến triển bị bẻ dòng | Đặt `@@COLWIDTHS@@` |
+| Lỡ chạy `ruff format scripts` làm định dạng lại 72 tệp không liên quan | Hoàn tác bằng `git checkout`, chỉ giữ các tệp đã sửa chủ ý |
 
-| Vị trí | Nội dung cần điền | Sửa ở |
-|---|---|---|
-| Bìa VI, bìa phụ | Họ tên sinh viên (1 hoặc 2 người), MSSV; học hàm/học vị và họ tên GVHD; tháng nộp | `report/src/front_info.yaml` |
-| Bìa EN, Abstract | Tên đề tài tiếng Anh đã được duyệt; tên sinh viên viết tiếng Anh; GVHD; tháng | `front_info.yaml`, `report/src/00_phan_dau.md` dòng 3 |
-| Footer nội dung, tài liệu tham khảo | Họ tên – MSSV – Lớp | `front_info.yaml` (`footer`) |
-| Lời cảm ơn | Sinh viên tự viết | `00_phan_dau.md` |
-| Nhật ký làm việc | Ngày báo cáo GVHD tuần 1–2; tên GVHD | `report/src/90_phan_cuoi.md` |
-| Trang nhận xét GVHD, cột "Nhận xét của GVHD" | Để trống cho giảng viên — **không** được tự viết | — |
+## 6. Giới hạn của việc kiểm tra
 
-Sau khi điền, dựng lại bằng hai lệnh:
+- Bố cục kiểm trên PDF do Word trên máy này xuất; máy khác có thể ngắt trang lệch đôi chút. Không
+  kiểm bằng LibreOffice.
+- Việc "dễ đọc hơn" là đánh giá của người viết, chưa có người đọc ngoài nhóm kiểm lại.
+- Lời cảm ơn là bản viết nhanh theo yêu cầu; nhóm nên đọc và sửa lại cho đúng ý.
 
-```powershell
-.venv/Scripts/python.exe -m scripts.build_midterm_report
-powershell -ExecutionPolicy Bypass -File scripts/update_docx_fields.ps1
-```
+## 7. Điểm nhóm nên xác nhận
 
-## 5. Điểm cần người dùng xác nhận về nội dung
-
-1. Bố cục 7 chương và việc bỏ hai trang nhận xét phản biện cho bản giữa kỳ (quy_cach §4).
-2. Kiểu trích dẫn số `[n]`, xếp theo danh mục đã nhóm ngôn ngữ và sắp alphabet theo họ (mẫu khoa
-   không nêu rõ thứ tự số trong bài).
-3. Bảng phụ lục dùng nhãn tĩnh "Bảng PL.n", không vào danh mục bảng (phụ lục không có số chương để
-   đánh số theo field).
-4. Văn phong khách quan ("đề tài", "báo cáo") thay cho ngôi "chúng tôi", vì số sinh viên chưa rõ.
-5. Việc nhắc mã nội bộ (v1, v2, T2a, T2b, f2, S13) có bảng giải thích (Bảng 4.1); có thể đổi tên
-   nếu giảng viên yêu cầu.
+1. Việc bỏ hai trang nhận xét phản biện cho bản giữa kỳ (còn trang nhận xét của GVHD để trống).
+2. Việc đưa bảng artifact sang tệp `docs/measurements/artifact_freeze_20261002.md` (không còn trong
+   phụ lục).
+3. Tên tiếng Anh trên bìa/Abstract; tên không dấu của sinh viên và GVHD trên bìa EN.
+4. Footer chỉ ghi tên hai sinh viên và lớp (không ghi MSSV); MSSV có ở bìa.
