@@ -309,6 +309,67 @@ bằng Scaper). Dùng ở: ý tưởng soundscape tổng hợp từ DataSEC (PAP
 **(9) Tổng quan DCASE 2024 Task 4** (Cornell và cộng sự, arXiv:2406.08056) — **V1**: chỉ thấy
 qua tóm tắt tìm kiếm (ATST-Frame 40 ms, BEATs, FDY conv, hệ nhiều nhánh). Chưa đọc.
 
+### 2.2 Nâng lên V3 cho báo cáo giữa kỳ (03/10/2026, task L3)
+
+Cách tiếp cận chung: tải **PDF toàn văn** bằng `curl` (arXiv, mdpi-res), trích văn bản bằng
+`pdftotext -layout`, đọc trực tiếp tóm tắt và các đoạn được trích dẫn; metadata xuất bản (tập,
+số, trang, DOI) đối chiếu bằng **Crossref API** hoặc thẻ `citation_*` của trang nhà xuất bản.
+Chỉ những ý ghi dưới đây được dùng trong báo cáo; phần còn lại của bài chưa được trích xuất.
+
+- **(3) Kong và cộng sự (2020) — nâng lên V3.** Crossref: *IEEE/ACM TASLP* **28**, tr.
+  **2880–2894**, DOI `10.1109/TASLP.2020.3030497` (hết ⚠️ vol/pages). PDF arXiv v5: PANNs huấn
+  luyện trên AudioSet (hơn 5,000 giờ, 527 lớp), chuyển giao sang sáu tác vụ; CNN14 đạt mAP
+  **0.431** trên AudioSet tagging; average pooling 2×2 sau mỗi khối conv.
+- **(5) Nam, Kim, Park (2022) — nâng lên V3.** Crossref: ICASSP 2022, tr. 4308–4312, DOI
+  `10.1109/ICASSP43922.2022.9747680`. Đọc PDF arXiv v4: FilterAugment áp trọng số ngẫu nhiên lên
+  các dải tần của log-mel (bản cải tiến của frequency masking); trên SED, PSDS tăng **6.50%** so
+  với **2.13%** của frequency masking — khớp số V2 cũ.
+- **(6) Zhang và cộng sự (2018) — nâng lên V3.** PDF arXiv ghi "Published as a conference paper
+  at ICLR 2018"; mixup huấn luyện mạng trên **tổ hợp lồi của cặp mẫu và nhãn**.
+- **(8a) Mesaros, Heittola, Virtanen (2016) — V3.** *Metrics for Polyphonic Sound Event
+  Detection.* *Applied Sciences* **6**(6), 162, DOI `10.3390/app6060162` (Crossref; PDF lấy từ
+  `mdpi-res.com` vì trang `mdpi.com` vẫn chặn). Đọc trực tiếp: phân biệt metric theo đoạn
+  (segment-based) và theo sự kiện (event-based); event-based dùng collar cho onset, offset dùng
+  collar hoặc tỷ lệ độ dài event; **instance-based (micro)** cho mỗi quyết định trọng số bằng
+  nhau nên lớp lớn lấn át, **class-based (macro)** cho mỗi lớp trọng số bằng nhau.
+- **(8b) Bilen, Ferroni, Tuveri, Azcarreta, Krstulovic (2020) — V3.** *A Framework for the Robust
+  Evaluation of Sound Event Detection.* ICASSP 2020, tr. 61–65, DOI
+  `10.1109/ICASSP40776.2020.9052995`. Đọc PDF arXiv v2: PSDS đánh giá trên **dải điểm vận hành**
+  thay vì một ngưỡng; định nghĩa TP/FP bằng giao thời gian qua ba tiêu chí DTC, GTC và CTTC
+  (cross-trigger), thay cho quyết định dựa trên collar.
+- **(10) Mesaros, Heittola, Virtanen, Plumbley (2021) — V3.** *Sound Event Detection: A Tutorial.*
+  *IEEE Signal Processing Magazine* **38**(5), tr. 67–83, DOI `10.1109/MSP.2021.3090678`. Đọc PDF
+  arXiv: SED là nhận biết "cái gì xảy ra và khi nào"; môi trường tự nhiên là **đa âm**; nhãn mạnh
+  (strong) chỉ rõ đoạn thời gian, nhãn yếu (weak) chỉ áp cho cả bản ghi; CRNN là kiến trúc đa dụng
+  (conv trích đặc trưng, recurrent học phụ thuộc thời gian).
+- **(11) Lewis và cộng sự (2020) — V3 (bản arXiv v4).** *Retrieval-Augmented Generation for
+  Knowledge-Intensive NLP Tasks*, arXiv:2005.11401v4. Đọc PDF: RAG kết hợp bộ nhớ tham số
+  (seq2seq tiền huấn luyện) với bộ nhớ phi tham số (chỉ mục vector dày của Wikipedia) truy cập
+  bằng retriever; nêu provenance và cập nhật tri thức là vấn đề mở. Nơi công bố chính thức
+  (NeurIPS 2020) **không** in trên bản arXiv và Crossref không có bản ghi → báo cáo trích **bản
+  arXiv**, không ghi tập/trang.
+- **(12) Chen, Xiao, Zhang, Luo, Lian, Liu (2024) — V3.** *M3-Embedding: Multi-Linguality,
+  Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation.*
+  Findings of ACL 2024, tr. 2318–2335, DOI `10.18653/v1/2024.findings-acl.137` (Crossref). Đọc PDF
+  arXiv v5: mô hình (BGE-M3) hỗ trợ hơn 100 ngôn ngữ, ba kiểu truy hồi dense / sparse /
+  multi-vector, đầu vào tới 8192 token.
+- **(13) Chen và cộng sự (2022) — V3 (bản arXiv v1).** *BEATs: Audio Pre-Training with Acoustic
+  Tokenizers*, arXiv:2212.09058v1. Đọc PDF: tiền huấn luyện tự giám sát lặp, tokenizer âm học và
+  mô hình SSL tối ưu luân phiên, dự đoán nhãn rời rạc thay cho loss tái tạo. Không ghi nơi công bố
+  vì bản đã đọc không in.
+- **(14) Ji và cộng sự (2023) — V3.** *Survey of Hallucination in Natural Language Generation.*
+  *ACM Computing Surveys* **55**(12), tr. 1–38, DOI `10.1145/3571730` (Crossref). Đọc PDF arXiv
+  v7 (bản mở rộng, nhiều tác giả hơn bản tạp chí): hallucination là nội dung "nonsensical or
+  unfaithful to the provided source content"; phân biệt intrinsic (mâu thuẫn nguồn) và extrinsic
+  (không kiểm chứng được từ nguồn). Báo cáo trích bản tạp chí theo metadata Crossref.
+
+**Đính chính 03/10/2026 — `docs/thesis/bibliography.bib` ghi sai tên tác giả.** Đối chiếu thẻ
+`citation_author` của nature.com và Crossref: bài dataset là *Fredianelli, **Francesco** Artuso,
+**Geremia** Pompei, Licitra, Iannace, **Andac** Akbaba* (bản cũ ghi Filippo/Giorgio/Ali), tập 12,
+bài số 1712. PDF arXiv và Crossref của bài PretrainedSED ghi **Tobias** Morocutti (bản cũ ghi
+Tommaso). Đã sửa trong `bibliography.bib`; nguồn gốc lỗi là bib được viết tay, không sinh từ
+metadata — bài học: tên tác giả cũng phải lấy từ metadata máy đọc được.
+
 ---
 
 ## 3. Transfer learning và domain shift
@@ -419,9 +480,17 @@ Từ khóa gợi ý: `polyphonic sound event detection`, `environmental noise da
 | Fredianelli et al., *Scientific Data* | 2025 | Mô tả dataset SEC + SED | DataSEC, DataSED | Clip-level; strong mono/poly | — | — | Không có baseline; số archive được đề tài đối chiếu riêng | §1, §3 dữ liệu | Bài mô tả phiên bản DataSEC cũ hơn; số DataSED trong bài và archive có sai khác | **V3** |
 | Ebbers et al., Interspeech | 2024 | Hậu xử lý SED (cSEBB) | DCASE 2023 T4a (DESED) | Strong | 13 hệ DCASE 2023 + cSEBB | PSDS1, collar-F1 | +4.1 PSDS1 / +3.4 F1 trung bình so với median filter | ADR-0030, PAPER_NOTES S14 | Tune theo lớp trên validation | **V3** |
 | Schmid et al., ICASSP | 2025 | Pretrain SED theo frame | AudioSet Strong; DESED | Strong (frame) | ATST-F, BEATs, fPaSST, M2D, ASiT | PSDS1 | AS-Strong 45.4–46.5; DESED fine-tune 47.6–49.2, frozen 45.4–49.2 | ADR-0030 §7, ADR-0031 §3, ADR-0032 | Đọc trực tiếp PDF v2 + code + LICENSE (26/09 tối) | **V3** |
-| Kong et al., TASLP | 2020 | Tagging / pretraining | AudioSet | Weak | CNN14 | mAP | — | Encoder nhánh B/C | vol/pages chưa xác minh | V2 (kiến trúc V3) |
+| Kong et al., TASLP 28:2880–2894 | 2020 | Tagging / pretraining | AudioSet | Weak | CNN14 | mAP | CNN14 mAP 0.431 | Encoder nhánh B/C | Không có thí nghiệm SED trên DataSED | **V3** (03/10) |
+| Mesaros et al., Applied Sciences 6(6):162 | 2016 | Metric SED đa âm | — | Strong | — | Segment/event F1, ER | — | Ch.2 báo cáo (metric, micro/macro) | Bài tổng quan metric | **V3** (03/10) |
+| Mesaros et al., IEEE SPM 38(5) | 2021 | Tutorial SED | — | Strong/weak | CRNN | — | — | Ch.2 (khái niệm SED, CRNN) | Tutorial | **V3** (03/10) |
+| Bilen et al., ICASSP | 2020 | Metric PSDS | DCASE 2019 T4 | Strong | — | PSDS | — | Ch.2 (PSDS) | — | **V3** (03/10) |
+| Zhang et al., ICLR | 2018 | mixup | — | — | — | — | — | Ch.4 (augmentation) | — | **V3** (03/10) |
+| Chen et al., BEATs, arXiv:2212.09058v1 | 2022 | SSL âm thanh | AudioSet | — | BEATs | mAP | — | Ch.4 (T2a) | Trích bản arXiv | **V3** (03/10) |
+| Lewis et al., RAG, arXiv:2005.11401v4 | 2020 | RAG | Wikipedia | — | BART + DPR | — | — | Ch.2 (RAG) | Trích bản arXiv | **V3** (03/10) |
+| Chen et al., M3-Embedding, Findings ACL | 2024 | Embedding đa ngữ | — | — | BGE-M3 | — | — | Ch.2, Ch.4 (retrieval) | — | **V3** (03/10) |
+| Ji et al., ACM CSUR 55(12) | 2023 | Tổng quan hallucination NLG | — | — | — | — | — | Ch.2 (hallucination) | Không về âm thanh | **V3** (03/10) |
 | DCASE 2016 T3 (kết quả) | 2016 | SED ghi âm thật | Dữ liệu DCASE 2016 T3 (home, residential area) | Strong | Baseline + hệ tham gia | Segment ER/F1 1 s; event onset-only 250 ms | Event-F1 4.7–6.3% (top 3 + baseline) | Bảng bối cảnh | Khác dataset, khác collar | **V3** |
-| Nam et al., FilterAugment, ICASSP | 2022 | Augmentation SED | DESED | Strong + weak | CRNN | PSDS | +6.50% so với +2.13% (frequency masking) | `augment.py` | Chỉ đọc abstract | V2 |
+| Nam et al., FilterAugment, ICASSP | 2022 | Augmentation SED | DESED | Strong + weak | CRNN | PSDS | +6.50% so với +2.13% (frequency masking) | `augment.py` | Đọc PDF arXiv v4 (03/10) | **V3** |
 | ⚠️ CẦN XÁC MINH | | SED | | | | | | §2.1 | | V0 |
 | ⚠️ CẦN XÁC MINH | | PSDS | | | | | | §2.2 | | V0 |
 | ⚠️ CẦN XÁC MINH | | Transfer | | | | | | §2.3 | | V0 |
@@ -465,4 +534,6 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 27/09 (đêm) | curl + **đọc trực tiếp** (HTML → văn bản bằng code) | nature.com/articles/s41597-025-05991-w, pmc.ncbi.nlm.nih.gov/articles/PMC12572321 | Bài DataSED lên **V3**: không baseline (xác nhận); nguồn một phần từ Freesound + AudioSet, file bị cắt/trộn/thêm âm thanh tay; Bảng 3 tự mâu thuẫn; DataSEC trong bài là phiên bản cũ (4292 file) | §1 |
 | 27/09 (đêm) | curl + **đọc trực tiếp** | dcase.community/challenge2016/task-sound-event-detection-in-real-life-audio(-results) | DCASE 2016 T3 lên **V3**: mọi số V2 khớp; thêm chi tiết dữ liệu (binaural, 3–5 phút, 4 fold) | §2.1 (4) |
 | 27/09 (đêm) | curl | github.com/fschmid56/PretrainedSED `models/frame_mn/*`, `models/frame_passt/preprocess.py` @1aa47e48; release asset `frame_mn10_strong_1.pt` | Code frame_mn đọc trực tiếp cho T2b: 40 ms thật (stride thời gian ×4), 960 kênh; checkpoint 15,537,114 B | §2.1 (2), ADR-0032 §10 |
+| 03/10 | curl + `pdftotext` + **đọc trực tiếp** | arxiv.org/pdf/{1912.10211, 1910.08440, 2107.05463, 2005.11401, 2402.03216, 1710.09412, 2110.03282, 2212.09058, 2202.03629, 2409.09546v2}; mdpi-res.com …/applsci-06-00162.pdf (SHA-256 8 ký tự đầu: d9160fa1, 74ceb790, 0d7283b6, 23e3249e, eb38e535, d477fc9b, 2ceca388, ca16a410, 2c095a10, ac4c58b9, 02020ba8) | 10 nguồn lên **V3** cho báo cáo giữa kỳ (§2.2); Mesaros 2016 lấy được PDF qua mdpi-res sau khi mdpi.com chặn | §2.2 |
+| 03/10 | Crossref API `works?query.bibliographic=…`; thẻ `citation_*` nature.com | 11 tiêu đề | Xác minh tập/số/trang/DOI; phát hiện **sai tên tác giả** trong `bibliography.bib` (Artuso, Pompei, Akbaba, Morocutti) → đã sửa | §2.2 |
 | 26/09 (tối) | GitHub API `/repos/*/license` + đọc LICENSE | microsoft/unilm, Audio-WestlakeU/audiossl, nttcslab/m2d, fschmid56/EfficientAT, kkoutini/PaSST, facebookresearch/deit | MIT / code MIT + checkpoint CC BY 4.0 / PDF riêng / MIT / Apache-2.0 / Apache-2.0 | §2.1 (2) |

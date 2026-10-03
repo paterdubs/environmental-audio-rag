@@ -1,43 +1,149 @@
-% Chỉ gồm nguồn đạt V3 trở lên trong docs/RELATED_WORK.md tại ngày 2026-10-02.
-% Không đưa các nguồn V2 (kể cả khi metadata đã có) vào bản báo cáo hiện tại.
+% Chỉ gồm nguồn đạt V3 trở lên trong docs/RELATED_WORK.md (cập nhật 2026-10-03).
+% Metadata (tác giả, tập, số, trang, DOI) lấy từ Crossref API hoặc thẻ citation_* của nhà xuất bản,
+% không gõ tay từ trí nhớ. Đính chính 2026-10-03: tên Artuso/Pompei/Akbaba/Morocutti (RELATED_WORK §2.2).
+% Trường `language` dùng để nhóm danh mục theo ngôn ngữ (mẫu khoa): vi | en.
 
 @article{fredianelli2025environmental,
-  author  = {Fredianelli, Luca and Artuso, Filippo and Pompei, Giorgio and Licitra, Gaetano and Iannace, Gino and Akbaba, Ali},
-  title   = {Environmental Noise Dataset for Sound Event Classification and Detection},
-  journal = {Scientific Data},
-  year    = {2025},
-  doi     = {10.1038/s41597-025-05991-w},
-  url     = {https://doi.org/10.1038/s41597-025-05991-w},
-  note    = {Truy cập ngày 27-09-2026}
+  author   = {Fredianelli, Luca and Artuso, Francesco and Pompei, Geremia and Licitra, Gaetano and Iannace, Gino and Akbaba, Andac},
+  title    = {Environmental Noise Dataset for Sound Event Classification and Detection},
+  journal  = {Scientific Data},
+  year     = {2025},
+  volume   = {12},
+  eid      = {1712},
+  doi      = {10.1038/s41597-025-05991-w},
+  language = {en}
 }
 
 @inproceedings{ebbers2024sound,
-  author    = {Ebbers, Janek and Germain, Fran\c{c}ois G. and Wichern, Gordon and Le Roux, Jonathan},
+  author    = {Ebbers, Janek and Germain, François G. and Wichern, Gordon and Le Roux, Jonathan},
   title     = {Sound Event Bounding Boxes},
   booktitle = {Proceedings of Interspeech 2024},
   year      = {2024},
   pages     = {562--566},
   doi       = {10.21437/Interspeech.2024-2075},
-  url       = {https://doi.org/10.21437/Interspeech.2024-2075}
+  language  = {en}
 }
 
 @inproceedings{schmid2025effective,
-  author    = {Schmid, Florian and Morocutti, Tommaso and Foscarin, Francesco and Schl{"u}ter, Jan and Primus, Paul and Widmer, Gerhard},
+  author    = {Schmid, Florian and Morocutti, Tobias and Foscarin, Francesco and Schlüter, Jan and Primus, Paul and Widmer, Gerhard},
   title     = {Effective Pre-Training of Audio Transformers for Sound Event Detection},
-  booktitle = {2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  booktitle = {Proceedings of the 2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
   year      = {2025},
-  eid       = {10888942},
-  eprint    = {2409.09546},
-  archivePrefix = {arXiv},
-  url       = {https://arxiv.org/abs/2409.09546},
-  note      = {Đọc phiên bản 2, truy cập ngày 26-09-2026}
+  pages     = {1--5},
+  doi       = {10.1109/ICASSP49660.2025.10888942},
+  language  = {en}
 }
 
 @misc{dcase2016task3,
   author       = {{DCASE Community}},
-  title        = {{DCASE 2016 Task 3: Sound Event Detection in Real Life Audio}},
+  title        = {DCASE 2016 Task 3: Sound Event Detection in Real Life Audio},
   year         = {2016},
   howpublished = {Trang nhiệm vụ và trang kết quả DCASE Challenge 2016},
   url          = {https://dcase.community/challenge2016/task-sound-event-detection-in-real-life-audio},
-  note         = {Truy cập ngày 27-09-2026}
+  urldate      = {2026-09-27},
+  language     = {en}
+}
+
+@article{kong2020panns,
+  author   = {Kong, Qiuqiang and Cao, Yin and Iqbal, Turab and Wang, Yuxuan and Wang, Wenwu and Plumbley, Mark D.},
+  title    = {PANNs: Large-Scale Pretrained Audio Neural Networks for Audio Pattern Recognition},
+  journal  = {IEEE/ACM Transactions on Audio, Speech, and Language Processing},
+  year     = {2020},
+  volume   = {28},
+  pages    = {2880--2894},
+  doi      = {10.1109/TASLP.2020.3030497},
+  language = {en}
+}
+
+@article{mesaros2016metrics,
+  author   = {Mesaros, Annamaria and Heittola, Toni and Virtanen, Tuomas},
+  title    = {Metrics for Polyphonic Sound Event Detection},
+  journal  = {Applied Sciences},
+  year     = {2016},
+  volume   = {6},
+  number   = {6},
+  eid      = {162},
+  doi      = {10.3390/app6060162},
+  language = {en}
+}
+
+@article{mesaros2021tutorial,
+  author   = {Mesaros, Annamaria and Heittola, Toni and Virtanen, Tuomas and Plumbley, Mark D.},
+  title    = {Sound Event Detection: A Tutorial},
+  journal  = {IEEE Signal Processing Magazine},
+  year     = {2021},
+  volume   = {38},
+  number   = {5},
+  pages    = {67--83},
+  doi      = {10.1109/MSP.2021.3090678},
+  language = {en}
+}
+
+@inproceedings{bilen2020psds,
+  author    = {Bilen, Çağdaş and Ferroni, Giacomo and Tuveri, Francesco and Azcarreta, Juan and Krstulović, Sacha},
+  title     = {A Framework for the Robust Evaluation of Sound Event Detection},
+  booktitle = {Proceedings of the 2020 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  year      = {2020},
+  pages     = {61--65},
+  doi       = {10.1109/ICASSP40776.2020.9052995},
+  language  = {en}
+}
+
+@inproceedings{zhang2018mixup,
+  author    = {Zhang, Hongyi and Cisse, Moustapha and Dauphin, Yann N. and Lopez-Paz, David},
+  title     = {mixup: Beyond Empirical Risk Minimization},
+  booktitle = {Proceedings of the 6th International Conference on Learning Representations (ICLR 2018)},
+  year      = {2018},
+  eprint    = {1710.09412},
+  language  = {en}
+}
+
+@inproceedings{nam2022filteraugment,
+  author    = {Nam, Hyeonuk and Kim, Seong-Hu and Park, Yong-Hwa},
+  title     = {FilterAugment: An Acoustic Environmental Data Augmentation Method},
+  booktitle = {Proceedings of the 2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  year      = {2022},
+  pages     = {4308--4312},
+  doi       = {10.1109/ICASSP43922.2022.9747680},
+  language  = {en}
+}
+
+@misc{chen2022beats,
+  author   = {Chen, Sanyuan and Wu, Yu and Wang, Chengyi and Liu, Shujie and Tompkins, Daniel and Chen, Zhuo and Wei, Furu},
+  title    = {BEATs: Audio Pre-Training with Acoustic Tokenizers},
+  year     = {2022},
+  eprint   = {2212.09058},
+  version  = {1},
+  language = {en}
+}
+
+@misc{lewis2020rag,
+  author   = {Lewis, Patrick and Perez, Ethan and Piktus, Aleksandra and Petroni, Fabio and Karpukhin, Vladimir and Goyal, Naman and Küttler, Heinrich and Lewis, Mike and Yih, Wen-tau and Rocktäschel, Tim and Riedel, Sebastian and Kiela, Douwe},
+  title    = {Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks},
+  year     = {2020},
+  eprint   = {2005.11401},
+  version  = {4},
+  language = {en}
+}
+
+@inproceedings{chen2024m3,
+  author    = {Chen, Jianlyu and Xiao, Shitao and Zhang, Peitian and Luo, Kun and Lian, Defu and Liu, Zheng},
+  title     = {M3-Embedding: Multi-Linguality, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2024},
+  year      = {2024},
+  pages     = {2318--2335},
+  doi       = {10.18653/v1/2024.findings-acl.137},
+  language  = {en}
+}
+
+@article{ji2023hallucination,
+  author   = {Ji, Ziwei and Lee, Nayeon and Frieske, Rita and Yu, Tiezheng and Su, Dan and Xu, Yan and Ishii, Etsuko and Bang, Ye Jin and Madotto, Andrea and Fung, Pascale},
+  title    = {Survey of Hallucination in Natural Language Generation},
+  journal  = {ACM Computing Surveys},
+  year     = {2023},
+  volume   = {55},
+  number   = {12},
+  pages    = {1--38},
+  doi      = {10.1145/3571730},
+  language = {en}
 }
