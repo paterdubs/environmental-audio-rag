@@ -57,6 +57,15 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 03/10/2026 (mới nhất) — Báo cáo giữa kỳ L3 dạng DOCX hoàn tất.** Người dùng duyệt kế
+hoạch và yêu cầu viết mới (bản nháp `docs/thesis/ch1–ch4.md` là bản rác, không dùng). Nguồn ở
+`report/src/` (phần đầu, 7 chương, tài liệu tham khảo, phụ lục A–D, nhật ký làm việc); dựng bằng
+`scripts.build_midterm_report` từ package mẫu khoa rồi `scripts/update_docx_fields.ps1` (Word COM)
+cập nhật field và xuất PDF; `scripts.check_midterm_docx` kiểm style/lề/section/field. Kế hoạch,
+quy cách, đối chiếu bằng chứng và báo cáo kiểm tra ở `report/*.md`. Văn liệu: 14 nguồn V3 (thêm
+10, đọc PDF toàn văn + Crossref); bib cũ ghi sai tên Artuso/Pompei/Akbaba/Morocutti — đã sửa.
+Còn: người dùng điền `report/src/front_info.yaml` và lời cảm ơn rồi dựng lại; nhận xét GVHD.
+
 **Cập nhật 02/10/2026 (mới nhất) — L3 đã có bản nháp Chương 1–4.** Đã đọc mẫu
 khoa `report/Mau bao cao KLTN_DS.docx` và dựng `docs/thesis/outline.md` theo quy cách A4,
 Times New Roman 13, giãn dòng 1,5, lề 3/3/3,5/2 cm. Tên đề tài giữ đúng nguyên văn: "Xây dựng hệ
@@ -642,6 +651,21 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-03 — Báo cáo giữa kỳ L3 dạng DOCX theo mẫu khoa
+
+Người dùng chạy /plan, duyệt kế hoạch và cho viết mới hoàn toàn. Đọc trực tiếp mẫu khoa (chữ hướng
+dẫn + styles/numbering/sections/header/footer): style thực tế lệch hướng dẫn chữ ở Heading 1–4,
+Caption, TOC → chuẩn hóa theo chữ, ghi `report/quy_cach_bao_cao.md`. Pandoc với reference-doc làm
+mất numbering `CHƯƠNG %1` (numId 32) nên viết `scripts/report_docx/` lắp gói từ package mẫu: bìa,
+5 section, caption STYLEREF+SEQ, REF, TOC/TOF, tài liệu tham khảo nhóm ngôn ngữ + alphabet theo họ.
+Word COM cập nhật field và xuất PDF; render 85 trang để sửa bố cục (tràn bìa, cột bảng bị ép,
+bảng tách dòng nguồn, chữ sơ đồ quá nhỏ, `|` trong ô bảng, escape hai lần). Nâng 10 nguồn lên V3
+bằng PDF toàn văn + Crossref; phát hiện bib cũ sai tên 4 tác giả. Thay hình pipeline/per-class
+cũ (hình per-class cũ báo F1 cho lớp 9 sự kiện, trái protocol). Phát hiện mâu thuẫn tài liệu:
+CLAUDE W2 ghi `logmel_panns_v1` 50 fps, config là 100 fps; SYSTEM.md còn bảng phạm vi lỗi thời.
+Một lệnh `rm report/*.docx` suýt xóa mẫu khoa (thất bại vì tệp bị khóa; SHA kiểm lại khớp) —
+từ nay xóa theo tên cụ thể. Gate: ruff sạch; pytest 744 pass, 4 skip. Không push.
 
 ### 2026-10-02 — Viết bản nháp Chương 1–4 của báo cáo L3
 

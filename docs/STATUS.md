@@ -1,5 +1,18 @@
 # STATUS.md — Trạng thái có bằng chứng
 
+**Cập nhật:** 2026-10-03 — **Báo cáo giữa kỳ L3 đã dựng xong dạng DOCX** (85 trang, một tệp:
+bìa → phụ lục và nhật ký làm việc) tại `report/Bao_cao_KLTN_giua_ky_environmental_audio_rag.docx`
+kèm PDF xem trước. Nội dung viết mới hoàn toàn trong `report/src/` (7 chương); bản nháp
+`docs/thesis/ch1–ch4.md` không dùng theo yêu cầu người dùng. DOCX lắp từ package mẫu khoa
+(`scripts.build_midterm_report`): numbering `CHƯƠNG n`, 5 section, caption STYLEREF+SEQ, TOC/TOF,
+REF; Word COM cập nhật field (`scripts/update_docx_fields.ps1`). Kiểm cấu trúc tự động
+(`scripts.check_midterm_docx`) đạt mọi mục; mục lục khớp trang thật 17/17 tiêu đề cấp 1/phụ lục.
+Văn liệu nâng 10 nguồn lên V3 (tổng 14) và **đính chính tên tác giả sai** trong bibliography cũ.
+Còn 18 placeholder `[CẦN ĐIỀN]` (thông tin sinh viên, GVHD, tên tiếng Anh, lời cảm ơn). Không
+train, không chạy đánh giá test, không đọc `predictions/test.npz`. Pytest 744 pass, 4 skip; ruff
+sạch. Chi tiết: [report/kiem_tra_bao_cao.md](../report/kiem_tra_bao_cao.md),
+[report/doi_chieu_bang_chung.md](../report/doi_chieu_bang_chung.md).
+
 **Cập nhật:** 2026-10-02 — **L3 đã có bộ khung, tài nguyên và bản nháp Chương 1–4**.
 Tên đề tài trong [outline](thesis/outline.md) giữ đúng nguyên văn đã chốt. Mẫu khoa được lưu tại
 `report/Mau bao cao KLTN_DS.docx` (SHA-256 `9d3bc276…`); 12 bảng trong

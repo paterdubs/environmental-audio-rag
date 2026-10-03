@@ -282,7 +282,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 |---:|---|---|---|
 | L1 | Push nhánh phụ `wip/sed-v2` (sao lưu commit + chạy CI); master trên remote chỉ nhận tuần đã xong | 26/09 | ◐ push tới `bbae05b` (27/09, người dùng cho phép); commit Track 2a sau đó chưa push |
 | L2 | ~~Chuyển câu hỏi tự nhiên thành bộ lọc: Qwen + grammar như ADR-0023, ADR riêng; đo độ chính xác parse trên query set v2, rồi RQ3 với bộ lọc parse được~~ — **xong sớm 28/09** (ADR-0036): exact template 0.855, paraphrase 0.925; RQ3 validation hybrid Δ gold +0.012 EN / −0.002 VI. Giả định “số sẽ thấp đi” không đúng cho mọi ô: filter sai có thể tình cờ đổi thứ hạng có lợi, không được diễn giải là cải thiện | 19/10–02/11 | ✅ 28/09 |
-| L3 | Viết báo cáo luận văn (khung: SYSTEM.md; số: measurements; dẫn chứng: PAPER_NOTES) | 19/10–09/11 | ◐ 02/10: đã có outline theo mẫu khoa, 12 bảng sinh tự động, 7 hình 300 dpi, bibliography chỉ nguồn V3 và văn xuôi Chương 1–4; còn Chương 5–7 và dàn trang DOCX |
+| L3 | Viết báo cáo luận văn (khung: SYSTEM.md; số: measurements; dẫn chứng: PAPER_NOTES) | 19/10–09/11 | ◐ 03/10: **báo cáo giữa kỳ DOCX xong** (`report/Bao_cao_KLTN_giua_ky_environmental_audio_rag.docx`, 85 trang, nguồn `report/src/`, công cụ `scripts.build_midterm_report`); còn báo cáo cuối kỳ, tổng quan văn liệu có hệ thống, điền thông tin sinh viên |
 | L4 | Slide bảo vệ | 03–09/11 | ○ |
 | L5 | Xem lại cụm từ tiếng Việt (ADR-0025, đang duyệt tạm) | Khi hoàn thiện giao diện | ○ |
 | L6 | Ưu tiên thấp nhất: mở rộng mẫu người cho metric C2 (chỉ nếu paper theo hướng C); xác thực cho demo | Nếu còn thời gian | ○ |
