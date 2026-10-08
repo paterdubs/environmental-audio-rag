@@ -151,7 +151,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
 | XO-20 | O1 tầng S: bảng mọi run so ba seed T2b, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
-| XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | TODO |
+| XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ◐ (chờ merge; thiếu CV TF256 KD — §6) |
 | XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | TODO |
 | XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | TODO |
 
@@ -363,6 +363,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - **08/10/2026 — Codex, XO-20:** report_tier_s + 4 fixture test; CLI CPU `python .agent_logs/cpu.py scripts.report_tier_s --runs-dir D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag/ml/runs --stamp 20261009` → tier_s_20261009.{md,json}. pytest -q: **781 passed,12 skipped,26 warnings (118.17s)**; ruff check . sạch. Không đọc test hoặc chạy selector.
 
+- **08/10/2026 — Codex, XO-21:** report_detection_gap +4fixture, CLI thật5 --run T2b/GRU/DO4/TFKD/TFstrong --stamp20261009 (đường dẫn tuyệt đối main/ml/runs); 3run sẵn sàng được đo,2TF đang chờ. pytest -q **785passed,12skipped,28warnings (97.98s)**; ruff check . sạch. Không chạy selector hoặc ghi lại postproc.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -529,10 +531,25 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - `sed_polyphonic_20261008T083632Z`: frame mAP saved=0.7559966807974785; CV winner theta=0.231814412697; Δ best seed=-0.001211639369; fold>2/5; qua=False; full-dev macro/micro=0.174119821471/0.222826086957.
 - `sed_polyphonic_20261008T131138Z`: frame mAP saved=0.7430186128852598; CV winner csebb=0.217425078154; Δ best seed=-0.015600973913; fold>1/5; qua=False; full-dev macro/micro=0.150751121213/0.221028396009.
 
+- **XO-21:** detection_gap_20261009.{md,json}: 3run×21lớp×134dev annotated; oracle θ per-class chỉ chẩn đoán in-sample, không dùng chọn.
+- `t2b`: frame AP macro annotated=0.751497488456; winner full-dev macro/micro=0.163543487869/0.226818830243; θglobalmicro=0.226818830243; θoraclemicro=0.232024169184; I/D/S=356/726/1; Nsys/Nref=516/886; onset-onlymicro=0.288159771755; offset-onlymicro=0.537803138374.
+- `oc_gru`: frame AP macro annotated=0.772682610513; winner full-dev macro/micro=0.174119821471/0.222826086957; θglobalmicro=0.222826086957; θoraclemicro=0.246851385390; I/D/S=420/720/2; Nsys/Nref=586/886; onset-onlymicro=0.309782608696; offset-onlymicro=0.574728260870.
+- `do4`: frame AP macro annotated=0.767660191020; winner full-dev macro/micro=0.150751121213/0.221028396009; θglobalmicro=0.220419202164; θoraclemicro=0.251655629139; I/D/S=272/741/1; Nsys/Nref=417/886; onset-onlymicro=0.270145817345; offset-onlymicro=0.523407521105.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — khoảng cách frame/event XO-21 và thiếu CV TF256
+
+Script/fixture và measurement3run T2b172924Z/O-C GRU083632Z/DO4 131138Z đã có; TF256 KD135047Z và strong145841Z chưa đủ selection/postproc annotated tại snapshot, liệt kê pending. **XO-21 còn thiếu phần TF KD**, không gọi selector để lấp. Cần chạy lại với --stamp mới khi artifact sẵn sàng; bản20261009 chống ghi đè.
+
+AP annotated là raster floor/ceil hợp nhất GT, sigmoid gộp cửa sổ, gộp frame theo lớp trên134recording; khác best_validation mAP theo validation window/mask trong metrics.json. Không kỳ vọng hai con số này bằng nhau hoặc sửa số để khớp. DO-4 thắng cSEBB: Nsys/Nref/F1/I-D-S dùng cSEBB đã chọn; p>θ/oracle dùng **họ θ global đồng hành**, giữ percentile train của họ θ, không hiểu λ cSEBB là θ posterior. Posterior p>θ là strict và chưa median; pipeline threshold dùng ≥ sau median.
+
+Oracle dùng lưới19ngưỡng đã lưu [0.05..0.95], hòa θ thấp nhất như sweep gốc. NaN mục tiêu→0 để argmax như build_score_functions; F1 thật vẫn null/—, không đổi metric. Cache đúng _median_filter của dự án một lần/lớp rồi process_recordings với median_w=1, d_min/g_max giữ nguyên; fixture so từng điểm lưới và event/score với native pipeline (biên recording, gap, duration). Không dùng scipy khác convention để tăng tốc. Oracle **in-sample, không dùng chọn**, không tạo postproc hoặc đụng run.
+
+I/D/S là error_rate chuẩn sed_eval×Nref, assert Nref=TP+S+D và Nsys=TP+S+I; substitution là sai lớp khớp collar, khác confusion theo overlap. Lỗi biên có thể thành insertion+deletion. Onset-only/offset-only cũng qua adapter sed_eval. Giả thuyết về operating point/biên gắn nhãn rõ, không chứng minh nhân quả hoặc đổi luật S.
 
 ### [MỞ] Codex → Claude — bảng tầng S lượt 6 (XO-20)
 
