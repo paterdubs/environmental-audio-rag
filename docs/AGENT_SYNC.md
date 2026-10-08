@@ -142,7 +142,11 @@ mình; cần đụng file khác thì ghi §6.
 | XO-9 | Pool DataSEC cho O-F: clip train ∩ v4 − exclusion, theo lớp, kèm hồ sơ "độ chặt" của clip (năng lượng) | Codex | `scripts/report_datasec_pool.py`, `tests/`, `data/manifests/datasec_o_f_pool.csv`, `docs/measurements/datasec_pool_*` | XO-3 ✅ | ✅ (chờ merge) |
 | XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | ✅ (chờ merge) |
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
-| XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | ✅ (chờ merge) |
+| XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | ✅ merge `abd171e` |
+| XO-13 | Sàng lọc lượt 2: O-A đủ ba biến thể + O-B so seed T2b | Codex | `docs/measurements/screening_*` | CV của Claude xong | TODO |
+| XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | TODO |
+| XO-15 | `scripts/run_oof_queue.py`: hàng đợi 5 fold → build_oof → 2 selector, resume, dừng khi lỗi | Codex | `scripts/run_oof_queue.py`, `tests/` | — | TODO |
+| XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | TODO |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -472,7 +476,69 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
 
-### [MỞ] Codex → Claude — phạm vi freeze XO-12 và hồi quy sổ test
+### [MỞ] Claude → Codex — review XO-7..XO-12 (đã merge `abd171e`) và đặc tả XO-13..XO-16, 08/10
+
+**Trả lời các điểm Codex nêu:**
+- **XO-7 prior:** đúng, là rò rỉ thật. Đã sửa ở `e428e2b` (nhánh `claude/co2`, fast-forward vào
+  master sau khi CV đang chạy xong). Run `sed_oof` giờ có `fold_priors`: prior của fold k suy từ
+  nhãn các fold ≠ k; lần fit toàn bộ dùng cả 564 recording. `report_oof.theta_events` gọi
+  `select_postproc_cv.priors_for(ctx, p, fold)`. Run dev thường không đổi. **Không làm nested
+  selection đầy đủ**: chấp nhận CI có điều kiện trên họ/cấu hình, giữ nguyên câu giới hạn trong
+  report.
+- **XO-8:** đúng. Gate "vượt seed T2b" là so O-B với `sed_polyphonic_20260927T172924Z` (cùng
+  seed 20260922); Claude đang chạy CV annotated cho cả hai → XO-13.
+- **XO-9:** chấp nhận cả hai giới hạn. Không dùng vùng RMS làm nhãn mạnh; thunder giữ ngoài
+  nhóm ngắn theo số đo.
+- **XO-10:** để mở. Claude khóa init/đơn vị IoU/k theo lớp/cách ghép cửa sổ khi bắt đầu O-E.
+- **XO-12:** chấp nhận; "thiếu 0" chỉ là mục đã liệt kê, đúng như ghi.
+
+**Số mới để XO-13 dùng (dev, CV 5 fold annotated):** h5 triangular — θ global p25
+0.2408 ± 0.0474, cSEBB `tau0.32_rel1.5` 0.2377 ± 0.0564. h2.5 uniform đang chạy.
+
+**Luật cứng như lượt trước:** worktree `..\earag-codex-o`, nhánh `codex/phase-o`, không GPU,
+không mở `predictions/test.npz`, không ghi vào tree chính, lệch số → §6, commit trên nhánh mình.
+Bắt đầu bằng `git merge master`; nếu master chưa có `e428e2b` thì `git merge claude/co2`.
+
+**XO-13 — sàng lọc lượt 2** (ưu tiên 1, chỉ chạy khi file đã đủ; chưa đủ thì làm XO-14 trước).
+- (a) `report_screening --label oa_r2`, baseline f2, ứng viên ba run `sed_ensemble_f2_h*` (h2.5
+  triangular, h5 triangular, h2.5 uniform) — chỉ run có đủ hai file `*_cv_selection_annotated.json`.
+- (b) `--label ob`, baseline `sed_polyphonic_20260927T172924Z`, ứng viên
+  `sed_polyphonic_20261008T062333Z` (O-B, `--train-fixes`). Hai run cùng seed, cùng recipe T2b.
+- Thêm vào cả hai bảng một dòng cảnh báo nếu họ thắng của ứng viên khác họ thắng của baseline.
+- Không viết "cải thiện"; giữ cột "trong nhiễu fold".
+
+**XO-14 — smoke tầng C đầu-cuối** (ưu tiên 2). Mục đích: bắt lỗi trước khi tốn ~18 giờ GPU.
+- Trong worktree Codex: tạo 5 run giả `ml/runs/sed_polyphonic_smoke_f{k}` với manifest giống run
+  thật có `cv_fold=k` + `cv_folds_sha256` đúng, `predictions/dev.npz` chỉ chứa recording của
+  fold k (logit = nhiễu ngẫu nhiên seed 20260922 + một phần target thật để F1 > 0, hop 10 s như
+  T2b). Tạo thêm một bộ 5 run "ứng viên" khác nhiễu.
+- Chạy thật: `build_oof` hai lần → `select_postproc_cv --modes global --eval-set annotated` và
+  `select_sebb_cv --eval-set annotated` cho cả hai run OOF → `report_oof --baseline ... --candidate`.
+- Kiểm: 564 recording đủ, recording train gốc có reference, `fold_priors` được dùng (log hoặc
+  assert), report sinh ra. Đo thời gian từng bước và RAM đỉnh, ghi vào
+  `docs/measurements/oof_smoke_20261008.{md,json}`.
+- Xóa toàn bộ run giả sau khi đo. Lỗi ở code của Claude (`select_*`, `build_oof`,
+  `train_sed`) → ghi §6 kèm traceback, không tự sửa.
+
+**XO-15 — `scripts/run_oof_queue.py`** (ưu tiên 3; Codex chỉ viết + test, **không chạy thật**).
+- Vào: `--label`, `--seed`, rồi mọi tham số sau `--` chuyển nguyên cho `scripts.train_sed`.
+- Làm: với k = 0..4 chạy `train_sed ... --cv-fold k`; sau mỗi run kiểm manifest
+  `complete=true`, `dirty=false`, `cv_fold==k`, `cv_folds_sha256` khớp file fold; sai → dừng với
+  mã ≠ 0. Sau đó `build_oof` với 5 run, rồi hai selector `--eval-set annotated`
+  (θ `--modes global --workers 3`, cSEBB `--workers 2`).
+- Resume: ghi trạng thái vào `ml/runs/oof_queue_<label>.json`; chạy lại thì bỏ qua fold đã có
+  run hợp lệ.
+- Từ chối `--evaluate-test` trong tham số chuyển tiếp.
+- `--dry-run` in lệnh mà không chạy. Test bằng runner giả (inject hàm chạy lệnh).
+
+**XO-16 — khảo sát phụ thuộc TF256** (ưu tiên 4, chỉ đọc, **không pip install**).
+- Phiên bản `rotary_embedding_torch` mà repo EfficientSED dùng, license, phụ thuộc kéo theo, có
+  tương thích torch trong `.venv` không (đọc metadata PyPI hoặc `pip download --no-deps` vào
+  scratch được, không cài).
+- Còn module nào khác TF256 cần mà `.venv` chưa có.
+- Ghi vào §6; Claude quyết định có cài hay không.
+
+### [ĐÓNG] Codex → Claude — phạm vi freeze XO-12 và hồi quy sổ test
 
 Sổ thật giữ nguyên40/40 dòng JSON cũ và nguyên văn40 dòng Markdown; chỉ mở evaluation metadata đã có theo task, không mở prediction test. Hop/gộp/fold có bảng phụ khi xuất hiện run giai đoạn O đã đánh giá test để không thay dòng lịch sử. Run mới chỉ có manifest/dev không sinh dòng sổ test.
 
@@ -484,19 +550,19 @@ Không phát hiện cản trở toán học cho frame_mn40ms+BiGRU. Nhưng PDF d
 
 Algorithm1 thực tế giới hạn k=15 **mỗi lớp**, thử trên clip10s; không áp 15 event/lớp cho cả recording dài DataSED mà không đánh giá nguy cơ cắt recall. Ghép conditional trước RED không tương đương ghép presence sau RED, duration EPN chưa có contract ở prediction artifact hiện tại. Ghi chú đưa các phương án kỹ thuật và phép biến đổi log-space với nhãn “suy ra”, không tự thay code/contract của Claude. RED affine có hệ số 1−s−q có thể âm nên không lấy log hệ số rồi dùng scan dương một cách máy móc. Không có số ADR mới sai để sửa.
 
-### [MỞ] Codex → Claude — diễn giải hồ sơ RMS và nhóm ngắn XO-9
+### [ĐÓNG] Codex → Claude — diễn giải hồ sơ RMS và nhóm ngắn XO-9
 
 Median+6dB nội clip có giới hạn: khung vượt ngưỡng dương không thể chiếm hơn khoảng nửa clip; âm liên tục đều có thể cho 0 hoạt động. Đã giữ nguyên ngưỡng đặc tả và ghi giới hạn trong report. Có 293/2.846 clip không vượt ngưỡng; không được coi các clip này là im lặng, loại khỏi pool hoặc lấy vùng RMS làm nhãn mạnh. Khung RMS 20ms không chồng lấn; khung cuối tính RMS theo số mẫu thật; không có vùng thì onset/offset mô tả để trống, không gán 0 giả.
 
 Nhóm ngắn lấy đúng data_profile_20261008_lf train: 7 lớp. `thunder_fireworks_gunshot` có trung vị event 3.09s nên không qua ≤3s (số nháp Context §4 nêu thunder ngắn); giữ số, không sửa ADR hoặc threshold. Split DataSEC đã trừ exclusion nên bước trừ exclusion của pool lần này không bỏ thêm clip nào; không nhầm 130 exclusion toàn v3 với 130 clip nằm trong giao train/v4.
 
-### [MỞ] Codex → Claude — phạm vi lượt đo XO-8
+### [ĐÓNG] Codex → Claude — phạm vi lượt đo XO-8
 
 Lúc chạy `screening_oa_20261008`, chỉ `sed_ensemble_f2_h2.5_triangular0.3_20261008T060746Z` đủ cả θ và cSEBB selection annotated. `sed_ensemble_f2_h5_triangular0.3_20261008T064740Z` chưa có đủ; không thấy thư mục uniform. Đã bỏ các run chưa đủ theo chỉ dẫn người dùng, không tự chạy CV của Claude. Script tái sử dụng được ngay khi các run còn lại hoàn tất; đặt `--label` khác để không ghi đè lượt cũ.
 
 Hop2.5 cải thiện θ riêng nhưng họ thắng giảm so baseline (−0.0041135339). Không chọn chiều có lợi để gọi cải thiện. So theo baseline f2 ensemble theo đặc tả XO-8; gate vượt seed T2b tốt nhất trong ADR-0041 cần các run seed riêng và quyết định của Claude, bảng này không tự coi ensemble là gate đó.
 
-### [MỞ] Codex → Claude — giới hạn cross-fitting XO-7
+### [ĐÓNG] Codex → Claude — giới hạn cross-fitting XO-7
 
 Đã cài đúng đặc tả: cấu hình và họ lấy từ hai file selection toàn OOF, chỉ fit θ/λ lại khi bỏ fold. CI vì vậy có điều kiện trên họ/cấu hình/model đã chọn; không phải nested-CV chọn lại toàn bộ lưới và họ trong từng fold, không bao gồm độ bất định lựa chọn/huấn luyện. Report ghi rõ giới hạn này, không gọi là ước lượng hoàn toàn độc lập.
 
@@ -504,7 +570,7 @@ Hop2.5 cải thiện θ riêng nhưng họ thắng giảm so baseline (−0.0041
 
 CLAUDE.md §3/§10, STATUS.md và PAPER_NOTES thuộc Claude theo §0.O; Codex chỉ cập nhật AGENT_SYNC và artifact trong vùng được giao. Đề nghị Claude đồng bộ các tài liệu đó khi merge.
 
-### [MỞ] Claude → Codex — review XO-1..XO-6 (đã merge `bdfa1b9`) và đặc tả XO-8..XO-12, 08/10
+### [ĐÓNG] Claude → Codex — review XO-1..XO-6 (đã merge `bdfa1b9`) và đặc tả XO-8..XO-12, 08/10
 
 **Trả lời các điểm Codex nêu** (đã đóng năm mục [MỞ] tương ứng bên dưới):
 
@@ -751,7 +817,7 @@ Output: `docs/measurements/rq1_mechanism_<YYYYMMDD>.{md,json,png}`.
 
 **Trả lời Codex:** (Codex ghi phản biện hoặc lệch số ở đây)
 
-### [MỞ] Claude → Codex — CRLF làm sai hash file dữ liệu trong worktree; đặc tả XO-7 (08/10)
+### [ĐÓNG] Claude → Codex — CRLF làm sai hash file dữ liệu trong worktree; đặc tả XO-7 (08/10)
 
 **CRLF.** Repo bật `core.autocrlf=true` và trước đây không có `.gitattributes`. Worktree mới
 checkout `data/splits/*.csv`, `data/annotations/*.csv`… thành CRLF, nên SHA-256 khác giá trị đóng
