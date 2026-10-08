@@ -1,5 +1,35 @@
 # STATUS.md — Trạng thái có bằng chứng
 
+**Sửa UI truy vấn, 03/10/2026 (W7 7.3):** Đã chặn gửi bộ lọc rỗng sau xóa chip và xóa
+filter/kết quả cũ khi sửa câu hỏi; rebuild API demo. Frontend test/build, Python test liên quan
+và ruff pass. [Playwright chạy thật](measurements/demo_query_ui_fix_20261003.json) xác nhận
+nút bị khóa khi hết filter, câu hỏi mới xóa chip/kết quả cũ và query chim trả evidence.
+**Giới hạn chưa sửa:** câu “có những sự kiện gì trong âm thanh này?” bị parser trả năm lớp đầu
+taxonomy dù không có nguồn âm cụ thể; parser chỉ nhận câu hỏi/ngôn ngữ, không nhận bản ghi
+đang mở. UI hướng dẫn xem timeline/caption và tìm lịch sử theo nguồn âm/thời gian/thời lượng.
+Không thay parser/prompt/contract benchmark; không chạy lại đánh giá test.
+
+**Demo local, 03/10/2026 (W7 7.4):** Đã chạy `scripts/demo_up.ps1` và
+`scripts/demo_check.ps1` pass; f2 official, parser và history upload sẵn sàng tại
+`http://127.0.0.1:8088`. Kịch bản thật upload WAV TRAIN S-0049, đọc timeline và truy vấn EN/VI
+có evidence: [demo_script_20261003.md](measurements/demo_script_20261003.md),
+[JSON](measurements/demo_script_20261003.json). Playwright mở trang, chọn bản ghi và kiểm
+trình phát audio, không có pageerror. Không chạy lại đánh giá test; giữ dịch vụ chạy cho người dùng.
+
+**Biên tập báo cáo giữa kỳ L3, 03/10/2026:** theo yêu cầu người dùng, viết lại bảy chương cho dễ
+đọc (ngôi "nhóm", tiêu đề ngắn, thuật ngữ giải thích), điền thông tin sinh viên/GVHD/lớp/tháng nộp và
+tên đề tài tiếng Anh, viết lời cảm ơn, rút gọn 85 → 63 trang (31 → 21 bảng, 7 → 4 hình). Bảng chính
+in đậm giá trị tốt nhất trong cột và tô nền xám cấu hình đang dùng (tuỳ chọn trình bày ở
+`@@INCLUDE@@`, số vẫn do script sinh). Kết quả âm tính/kém đi và quy tắc n<10 giữ nguyên. DOCX/PDF
+dựng lại, `check_midterm_docx` đạt, mục lục khớp trang thật 7/7 chương; pytest 747 pass, 4 skip, ruff
+sạch. Không train, không chạy đánh giá test. Chi tiết: [report/kiem_tra_bao_cao.md](../report/kiem_tra_bao_cao.md).
+
+**Rà soát L3, 03/10/2026:** [Nhận xét từng chương/mục](../report/danh_gia_bao_cao_20261003.md)
+và [bằng chứng kiểm tra DOCX/PDF](measurements/midterm_report_review_20261003.json) đã được lập
+theo yêu cầu người dùng. Định dạng chính khớp mẫu, số chính được đối chiếu khớp artifact; còn lỗi
+trang trắng/nhãn lặp và diễn giải cần sửa. Chưa biên tập lại nguồn hoặc DOCX/PDF. Bộ kiểm tra cấu
+trúc tự động không thay thế đánh giá nội dung và bố cục. Không chạy lại thí nghiệm/test.
+
 **Cập nhật:** 2026-10-03 — **Báo cáo giữa kỳ L3 đã dựng xong dạng DOCX** (85 trang, một tệp:
 bìa → phụ lục và nhật ký làm việc) tại `report/Bao_cao_KLTN_giua_ky_environmental_audio_rag.docx`
 kèm PDF xem trước. Nội dung viết mới hoàn toàn trong `report/src/` (7 chương); bản nháp

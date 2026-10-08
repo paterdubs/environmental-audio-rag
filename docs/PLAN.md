@@ -22,6 +22,7 @@
 | SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ✅ chốt 26/09 tối; là baseline cho S9/S13 |
 | Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ✅ hoàn tất sớm 29/09; f2 khóa trước test |
 | Viết báo cáo | 19/10–09/11 | Luận văn + slide (ADR-0031 §7) | ◐ 02/10: đã viết nháp học thuật Chương 1–4; còn Chương 5–7, dàn trang và slide |
+| Giai đoạn O | 08/10–27/10 | Tối ưu SED sau giữa kỳ: sửa dữ liệu, suy luận chồng lấn, kiến trúc, học biên, DataSEC → nhãn mạnh, chọn bằng OOF 5 fold ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md)) | ○ Proposed 08/10, chờ duyệt |
 
 **Nếu không dùng buffer, W7 là tuần cuối.** Mọi thứ phải xong trước 09/11. Từ 26/09 lịch đi theo
 khối "Lộ trình tới hạn nộp" bên dưới: **mốc đóng băng model 18/10**.
@@ -286,6 +287,45 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 | L4 | Slide bảo vệ | 03–09/11 | ○ |
 | L5 | Xem lại cụm từ tiếng Việt (ADR-0025, đang duyệt tạm) | Khi hoàn thiện giao diện | ○ |
 | L6 | Ưu tiên thấp nhất: mở rộng mẫu người cho metric C2 (chỉ nếu paper theo hướng C); xác thực cho demo | Nếu còn thời gian | ○ |
+
+---
+
+# Giai đoạn O · 08/10–27/10 · Tối ưu SED ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md), **Proposed**)
+
+Người dùng (08/10): sau báo cáo giữa kỳ, dồn sức vào SED vì caption và RAG bị chặn bởi chất lượng SED.
+**Chưa train run nào cho tới khi người dùng trả lời ADR-0041 Decision §6.**
+
+Chẩn đoán dẫn đường (ADR-0041 Context):
+
+- f2 dự đoán 295/740 event, recall 0.115, 7/21 lớp F1 = 0, trong khi PSDS-2 là 0.725. Model xếp
+  hạng được nhưng điểm vận hành quá bảo thủ, nhất là với event ngắn và event dài có fade-in.
+- Suy luận theo cửa sổ 10 s không chồng lấn. 8 recording train thiếu GT bị train như âm tính.
+  4 cặp gán đôi trong train mang target mâu thuẫn. DataSEC v4 (02/10) sửa lỗi số file Music.
+
+| # | Task | Khối | Phụ thuộc | Trạng thái |
+|---:|---|---|---|---|
+| O0.1 | `scripts.report_data_profile` → measurement hồ sơ dữ liệu (độ dài, độ phủ, đa âm, recording thiếu GT, cặp gán đôi, phân bố cửa sổ) | O0 | — | ○ |
+| O0.2 | `scripts.report_rq1_mechanism` → đường cong học B/C + phân rã nhận dạng/định vị trên dev | O0 | — | ○ |
+| O0.3 | DO-1: tải DataSEC v4, kiểm MD5, so sha256 với inventory v3, quyết cách lọc | O0 | — | ○ |
+| O0.4 | DO-2/DO-3: cờ train bỏ recording thiếu GT; gộp cặp gán đôi thành target mềm (test đơn vị) | O0 | — | ○ |
+| O0.5 | O-A: `dump_predictions --hop` + trộn trọng số tam giác; đo f2/f1/v2 trên dev (CV hậu xử lý) | O0 | — | ○ |
+| O0.6 | File fold 5×(train ∪ dev annotated) theo `leakage_group` + pipeline OOF (dump, ensemble, CV hậu xử lý) | O0 | — | ○ |
+| O1.1 | Tầng S: O-B (T2b + DO-2/3) | O1 | O0.4 | ○ |
+| O1.2 | Tầng S: O-C EfficientSED fmn10 + BiGRU / TF256 | O1 | O0.4 | ○ |
+| O1.3 | Cổng T0 + tầng S: O-D ATST-F / BEATs strong fine-tune | O1 | O0.4 | ○ |
+| O1.4 | Tầng S: DO-4 lấy mẫu cửa sổ cân bằng | O1 | O1.1 | ○ |
+| O2.1 | Tầng S: O-E head onset/offset + focal; target biên mềm | O2 | O1.1 | ○ |
+| O2.2 | O-H hậu xử lý 2 nhóm lớp (ngắn/dài) | O2 | O0.5 | ○ |
+| O3.1 | Tầng S: O-F DataSEC → nhãn mạnh (pseudo-label × tag, trộn event ngắn) | O3 | O0.3, O1 | ○ |
+| O3.2 | Tầng S: O-G KD từ ensemble teacher | O3 | O1 | ○ |
+| O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ○ |
+| O4.2 | Tầng C: B0 + ≤ 3 ứng viên + ensemble liên họ × 5 fold; OOF; chọn theo luật; **commit** | O4 | O4.1 | ○ |
+| O5.1 | Dump test, đánh giá đúng một lần, sổ test, bootstrap so f2 | O5 | O4.2 commit | ○ |
+| O6.1 | Phục vụ hệ thống mới (parity CUDA/CPU), S8-lite theo lựa chọn của người dùng | O6 | O5.1 | ○ |
+
+**Nghiệm thu giai đoạn O:** luật chọn commit trước test (có hash); OOF và test của mọi hệ thống
+trong tầng C đều được báo, kèm chỉ số ứng dụng; PAPER_NOTES ghi mọi thí nghiệm tầng S, kể cả âm
+tính; sổ test cập nhật; báo cáo cuối dùng đúng các số này.
 
 ---
 

@@ -1,0 +1,96 @@
+{
+ "created_utc": "2026-10-08T05:48:31+00:00",
+ "reason": "Giải phóng ổ D trước giai đoạn O (ADR-0041); người dùng duyệt 08/10/2026. Chỉ xóa best.pt; predictions/*.npz, manifest, evaluation và measurement giữ nguyên.",
+ "deleted": [
+  {
+   "group": "v1 thăm dò (dirty)",
+   "path": "ml/runs/sed_polyphonic_20260924T015736Z/checkpoints/best.pt",
+   "bytes": 925987834,
+   "sha256": "9fa71c8947336ced0989139a81ba31d35cbeeec276830f0a68d5d5e00bd7a131"
+  },
+  {
+   "group": "v1 thăm dò (dirty)",
+   "path": "ml/runs/sed_polyphonic_20260924T021958Z/checkpoints/best.pt",
+   "bytes": 925987834,
+   "sha256": "f4b33638c6be970e1c263d97649e72fb8678aa62a95cfd72d2b0248f7f264f57"
+  },
+  {
+   "group": "v1 thăm dò (dirty)",
+   "path": "ml/runs/sed_polyphonic_20260924T031616Z/checkpoints/best.pt",
+   "bytes": 925987834,
+   "sha256": "f27d05c86b4f20a3fe9082fdc9f77296e2897ba67b3f928d56f37d6ab181e59a"
+  },
+  {
+   "group": "ablation A4 pos_weight",
+   "path": "ml/runs/sed_polyphonic_20260925T205837Z/checkpoints/best.pt",
+   "bytes": 925987834,
+   "sha256": "f5fed62b5025b58e754fb3548861eff3921a8933f002721e8cb40aa0d38edbaf"
+  },
+  {
+   "group": "ablation A4 pos_weight",
+   "path": "ml/runs/sed_polyphonic_20260925T211704Z/checkpoints/best.pt",
+   "bytes": 925987834,
+   "sha256": "687f02b9f53e8a27db06a68fceadbf5ec657346a9b72f10b8ef30a062f7887ff"
+  },
+  {
+   "group": "ablation A4 pos_weight",
+   "path": "ml/runs/sed_polyphonic_20260925T213732Z/checkpoints/best.pt",
+   "bytes": 925987834,
+   "sha256": "b635260349bae159f71a93eb28af3cafc1b3b4734a1310b3f2e309fbe0e63b75"
+  },
+  {
+   "group": "ablation SED v2",
+   "path": "ml/runs/sed_polyphonic_20260926T075611Z/checkpoints/best.pt",
+   "bytes": 962683714,
+   "sha256": "1e9178ea3fb9d709fdfe14f603dc784b2da643990432f961ade128192c9f375f"
+  },
+  {
+   "group": "ablation SED v2",
+   "path": "ml/runs/sed_polyphonic_20260926T085233Z/checkpoints/best.pt",
+   "bytes": 962683714,
+   "sha256": "fc1f15b1e2a383ef34214af4f3da8a0624a44d792ff6e8ba5db206819a9effd6"
+  },
+  {
+   "group": "ablation SED v2",
+   "path": "ml/runs/sed_polyphonic_20260926T100315Z/checkpoints/best.pt",
+   "bytes": 962683714,
+   "sha256": "93dd88bae2e8eed50c124f0e2eb7dc49a91df8ea48d2a1128ccbd55c2d5735fb"
+  },
+  {
+   "group": "classifier pilot D2/D4/D6",
+   "path": "ml/runs/classifier_datasec_20260923T132031Z/checkpoints/best.pt",
+   "bytes": 907075087,
+   "sha256": "5ab56f3ebf78113c64b37bcd960a5182aedd8cffa71171fcbb446e769de6c7b6"
+  },
+  {
+   "group": "classifier pilot D2/D4/D6",
+   "path": "ml/runs/classifier_datasec_20260923T132834Z/checkpoints/best.pt",
+   "bytes": 907075087,
+   "sha256": "c951b096ec3a0b91fef29c638547b5f2b1024bd4a5502bbd07c1536eb1eece96"
+  },
+  {
+   "group": "classifier pilot D2/D4/D6",
+   "path": "ml/runs/classifier_datasec_20260923T134241Z/checkpoints/best.pt",
+   "bytes": 907075087,
+   "sha256": "fc5faf724392ceff10cd4d2e572de5e34c7e413a10723ca359213484593549b9"
+  },
+  {
+   "group": "classifier pilot D2/D4/D6",
+   "path": "ml/runs/classifier_datasec_20260923T135301Z/checkpoints/best.pt",
+   "bytes": 907075087,
+   "sha256": "b45fece7c1d478d057a7d07fd93aa58b9739156896effd89f14511da9fb298e9"
+  },
+  {
+   "group": "classifier pilot D2/D4/D6",
+   "path": "ml/runs/classifier_datasec_20260923T140248Z/checkpoints/best.pt",
+   "bytes": 907075087,
+   "sha256": "5ab56f3ebf78113c64b37bcd960a5182aedd8cffa71171fcbb446e769de6c7b6"
+  },
+  {
+   "group": "classifier pilot D2/D4/D6",
+   "path": "ml/runs/classifier_datasec_20260923T141238Z/checkpoints/best.pt",
+   "bytes": 907075087,
+   "sha256": "8b44f2240979f7272ba6958b9822d39444ec08393bc8e7b3f5b156f1c21a218f"
+  }
+ ]
+}

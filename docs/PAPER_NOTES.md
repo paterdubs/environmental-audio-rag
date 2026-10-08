@@ -212,6 +212,15 @@ epoch 8). → Ý cho paper: công thức train quan trọng ngang kiến trúc.
 
 ## 8. Mối đe doạ tính hợp lệ (viết thẳng vào paper)
 
+> **Rà soát cách diễn giải 03/10/2026 (L3; chưa đổi protocol):** xem
+> [nhận xét K01–K16](../report/danh_gia_bao_cao_20261003.md) và
+> [JSON đối chiếu](measurements/midterm_report_review_20261003.json). Không đồng nhất deletion
+> chẩn đoán theo overlap với FN của event-F1; tám cặp nhãn chỉ cho mức đồng thuận quan sát,
+> không chứng minh trần tuyệt đối. CI riêng lẻ chồng lấp/SD fold không thay thế phép so sánh
+> ghép cặp; kết luận RQ1 phải chỉ rõ metric. Khẳng định license mô hình tự động kế thừa license
+> dữ liệu và “chưa có baseline công bố” cần giới hạn lại theo bằng chứng, không lặp như kết luận
+> đã xác minh. Các ghi chú lịch sử dưới đây giữ nguyên để truy nguồn, cần áp dụng lưu ý này khi viết.
+
 1. Một split đóng băng; dev 137, test 142 recording → CI rộng (ví dụ event-F1 v1 [0.062, 0.128]).
 2. Train SED không tất định → cần ≥ 3 seed cho mọi so sánh; ablation v2 chỉ 1 seed.
 3. Trần người chỉ từ 8 cặp.

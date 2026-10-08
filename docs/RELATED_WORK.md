@@ -370,6 +370,56 @@ bài số 1712. PDF arXiv và Crossref của bài PretrainedSED ghi **Tobias** M
 Tommaso). Đã sửa trong `bibliography.bib`; nguồn gốc lỗi là bib được viết tay, không sinh từ
 metadata — bài học: tên tác giả cũng phải lấy từ metadata máy đọc được.
 
+### 2.3 Nguồn tra cho giai đoạn O (08/10/2026, [ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md))
+
+Tất cả ở **V2**: tra bằng WebSearch/WebFetch (tóm tắt do mô hình trích), chưa đọc PDF. Số dưới
+đây chỉ dùng để định hướng kế hoạch; **không** trích vào báo cáo trước khi đọc PDF (V3).
+
+- **(15) Schmid F., Tang C. I., Parekh S., Ithapu V. K., Azcarreta Ortiz J., Ferroni G., Qian Y.,
+  Jasonas A., Frateanu C., Clark C., Widmer G., Bilen Ç.** *Sound Event Detection with
+  Boundary-Aware Optimization and Inference.* IEEE Signal Processing Letters (chấp nhận 2026),
+  arXiv:2601.04178. RED layer (lớp hồi quy xác suất không tham số, cho xác suất onset/offset/hiện
+  diện), Event Proposal Network (BiGRU 2 lớp ước lượng thời gian từ onset/tới offset), loss onset/
+  offset focal + IoU, suy luận kiểu NMS không cần chỉnh ngưỡng hậu xử lý. AS-Strong-10: CRNN
+  PSDS1 41.1 → 48.0, F1 32.3 → 40.6; ATST-F 51.9 → 56.6; BEATs 52.8 → 55.2 (so với SEBB). Không
+  thấy link code. — **V2**
+- **(16) Morocutti T., Schmid F., Greif J., Foscarin F., Widmer G.** *Exploring Performance-
+  Complexity Trade-Offs in Sound Event Detection Models.* EUSIPCO 2025, arXiv:2503.11373. Frame-
+  MobileNet + sequence model (TF, BiGRU, hybrid…); AS-Strong PSDS1 fmn10 42.28 → +TF256 43.86, KD mở
+  rộng 45.25. Repo `github.com/theMoro/EfficientSED`, MIT, có checkpoint AudioSet Strong cho fmn +
+  GRU/TF. — **V2**
+- **(17) Schmid F., Primus P., Fichtinger A., Jadidi T., Morocutti T., Widmer G.** *RealDESED: A
+  Real-World Domestic Sound Event Detection Benchmark.* arXiv:2607.16736 (07/2026). ATST-F
+  (AS-Strong) fine-tune, 10 s, 25 Hz. Suy luận cửa sổ trượt: hop 10 / 7.5 / 5 / 2.5 s → PSDS1-M
+  0.711 / 0.718 / 0.731 / 0.736; trung bình 0.731 > max 0.721; trọng số tam giác sàn 0.3 tốt nhất.
+  Hậu xử lý: thô 0.662, median 0.693, cSEBB 0.731. Nhãn mềm nhiều người gán 0.675 → 0.697. — **V2**
+- **(18) Schmid F. và cộng sự.** *Multi-Iteration Multi-Stage Fine-Tuning of Transformers for Sound
+  Event Detection with Heterogeneous Datasets.* DCASE 2024 (hạng 1 Task 4), arXiv:2407.12997. Hai
+  giai đoạn (đóng băng transformer → mở), loss tự giám sát trọng số lớn, pseudo-label từ ensemble
+  rồi lặp lại với KD; DESED PSDS1 0.692 single model. Code `github.com/CPJKU/cpjku_dcase24`. — **V2**
+- **(19) Shao N., Li X., Li X.** *Semi-Supervised Sound Event Detection with Conditional Mixup and
+  Embedding-Level Contrastive Loss.* arXiv:2606.29901 (06/2026). DESED validation PSDS1 0.645,
+  PSDS2 0.822. Cần nhiều dữ liệu không nhãn; ưu tiên thấp cho đề tài. — **V2**
+- **(20) Turpault N., Serizel R. và cộng sự.** *The impact of non-target events in synthetic
+  soundscapes for sound event detection.* DCASE 2021 Workshop, arXiv:2109.14061. Event không mục
+  tiêu trong soundscape tổng hợp ảnh hưởng hiệu năng; hệ thống phân đoạn mịn dễ đoán event ngắn
+  giả. Liên quan O-F. — **V2**
+- **(21) Zhang S., Virtanen T.** *Cover First, Disagree Softly: Rethinking Mismatch-First Active
+  Learning for Frame-Level Audio Classification.* arXiv:2607.13571v2 (09/2026). **Dùng DataSED**
+  (nhãn polyphonic), nhưng chia ngẫu nhiên 6,808 đoạn 10 s theo tỷ lệ 8:1:1, CNN14 đóng băng, đo
+  frame mAP/AULC (0.660). Không phải SED event-based, không chia theo recording → **không so trực
+  tiếp** với đề tài. — **V2**
+- **(22) Artuso F. và cộng sự (2025).** *Enhanced Environmental Sound Event Classification through
+  Transfer Learning with CLAP Model.* Forum Acusticum Euronoise 2025, DOI `10.61782/fa.2025.0340`.
+  Cùng nhóm tác giả DataSEC; bài **phân loại** (CLAP/HTS-AT), không phải SED. Đọc trực tiếp trang
+  1–3 PDF. — **V2** (chưa trích xuất vào §8)
+- **(23) DataSEC v4**, Zenodo record 23097290 (02/10/2026), MD5 `11e0ae0098ecf3d982ab5f7375c56844`,
+  4,292 file / 18 h 26 m. Ghi chú phiên bản (nguyên văn trên trang record): *"V.4 fixes a bug in
+  the uploaded file, where the number of Music files was not correct respect to what described in
+  the text."* Lịch sử qua Zenodo API: 15340689 (05/05/2025), 15393250 (13/05/2025), **17033970**
+  (02/09/2025, bản repo đang dùng), 23097290 (v4). DataSED 15346092 chỉ có một phiên bản. — §1,
+  ADR-0041 DO-1
+
 ---
 
 ## 3. Transfer learning và domain shift
@@ -537,3 +587,9 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 03/10 | curl + `pdftotext` + **đọc trực tiếp** | arxiv.org/pdf/{1912.10211, 1910.08440, 2107.05463, 2005.11401, 2402.03216, 1710.09412, 2110.03282, 2212.09058, 2202.03629, 2409.09546v2}; mdpi-res.com …/applsci-06-00162.pdf (SHA-256 8 ký tự đầu: d9160fa1, 74ceb790, 0d7283b6, 23e3249e, eb38e535, d477fc9b, 2ceca388, ca16a410, 2c095a10, ac4c58b9, 02020ba8) | 10 nguồn lên **V3** cho báo cáo giữa kỳ (§2.2); Mesaros 2016 lấy được PDF qua mdpi-res sau khi mdpi.com chặn | §2.2 |
 | 03/10 | Crossref API `works?query.bibliographic=…`; thẻ `citation_*` nature.com | 11 tiêu đề | Xác minh tập/số/trang/DOI; phát hiện **sai tên tác giả** trong `bibliography.bib` (Artuso, Pompei, Akbaba, Morocutti) → đã sửa | §2.2 |
 | 26/09 (tối) | GitHub API `/repos/*/license` + đọc LICENSE | microsoft/unilm, Audio-WestlakeU/audiossl, nttcslab/m2d, fschmid56/EfficientAT, kkoutini/PaSST, facebookresearch/deit | MIT / code MIT + checkpoint CC BY 4.0 / PDF riêng / MIT / Apache-2.0 / Apache-2.0 | §2.1 (2) |
+| 03/10 (rà soát L3) | Web, đọc trực tiếp mã nguồn tác giả | https://raw.githubusercontent.com/qiuqiangkong/audioset_tagging_cnn/master/pytorch/models.py | Xác nhận lại `Cnn14`: khối 1–5 pool (2,2), khối 6 (1,1); câu “mỗi khối 2×2” ở báo cáo 2.4.1 cần sửa. Xác minh code, không nâng mức đọc bài báo | report/danh_gia_bao_cao_20261003.md K01 |
+| 08/10 | WebSearch (extended) | `DCASE 2024 Task 4 … top ranked system …`; `DCASE 2026 challenge tasks sound event detection`; `sound event detection 2025 state of the art …`; `… boundary regression onset offset …`; `synthetic soundscapes isolated events …`; `… sliding window overlap …`; `copy-paste event mixing …`; `weakly labeled clips pseudo strong labels …` | DCASE 2024 hạng 1 CP-JKU; DCASE 2026 **không** có task SED đơn kênh (Task 4 là S5); boundary-aware SPL 2026; RealDESED; ATST-SEDv2 | §2.3 (15)–(20) |
+| 08/10 | WebFetch | arxiv.org/abs/2601.04178 + /html; arxiv.org/abs/2503.11373 + /html; github.com/theMoro/EfficientSED; arxiv.org/abs/2607.16736 + /html; arxiv.org/abs/2407.12997 | Số bảng trích qua tóm tắt (V2) | §2.3 (15)–(18) |
+| 08/10 | WebFetch | zenodo.org/records/{17033970, 15346092, 23097290}; zenodo.org/api/records/{17033970,15346092}/versions | **DataSEC v4** (02/10/2026) sửa lỗi số file Music; repo dùng 17033970 (5,048 file); DataSED một phiên bản | §2.3 (23), ADR-0041 |
+| 08/10 | WebSearch + WebFetch + đọc trực tiếp PDF trang 1–3 | `Fredianelli Artuso … DataSED …`; arxiv.org/html/2607.13571; dael.euracoustics.org/confs/fa2025/data/articles/000340.pdf | Bài ngoài đầu tiên dùng DataSED (frame mAP, chia ngẫu nhiên đoạn — không so được); bài FA2025 là phân loại CLAP | §2.3 (21), (22) |
+| 03/10 (rà soát L3) | Web, đọc trực tiếp FAQ chính thức, mục adaptation/ShareAlike/AI | https://creativecommons.org/faq/ | FAQ không thiết lập quy tắc mọi checkpoint học từ dữ liệu CC đều tự động cùng license; đánh dấu cần xác minh riêng thay cho kết luận pháp lý tuyệt đối. Nguồn hướng dẫn, không phải paper và không thêm vào bibliography | report/danh_gia_bao_cao_20261003.md K02 |

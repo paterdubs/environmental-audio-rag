@@ -57,6 +57,50 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 08/10/2026 (mới nhất) — Lập kế hoạch giai đoạn O: tối ưu SED ([ADR-0041](docs/decisions/ADR-0041-giai-doan-toi-uu-sed.md), Proposed).**
+Sau báo cáo giữa kỳ, người dùng chọn dồn sức vào SED. Chẩn đoán:
+- f2 test dự đoán 295/740 event, recall 0.115, 7/21 lớp F1 = 0, nhưng PSDS-2 0.725.
+- RQ1: DataSEC giúp nhận dạng (C dẫn val mAP +0.12 ở epoch 1, segment-F1 dev +0.027), không giúp
+  định vị (nhãn cấp clip).
+- Lỗi dữ liệu/suy luận: 8 recording train thiếu GT bị train như âm tính, gồm 2 recording dài nhất;
+  4 cặp gán đôi trong train; suy luận theo cửa sổ 10 s không chồng lấn; **DataSEC v4 (Zenodo
+  23097290, 02/10/2026) sửa lỗi số file Music** — repo đang dùng bản lỗi (5,048 file, 1,001 Music).
+
+Kế hoạch: sửa dữ liệu phía train, suy luận chồng lấn, EfficientSED/transformer fine-tune, học biên
+onset/offset, DataSEC → nhãn mạnh (RQ1b), KD. Chọn bằng OOF 5 fold trên train ∪ dev, luật ghi
+trước; test một lần; đóng băng dự kiến 24/10. Văn liệu mới ở RELATED_WORK §2.3 (V2). Các số chẩn
+đoán đến từ script nháp — O0.1/O0.2 sinh lại bằng script repo. **Chưa train gì; chờ người dùng trả
+lời ADR-0041 Decision §6.**
+
+**Cập nhật 03/10/2026 — Biên tập báo cáo giữa kỳ L3.** Theo yêu cầu người dùng: điền thông
+tin (Phạm Hoàng Phát 22703861, Thân Trọng Tính 22665711, TS. Huỳnh Công Bằng, lớp KHDL18A, tháng 10,
+tên EN "Grounded Environmental Sound Event Detection, Captioning, and RAG-based Retrieval"), viết lời
+cảm ơn, viết lại bảy chương dễ đọc hơn (ngôi "nhóm"), rút gọn còn 63 trang, bảng chính in đậm giá
+trị tốt nhất và tô nền xám cấu hình đang dùng. Dựng lại bằng `scripts.build_midterm_report` +
+`scripts/update_docx_fields.ps1`; chi tiết ở `report/kiem_tra_bao_cao.md`. Còn lại: người dùng đọc lại
+lời cảm ơn và xác nhận các điểm ở mục 7 của báo cáo kiểm tra; nhận xét GVHD.
+
+**Cập nhật 03/10/2026 — Sửa UI truy vấn demo (W7 7.3, ADR-0037).** Xóa hết chip không còn
+gửi `classes_all: []`; nút truy vấn bị khóa, thông báo yêu cầu bộ lọc cụ thể. Sửa câu hỏi xóa
+filter/kết quả cũ; UI giải thích phạm vi tìm lịch sử và xem timeline/caption của bản ghi đang mở.
+Đã rebuild Compose API và kiểm Playwright thật; bằng chứng `demo_query_ui_fix_20261003.json`.
+Giới hạn còn lại: câu hỏi tổng quát “có những sự kiện gì trong âm thanh này?” bị parser khóa
+đoán năm lớp đầu taxonomy; parser không nhận recording context. Chưa thay parser/contract/metric.
+
+**Cập nhật 03/10/2026 — Khởi động demo theo yêu cầu người dùng (W7 7.4).** Docker Desktop,
+Qwen và Compose đang phục vụ tại `http://127.0.0.1:8088`; `scripts/demo_check.ps1` pass.
+`scripts/report_demo_script.py` chạy thành công trên WAV TRAIN S-0049, có timeline và truy vấn
+EN/VI kèm evidence; bằng chứng ở `docs/measurements/demo_script_20261003.{md,json}`.
+Playwright kiểm trang, mở bản ghi và trình phát audio, không có pageerror. Không chạy đánh giá test.
+
+**Cập nhật 03/10/2026 — Rà soát báo cáo giữa kỳ L3 theo yêu cầu người dùng.** Đã đọc bảy chương,
+kiểm DOCX/PDF và đối chiếu các số chính; nhận xét từng mục và đề xuất đổi tiêu đề ở
+`report/danh_gia_bao_cao_20261003.md`, bằng chứng tự động ở
+`docs/measurements/midterm_report_review_20261003.json`. Thông số trình bày chính khớp mẫu nhưng
+còn trang trắng, nhãn REF lặp, placeholder và các diễn giải cần biên tập. Số classifier 0,8466
+trong báo cáo khớp artifact (tài liệu cũ ghi 0,8467); deletion chẩn đoán khác FN event-F1.
+Chưa sửa bản thảo, DOCX/PDF, protocol hoặc số thí nghiệm. Việc tiếp theo: biên tập từng chương.
+
 **Cập nhật 03/10/2026 (mới nhất) — Báo cáo giữa kỳ L3 dạng DOCX hoàn tất.** Người dùng duyệt kế
 hoạch và yêu cầu viết mới (bản nháp `docs/thesis/ch1–ch4.md` là bản rác, không dùng). Nguồn ở
 `report/src/` (phần đầu, 7 chương, tài liệu tham khảo, phụ lục A–D, nhật ký làm việc); dựng bằng
@@ -651,6 +695,79 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-08 — Kiểm tra RQ1 và lập kế hoạch giai đoạn O (ADR-0041, Proposed)
+
+Người dùng hỏi vì sao RQ1 không cải thiện như lý thuyết, rồi yêu cầu lập kế hoạch tối ưu SED.
+Phân tích `history.json` của 6 run v2 và phân rã trên dev (script nháp): DataSEC tăng tốc hội tụ
+và nhận dạng, không cải thiện định vị. Rà dữ liệu và hồ sơ lỗi f2 (chỉ đọc evaluation đã lưu,
+không chạy lại test). Phát hiện: recording thiếu GT vẫn vào train với target 0
+(`ml/datasets/features.py`); cặp gán đôi ở train; suy luận không chồng lấn. Tra văn liệu mới
+(RealDESED, boundary-aware SPL 2026, EfficientSED, CP-JKU DCASE 2024) và phát hiện DataSEC v4.
+Viết ADR-0041, khối "Giai đoạn O" trong PLAN, RELATED_WORK §2.3 + §10. Không train, không chạm
+test, không sửa dữ liệu; chưa commit vì tree đang có thay đổi chưa commit từ phiên trước.
+
+Người dùng duyệt toàn bộ ADR-0041 (→ Accepted) và cho dọn ổ trước giai đoạn O:
+- Xóa `best.pt` của 15 run phụ: 3 run v1 dirty, 3 run A4, 3 run ablation v2, 6 classifier pilot.
+  Trước đó kiểm rằng không run nào nằm trong freeze, là member ensemble hay được Compose dùng.
+  Đã ghi SHA-256 vào `docs/measurements/checkpoint_cleanup_20261008.json`; predictions/manifest/
+  evaluation giữ nguyên. Hai pilot classifier trùng hash với D1; checkpoint D1 `121808Z` vẫn còn,
+  hash khớp `5ab56f3e…`.
+- Purge pip/npm/uv cache.
+- Kết quả: ổ D 14.3 → 27.2 GB trống, ổ C 30.1 → 44.9 GB trống. pytest 750 pass, 4 skip.
+- Không đụng: Docker vhdx (chứa DB demo), cache faster-whisper (không thuộc dự án), `last.pt`
+  và các run pilot không được tham chiếu (người dùng không chọn).
+
+### 2026-10-04 — Dựng lại slide báo cáo giữa kỳ (L3)
+
+Người dùng: slide cũ dày chữ, nhiều thuật ngữ, kịch bản không rõ, thiếu bảng kết quả của REPORT.docx.
+Viết bộ dựng `scripts.build_midterm_slides` (+ `scripts/midterm_slides/`): mở template IUH, giữ bìa,
+nền sáng cho nội dung; 29 slide chính + 7 phụ lục; mỗi kịch bản một khung 4 ô (hỏi · làm · so · đo);
+mỗi slide kết quả = bảng thật từ cùng tệp bảng của DOCX (in đậm tốt nhất, nền xám đang dùng) + ô
+"Đọc kết quả" / "Không có nghĩa là"; ghi chú người nói ở mọi slide chính; kịch bản lời nói sinh ra
+`report/slide/kich_ban_slide_giua_ky.md`. Ví dụ thật S-0009 và câu hỏi demo; TP/FP/FN của f2 tính từ
+`evaluation_cv_annotated.json` đã khóa. Sửa notes master thiếu placeholder và content type `image/jpg`
+của template. Kiểm: render bằng PowerPoint COM, validate.py đạt, đối chiếu số với REPORT.docx; ruff
+sạch; pytest 750 pass / 4 skip. Bản cũ sao lưu ở scratchpad. Không train, không chạy test, không push.
+
+### 2026-10-03 — Biên tập báo cáo giữa kỳ L3 (viết lại, rút gọn, tô đậm bảng)
+
+Người dùng yêu cầu điền thông tin, viết lại bảy chương cho dễ hiểu, giảm 85 → khoảng 60 trang, viết
+lời cảm ơn, rút gọn kết quả và tô đậm/tô nền. Viết lại từng chương (19.900 → 15.100 từ), bỏ bảng/hình
+trùng ý (31 → 21 bảng, 7 → 4 hình), thêm tuỳ chọn `keep/cols/best/group/used` cho `@@INCLUDE@@`
+(chỉ đổi trình bày, thêm 3 test). Lỗi tự gây và đã sửa: `sed` làm mất vài cụm "f2" ở Chương 6
+(khôi phục, rà lại bằng so tập số cũ/mới); bìa EN tràn trang; lỡ chạy `ruff format scripts` làm đổi
+72 tệp không liên quan (đã `git checkout`). Kết quả: 63 trang, `check_midterm_docx` đạt, ruff sạch,
+pytest 747 pass/4 skip. Không train, không chạy đánh giá test, không push.
+
+### 2026-10-03 — Kiểm tra và sửa lỗi bộ lọc rỗng trong demo (W7 7.3)
+
+Tái hiện câu hỏi trong ảnh: parser trả năm lớp đầu taxonomy; gửi `classes_all: []` trả 422.
+Nguyên nhân UI: kiểm `Object.keys` coi mảng rỗng/field undefined là filter; lỗi cũ còn hiện sau
+đổi câu hỏi. Thêm chuẩn hóa filter trước gửi, khóa query khi không còn filter, xóa trạng thái
+cũ khi sửa câu hỏi và hướng dẫn phạm vi tìm kiếm. Không thay parser đã khóa bởi ADR-0036.
+Gate: npm test, npm run build, pytest query_parser/api_service/api_boundaries, ruff check;
+rebuild Compose API rồi Playwright kiểm xóa hết chip, sửa câu hỏi và query chim có evidence.
+Artifact: `docs/measurements/demo_query_ui_fix_20261003.json`. Câu hỏi tổng quát về recording
+đang mở vẫn chưa được hỗ trợ; các chip parser đoán không phải sự kiện phát hiện trong audio.
+
+### 2026-10-03 — Chạy demo local cho người dùng (W7 7.4)
+
+Khởi động Docker Desktop và `scripts/demo_up.ps1`, giữ history upload hiện có.
+`scripts/demo_check.ps1` pass; `scripts/report_demo_script.py --base-url http://127.0.0.1:8088`
+upload WAV TRAIN S-0049 và chạy câu hỏi EN/VI có evidence, sinh `demo_script_20261003.md/json`.
+Playwright mở giao diện, chọn bản ghi và kiểm trình phát audio; không có lỗi JavaScript.
+Giữ các dịch vụ chạy để người dùng thử. Không đổi model/config/split, không chạy benchmark test.
+
+### 2026-10-03 — Rà soát độc lập nội dung và định dạng báo cáo L3
+
+Theo yêu cầu đánh giá trước khi sửa, đọc `report/src/` và kiểm trực tiếp DOCX/PDF. Chạy
+`scripts.check_midterm_docx`, kiểm thêm XML, trích PDF, render trang chọn lọc và đọc metric đã
+lưu. Ghi nhận xét từng mục, các lỗi diễn giải K01–K16 và bảng tiêu đề đề xuất trong
+`report/danh_gia_bao_cao_20261003.md`; JSON bằng chứng có hash tài liệu ở `docs/measurements/`.
+Đọc trực tiếp mã CNN14 của tác giả và FAQ Creative Commons để giới hạn hai khẳng định chưa
+chuẩn. Không sửa báo cáo gốc, không inference/train/evaluate test. Rà soát là cơ sở biên tập,
+không phải xác nhận mọi trích dẫn và mọi số trong toàn báo cáo.
 
 ### 2026-10-03 — Báo cáo giữa kỳ L3 dạng DOCX theo mẫu khoa
 
