@@ -29,7 +29,8 @@ def discover(runs: Path) -> list[Path]:
         name = folder.name
         if not (name in SEEDS or name == 'sed_ensemble_t2b_20260927T200914Z'
                 or name.startswith('sed_ensemble_f2_h')
-                or name.startswith('sed_polyphonic_20261008')):
+                or (re.fullmatch(r'sed_polyphonic_\d{8}T\d{6}Z', name)
+                    and name >= 'sed_polyphonic_20261008T000000Z')):
             continue
         if read(folder / 'manifest.json').get('config', {}).get('cv_fold') is None:
             selected.append(folder)

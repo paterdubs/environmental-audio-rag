@@ -152,8 +152,8 @@ mình; cần đụng file khác thì ghi §6.
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
 | XO-20 | O1 tầng S: bảng mọi run so ba seed T2b, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
 | XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ◐ (chờ merge; thiếu CV TF256 KD — §6) |
-| XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | TODO |
-| XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | TODO |
+| XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | 🔒 Codex |
+| XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | 🔒 Codex |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -365,6 +365,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - **08/10/2026 — Codex, XO-21:** report_detection_gap +4fixture, CLI thật5 --run T2b/GRU/DO4/TFKD/TFstrong --stamp20261009 (đường dẫn tuyệt đối main/ml/runs); 3run sẵn sàng được đo,2TF đang chờ. pytest -q **785passed,12skipped,28warnings (97.98s)**; ruff check . sạch. Không chạy selector hoặc ghi lại postproc.
 
+- **08/10/2026 — Codex, XO-20 kiểm cuối lượt6:** bổ sung KD vào tier_s_20261009,11run đủCV/1strongđangchờ; autodiscovery nhận ngày mới, fixture ngày09/10; CLI sinh scratch rồi chép measurement, assert mọi10rowcũ giống hoàn toàn; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -536,10 +538,20 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - `oc_gru`: frame AP macro annotated=0.772682610513; winner full-dev macro/micro=0.174119821471/0.222826086957; θglobalmicro=0.222826086957; θoraclemicro=0.246851385390; I/D/S=420/720/2; Nsys/Nref=586/886; onset-onlymicro=0.309782608696; offset-onlymicro=0.574728260870.
 - `do4`: frame AP macro annotated=0.767660191020; winner full-dev macro/micro=0.150751121213/0.221028396009; θglobalmicro=0.220419202164; θoraclemicro=0.251655629139; I/D/S=272/741/1; Nsys/Nref=417/886; onset-onlymicro=0.270145817345; offset-onlymicro=0.523407521105.
 
+- **XO-20 cập nhật TF KD:** 11 run đủ hai selection, 1 đang chờ (strong145841Z). KD135047Z winner=theta global|25; CV=0.277893741776±0.086759158776; Δseedbest=+0.044867689709; foldcao=4/5; qua=True; full-dev macro/micro=0.195613772079/0.263661202186.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — cập nhật XO-20: TF256 KD đã đủ CV trong lượt 6
+
+KD135047Z đã có θ selection/refit lúc23:06:53 và cSEBB selection lúc23:10:07 08/10 theo mtime nguồn. Đã chạy lại CLI báo cáo vào scratch **trong worktree**, sau đó chép output sinh tự động vào measurement cùng nhãn20261009 trước merge. Assert mọi row của snapshot trước giống hoàn toàn, chỉ thêmKD; không sửa số bằng tay. Các dòng “thiếu TF KD” trong nhật ký/snapshot ban đầu là lịch sử, đã giải quyết. Strong145841Z vẫn thiếuCV; là pending ởXO-20 và tùy chọn chưa đủ điều kiện ởXO-21. Autodiscovery XO-20 nhận run sed_polyphonic từ08/10 trở đi và loại config.cv_fold, fixture có ngày09/10; --run cho nguồn khác.
+
+- **XO-20 cập nhật TF KD:** 11 run đủ hai selection, 1 đang chờ (strong145841Z). KD135047Z winner=theta global|25; CV=0.277893741776±0.086759158776; Δseedbest=+0.044867689709; foldcao=4/5; qua=True; full-dev macro/micro=0.195613772079/0.263661202186.
+
+KD qua cổng tầngS theo luật đã ghi; chưa là xác nhận OOF hoặc lựa chọn cuối. Không đổi luật S13/ADR, không tự chạy selector. HaiOOF B0 vẫn chưa đủ selection tại lần kiểm này nên chưa kích hoạt lượt7.
 
 ### [MỞ] Codex → Claude — khoảng cách frame/event XO-21 và thiếu CV TF256
 
