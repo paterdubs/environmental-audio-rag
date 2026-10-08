@@ -98,26 +98,45 @@ def load_context(run_dir: Path, n_folds: int, eval_set: str = "all") -> dict:
     frame_rate = 1.0 / artifact.frame_hop_s
     splits = pd.read_csv(ROOT / "data/splits/datased_polyphonic.csv")
     groups = dict(zip(splits["recording_id"].astype(str), splits["leakage_group"], strict=True))
-    train_ids = set(splits.loc[splits["split"] == "train", "recording_id"].astype(str))
-    train_events = load_events_by_recording(train_ids)
-    return {
-        "taxonomy": taxonomy, "class_ids": class_ids, "probabilities": probabilities,
-        "reference": load_events_by_recording(set(probabilities)), "frame_rate": frame_rate,
-        "folds": assign_folds(sorted(probabilities), groups, n_folds),
-        "priors_by_p": {
-            p: derive_duration_priors(train_events, class_ids=class_ids, frame_rate=frame_rate,
-                                      source_split="train", taxonomy=taxonomy,
-                                      g_max_percentile=p)
-            for p in G_MAX_PERCENTILES
-        },
-    }
+    reference = load_events_by_recording(set(probabilities))
+    folds = assign_folds(sorted(probabilities), groups, n_folds)
+
+    def priors_from(events: dict) -> dict:
+        return {p: derive_duration_priors(events, class_ids=class_ids, frame_rate=frame_rate,
+                                          source_split="train", taxonomy=taxonomy,
+                                          g_max_percentile=p)
+                for p in G_MAX_PERCENTILES}
+
+    context = {"taxonomy": taxonomy, "class_ids": class_ids, "probabilities": probabilities,
+               "reference": reference, "frame_rate": frame_rate, "folds": folds}
+    if not is_oof_run(run_dir):
+        train_ids = set(splits.loc[splits["split"] == "train", "recording_id"].astype(str))
+        return {**context, "priors_by_p": priors_from(load_events_by_recording(train_ids))}
+    # An OOF artifact (ADR-0041 §4) also scores the original train recordings, so priors
+    # from the train split would carry labels of the held-out fold. Each CV fold instead
+    # derives priors from the folds θ is fitted on — the "train" role of that fit.
+    fold_priors = {fold: priors_from({r: reference[r] for r, f in folds.items() if f != fold})
+                   for fold in range(n_folds)}
+    return {**context, "priors_by_p": priors_from(reference), "fold_priors": fold_priors}
+
+
+def is_oof_run(run_dir: Path) -> bool:
+    manifest = run_dir / "manifest.json"
+    return manifest.exists() and json.loads(
+        manifest.read_text(encoding="utf-8")).get("task") == "sed_oof"
+
+
+def priors_for(ctx: dict, p: float, fold: int | None) -> dict:
+    """Priors for fitting θ without `fold`; `fold=None` means fitting on every recording."""
+    fold_priors = ctx.get("fold_priors")
+    return fold_priors[fold][p] if fold_priors and fold is not None else ctx["priors_by_p"][p]
 
 
 def run_task(ctx: dict, mode: str, p: float, fold: int | None):
     """Fit θ on every fold but `fold` and return the held-out event-F1; with
     `fold=None`, fit on the whole dev set and return the thresholds."""
     fit_ids = [r for r, f in ctx["folds"].items() if f != fold]
-    shared = (ctx["class_ids"], ctx["priors_by_p"][p], ctx["frame_rate"])
+    shared = (ctx["class_ids"], priors_for(ctx, p, fold), ctx["frame_rate"])
     thresholds = fit(mode, {r: ctx["probabilities"][r] for r in fit_ids},
                      {r: ctx["reference"][r] for r in fit_ids}, *shared, ctx["taxonomy"])
     if fold is None:

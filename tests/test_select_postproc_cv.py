@@ -1,4 +1,31 @@
-from scripts.select_postproc_cv import G_MAX_PERCENTILES, MODES, assign_folds, build_tasks
+import json
+from pathlib import Path
+
+from scripts.select_postproc_cv import (
+    G_MAX_PERCENTILES,
+    MODES,
+    assign_folds,
+    build_tasks,
+    is_oof_run,
+    priors_for,
+)
+
+
+def test_oof_runs_are_recognised_from_the_manifest_task(tmp_path: Path) -> None:
+    oof, dev = tmp_path / "oof", tmp_path / "dev"
+    for run, task in ((oof, "sed_oof"), (dev, "sed_ensemble")):
+        run.mkdir()
+        (run / "manifest.json").write_text(json.dumps({"task": task}), encoding="utf-8")
+    assert is_oof_run(oof) and not is_oof_run(dev)
+    assert not is_oof_run(tmp_path / "missing")
+
+
+def test_held_out_folds_use_their_own_priors_and_the_refit_uses_all() -> None:
+    """ADR-0041 §4: on OOF runs a fold's priors must not come from its own labels."""
+    ctx = {"priors_by_p": {25.0: "all"}, "fold_priors": {0: {25.0: "not-0"}, 1: {25.0: "not-1"}}}
+    assert priors_for(ctx, 25.0, 0) == "not-0" and priors_for(ctx, 25.0, 1) == "not-1"
+    assert priors_for(ctx, 25.0, None) == "all"
+    assert priors_for({"priors_by_p": {25.0: "train"}}, 25.0, 0) == "train"
 
 
 def test_tasks_cover_every_config_once_with_slow_fits_first() -> None:

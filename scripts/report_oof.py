@@ -34,9 +34,9 @@ def theta_events(ctx: dict, config: str) -> tuple[dict, list[dict]]:
     mode, percentile = config.split('|')
     if mode != 'global':
         raise ValueError('tầng C yêu cầu theta global')
-    priors = ctx['priors_by_p'][float(percentile)]
     events, fits = {}, []
     for fold in sorted(set(ctx['folds'].values())):
+        priors = theta_cv.priors_for(ctx, float(percentile), fold)
         fit_ids = [r for r, f in ctx['folds'].items() if f != fold]
         held = {r: ctx['probabilities'][r] for r, f in ctx['folds'].items() if f == fold}
         thresholds = theta_cv.fit(
@@ -143,7 +143,8 @@ def render(result: dict) -> str:
     lines = ['# Tầng C — cross-fitted OOF', '',
              '> θ/λ fit trên các fold khác; cấu hình và họ đã chọn bằng CV trên toàn OOF. '
              'CI ghép cặp 1000 lần, seed 20260922, có điều kiện trên lựa chọn đó; '
-             'không đo bất định do chọn model/họ/cấu hình. Prior giữ từ train gốc theo selector. '
+             'không đo bất định do chọn model/họ/cấu hình. Prior duration của mỗi fold suy từ '
+             'nhãn các fold còn lại, không từ train gốc. '
              'Macro theo sed_eval (bỏ NaN). Không đọc test.', '',
              '| Hệ thống | Họ | Macro | Micro | Nsys/Nref | Recall | Δ micro [95% CI] | Đạt luật |',
              '|---|---|---:|---:|---:|---:|---|:---:|']
