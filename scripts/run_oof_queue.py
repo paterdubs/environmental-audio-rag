@@ -1,9 +1,9 @@
-"""Hàng đợi tầng C: năm fold → OOF → θ/cSEBB annotated, không đánh giá test.
+"""Queue tier C: five folds, OOF assembly and annotated theta/cSEBB, without test evaluation.
 
-Ví dụ: python -m scripts.run_oof_queue --label B0 --seed 20260922 --dry-run --
+Example: python -m scripts.run_oof_queue --label B0 --seed 20260922 --dry-run --
     --encoder frame_mn --recipe t2b --train-fixes
-GPU thuộc người vận hành; script này không tự chọn hoặc thay đổi thiết bị.
-Mỗi label chạy bằng một tiến trình điều phối; không chạy hai queue cùng label.
+Device selection belongs to the operator; this script never changes GPU visibility.
+Run a single orchestration process per label.
 """
 from __future__ import annotations
 
@@ -84,125 +84,139 @@ def subprocess_runner(command: list[str], root: Path) -> subprocess.CompletedPro
                           env={**os.environ, 'PYTHONIOENCODING': 'utf-8'})
 
 
-def execute_queue(label: str, seed: int, forwarded: list[str], *, dry_run: bool = False,
-                  root: Path = ROOT, runner: Runner = subprocess_runner) -> dict:
-    validate_arguments(label, forwarded)
-    root = root.resolve()
-    folds_hash = digest(root / FOLDS)
-    identity = {'label': label, 'seed': seed, 'train_args': forwarded,
-                'cv_folds_sha256': folds_hash}
-    path = root / 'ml/runs' / f'oof_queue_{label}.json'
-    state = read(path) if path.exists() else {**identity, 'folds': {}, 'steps': {}}
-    if any(state.get(k) != v for k, v in identity.items()):
-        raise ValueError('resume khác label/seed/tham số/hash fold; cần label mới')
-    python = sys.executable
+class OOFQueue:
+    def __init__(self, label: str, seed: int, forwarded: list[str], root: Path, runner: Runner):
+        validate_arguments(label, forwarded)
+        self.root, self.runner = root.resolve(), runner
+        self.label, self.seed, self.forwarded = label, seed, forwarded
+        self.folds_hash = digest(self.root / FOLDS)
+        identity = {'label': label, 'seed': seed, 'train_args': forwarded,
+                    'cv_folds_sha256': self.folds_hash}
+        self.path = self.root / 'ml/runs' / f'oof_queue_{label}.json'
+        self.state = read(self.path) if self.path.exists() else {
+            **identity, 'folds': {}, 'steps': {}}
+        if any(self.state.get(k) != v for k, v in identity.items()):
+            raise ValueError('resume khác label/seed/tham số/hash fold; cần label mới')
 
+    @staticmethod
     def command(module, *args):
-        return [python, '-m', f'scripts.{module}', *map(str, args)]
+        return [sys.executable, '-m', f'scripts.{module}', *map(str, args)]
 
-    if dry_run:
+    def dry_run(self) -> dict:
         members = []
         for fold in range(5):
-            existing = state['folds'].get(str(fold))
+            existing = self.state['folds'].get(str(fold))
             if existing:
-                validate_fold(Path(existing['run']), fold, folds_hash, seed)
+                validate_fold(Path(existing['run']), fold, self.folds_hash, self.seed)
             else:
-                print(subprocess.list2cmdline(command('train_sed', *forwarded,
-                      '--seed', seed, '--cv-fold', fold)))
+                print(subprocess.list2cmdline(self.command('train_sed', *self.forwarded,
+                      '--seed', self.seed, '--cv-fold', fold)))
             members.append(existing['run'] if existing else f'<fold-{fold}-run>')
-        oof = state['steps'].get('build_oof', {}).get('run', '<oof-run>')
-        print(subprocess.list2cmdline(command('build_oof', '--label', label, *members)))
-        print(subprocess.list2cmdline(command('select_postproc_cv', oof, '--modes', 'global',
+        oof = self.state['steps'].get('build_oof', {}).get('run', '<oof-run>')
+        print(subprocess.list2cmdline(self.command('build_oof', '--label', self.label, *members)))
+        print(subprocess.list2cmdline(self.command('select_postproc_cv', oof, '--modes', 'global',
                                              '--workers', 3, '--eval-set', 'annotated')))
-        print(subprocess.list2cmdline(command('select_sebb_cv', oof, '--workers', 2,
+        print(subprocess.list2cmdline(self.command('select_sebb_cv', oof, '--workers', 2,
                                              '--eval-set', 'annotated')))
-        return state
+        return self.state
 
-    path.parent.mkdir(parents=True, exist_ok=True)
+    def save(self) -> None:
+        temporary = self.path.with_suffix('.tmp')
+        temporary.write_text(json.dumps(self.state, indent=2, ensure_ascii=False), encoding='utf-8')
+        os.replace(temporary, self.path)
 
-    def save():
-        temporary = path.with_suffix('.tmp')
-        temporary.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding='utf-8')
-        os.replace(temporary, path)
-
-    def invoke(name, cmd):
-        state['active'] = {'stage': name, 'command': cmd}
-        state['complete'] = False
-        save()
-        result = runner(cmd, root)
+    def invoke(self, name, cmd):
+        self.state['active'] = {'stage': name, 'command': cmd}
+        self.state['complete'] = False
+        self.save()
+        result = self.runner(cmd, self.root)
         print(result.stdout or '', flush=True)
-        state['active'].update(returncode=result.returncode,
-                               output_tail=(result.stdout or '')[-32000:])
-        save()
+        self.state['active'].update(returncode=result.returncode,
+                                   output_tail=(result.stdout or '')[-32000:])
+        self.save()
         if result.returncode != 0:
             raise RuntimeError(f'{name}: mã thoát {result.returncode}; đã dừng queue')
         return result.stdout or ''
 
-    try:
-        members = []
-        for fold in range(5):
-            entry = state['folds'].get(str(fold))
-            if entry:
-                run = Path(entry['run'])
-                validate_fold(run, fold, folds_hash, seed)
-                if digest(run/'manifest.json') != entry['manifest_sha256']:
-                    raise ValueError(f'{run}: manifest đã đổi sau khi queue ghi nhận')
-            else:
-                stdout = invoke(f'fold_{fold}', command('train_sed', *forwarded,
-                    '--seed', seed, '--cv-fold', fold))
-                run = reported_run(stdout, 'run', root)
-                validate_fold(run, fold, folds_hash, seed)
-                state['folds'][str(fold)] = {'run': str(run),
-                                            'manifest_sha256': digest(run/'manifest.json')}
-                save()
-            members.append(run)
+    def train_fold(self, fold: int) -> Path:
+        entry = self.state['folds'].get(str(fold))
+        if entry:
+            run = Path(entry['run'])
+            validate_fold(run, fold, self.folds_hash, self.seed)
+            if digest(run/'manifest.json') != entry['manifest_sha256']:
+                raise ValueError(f'{run}: manifest đã đổi sau khi queue ghi nhận')
+        else:
+            stdout = self.invoke(f'fold_{fold}', self.command('train_sed', *self.forwarded,
+                '--seed', self.seed, '--cv-fold', fold))
+            run = reported_run(stdout, 'run', self.root)
+            validate_fold(run, fold, self.folds_hash, self.seed)
+            self.state['folds'][str(fold)] = {'run': str(run),
+                                           'manifest_sha256': digest(run/'manifest.json')}
+            self.save()
+        return run
 
-        entry = state['steps'].get('build_oof')
+    def build_oof(self, members: list[Path]) -> Path:
+        entry = self.state['steps'].get('build_oof')
         if entry:
             oof = Path(entry['run'])
             if digest(oof/'manifest.json') != entry['manifest_sha256']:
                 raise ValueError('manifest OOF đã đổi')
         else:
-            stdout = invoke('build_oof', command('build_oof', '--label', label, *members))
-            oof = reported_run(stdout, 'run_dir', root)
+            stdout = self.invoke('build_oof', self.command('build_oof', '--label',
+                                                         self.label, *members))
+            oof = reported_run(stdout, 'run_dir', self.root)
         manifest = read(oof/'manifest.json')
         config = manifest.get('config', {})
         if (manifest.get('task') != 'sed_oof' or manifest.get('complete') is not True
                 or manifest.get('git', {}).get('dirty') is not False
-                or config.get('cv_folds_sha256') != folds_hash
+                or config.get('cv_folds_sha256') != self.folds_hash
                 or config.get('members') != [p.name for p in members]
                 or not (oof/'predictions/dev.npz').is_file()):
             raise ValueError('manifest OOF không hợp lệ')
-        state['steps']['build_oof'] = {'run': str(oof),
-                                     'manifest_sha256': digest(oof/'manifest.json')}
-        save()
-        for module, prefix, knobs in [
-            ('select_postproc_cv', 'postproc', ['--modes', 'global', '--workers', '3']),
-            ('select_sebb_cv', 'sebb', ['--workers', '2']),
-        ]:
-            output = oof / f'{prefix}_cv_selection_annotated.json'
-            entry = state['steps'].get(module)
-            if entry:
-                if digest(output) != entry['sha256']:
-                    raise ValueError(f'{output}: selection đã đổi')
-            else:
-                invoke(module, command(module, oof, *knobs, '--eval-set', 'annotated'))
-            selected = read(output)
-            if (selected.get('run') != oof.name or selected.get('eval_set') != 'annotated'
-                    or selected.get('git', {}).get('dirty') is not False):
-                raise ValueError(f'{output}: provenance selection không hợp lệ')
-            state['steps'][module] = {'path': str(output), 'sha256': digest(output)}
-            save()
-        state.pop('active', None)
-        state.pop('error', None)
-        state['complete'] = True
-        save()
-        return state
-    except BaseException as error:
-        state['error'] = f'{type(error).__name__}: {error}'
-        state['complete'] = False
-        save()
-        raise
+        self.state['steps']['build_oof'] = {'run': str(oof),
+                                          'manifest_sha256': digest(oof/'manifest.json')}
+        self.save()
+        return oof
+
+    def select(self, oof: Path, module: str, prefix: str, knobs: list[str]) -> None:
+        output = oof / f'{prefix}_cv_selection_annotated.json'
+        entry = self.state['steps'].get(module)
+        if entry:
+            if digest(output) != entry['sha256']:
+                raise ValueError(f'{output}: selection đã đổi')
+        else:
+            self.invoke(module, self.command(module, oof, *knobs, '--eval-set', 'annotated'))
+        selected = read(output)
+        if (selected.get('run') != oof.name or selected.get('eval_set') != 'annotated'
+                or selected.get('git', {}).get('dirty') is not False):
+            raise ValueError(f'{output}: provenance selection không hợp lệ')
+        self.state['steps'][module] = {'path': str(output), 'sha256': digest(output)}
+        self.save()
+
+    def run(self) -> dict:
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            members = [self.train_fold(fold) for fold in range(5)]
+            oof = self.build_oof(members)
+            self.select(oof, 'select_postproc_cv', 'postproc',
+                        ['--modes', 'global', '--workers', '3'])
+            self.select(oof, 'select_sebb_cv', 'sebb', ['--workers', '2'])
+            self.state.pop('active', None)
+            self.state.pop('error', None)
+            self.state['complete'] = True
+            self.save()
+            return self.state
+        except BaseException as error:
+            self.state['error'] = f'{type(error).__name__}: {error}'
+            self.state['complete'] = False
+            self.save()
+            raise
+
+
+def execute_queue(label: str, seed: int, forwarded: list[str], *, dry_run: bool = False,
+                  root: Path = ROOT, runner: Runner = subprocess_runner) -> dict:
+    queue = OOFQueue(label, seed, forwarded, root, runner)
+    return queue.dry_run() if dry_run else queue.run()
 
 
 def main() -> None:

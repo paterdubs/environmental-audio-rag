@@ -342,6 +342,8 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-16: đọc source EfficientSED @e3449bfd, Git tree API, metadata PyPI và wheel rotary0.9.1 trong bộ nhớ, metadata package `.venv`; không pip install, không import/chạy TF256. Gate CPU pytest:763 passed,7 skipped,24 warnings (120.67s); ruff sạch. |
 
+| 08/10/2026 | Codex | XO-15 rà soát: tách điều phối thành OOFQueue với các bước train/build/select/invoke/save, giữ CLI/state/hành vi. AST kiểm hàm dài nhất22 dòng (file236 dòng), đúng CLAUDE §6 <50; cùng21 ca hồi quy runner giả. Gate toàn bộ pytest CPU:763 passed,7 skipped,24 warnings (117.55s); ruff sạch. |
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -478,6 +480,8 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - 08/10/2026 — XO-15 fixture: 21 ca qua; runner giả đủ8 lệnh (5train+build+2selector), resume sau fold2 lỗi chỉ chạy lại fold2..4 và3 bước sau; resume sau cSEBB lỗi chỉ chạy cSEBB; resume hoàn tất không gọi runner. Dry-run in8 lệnh không ghi state/run. Refuse manifest complete/dirty/fold/hash/seed sai, file/hash đã đổi, tham số/hash fold khác khi resume, cờ test gồm viết tắt argparse. Không chạy GPU/hàng đợi thật, không nạp prediction test.
 
 - 08/10/2026 — XO-16 metadata: EfficientSED requirements không ghim rotary; bản PyPI khảo sát0.9.1 MIT yêu cầu Python≥3.9, torch≥2.4, einops≥0.8 (pytest chỉ extra test). Wheel pure Python `rotary_embedding_torch-0.9.1-py3-none-any.whl` SHA256489ef53e21ab4c4eb35c0c97b551d724f5eea71c2bca39acb8fee8d88b142a76 khớp PyPI. `.venv`: Python3.12.10/torch2.11.0+cu128/numpy2.5.3; rotary/einops/torchaudio/torchvision/timm/nnAudio/mamba_ssm chưa có. Không đổi môi trường. Chi tiết nguồn/giới hạn §6.
+
+- 08/10/2026 — XO-15 rà soát cấu trúc: AST `end_lineno-lineno+1` cho mọi FunctionDef xác nhận max22 dòng (`build_oof`), file236 dòng. CLI và state schema giữ nguyên, không chạy thật; gate hồi quy toàn bộ ghi §4.
 
 ## 6. Chặn, hỏi, phản biện
 
