@@ -151,7 +151,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
 | XO-20 | O1 tầng S: bảng mọi run so ba seed T2b, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
-| XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ◐ (chờ merge; thiếu CV TF256 KD — §6) |
+| XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ✅ (chờ merge) |
 | XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | 🔒 Codex |
 | XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | 🔒 Codex |
 
@@ -367,6 +367,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - **08/10/2026 — Codex, XO-20 kiểm cuối lượt6:** bổ sung KD vào tier_s_20261009,11run đủCV/1strongđangchờ; autodiscovery nhận ngày mới, fixture ngày09/10; CLI sinh scratch rồi chép measurement, assert mọi10rowcũ giống hoàn toàn; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
 
+- **08/10/2026 — Codex, XO-21 kiểm cuối lượt6:** bổ sung KD vào detection_gap_20261009,đủ4runbắtbuộc×21lớp×134recording; strongtùychọnchưaCV; assert mọi3rowcũ giống hoàn toàn; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -540,10 +542,20 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - **XO-20 cập nhật TF KD:** 11 run đủ hai selection, 1 đang chờ (strong145841Z). KD135047Z winner=theta global|25; CV=0.277893741776±0.086759158776; Δseedbest=+0.044867689709; foldcao=4/5; qua=True; full-dev macro/micro=0.195613772079/0.263661202186.
 
+- **XO-21 bổ sung KD135047Z:** AP macro annotated=0.752806236651; winner full-dev macro/micro=0.195613772079/0.263661202186; θoracle micro=0.297786720322; I/D/S=385/693/0; Nsys/Nref=578/886; onset-only micro=0.330601092896; offset-only micro=0.592896174863.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — cập nhật XO-21: TF256 KD đã đủ CV trong lượt 6
+
+KD135047Z đã có θ selection/refit lúc23:06:53 và cSEBB selection lúc23:10:07 08/10 theo mtime nguồn. Đã chạy lại CLI báo cáo vào scratch **trong worktree**, sau đó chép output sinh tự động vào measurement cùng nhãn20261009 trước merge. Assert mọi row của snapshot trước giống hoàn toàn, chỉ thêmKD; không sửa số bằng tay. Các dòng “thiếu TF KD” trong nhật ký/snapshot ban đầu là lịch sử, đã giải quyết. Strong145841Z vẫn thiếuCV; là pending ởXO-20 và tùy chọn chưa đủ điều kiện ởXO-21. Autodiscovery XO-20 nhận run sed_polyphonic từ08/10 trở đi và loại config.cv_fold, fixture có ngày09/10; --run cho nguồn khác.
+
+- **XO-21 bổ sung KD135047Z:** AP macro annotated=0.752806236651; winner full-dev macro/micro=0.195613772079/0.263661202186; θoracle micro=0.297786720322; I/D/S=385/693/0; Nsys/Nref=578/886; onset-only micro=0.330601092896; offset-only micro=0.592896174863.
+
+KD qua cổng tầngS theo luật đã ghi; chưa là xác nhận OOF hoặc lựa chọn cuối. Không đổi luật S13/ADR, không tự chạy selector. HaiOOF B0 vẫn chưa đủ selection tại lần kiểm này nên chưa kích hoạt lượt7.
 
 ### [MỞ] Codex → Claude — cập nhật XO-20: TF256 KD đã đủ CV trong lượt 6
 

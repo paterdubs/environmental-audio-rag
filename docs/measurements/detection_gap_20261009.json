@@ -4,7 +4,7 @@
   "in_sample": true,
   "not_for_selection": true,
   "git": {
-    "revision": "5cb948de0890a4bb3ac90df36ae5fe83dcd989a6",
+    "revision": "f0b088cefefbb37b81d4dfbb7dcfed67a654af76",
     "dirty": true
   },
   "annotations_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff",
@@ -5334,17 +5334,1757 @@
       "theta_postproc_sha256": "18971161fa546b149269d7ba7eebc170feaa9c4efac14c761e22488e71690db7",
       "dev_predictions_sha256": "445888859a9fe73f17d7c9d93bb8edbbf65491cc8847adf160ff85b44bb6ae79",
       "dev_predictions_file_sha256": "a6168253b73bbc38104a16a74d3937e7d7a96a99d16db64920b17fc6855a0e16"
+    },
+    {
+      "screening": {
+        "label": "oc_tf_kd",
+        "run": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T135047Z",
+        "manifest": {
+          "command": [
+            "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\scripts\\train_sed.py",
+            "--encoder",
+            "frame_mn",
+            "--recipe",
+            "oc_tf_kd",
+            "--frame-mn-checkpoint",
+            "artifacts/checkpoints/efficientsed/fmn10+tf-256_advanced-kd-weak-strong.pt",
+            "--batch-size",
+            "24",
+            "--seed",
+            "20260922"
+          ],
+          "config": {
+            "epochs": 30,
+            "batch_size": 24,
+            "learning_rate": 0.0003,
+            "weight_decay": 0.0001,
+            "threshold": 0.5,
+            "window_frames": 1000,
+            "hop_frames": 1000,
+            "seed": 20260922,
+            "encoder_learning_rate": null,
+            "warmup_epochs": 1,
+            "cosine_decay": true,
+            "select_metric": "macro_average_precision",
+            "mixup_p": 0.5,
+            "filter_augment_p": 0.0,
+            "loss": "bce",
+            "focal_gamma": 2.0,
+            "asl_gamma_pos": 0.0,
+            "asl_gamma_neg": 4.0,
+            "asl_clip": 0.05,
+            "encoder_type": "frame_mn",
+            "feature_set": "logmel_panns_v1",
+            "frame_rate": 100.0,
+            "pos_weight_cap": 10.0,
+            "recipe": "oc_tf_kd",
+            "time_pooling": null,
+            "rnn_hidden": null,
+            "rnn_layers": null,
+            "upsample": null,
+            "random_crop": true,
+            "model_version": "sed-oc-tfkd-v1.0",
+            "sequence_model": "tf256",
+            "weight_source": "efficientsed:fmn10+tf-256_advanced-kd-weak-strong",
+            "pretrained_sequence_tensors": 25,
+            "checkpoint_path": "artifacts\\checkpoints\\efficientsed\\fmn10+tf-256_advanced-kd-weak-strong.pt",
+            "checkpoint_sha256": "7d5326a485b742b323b33dd2bcb366606b614b2a5deaa5e452ef34ddedb9797c",
+            "encoder_frozen": false,
+            "encoder_parameters": 4798528,
+            "input": "waveform_16k",
+            "waveform_manifest_sha256": "936351c3ba2a1c54a00c3d8c61d686f76f5676f234e3344ec419f4575bd94096"
+          },
+          "class_ids": [
+            "bells",
+            "birds",
+            "cat_fights_and_moans",
+            "chicken_coop",
+            "cicadas_and_crickets",
+            "crows_seagulls_magpies",
+            "dog_barkings_and_howlings",
+            "glass_breaking",
+            "horn",
+            "jet_aircrafts",
+            "lawn_mower_brush_cutter_olive_shaker",
+            "music",
+            "propeller_aircrafts",
+            "sirens_and_alarms",
+            "thunder_fireworks_gunshot",
+            "train",
+            "vacuum_cleaner_fan_hairdryer",
+            "vehicle_idling",
+            "vehicle_pass_by",
+            "voices",
+            "workshop"
+          ],
+          "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+          "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+          "data_manifest_sha256": "a9320b34b203f1b12d0764bf1a2ad06aa09f2d9addd7611a7ab4d6de065512ff",
+          "git": {
+            "revision": "5cb948de0890a4bb3ac90df36ae5fe83dcd989a6",
+            "dirty": false
+          },
+          "environment": {
+            "torch": "2.11.0+cu128",
+            "cuda_runtime": "12.8",
+            "cuda_available": true,
+            "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU",
+            "pid": 24608
+          },
+          "dataset_windows": {
+            "train": 4311,
+            "validation": 1462
+          },
+          "pos_weight": [
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            9.76355266571045,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+          ],
+          "complete": true,
+          "best_checkpoint": "checkpoints\\best.pt"
+        },
+        "recordings": [
+          "S-0009",
+          "S-0010",
+          "S-0012",
+          "S-0021",
+          "S-0022",
+          "S-0024",
+          "S-0025",
+          "S-0027",
+          "S-0030",
+          "S-0032",
+          "S-0033",
+          "S-0039",
+          "S-0054",
+          "S-0060",
+          "S-0061",
+          "S-0065",
+          "S-0072",
+          "S-0074",
+          "S-0076",
+          "S-0081",
+          "S-0083",
+          "S-0085",
+          "S-0088",
+          "S-0096",
+          "S-0111",
+          "S-0112",
+          "S-0116",
+          "S-0133",
+          "S-0136",
+          "S-0143",
+          "S-0155",
+          "S-0156",
+          "S-0170",
+          "S-0173",
+          "S-0174",
+          "S-0193",
+          "S-0205",
+          "S-0216",
+          "S-0217",
+          "S-0221",
+          "S-0227",
+          "S-0228",
+          "S-0233",
+          "S-0236",
+          "S-0237",
+          "S-0243",
+          "S-0262",
+          "S-0275",
+          "S-0279",
+          "S-0293",
+          "S-0298",
+          "S-0302",
+          "S-0303",
+          "S-0308",
+          "S-0309",
+          "S-0310",
+          "S-0313",
+          "S-0318",
+          "S-0330",
+          "S-0334",
+          "S-0336",
+          "S-0338",
+          "S-0342",
+          "S-0343",
+          "S-0345",
+          "S-0347",
+          "S-0349",
+          "S-0350",
+          "S-0360",
+          "S-0374",
+          "S-0375",
+          "S-0386",
+          "S-0406",
+          "S-0409",
+          "S-0411",
+          "S-0423",
+          "S-0437",
+          "S-0443",
+          "S-0444",
+          "S-0446",
+          "S-0452",
+          "S-0457",
+          "S-0478",
+          "S-0483",
+          "S-0484",
+          "S-0492",
+          "S-0510",
+          "S-0511",
+          "S-0516",
+          "S-0519",
+          "S-0525",
+          "S-0526",
+          "S-0528",
+          "S-0530",
+          "S-0533",
+          "S-0540",
+          "S-0544",
+          "S-0547",
+          "S-0553",
+          "S-0570",
+          "S-0571",
+          "S-0575",
+          "S-0576",
+          "S-0577",
+          "S-0584",
+          "S-0594",
+          "S-0595",
+          "S-0597",
+          "S-0598",
+          "S-0604",
+          "S-0606",
+          "S-0609",
+          "S-0610",
+          "S-0614",
+          "S-0621",
+          "S-0622",
+          "S-0623",
+          "S-0626",
+          "S-0630",
+          "S-0637",
+          "S-0642",
+          "S-0650",
+          "S-0660",
+          "S-0662",
+          "S-0664",
+          "S-0667",
+          "S-0670",
+          "S-0671",
+          "S-0690",
+          "S-0692",
+          "S-0693",
+          "S-0699",
+          "S-0700",
+          "S-0703"
+        ],
+        "fold_assignment": {
+          "S-0009": 0,
+          "S-0010": 1,
+          "S-0012": 4,
+          "S-0021": 1,
+          "S-0022": 0,
+          "S-0024": 1,
+          "S-0025": 3,
+          "S-0027": 3,
+          "S-0030": 0,
+          "S-0032": 4,
+          "S-0033": 2,
+          "S-0039": 4,
+          "S-0054": 0,
+          "S-0060": 2,
+          "S-0061": 3,
+          "S-0065": 2,
+          "S-0072": 3,
+          "S-0074": 2,
+          "S-0076": 3,
+          "S-0081": 2,
+          "S-0083": 1,
+          "S-0085": 0,
+          "S-0088": 4,
+          "S-0096": 3,
+          "S-0111": 0,
+          "S-0112": 3,
+          "S-0116": 1,
+          "S-0133": 0,
+          "S-0136": 1,
+          "S-0143": 0,
+          "S-0155": 4,
+          "S-0156": 0,
+          "S-0170": 0,
+          "S-0173": 3,
+          "S-0174": 2,
+          "S-0193": 4,
+          "S-0205": 2,
+          "S-0216": 4,
+          "S-0217": 2,
+          "S-0221": 1,
+          "S-0227": 4,
+          "S-0228": 2,
+          "S-0233": 4,
+          "S-0236": 4,
+          "S-0237": 4,
+          "S-0243": 3,
+          "S-0262": 3,
+          "S-0275": 4,
+          "S-0279": 0,
+          "S-0293": 1,
+          "S-0298": 3,
+          "S-0302": 2,
+          "S-0303": 4,
+          "S-0308": 1,
+          "S-0309": 1,
+          "S-0310": 2,
+          "S-0313": 4,
+          "S-0318": 2,
+          "S-0330": 3,
+          "S-0334": 3,
+          "S-0336": 3,
+          "S-0338": 1,
+          "S-0342": 0,
+          "S-0343": 2,
+          "S-0345": 1,
+          "S-0347": 0,
+          "S-0349": 0,
+          "S-0350": 3,
+          "S-0360": 1,
+          "S-0374": 2,
+          "S-0375": 1,
+          "S-0386": 1,
+          "S-0406": 2,
+          "S-0409": 4,
+          "S-0411": 4,
+          "S-0423": 0,
+          "S-0437": 2,
+          "S-0443": 2,
+          "S-0444": 0,
+          "S-0446": 2,
+          "S-0452": 2,
+          "S-0457": 3,
+          "S-0478": 0,
+          "S-0483": 0,
+          "S-0484": 0,
+          "S-0492": 4,
+          "S-0510": 0,
+          "S-0511": 3,
+          "S-0516": 4,
+          "S-0519": 3,
+          "S-0525": 1,
+          "S-0526": 2,
+          "S-0528": 2,
+          "S-0530": 1,
+          "S-0533": 1,
+          "S-0540": 3,
+          "S-0544": 4,
+          "S-0547": 2,
+          "S-0553": 4,
+          "S-0570": 3,
+          "S-0571": 3,
+          "S-0575": 0,
+          "S-0576": 0,
+          "S-0577": 4,
+          "S-0584": 4,
+          "S-0594": 1,
+          "S-0595": 4,
+          "S-0597": 4,
+          "S-0598": 4,
+          "S-0604": 1,
+          "S-0606": 0,
+          "S-0609": 3,
+          "S-0610": 1,
+          "S-0614": 3,
+          "S-0621": 2,
+          "S-0622": 0,
+          "S-0623": 2,
+          "S-0626": 0,
+          "S-0630": 4,
+          "S-0637": 3,
+          "S-0642": 1,
+          "S-0650": 1,
+          "S-0660": 2,
+          "S-0662": 0,
+          "S-0664": 0,
+          "S-0667": 0,
+          "S-0670": 3,
+          "S-0671": 2,
+          "S-0690": 3,
+          "S-0692": 1,
+          "S-0693": 3,
+          "S-0699": 3,
+          "S-0700": 4,
+          "S-0703": 1
+        },
+        "families": {
+          "theta": {
+            "family": "theta",
+            "config": "global|25",
+            "mean": 0.27789374177586995,
+            "sd": 0.08675915877602723,
+            "folds": [
+              0.21951219512195122,
+              0.37623762376237624,
+              0.3673469387755102,
+              0.1951219512195122,
+              0.23124999999999998
+            ]
+          },
+          "csebb": {
+            "family": "csebb",
+            "config": "tau0.32_rel1.5",
+            "mean": 0.1395080456024662,
+            "sd": 0.0364219113711324,
+            "folds": [
+              0.1631578947368421,
+              0.1368421052631579,
+              0.18025751072961374,
+              0.13286713286713286,
+              0.08441558441558442
+            ]
+          }
+        },
+        "winner": {
+          "family": "theta",
+          "config": "global|25",
+          "mean": 0.27789374177586995,
+          "sd": 0.08675915877602723,
+          "folds": [
+            0.21951219512195122,
+            0.37623762376237624,
+            0.3673469387755102,
+            0.1951219512195122,
+            0.23124999999999998
+          ]
+        },
+        "sources_sha256": {
+          "postproc_cv_selection_annotated.json": "d87016277f7981748803e620702612c7f2057dc5b87a617a7974989993548545",
+          "sebb_cv_selection_annotated.json": "223073d5594971a9e7ba58e741e584a1f46ded319fc3d4e4734c4d18c41b21de"
+        }
+      },
+      "n_recordings": 134,
+      "class_ids": [
+        "bells",
+        "birds",
+        "cat_fights_and_moans",
+        "chicken_coop",
+        "cicadas_and_crickets",
+        "crows_seagulls_magpies",
+        "dog_barkings_and_howlings",
+        "glass_breaking",
+        "horn",
+        "jet_aircrafts",
+        "lawn_mower_brush_cutter_olive_shaker",
+        "music",
+        "propeller_aircrafts",
+        "sirens_and_alarms",
+        "thunder_fireworks_gunshot",
+        "train",
+        "vacuum_cleaner_fan_hairdryer",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices",
+        "workshop"
+      ],
+      "frame_map_saved": {
+        "value": 0.7386101645078149,
+        "source": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T135047Z\\metrics.json",
+        "sha256": "d3f7b962c1086ad244623cbfe4f2c42a59952d805dc83227f4bff1e3c55960b5",
+        "note": "saved validation metric; not recomputed on annotated dev"
+      },
+      "frame_map_annotated_stacked": 0.7528062366510203,
+      "winner_in_sample": {
+        "per_class": {
+          "bells": {
+            "f1": 0.3,
+            "nsys": 14,
+            "nref": 26
+          },
+          "birds": {
+            "f1": 0.06299212598425197,
+            "nsys": 40,
+            "nref": 87
+          },
+          "cat_fights_and_moans": {
+            "f1": 0.2318840579710145,
+            "nsys": 29,
+            "nref": 40
+          },
+          "chicken_coop": {
+            "f1": 0.35897435897435903,
+            "nsys": 15,
+            "nref": 24
+          },
+          "cicadas_and_crickets": {
+            "f1": 0.3542857142857143,
+            "nsys": 66,
+            "nref": 109
+          },
+          "crows_seagulls_magpies": {
+            "f1": 0.125,
+            "nsys": 4,
+            "nref": 28
+          },
+          "dog_barkings_and_howlings": {
+            "f1": 0.20270270270270271,
+            "nsys": 60,
+            "nref": 88
+          },
+          "glass_breaking": {
+            "f1": 0.26666666666666666,
+            "nsys": 13,
+            "nref": 17
+          },
+          "horn": {
+            "f1": 0.0,
+            "nsys": 5,
+            "nref": 21
+          },
+          "jet_aircrafts": {
+            "f1": 0.14285714285714285,
+            "nsys": 11,
+            "nref": 17
+          },
+          "lawn_mower_brush_cutter_olive_shaker": {
+            "f1": 0.09090909090909091,
+            "nsys": 16,
+            "nref": 28
+          },
+          "music": {
+            "f1": 0.17391304347826086,
+            "nsys": 20,
+            "nref": 26
+          },
+          "propeller_aircrafts": {
+            "f1": 0.05263157894736842,
+            "nsys": 17,
+            "nref": 21
+          },
+          "sirens_and_alarms": {
+            "f1": 0.09999999999999999,
+            "nsys": 17,
+            "nref": 23
+          },
+          "thunder_fireworks_gunshot": {
+            "f1": 0.0,
+            "nsys": 9,
+            "nref": 18
+          },
+          "train": {
+            "f1": 0.07407407407407407,
+            "nsys": 30,
+            "nref": 24
+          },
+          "vacuum_cleaner_fan_hairdryer": {
+            "f1": 0.33333333333333326,
+            "nsys": 24,
+            "nref": 30
+          },
+          "vehicle_idling": {
+            "f1": 0.1,
+            "nsys": 12,
+            "nref": 28
+          },
+          "vehicle_pass_by": {
+            "f1": 0.021505376344086023,
+            "nsys": 33,
+            "nref": 60
+          },
+          "voices": {
+            "f1": 0.39705882352941174,
+            "nsys": 59,
+            "nref": 77
+          },
+          "workshop": {
+            "f1": 0.7191011235955055,
+            "nsys": 84,
+            "nref": 94
+          }
+        },
+        "micro_f1": 0.2636612021857924,
+        "macro_f1": 0.19561377207871344,
+        "metric_config": {
+          "t_collar": 0.2,
+          "percentage_of_length": 0.2,
+          "evaluate_onset": true,
+          "evaluate_offset": true
+        }
+      },
+      "theta_global_in_sample": {
+        "per_class": {
+          "bells": {
+            "f1": 0.3,
+            "nsys": 14,
+            "nref": 26
+          },
+          "birds": {
+            "f1": 0.06299212598425197,
+            "nsys": 40,
+            "nref": 87
+          },
+          "cat_fights_and_moans": {
+            "f1": 0.2318840579710145,
+            "nsys": 29,
+            "nref": 40
+          },
+          "chicken_coop": {
+            "f1": 0.35897435897435903,
+            "nsys": 15,
+            "nref": 24
+          },
+          "cicadas_and_crickets": {
+            "f1": 0.3542857142857143,
+            "nsys": 66,
+            "nref": 109
+          },
+          "crows_seagulls_magpies": {
+            "f1": 0.125,
+            "nsys": 4,
+            "nref": 28
+          },
+          "dog_barkings_and_howlings": {
+            "f1": 0.20270270270270271,
+            "nsys": 60,
+            "nref": 88
+          },
+          "glass_breaking": {
+            "f1": 0.26666666666666666,
+            "nsys": 13,
+            "nref": 17
+          },
+          "horn": {
+            "f1": 0.0,
+            "nsys": 5,
+            "nref": 21
+          },
+          "jet_aircrafts": {
+            "f1": 0.14285714285714285,
+            "nsys": 11,
+            "nref": 17
+          },
+          "lawn_mower_brush_cutter_olive_shaker": {
+            "f1": 0.09090909090909091,
+            "nsys": 16,
+            "nref": 28
+          },
+          "music": {
+            "f1": 0.17391304347826086,
+            "nsys": 20,
+            "nref": 26
+          },
+          "propeller_aircrafts": {
+            "f1": 0.05263157894736842,
+            "nsys": 17,
+            "nref": 21
+          },
+          "sirens_and_alarms": {
+            "f1": 0.09999999999999999,
+            "nsys": 17,
+            "nref": 23
+          },
+          "thunder_fireworks_gunshot": {
+            "f1": 0.0,
+            "nsys": 9,
+            "nref": 18
+          },
+          "train": {
+            "f1": 0.07407407407407407,
+            "nsys": 30,
+            "nref": 24
+          },
+          "vacuum_cleaner_fan_hairdryer": {
+            "f1": 0.33333333333333326,
+            "nsys": 24,
+            "nref": 30
+          },
+          "vehicle_idling": {
+            "f1": 0.1,
+            "nsys": 12,
+            "nref": 28
+          },
+          "vehicle_pass_by": {
+            "f1": 0.021505376344086023,
+            "nsys": 33,
+            "nref": 60
+          },
+          "voices": {
+            "f1": 0.39705882352941174,
+            "nsys": 59,
+            "nref": 77
+          },
+          "workshop": {
+            "f1": 0.7191011235955055,
+            "nsys": 84,
+            "nref": 94
+          }
+        },
+        "micro_f1": 0.2636612021857924,
+        "macro_f1": 0.19561377207871344,
+        "metric_config": {
+          "t_collar": 0.2,
+          "percentage_of_length": 0.2,
+          "evaluate_onset": true,
+          "evaluate_offset": true
+        }
+      },
+      "theta_oracle_in_sample_not_for_selection": {
+        "per_class": {
+          "bells": {
+            "f1": 0.3,
+            "nsys": 14,
+            "nref": 26
+          },
+          "birds": {
+            "f1": 0.06299212598425197,
+            "nsys": 40,
+            "nref": 87
+          },
+          "cat_fights_and_moans": {
+            "f1": 0.33333333333333337,
+            "nsys": 26,
+            "nref": 40
+          },
+          "chicken_coop": {
+            "f1": 0.35897435897435903,
+            "nsys": 15,
+            "nref": 24
+          },
+          "cicadas_and_crickets": {
+            "f1": 0.4318181818181818,
+            "nsys": 67,
+            "nref": 109
+          },
+          "crows_seagulls_magpies": {
+            "f1": 0.17647058823529413,
+            "nsys": 6,
+            "nref": 28
+          },
+          "dog_barkings_and_howlings": {
+            "f1": 0.20270270270270271,
+            "nsys": 60,
+            "nref": 88
+          },
+          "glass_breaking": {
+            "f1": 0.41379310344827586,
+            "nsys": 12,
+            "nref": 17
+          },
+          "horn": {
+            "f1": 0.12903225806451613,
+            "nsys": 10,
+            "nref": 21
+          },
+          "jet_aircrafts": {
+            "f1": 0.14285714285714285,
+            "nsys": 11,
+            "nref": 17
+          },
+          "lawn_mower_brush_cutter_olive_shaker": {
+            "f1": 0.1702127659574468,
+            "nsys": 19,
+            "nref": 28
+          },
+          "music": {
+            "f1": 0.24489795918367346,
+            "nsys": 23,
+            "nref": 26
+          },
+          "propeller_aircrafts": {
+            "f1": 0.13333333333333333,
+            "nsys": 24,
+            "nref": 21
+          },
+          "sirens_and_alarms": {
+            "f1": 0.1818181818181818,
+            "nsys": 21,
+            "nref": 23
+          },
+          "thunder_fireworks_gunshot": {
+            "f1": 0.08,
+            "nsys": 7,
+            "nref": 18
+          },
+          "train": {
+            "f1": 0.07407407407407407,
+            "nsys": 30,
+            "nref": 24
+          },
+          "vacuum_cleaner_fan_hairdryer": {
+            "f1": 0.41509433962264153,
+            "nsys": 23,
+            "nref": 30
+          },
+          "vehicle_idling": {
+            "f1": 0.1,
+            "nsys": 12,
+            "nref": 28
+          },
+          "vehicle_pass_by": {
+            "f1": 0.0784313725490196,
+            "nsys": 42,
+            "nref": 60
+          },
+          "voices": {
+            "f1": 0.39705882352941174,
+            "nsys": 59,
+            "nref": 77
+          },
+          "workshop": {
+            "f1": 0.7191011235955055,
+            "nsys": 84,
+            "nref": 94
+          }
+        },
+        "micro_f1": 0.29778672032193154,
+        "macro_f1": 0.2450474175753022,
+        "metric_config": {
+          "t_collar": 0.2,
+          "percentage_of_length": 0.2,
+          "evaluate_onset": true,
+          "evaluate_offset": true
+        }
+      },
+      "event_errors_winner": {
+        "nref": 886,
+        "nsys": 578,
+        "tp": 193,
+        "insertion": 385,
+        "deletion": 693,
+        "substitution": 0,
+        "rates": {
+          "error_rate": 1.2167042889390518,
+          "substitution_rate": 0.0,
+          "deletion_rate": 0.7821670428893905,
+          "insertion_rate": 0.4345372460496614
+        },
+        "onset_only": {
+          "micro_f1": 0.3306010928961749,
+          "macro_f1": 0.2603940533695318,
+          "metric_config": {
+            "t_collar": 0.2,
+            "percentage_of_length": 0.2,
+            "evaluate_onset": true,
+            "evaluate_offset": false
+          }
+        },
+        "offset_only": {
+          "micro_f1": 0.592896174863388,
+          "macro_f1": 0.5376117064047189,
+          "metric_config": {
+            "t_collar": 0.2,
+            "percentage_of_length": 0.2,
+            "evaluate_onset": false,
+            "evaluate_offset": true
+          }
+        }
+      },
+      "per_class": {
+        "bells": {
+          "frame_ap": 0.8590261650799195,
+          "n_frames": 1249271,
+          "n_positive_frames": 20627,
+          "true_positive_frame_fraction": 0.01651122934895631,
+          "posterior_gt_theta_fraction": 0.0069272399663483746,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.3,
+            "f1": 0.3,
+            "global_theta": 0.95,
+            "global_f1": 0.3,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.04545454545454546,
+              "0.1": 0.04878048780487805,
+              "0.15": 0.1,
+              "0.2": 0.10256410256410257,
+              "0.25": 0.10256410256410257,
+              "0.3": 0.05,
+              "0.35": 0.05128205128205129,
+              "0.4": 0.15384615384615388,
+              "0.45": 0.15,
+              "0.5": 0.14634146341463417,
+              "0.55": 0.14285714285714285,
+              "0.6": 0.15,
+              "0.65": 0.20512820512820515,
+              "0.7": 0.2631578947368421,
+              "0.75": 0.27027027027027023,
+              "0.8": 0.2564102564102564,
+              "0.85": 0.25,
+              "0.9": 0.2,
+              "0.95": 0.3
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.3,
+            "nsys": 14,
+            "nref": 26
+          }
+        },
+        "birds": {
+          "frame_ap": 0.6470077804026093,
+          "n_frames": 1249271,
+          "n_positive_frames": 105432,
+          "true_positive_frame_fraction": 0.0843948190584749,
+          "posterior_gt_theta_fraction": 0.02325035960972439,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.06299212598425197,
+            "f1": 0.06299212598425197,
+            "global_theta": 0.95,
+            "global_f1": 0.06299212598425197,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.00925925925925926,
+              "0.1": 0.010526315789473684,
+              "0.15": 0.03278688524590164,
+              "0.2": 0.034682080924855495,
+              "0.25": 0.02395209580838323,
+              "0.3": 0.024096385542168676,
+              "0.35": 0.024539877300613494,
+              "0.4": 0.02547770700636943,
+              "0.45": 0.0375,
+              "0.5": 0.038461538461538464,
+              "0.55": 0.040268456375838924,
+              "0.6": 0.053691275167785234,
+              "0.65": 0.05555555555555556,
+              "0.7": 0.041379310344827586,
+              "0.75": 0.027972027972027972,
+              "0.8": 0.02816901408450704,
+              "0.85": 0.0291970802919708,
+              "0.9": 0.03007518796992481,
+              "0.95": 0.06299212598425197
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.06299212598425197,
+            "nsys": 40,
+            "nref": 87
+          }
+        },
+        "cat_fights_and_moans": {
+          "frame_ap": 0.9437948990476959,
+          "n_frames": 1249271,
+          "n_positive_frames": 24314,
+          "true_positive_frame_fraction": 0.019462550559486293,
+          "posterior_gt_theta_fraction": 0.01255372133027982,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.25,
+            "objective_nan_as_zero": 0.33333333333333337,
+            "f1": 0.33333333333333337,
+            "global_theta": 0.95,
+            "global_f1": 0.2318840579710145,
+            "delta_f1": 0.10144927536231887,
+            "curve": {
+              "0.05": 0.125,
+              "0.1": 0.16393442622950818,
+              "0.15": 0.15625,
+              "0.2": 0.21875,
+              "0.25": 0.33333333333333337,
+              "0.3": 0.33333333333333337,
+              "0.35": 0.32835820895522394,
+              "0.4": 0.2898550724637681,
+              "0.45": 0.2898550724637681,
+              "0.5": 0.2898550724637681,
+              "0.55": 0.3098591549295775,
+              "0.6": 0.3055555555555556,
+              "0.65": 0.2972972972972973,
+              "0.7": 0.3243243243243243,
+              "0.75": 0.2972972972972973,
+              "0.8": 0.2894736842105263,
+              "0.85": 0.2631578947368421,
+              "0.9": 0.23376623376623376,
+              "0.95": 0.2318840579710145
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.2318840579710145,
+            "nsys": 29,
+            "nref": 40
+          }
+        },
+        "chicken_coop": {
+          "frame_ap": 0.8266351080445341,
+          "n_frames": 1249271,
+          "n_positive_frames": 7926,
+          "true_positive_frame_fraction": 0.00634450011246559,
+          "posterior_gt_theta_fraction": 0.004266488215927529,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.35897435897435903,
+            "f1": 0.35897435897435903,
+            "global_theta": 0.95,
+            "global_f1": 0.35897435897435903,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.0,
+              "0.1": 0.0,
+              "0.15": 0.0,
+              "0.2": 0.0,
+              "0.25": 0.0,
+              "0.3": 0.052631578947368425,
+              "0.35": 0.05,
+              "0.4": 0.048780487804878044,
+              "0.45": 0.048780487804878044,
+              "0.5": 0.048780487804878044,
+              "0.55": 0.1,
+              "0.6": 0.15,
+              "0.65": 0.2,
+              "0.7": 0.25,
+              "0.75": 0.24390243902439027,
+              "0.8": 0.2926829268292683,
+              "0.85": 0.35000000000000003,
+              "0.9": 0.35000000000000003,
+              "0.95": 0.35897435897435903
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.35897435897435903,
+            "nsys": 15,
+            "nref": 24
+          }
+        },
+        "cicadas_and_crickets": {
+          "frame_ap": 0.9239350684847404,
+          "n_frames": 1249271,
+          "n_positive_frames": 70469,
+          "true_positive_frame_fraction": 0.05640809720228838,
+          "posterior_gt_theta_fraction": 0.03838798787452843,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.7,
+            "objective_nan_as_zero": 0.4318181818181818,
+            "f1": 0.4318181818181818,
+            "global_theta": 0.95,
+            "global_f1": 0.3542857142857143,
+            "delta_f1": 0.07753246753246751,
+            "curve": {
+              "0.05": 0.14285714285714288,
+              "0.1": 0.1948717948717949,
+              "0.15": 0.2210526315789474,
+              "0.2": 0.26737967914438504,
+              "0.25": 0.2702702702702703,
+              "0.3": 0.30601092896174864,
+              "0.35": 0.3093922651933702,
+              "0.4": 0.30000000000000004,
+              "0.45": 0.34636871508379885,
+              "0.5": 0.3687150837988827,
+              "0.55": 0.38202247191011235,
+              "0.6": 0.4067796610169491,
+              "0.65": 0.4067796610169491,
+              "0.7": 0.4318181818181818,
+              "0.75": 0.41807909604519766,
+              "0.8": 0.41111111111111115,
+              "0.85": 0.38202247191011235,
+              "0.9": 0.335195530726257,
+              "0.95": 0.3542857142857143
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.3542857142857143,
+            "nsys": 66,
+            "nref": 109
+          }
+        },
+        "crows_seagulls_magpies": {
+          "frame_ap": 0.39184179546601733,
+          "n_frames": 1249271,
+          "n_positive_frames": 4058,
+          "true_positive_frame_fraction": 0.003248294405297169,
+          "posterior_gt_theta_fraction": 0.0005283081092893376,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.85,
+            "objective_nan_as_zero": 0.17647058823529413,
+            "f1": 0.17647058823529413,
+            "global_theta": 0.95,
+            "global_f1": 0.125,
+            "delta_f1": 0.05147058823529413,
+            "curve": {
+              "0.05": 0.0,
+              "0.1": 0.0,
+              "0.15": 0.0425531914893617,
+              "0.2": 0.047619047619047616,
+              "0.25": 0.047619047619047616,
+              "0.3": 0.05,
+              "0.35": 0.05128205128205127,
+              "0.4": 0.1,
+              "0.45": 0.1,
+              "0.5": 0.10256410256410255,
+              "0.55": 0.10526315789473682,
+              "0.6": 0.10526315789473682,
+              "0.65": 0.10526315789473682,
+              "0.7": 0.10526315789473682,
+              "0.75": 0.11111111111111112,
+              "0.8": 0.11764705882352941,
+              "0.85": 0.17647058823529413,
+              "0.9": 0.12121212121212122,
+              "0.95": 0.125
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.125,
+            "nsys": 4,
+            "nref": 28
+          }
+        },
+        "dog_barkings_and_howlings": {
+          "frame_ap": 0.9187015554549534,
+          "n_frames": 1249271,
+          "n_positive_frames": 36843,
+          "true_positive_frame_fraction": 0.029491599500828882,
+          "posterior_gt_theta_fraction": 0.021919183267681712,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.20270270270270271,
+            "f1": 0.20270270270270271,
+            "global_theta": 0.95,
+            "global_f1": 0.20270270270270271,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.012121212121212123,
+              "0.1": 0.0,
+              "0.15": 0.0,
+              "0.2": 0.0,
+              "0.25": 0.014705882352941178,
+              "0.3": 0.014705882352941178,
+              "0.35": 0.014598540145985401,
+              "0.4": 0.02962962962962963,
+              "0.45": 0.029411764705882356,
+              "0.5": 0.07142857142857142,
+              "0.55": 0.09999999999999999,
+              "0.6": 0.0704225352112676,
+              "0.65": 0.08333333333333331,
+              "0.7": 0.09790209790209792,
+              "0.75": 0.09722222222222222,
+              "0.8": 0.15492957746478872,
+              "0.85": 0.15714285714285714,
+              "0.9": 0.17518248175182483,
+              "0.95": 0.20270270270270271
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.20270270270270271,
+            "nsys": 60,
+            "nref": 88
+          }
+        },
+        "glass_breaking": {
+          "frame_ap": 0.4696493566915058,
+          "n_frames": 1249271,
+          "n_positive_frames": 6135,
+          "true_positive_frame_fraction": 0.004910864015894069,
+          "posterior_gt_theta_fraction": 0.002142049243118587,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.85,
+            "objective_nan_as_zero": 0.41379310344827586,
+            "f1": 0.41379310344827586,
+            "global_theta": 0.95,
+            "global_f1": 0.26666666666666666,
+            "delta_f1": 0.1471264367816092,
+            "curve": {
+              "0.05": 0.0,
+              "0.1": 0.0,
+              "0.15": 0.0,
+              "0.2": 0.0,
+              "0.25": 0.0,
+              "0.3": 0.06666666666666667,
+              "0.35": 0.06666666666666667,
+              "0.4": 0.06666666666666667,
+              "0.45": 0.07142857142857142,
+              "0.5": 0.0,
+              "0.55": 0.0,
+              "0.6": 0.07407407407407408,
+              "0.65": 0.14285714285714285,
+              "0.7": 0.14285714285714285,
+              "0.75": 0.20689655172413793,
+              "0.8": 0.27586206896551724,
+              "0.85": 0.41379310344827586,
+              "0.9": 0.4000000000000001,
+              "0.95": 0.26666666666666666
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.26666666666666666,
+            "nsys": 13,
+            "nref": 17
+          }
+        },
+        "horn": {
+          "frame_ap": 0.5203521355169005,
+          "n_frames": 1249271,
+          "n_positive_frames": 6920,
+          "true_positive_frame_fraction": 0.005539230479215478,
+          "posterior_gt_theta_fraction": 0.0009989826066562019,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.85,
+            "objective_nan_as_zero": 0.12903225806451613,
+            "f1": 0.12903225806451613,
+            "global_theta": 0.95,
+            "global_f1": 0.0,
+            "delta_f1": 0.12903225806451613,
+            "curve": {
+              "0.05": 0.022222222222222223,
+              "0.1": 0.061538461538461535,
+              "0.15": 0.037037037037037035,
+              "0.2": 0.04545454545454545,
+              "0.25": 0.046511627906976744,
+              "0.3": 0.046511627906976744,
+              "0.35": 0.04545454545454545,
+              "0.4": 0.047619047619047616,
+              "0.45": 0.047619047619047616,
+              "0.5": 0.05,
+              "0.55": 0.05263157894736842,
+              "0.6": 0.10526315789473684,
+              "0.65": 0.11764705882352941,
+              "0.7": 0.058823529411764705,
+              "0.75": 0.058823529411764705,
+              "0.8": 0.12121212121212123,
+              "0.85": 0.12903225806451613,
+              "0.9": 0.06666666666666667,
+              "0.95": 0.0
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.0,
+            "nsys": 5,
+            "nref": 21
+          }
+        },
+        "jet_aircrafts": {
+          "frame_ap": 0.7807569248577031,
+          "n_frames": 1249271,
+          "n_positive_frames": 52897,
+          "true_positive_frame_fraction": 0.042342294025875894,
+          "posterior_gt_theta_fraction": 0.02810759234785727,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.14285714285714285,
+            "f1": 0.14285714285714285,
+            "global_theta": 0.95,
+            "global_f1": 0.14285714285714285,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.0,
+              "0.1": 0.0,
+              "0.15": 0.0,
+              "0.2": 0.0,
+              "0.25": 0.0,
+              "0.3": 0.0,
+              "0.35": 0.0,
+              "0.4": 0.0,
+              "0.45": 0.0,
+              "0.5": 0.0,
+              "0.55": 0.0,
+              "0.6": 0.0,
+              "0.65": 0.0,
+              "0.7": 0.0,
+              "0.75": 0.0,
+              "0.8": 0.0,
+              "0.85": 0.0,
+              "0.9": 0.0,
+              "0.95": 0.14285714285714285
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.14285714285714285,
+            "nsys": 11,
+            "nref": 17
+          }
+        },
+        "lawn_mower_brush_cutter_olive_shaker": {
+          "frame_ap": 0.6984875126985728,
+          "n_frames": 1249271,
+          "n_positive_frames": 44611,
+          "true_positive_frame_fraction": 0.03570962585379794,
+          "posterior_gt_theta_fraction": 0.019389708077750943,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.75,
+            "objective_nan_as_zero": 0.1702127659574468,
+            "f1": 0.1702127659574468,
+            "global_theta": 0.95,
+            "global_f1": 0.09090909090909091,
+            "delta_f1": 0.07930367504835589,
+            "curve": {
+              "0.05": 0.0,
+              "0.1": 0.0,
+              "0.15": 0.0,
+              "0.2": 0.057142857142857134,
+              "0.25": 0.06060606060606061,
+              "0.3": 0.0967741935483871,
+              "0.35": 0.06666666666666667,
+              "0.4": 0.0689655172413793,
+              "0.45": 0.10714285714285714,
+              "0.5": 0.10714285714285714,
+              "0.55": 0.15384615384615383,
+              "0.6": 0.1568627450980392,
+              "0.65": 0.16,
+              "0.7": 0.16326530612244897,
+              "0.75": 0.1702127659574468,
+              "0.8": 0.1276595744680851,
+              "0.85": 0.13043478260869565,
+              "0.9": 0.13043478260869565,
+              "0.95": 0.09090909090909091
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.09090909090909091,
+            "nsys": 16,
+            "nref": 28
+          }
+        },
+        "music": {
+          "frame_ap": 0.9441621089938107,
+          "n_frames": 1249271,
+          "n_positive_frames": 68969,
+          "true_positive_frame_fraction": 0.05520739695390352,
+          "posterior_gt_theta_fraction": 0.038781017089166404,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.8,
+            "objective_nan_as_zero": 0.24489795918367346,
+            "f1": 0.24489795918367346,
+            "global_theta": 0.95,
+            "global_f1": 0.17391304347826086,
+            "delta_f1": 0.0709849157054126,
+            "curve": {
+              "0.05": 0.15189873417721517,
+              "0.1": 0.16393442622950818,
+              "0.15": 0.10000000000000002,
+              "0.2": 0.10526315789473684,
+              "0.25": 0.14545454545454548,
+              "0.3": 0.10909090909090909,
+              "0.35": 0.11320754716981132,
+              "0.4": 0.11538461538461539,
+              "0.45": 0.11320754716981132,
+              "0.5": 0.15384615384615385,
+              "0.55": 0.15384615384615385,
+              "0.6": 0.11538461538461539,
+              "0.65": 0.1509433962264151,
+              "0.7": 0.19607843137254902,
+              "0.75": 0.19607843137254902,
+              "0.8": 0.24489795918367346,
+              "0.85": 0.24489795918367346,
+              "0.9": 0.2173913043478261,
+              "0.95": 0.17391304347826086
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.17391304347826086,
+            "nsys": 20,
+            "nref": 26
+          }
+        },
+        "propeller_aircrafts": {
+          "frame_ap": 0.8330383635382672,
+          "n_frames": 1249271,
+          "n_positive_frames": 56870,
+          "true_positive_frame_fraction": 0.045522548750431255,
+          "posterior_gt_theta_fraction": 0.0426352648864818,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.7,
+            "objective_nan_as_zero": 0.13333333333333333,
+            "f1": 0.13333333333333333,
+            "global_theta": 0.95,
+            "global_f1": 0.05263157894736842,
+            "delta_f1": 0.08070175438596491,
+            "curve": {
+              "0.05": 0.022471910112359546,
+              "0.1": 0.03278688524590165,
+              "0.15": 0.03773584905660377,
+              "0.2": 0.04081632653061224,
+              "0.25": 0.0,
+              "0.3": 0.0,
+              "0.35": 0.0,
+              "0.4": 0.044444444444444446,
+              "0.45": 0.046511627906976744,
+              "0.5": 0.04545454545454545,
+              "0.55": 0.0,
+              "0.6": 0.0,
+              "0.65": 0.0,
+              "0.7": 0.13333333333333333,
+              "0.75": 0.13333333333333333,
+              "0.8": 0.0909090909090909,
+              "0.85": 0.046511627906976744,
+              "0.9": 0.04878048780487805,
+              "0.95": 0.05263157894736842
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.05263157894736842,
+            "nsys": 17,
+            "nref": 21
+          }
+        },
+        "sirens_and_alarms": {
+          "frame_ap": 0.6302342838746959,
+          "n_frames": 1249271,
+          "n_positive_frames": 44264,
+          "true_positive_frame_fraction": 0.035431863863004905,
+          "posterior_gt_theta_fraction": 0.03237328009695254,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.85,
+            "objective_nan_as_zero": 0.1818181818181818,
+            "f1": 0.1818181818181818,
+            "global_theta": 0.95,
+            "global_f1": 0.09999999999999999,
+            "delta_f1": 0.0818181818181818,
+            "curve": {
+              "0.05": 0.0196078431372549,
+              "0.1": 0.023809523809523808,
+              "0.15": 0.11267605633802817,
+              "0.2": 0.12500000000000003,
+              "0.25": 0.09523809523809523,
+              "0.3": 0.10344827586206898,
+              "0.35": 0.13559322033898305,
+              "0.4": 0.06896551724137931,
+              "0.45": 0.10169491525423728,
+              "0.5": 0.15094339622641512,
+              "0.55": 0.15384615384615385,
+              "0.6": 0.1568627450980392,
+              "0.65": 0.15384615384615385,
+              "0.7": 0.16326530612244897,
+              "0.75": 0.1702127659574468,
+              "0.8": 0.16326530612244897,
+              "0.85": 0.1818181818181818,
+              "0.9": 0.14285714285714288,
+              "0.95": 0.09999999999999999
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.09999999999999999,
+            "nsys": 17,
+            "nref": 23
+          }
+        },
+        "thunder_fireworks_gunshot": {
+          "frame_ap": 0.4009347614475119,
+          "n_frames": 1249271,
+          "n_positive_frames": 20011,
+          "true_positive_frame_fraction": 0.016018141780286262,
+          "posterior_gt_theta_fraction": 0.006415741660536425,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.8,
+            "objective_nan_as_zero": 0.08,
+            "f1": 0.08,
+            "global_theta": 0.95,
+            "global_f1": 0.0,
+            "delta_f1": 0.08,
+            "curve": {
+              "0.05": 0.0,
+              "0.1": 0.0,
+              "0.15": 0.0,
+              "0.2": 0.0,
+              "0.25": 0.0,
+              "0.3": 0.0,
+              "0.35": 0.0,
+              "0.4": 0.0,
+              "0.45": 0.0,
+              "0.5": 0.0,
+              "0.55": 0.0,
+              "0.6": 0.0,
+              "0.65": 0.0,
+              "0.7": 0.0,
+              "0.75": 0.0,
+              "0.8": 0.08,
+              "0.85": 0.07692307692307691,
+              "0.9": 0.0,
+              "0.95": 0.0
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.0,
+            "nsys": 9,
+            "nref": 18
+          }
+        },
+        "train": {
+          "frame_ap": 0.9243789041476711,
+          "n_frames": 1249271,
+          "n_positive_frames": 127217,
+          "true_positive_frame_fraction": 0.10183298899918432,
+          "posterior_gt_theta_fraction": 0.09138929823873283,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.07407407407407407,
+            "f1": 0.07407407407407407,
+            "global_theta": 0.95,
+            "global_f1": 0.07407407407407407,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.018018018018018018,
+              "0.1": 0.020833333333333332,
+              "0.15": 0.02247191011235955,
+              "0.2": 0.024096385542168672,
+              "0.25": 0.02564102564102564,
+              "0.3": 0.027397260273972598,
+              "0.35": 0.03125,
+              "0.4": 0.03278688524590164,
+              "0.45": 0.03278688524590164,
+              "0.5": 0.03278688524590164,
+              "0.55": 0.03278688524590164,
+              "0.6": 0.06557377049180328,
+              "0.65": 0.03333333333333333,
+              "0.7": 0.03333333333333333,
+              "0.75": 0.034482758620689655,
+              "0.8": 0.03389830508474576,
+              "0.85": 0.03389830508474576,
+              "0.9": 0.034482758620689655,
+              "0.95": 0.07407407407407407
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.07407407407407407,
+            "nsys": 30,
+            "nref": 24
+          }
+        },
+        "vacuum_cleaner_fan_hairdryer": {
+          "frame_ap": 0.8794024485176768,
+          "n_frames": 1249271,
+          "n_positive_frames": 53568,
+          "true_positive_frame_fraction": 0.04287940727032005,
+          "posterior_gt_theta_fraction": 0.033389072507086136,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.9,
+            "objective_nan_as_zero": 0.41509433962264153,
+            "f1": 0.41509433962264153,
+            "global_theta": 0.95,
+            "global_f1": 0.33333333333333326,
+            "delta_f1": 0.08176100628930827,
+            "curve": {
+              "0.05": 0.07317073170731708,
+              "0.1": 0.058823529411764705,
+              "0.15": 0.0625,
+              "0.2": 0.10000000000000002,
+              "0.25": 0.1379310344827586,
+              "0.3": 0.10344827586206898,
+              "0.35": 0.10169491525423728,
+              "0.4": 0.10526315789473685,
+              "0.45": 0.10344827586206898,
+              "0.5": 0.10714285714285714,
+              "0.55": 0.14035087719298248,
+              "0.6": 0.17543859649122806,
+              "0.65": 0.17543859649122806,
+              "0.7": 0.28070175438596495,
+              "0.75": 0.28571428571428575,
+              "0.8": 0.3571428571428571,
+              "0.85": 0.3636363636363636,
+              "0.9": 0.41509433962264153,
+              "0.95": 0.33333333333333326
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.33333333333333326,
+            "nsys": 24,
+            "nref": 30
+          }
+        },
+        "vehicle_idling": {
+          "frame_ap": 0.5670704592336686,
+          "n_frames": 1249271,
+          "n_positive_frames": 53469,
+          "true_positive_frame_fraction": 0.04280016105392665,
+          "posterior_gt_theta_fraction": 0.01894224711851952,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.1,
+            "f1": 0.1,
+            "global_theta": 0.95,
+            "global_f1": 0.1,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.020512820512820513,
+              "0.1": 0.026666666666666665,
+              "0.15": 0.030534351145038167,
+              "0.2": 0.03333333333333333,
+              "0.25": 0.08771929824561404,
+              "0.3": 0.0594059405940594,
+              "0.35": 0.06521739130434781,
+              "0.4": 0.09302325581395349,
+              "0.45": 0.09638554216867469,
+              "0.5": 0.07594936708860758,
+              "0.55": 0.08450704225352113,
+              "0.6": 0.058823529411764705,
+              "0.65": 0.06060606060606061,
+              "0.7": 0.06349206349206349,
+              "0.75": 0.06557377049180328,
+              "0.8": 0.0689655172413793,
+              "0.85": 0.0784313725490196,
+              "0.9": 0.08695652173913043,
+              "0.95": 0.1
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.1,
+            "nsys": 12,
+            "nref": 28
+          }
+        },
+        "vehicle_pass_by": {
+          "frame_ap": 0.7355108310144785,
+          "n_frames": 1249271,
+          "n_positive_frames": 69130,
+          "true_positive_frame_fraction": 0.05533627211389682,
+          "posterior_gt_theta_fraction": 0.030009501541298885,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.9,
+            "objective_nan_as_zero": 0.0784313725490196,
+            "f1": 0.0784313725490196,
+            "global_theta": 0.95,
+            "global_f1": 0.021505376344086023,
+            "delta_f1": 0.056925996204933584,
+            "curve": {
+              "0.05": 0.0,
+              "0.1": 0.0,
+              "0.15": 0.0,
+              "0.2": 0.0,
+              "0.25": 0.0125,
+              "0.3": 0.012738853503184712,
+              "0.35": 0.013157894736842106,
+              "0.4": 0.01360544217687075,
+              "0.45": 0.013888888888888888,
+              "0.5": 0.04225352112676056,
+              "0.55": 0.04545454545454545,
+              "0.6": 0.046511627906976744,
+              "0.65": 0.06666666666666667,
+              "0.7": 0.05042016806722689,
+              "0.75": 0.052631578947368425,
+              "0.8": 0.01785714285714286,
+              "0.85": 0.03669724770642202,
+              "0.9": 0.0784313725490196,
+              "0.95": 0.021505376344086023
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.021505376344086023,
+            "nsys": 33,
+            "nref": 60
+          }
+        },
+        "voices": {
+          "frame_ap": 0.9263217514416111,
+          "n_frames": 1249271,
+          "n_positive_frames": 58175,
+          "true_positive_frame_fraction": 0.04656715796652608,
+          "posterior_gt_theta_fraction": 0.03588812995739115,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.39705882352941174,
+            "f1": 0.39705882352941174,
+            "global_theta": 0.95,
+            "global_f1": 0.39705882352941174,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.009216589861751154,
+              "0.1": 0.032432432432432434,
+              "0.15": 0.022099447513812157,
+              "0.2": 0.022988505747126436,
+              "0.25": 0.034883720930232565,
+              "0.3": 0.023391812865497078,
+              "0.35": 0.04790419161676648,
+              "0.4": 0.03571428571428571,
+              "0.45": 0.06024096385542168,
+              "0.5": 0.08588957055214724,
+              "0.55": 0.12269938650306748,
+              "0.6": 0.11042944785276074,
+              "0.65": 0.11111111111111112,
+              "0.7": 0.12578616352201258,
+              "0.75": 0.19230769230769232,
+              "0.8": 0.21052631578947373,
+              "0.85": 0.27210884353741494,
+              "0.9": 0.28368794326241137,
+              "0.95": 0.39705882352941174
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.39705882352941174,
+            "nsys": 59,
+            "nref": 77
+          }
+        },
+        "workshop": {
+          "frame_ap": 0.9876887557168819,
+          "n_frames": 1249271,
+          "n_positive_frames": 123976,
+          "true_positive_frame_fraction": 0.09923867599584077,
+          "posterior_gt_theta_fraction": 0.09510266387357107,
+          "theta_global": 0.95,
+          "theta_oracle_in_sample": {
+            "theta": 0.95,
+            "objective_nan_as_zero": 0.7191011235955055,
+            "f1": 0.7191011235955055,
+            "global_theta": 0.95,
+            "global_f1": 0.7191011235955055,
+            "delta_f1": 0.0,
+            "curve": {
+              "0.05": 0.06477732793522267,
+              "0.1": 0.11711711711711711,
+              "0.15": 0.1313131313131313,
+              "0.2": 0.15625,
+              "0.25": 0.17204301075268816,
+              "0.3": 0.2111111111111111,
+              "0.35": 0.22346368715083798,
+              "0.4": 0.24719101123595508,
+              "0.45": 0.2696629213483146,
+              "0.5": 0.29213483146067415,
+              "0.55": 0.3163841807909605,
+              "0.6": 0.35028248587570615,
+              "0.65": 0.38857142857142857,
+              "0.7": 0.4318181818181818,
+              "0.75": 0.5227272727272727,
+              "0.8": 0.5536723163841809,
+              "0.85": 0.6292134831460674,
+              "0.9": 0.6927374301675977,
+              "0.95": 0.7191011235955055
+            }
+          },
+          "winning_family_events": {
+            "f1": 0.7191011235955055,
+            "nsys": 84,
+            "nref": 94
+          }
+        }
+      },
+      "theta_postproc_sha256": "bcc11c3a3dbe308f16f40b7c443a5c0a67f9eac3bbc34ad779e4b97073bd28d5",
+      "dev_predictions_sha256": "e9e54a0e670864cd6b1d792b0d16612a723960a1a64d8e91b6afe5c4c84a7b54",
+      "dev_predictions_file_sha256": "45ec68b5d93fc28126448bbaa0144c43bce9f548b33a91b0c269278242a68b44"
     }
   ],
   "pending": [
-    {
-      "run": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T135047Z",
-      "missing": [
-        "postproc_cv_selection_annotated.json",
-        "sebb_cv_selection_annotated.json",
-        "postproc_cv_annotated.json"
-      ]
-    },
     {
       "run": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T145841Z",
       "missing": [
