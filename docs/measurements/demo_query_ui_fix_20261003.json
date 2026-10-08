@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-10-03T02:55:39.845Z",
+  "question": "có những sự kiện gì trong âm thanh này?",
+  "live_parse": {
+    "success": true,
+    "data": {
+      "filters": {
+        "classes_all": [
+          "bells",
+          "birds",
+          "cat_fights_and_moans",
+          "chicken_coop",
+          "cicadas_and_crickets"
+        ]
+      },
+      "raw": "{\"classes_all\": [\"bells\", \"birds\", \"cat_fights_and_moans\", \"chicken_coop\", \"cicadas_and_crickets\"]}"
+    },
+    "error": null,
+    "meta": {}
+  },
+  "initial_chip_count": 5,
+  "checks": {
+    "empty_filters_query_disabled": true,
+    "no_empty_query_sent": true,
+    "empty_filters_message_has_correct_vietnamese": true,
+    "question_edit_clears_filters": true,
+    "question_edit_clears_answer": true,
+    "valid_birds_query_success": true,
+    "no_page_errors": true
+  },
+  "valid_query_evidence": 3,
+  "limitation": "Generic current-recording questions unsupported by locked parser; no recording context is provided and schema requires non-empty filters. Parser unchanged."
+}
