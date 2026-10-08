@@ -372,31 +372,78 @@ metadata — bài học: tên tác giả cũng phải lấy từ metadata máy �
 
 ### 2.3 Nguồn tra cho giai đoạn O (08/10/2026, [ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md))
 
-Tất cả ở **V2**: tra bằng WebSearch/WebFetch (tóm tắt do mô hình trích), chưa đọc PDF. Số dưới
-đây chỉ dùng để định hướng kế hoạch; **không** trích vào báo cáo trước khi đọc PDF (V3).
+Các mục **(15)–(18) lên V3 ngày 08/10**: tải PDF bằng curl ra thư mục tạm ngoài repo,
+trích `pdftotext -layout` rồi đọc trực tiếp phương pháp và bảng; vị trí bảng/trang ghi dưới đây.
+Các mục (19)–(23) giữ mức đã ghi, không nâng theo các mục mới.
 
 - **(15) Schmid F., Tang C. I., Parekh S., Ithapu V. K., Azcarreta Ortiz J., Ferroni G., Qian Y.,
   Jasonas A., Frateanu C., Clark C., Widmer G., Bilen Ç.** *Sound Event Detection with
   Boundary-Aware Optimization and Inference.* IEEE Signal Processing Letters (chấp nhận 2026),
-  arXiv:2601.04178. RED layer (lớp hồi quy xác suất không tham số, cho xác suất onset/offset/hiện
-  diện), Event Proposal Network (BiGRU 2 lớp ước lượng thời gian từ onset/tới offset), loss onset/
-  offset focal + IoU, suy luận kiểu NMS không cần chỉnh ngưỡng hậu xử lý. AS-Strong-10: CRNN
-  PSDS1 41.1 → 48.0, F1 32.3 → 40.6; ATST-F 51.9 → 56.6; BEATs 52.8 → 55.2 (so với SEBB). Không
-  thấy link code. — **V2**
+  [arXiv:2601.04178v2](https://arxiv.org/pdf/2601.04178v2), 06/06/2026. — **V3**
+  RED = **Recurrent Event Detection**, phép truy hồi xác suất khả vi không có tham số, chuyển
+  xác suất start/end có điều kiện thành onset/offset/presence (tr. 2, §II-A). EPN dùng BiGRU
+  hai lớp trên ba xác suất để ước lượng thời gian từ onset/tới offset; có biến thể riêng từng
+  lớp và một GRU chung (tr. 2–3). Loss: BCE presence + focal onset/offset + IoU proposal;
+  λ_on/off=100, λ_IoU chọn trên validation trong {0.5,1,2,4}. Suy luận kiểu NMS bỏ proposal
+  giao nhau, không tune hậu xử lý thời gian; vẫn có giới hạn tính toán k=15 event/lớp và m=|C|
+  lớp mặc định (Algorithm 1, tr. 3).
+  **Bảng I tr. 4**, AS-Strong-10, SEBB→Ours: CRNN PSDS1 **41.1→48.0**, collar-F1
+  **32.3→40.6**; ATST-F PSDS1 **51.9→56.6**; BEATs **52.8→55.2**. Bảng II cùng trang cho thấy
+  RED đơn lẻ không đủ: CRNN PSDS1 41.1→42.9→46.2→48.0 khi lần lượt thêm RED, onset/offset
+  loss, EPN. PSDS1 bỏ variance penalty; F1 onset 200 ms, offset max(200 ms,20% độ dài), tr. 3.
+  Không tìm được code chính thức qua PDF v2, arXiv, trang tác giả Sanjeel Parekh, danh sách
+  repo công khai của fschmid56 và tìm GitHub theo tiêu đề/2601.04178 ngày 08/10; đây là kết quả
+  tìm có giới hạn, không chứng minh code không tồn tại. Dùng: O-E; không suy mức tăng cho DataSED.
 - **(16) Morocutti T., Schmid F., Greif J., Foscarin F., Widmer G.** *Exploring Performance-
-  Complexity Trade-Offs in Sound Event Detection Models.* EUSIPCO 2025, arXiv:2503.11373. Frame-
-  MobileNet + sequence model (TF, BiGRU, hybrid…); AS-Strong PSDS1 fmn10 42.28 → +TF256 43.86, KD mở
-  rộng 45.25. Repo `github.com/theMoro/EfficientSED`, MIT, có checkpoint AudioSet Strong cho fmn +
-  GRU/TF. — **V2**
+  Complexity Trade-Offs in Sound Event Detection Models.* EUSIPCO 2025,
+  [arXiv:2503.11373v2](https://arxiv.org/pdf/2503.11373v2), 12/06/2025. — **V3**
+  Frame-MobileNet + sequence model (TF, BiGRU, hybrid…): đổi stride và bỏ global pooling,
+  output 250 bước/10 s =40 ms (§II tr. 1–2). **Bảng I tr. 4**: fmn10 không KD **38.11**,
+  fmn10 có KD **42.28**; +TF256 không KD **41.13**, có KD **43.86**, frozen backbone có KD
+  **42.05**. Do đó **42.28→43.86 là thêm TF trên hai hệ đã có KD**, không phải hiệu ứng thêm KD.
+  **Bảng II tr. 4**: KD Strong **43.86**, thêm Weak **44.70**, thêm kéo dài train **45.25**.
+  KD mở rộng trộn 50% Weak/50% Strong, tăng 120→240 epoch; median filter chung 9 frame=0.36 s
+  chọn trên fmn10 (§III-B tr. 2–3, §IV-D tr. 4). Bài đánh giá 407 lớp giao train/eval trong
+  447 lớp train; không so thẳng PSDS này với DataSED. [Repo EfficientSED](https://github.com/theMoro/EfficientSED)
+  (MIT) công bố code và checkpoint, đã tải/kiểm CPU trong XO-5. Dùng: O-B/O-C/O-G.
 - **(17) Schmid F., Primus P., Fichtinger A., Jadidi T., Morocutti T., Widmer G.** *RealDESED: A
-  Real-World Domestic Sound Event Detection Benchmark.* arXiv:2607.16736 (07/2026). ATST-F
-  (AS-Strong) fine-tune, 10 s, 25 Hz. Suy luận cửa sổ trượt: hop 10 / 7.5 / 5 / 2.5 s → PSDS1-M
-  0.711 / 0.718 / 0.731 / 0.736; trung bình 0.731 > max 0.721; trọng số tam giác sàn 0.3 tốt nhất.
-  Hậu xử lý: thô 0.662, median 0.693, cSEBB 0.731. Nhãn mềm nhiều người gán 0.675 → 0.697. — **V2**
-- **(18) Schmid F. và cộng sự.** *Multi-Iteration Multi-Stage Fine-Tuning of Transformers for Sound
-  Event Detection with Heterogeneous Datasets.* DCASE 2024 (hạng 1 Task 4), arXiv:2407.12997. Hai
-  giai đoạn (đóng băng transformer → mở), loss tự giám sát trọng số lớn, pseudo-label từ ensemble
-  rồi lặp lại với KD; DESED PSDS1 0.692 single model. Code `github.com/CPJKU/cpjku_dcase24`. — **V2**
+  Real-World Domestic Sound Event Detection Benchmark.*
+  [arXiv:2607.16736v1](https://arxiv.org/pdf/2607.16736v1), 18/07/2026; bản gửi DCASE Workshop
+  2026, chưa coi là đã xuất bản proceedings. — **V3**
+  ATST-F (AS-Strong) fine-tune trên crop 10 s, label 25 Hz (§4.1 tr. 3); báo mean của ba run.
+  **Bảng 3 tr. 4**, hậu xử lý cSEBB: hop **10/7.5/5/2.5 s → PSDS1-M 0.711/0.718/0.731/0.736**;
+  average **0.731** > maximum **0.721**. Sàn tam giác **0/0.3/0.6/1.0 →0.703/0.731/0.730/0.726**;
+  0.3 tốt nhất trong lưới; bài chọn hop5 s để cân bằng chi phí, không chọn hop2.5 s chỉ vì số cao.
+  **Bảng 2 tr. 4**, PSDS1-M: raw **0.662**, median **0.693**, cSEBB **0.731**; tune trên validation.
+  **Bảng 1 tr. 3**: Random(Fixed) **0.675±0.003**, Uniform Soft **0.690±0.004**, Weighted Soft
+  **0.696±0.007**, Weighted+Reviewed **0.697±0.005**. Số 0.675→0.697 gồm **nhãn reviewed** trên
+  khoảng một phần ba train, không chỉ riêng soft label. PSDS1-M là macro-average theo lớp,
+  khác PSDS1 chuẩn có variance penalty (các số chuẩn tương ứng bảng 2: 0.487/0.528/0.573).
+  [Code baseline RealDESED](https://github.com/fschmid56/RealDESED/tree/d42edf73293a1731a5669142cee631bd7de9d6b1)
+  công khai (MIT; PDF tr. 1 có link); README có lệnh tái lập từng hàng Bảng 1. Ngày 08/10,
+  API releases trả danh sách rỗng, README không liên kết checkpoint đã fine-tune RealDESED;
+  `config.py` chỉ tải ATST-F_strong_1 từ PretrainedSED để khởi tạo. **Chưa tìm được checkpoint
+  fine-tune công khai trong các nguồn này**. Dùng: O0.4, O-A và đề xuất nhãn mềm; khác dữ liệu,
+  không dùng mức tăng PSDS làm kỳ vọng hiệu quả DataSED.
+- **(18) Schmid F., Primus P., Morocutti T., Greif J., Widmer G.** *Multi-Iteration Multi-Stage
+  Fine-Tuning of Transformers for Sound Event Detection with Heterogeneous Datasets.* DCASE
+  2024 (hạng 1 Task 4), [arXiv:2407.12997v1](https://arxiv.org/pdf/2407.12997v1), 17/07/2024. — **V3**
+  Hai stage: frozen transformer + train CRNN, rồi fine-tune cả hai với loss mean-teacher/ICT
+  trên dữ liệu không nhãn (§4.2 tr. 2). Ensemble **46** model của I1.S2 sinh pseudo-label mềm;
+  dùng BCE distillation ở **I2.S1**, không phải mọi stage (§4.3 tr. 2–3; ablation Bảng 4 tr. 4).
+  **Bảng 3 tr. 4**: single-model **ATST DT+cSEBB** đạt DESED public-evaluation PSDS1 **0.692**,
+  DT nghĩa là train trên **toàn development set**. ATST thường cùng bảng: development-test
+  PSDS1 median **0.548**, cSEBB **0.617**, public-evaluation cSEBB **0.684**. Số 0.692 không phải
+  baseline mean hay số trên validation. Bài dùng cả DESED/MAESTRO và dữ liệu weak/unlabeled;
+  khó chuyển nguyên pipeline sang DataSED nhỏ. [Code chính thức](https://github.com/CPJKU/cpjku_dcase24).
+  Dùng: O-D/O-G, tham khảo lịch train và teacher ensemble.
+
+**Đối chiếu ADR-0041 Context §5 (XO-4):** bốn nguồn trên xác nhận mọi trị số đã trích;
+đã ghi rõ Bảng I/II tr. 4 (EfficientSED), Bảng I tr. 4 (Boundary-Aware), Bảng 1 tr. 3 và
+2/3 tr. 4 (RealDESED), Bảng 3 tr. 4 (DCASE 2024). Ba điểm cần bổ sung ngữ cảnh là baseline
+EfficientSED đã KD, RealDESED có reviewed labels, và ATST DT+cSEBB train full development.
+Đề nghị đính chính ngữ cảnh và câu “không có code” tuyệt đối đã ghi ở AGENT_SYNC §6;
+không sửa ADR thuộc Claude. Các hàng Scaper/pseudo-label theo tag dùng nguồn khác chưa nằm trong XO-4.
 - **(19) Shao N., Li X., Li X.** *Semi-Supervised Sound Event Detection with Conditional Mixup and
   Embedding-Level Contrastive Loss.* arXiv:2606.29901 (06/2026). DESED validation PSDS1 0.645,
   PSDS2 0.822. Cần nhiều dữ liệu không nhãn; ưu tiên thấp cho đề tài. — **V2**
@@ -541,6 +588,10 @@ Từ khóa gợi ý: `polyphonic sound event detection`, `environmental noise da
 | Ji et al., ACM CSUR 55(12) | 2023 | Tổng quan hallucination NLG | — | — | — | — | — | Ch.2 (hallucination) | Không về âm thanh | **V3** (03/10) |
 | DCASE 2016 T3 (kết quả) | 2016 | SED ghi âm thật | Dữ liệu DCASE 2016 T3 (home, residential area) | Strong | Baseline + hệ tham gia | Segment ER/F1 1 s; event onset-only 250 ms | Event-F1 4.7–6.3% (top 3 + baseline) | Bảng bối cảnh | Khác dataset, khác collar | **V3** |
 | Nam et al., FilterAugment, ICASSP | 2022 | Augmentation SED | DESED | Strong + weak | CRNN | PSDS | +6.50% so với +2.13% (frequency masking) | `augment.py` | Đọc PDF arXiv v4 (03/10) | **V3** |
+| Schmid et al., Boundary-Aware, arXiv:2601.04178v2 | 2026 | Học biên SED | AS-Strong-10 | Strong | CRNN/ATST-F/BEATs + RED/OOL/EPN | PSDS1, collar-F1 | CRNN 41.1→48.0 PSDS1; F1 32.3→40.6 (Bảng I tr. 4) | O-E; §2.3 (15) | Bỏ variance penalty PSDS; chưa tìm được code chính thức | **V3** (08/10) |
+| Morocutti et al., EfficientSED, arXiv:2503.11373v2 | 2025 | SED ít tham số | AudioSet Strong | Strong + KD | FMN10 + TF256 | PSDS1 | 42.28→43.86 (đã KD); mở rộng KD 45.25 (Bảng I/II tr. 4) | O-B/O-C/O-G; §2.3 (16) | Khác benchmark, 407 lớp eval; checkpoint giữ hai head 447 lớp | **V3** (08/10) |
+| Schmid et al., RealDESED, arXiv:2607.16736v1 | 2026 | SED ghi âm nhà thật | RealDESED | Strong đa annotator + reviewed | ATST-F | Macro PSDS1 | Hop10→2.5 s: .711→.736; raw/median/cSEBB .662/.693/.731 (Bảng 2/3 tr. 4) | O-A/O0.4; §2.3 (17) | .675→.697 gồm reviewed labels; bản gửi DCASE 2026, chưa xác minh chấp nhận | **V3** (08/10) |
+| Schmid et al., Multi-Iteration Multi-Stage, arXiv:2407.12997v1 | 2024 | SED heterogeneous data + KD | DESED + MAESTRO | Strong/weak/unlabeled | CRNN + ATST/fPaSST/BEATs | PSDS1 + mpAUC | ATST DT+cSEBB public eval .692 (Bảng 3 tr. 4) | O-D/O-G; §2.3 (18) | Full development train; không phải validation, cần nhiều unlabeled data | **V3** (08/10) |
 | ⚠️ CẦN XÁC MINH | | SED | | | | | | §2.1 | | V0 |
 | ⚠️ CẦN XÁC MINH | | PSDS | | | | | | §2.2 | | V0 |
 | ⚠️ CẦN XÁC MINH | | Transfer | | | | | | §2.3 | | V0 |
@@ -590,6 +641,8 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 03/10 (rà soát L3) | Web, đọc trực tiếp mã nguồn tác giả | https://raw.githubusercontent.com/qiuqiangkong/audioset_tagging_cnn/master/pytorch/models.py | Xác nhận lại `Cnn14`: khối 1–5 pool (2,2), khối 6 (1,1); câu “mỗi khối 2×2” ở báo cáo 2.4.1 cần sửa. Xác minh code, không nâng mức đọc bài báo | report/danh_gia_bao_cao_20261003.md K01 |
 | 08/10 | WebSearch (extended) | `DCASE 2024 Task 4 … top ranked system …`; `DCASE 2026 challenge tasks sound event detection`; `sound event detection 2025 state of the art …`; `… boundary regression onset offset …`; `synthetic soundscapes isolated events …`; `… sliding window overlap …`; `copy-paste event mixing …`; `weakly labeled clips pseudo strong labels …` | DCASE 2024 hạng 1 CP-JKU; DCASE 2026 **không** có task SED đơn kênh (Task 4 là S5); boundary-aware SPL 2026; RealDESED; ATST-SEDv2 | §2.3 (15)–(20) |
 | 08/10 | WebFetch | arxiv.org/abs/2601.04178 + /html; arxiv.org/abs/2503.11373 + /html; github.com/theMoro/EfficientSED; arxiv.org/abs/2607.16736 + /html; arxiv.org/abs/2407.12997 | Số bảng trích qua tóm tắt (V2) | §2.3 (15)–(18) |
+| 08/10 (Codex XO-4) | curl + `pdftotext -layout` + **đọc trực tiếp PDF** | arxiv.org/pdf/{2601.04178v2,2503.11373v2,2607.16736v1,2407.12997v1}; PDF lưu ngoài repo, SHA-256 8 ký tự đầu lần lượt **d0648f2e,5656c0b6,da190fe6,766f5893** | (15)–(18) lên V3; số ADR Context §5 khớp bảng, bổ sung ngữ cảnh KD/reviewed/ATST DT+cSEBB; bảng/trang ở §2.3 | §2.3, §8; phản biện AGENT_SYNC §6 |
+| 08/10 (Codex XO-4) | Đọc PDF/arXiv, README/config; GitHub API releases/repos; WebSearch theo tiêu đề và ID | github.com/fschmid56/RealDESED @d42edf73; api.github.com/repos/fschmid56/RealDESED/releases; github.com/fschmid56; sanjeelparekh.github.io/publications/; `site:github.com "2601.04178"` | RealDESED có code MIT, chưa có release/checkpoint fine-tune được liên kết; khởi tạo từ PretrainedSED. Chưa tìm được code Boundary-Aware trong phạm vi nguồn đã tra | §2.3 (15), (17) |
 | 08/10 | WebFetch | zenodo.org/records/{17033970, 15346092, 23097290}; zenodo.org/api/records/{17033970,15346092}/versions | **DataSEC v4** (02/10/2026) sửa lỗi số file Music; repo dùng 17033970 (5,048 file); DataSED một phiên bản | §2.3 (23), ADR-0041 |
 | 08/10 | WebSearch + WebFetch + đọc trực tiếp PDF trang 1–3 | `Fredianelli Artuso … DataSED …`; arxiv.org/html/2607.13571; dael.euracoustics.org/confs/fa2025/data/articles/000340.pdf | Bài ngoài đầu tiên dùng DataSED (frame mAP, chia ngẫu nhiên đoạn — không so được); bài FA2025 là phân loại CLAP | §2.3 (21), (22) |
 | 03/10 (rà soát L3) | Web, đọc trực tiếp FAQ chính thức, mục adaptation/ShareAlike/AI | https://creativecommons.org/faq/ | FAQ không thiết lập quy tắc mọi checkpoint học từ dữ liệu CC đều tự động cùng license; đánh dấu cần xác minh riêng thay cho kết luận pháp lý tuyệt đối. Nguồn hướng dẫn, không phải paper và không thêm vào bibliography | report/danh_gia_bao_cao_20261003.md K02 |

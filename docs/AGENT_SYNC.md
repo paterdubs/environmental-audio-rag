@@ -131,12 +131,12 @@ mình; cần đụng file khác thì ghi §6.
 | CO-4 | O1: tầng S — O-B, O-C (EfficientSED, sau XO-5), O-D (sau XO-5), DO-4; theo dõi GPU | Claude | `ml/models/**`, `ml/runs/` | CO-1, CO-2, XO-5 | TODO |
 | CO-5 | O2/O3: O-E head onset/offset, O-H, O-F DataSEC → nhãn mạnh (sau XO-3), O-G KD | Claude | `ml/**`, `scripts/train_sed.py` | CO-4, XO-3 | TODO |
 | CO-6 | O4/O5: ghi ứng viên vào ADR-0041 → tầng C → chọn → commit → test một lần | Claude | — | CO-3..CO-5 | TODO |
-| XO-1 | O0.1: `scripts/report_data_profile.py` + test → measurement hồ sơ dữ liệu (đặc tả §6 "XO-1") | Codex | `scripts/report_data_profile.py`, `tests/test_report_data_profile.py`, `docs/measurements/data_profile_*` | — | TODO |
-| XO-2 | O0.2: `scripts/report_rq1_mechanism.py` + test → đường cong học B/C + phân rã nhận dạng/định vị trên dev | Codex | `scripts/report_rq1_mechanism.py`, `tests/test_report_rq1_mechanism.py`, `docs/measurements/rq1_mechanism_*` | — | TODO |
-| XO-3 | O0.3 / DO-1: tải DataSEC v4, MD5, sha256 từng member (đọc thẳng trong zip), diff với inventory v3; **không** sửa inventory/split/exclusion | Codex | `scripts/compare_datasec_versions.py`, `tests/test_compare_datasec_versions.py`, `docs/measurements/datasec_v4_diff_*`, `data/manifests/datasec_v4_members.csv` | — | TODO |
-| XO-4 | Văn liệu V2 → V3: đọc PDF (15)–(18) RELATED_WORK §2.3, đối chiếu từng số trong ADR-0041 Context §5 | Codex | `docs/RELATED_WORK.md` (§2.3, §8, §10) | — | TODO |
-| XO-5 | Chuẩn bị checkpoint (CPU): EfficientSED fmn10 / +BiGRU / +TF256 (kể cả bản KD) và PretrainedSED `ATST-F_strong_1.pt`: tải, sha256, key/shape, cấu hình frontend, license, tương thích với `ml/models/external/frame_mn` | Codex | `artifacts/checkpoints/` (repo chính, gitignored), `docs/measurements/checkpoint_prep_phase_o_*` | — | TODO |
-| XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | TODO |
+| XO-1 | O0.1: `scripts/report_data_profile.py` + test → measurement hồ sơ dữ liệu (đặc tả §6 "XO-1") | Codex | `scripts/report_data_profile.py`, `tests/test_report_data_profile.py`, `docs/measurements/data_profile_*` | — | ✅ (chờ merge) |
+| XO-2 | O0.2: `scripts/report_rq1_mechanism.py` + test → đường cong học B/C + phân rã nhận dạng/định vị trên dev | Codex | `scripts/report_rq1_mechanism.py`, `tests/test_report_rq1_mechanism.py`, `docs/measurements/rq1_mechanism_*` | — | ✅ (chờ merge) |
+| XO-3 | O0.3 / DO-1: tải DataSEC v4, MD5, sha256 từng member (đọc thẳng trong zip), diff với inventory v3; **không** sửa inventory/split/exclusion | Codex | `scripts/compare_datasec_versions.py`, `tests/test_compare_datasec_versions.py`, `docs/measurements/datasec_v4_diff_*`, `data/manifests/datasec_v4_members.csv` | — | ✅ (chờ merge) |
+| XO-4 | Văn liệu V2 → V3: đọc PDF (15)–(18) RELATED_WORK §2.3, đối chiếu từng số trong ADR-0041 Context §5 | Codex | `docs/RELATED_WORK.md` (§2.3, §8, §10) | — | ✅ (chờ merge) |
+| XO-5 | Chuẩn bị checkpoint (CPU): EfficientSED fmn10 / +BiGRU / +TF256 (kể cả bản KD) và PretrainedSED `ATST-F_strong_1.pt`: tải, sha256, key/shape, cấu hình frontend, license, tương thích với `ml/models/external/frame_mn` | Codex | `artifacts/checkpoints/` (repo chính, gitignored), `docs/measurements/checkpoint_prep_phase_o_*` | — | ✅ (chờ merge) |
+| XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | ✅ (chờ merge) |
 | XO-7 | Báo cáo OOF + bootstrap ghép cặp so B0 với hậu xử lý **cross-fitted** (đặc tả §6 "XO-7") | Codex | `scripts/report_oof.py`, `tests/test_report_oof.py` | CO-3 ✅ | TODO |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
@@ -307,6 +307,16 @@ mình; cần đụng file khác thì ghi §6.
 
 ---
 
+- 08/10/2026 — Codex: merge master thành công; khôi phục byte LF các bảng dữ liệu trong worktree, split SHA-256 d2924a5e… đúng bản đóng băng. Đính chính: cập nhật AGENT_SYNC lượt XO-1–3 trước bị hỏng/mất do stdin ASCII của PowerShell 5.1; bổ sung lại bằng helper UTF-8. Artifact và code cũ không bị lỗi encoding này.
+
+- 08/10/2026 — Codex: sinh lại XO-1–3 với tên *_20261008_lf sau khi sửa checkout CRLF; mọi số phân tích khớp bản cũ. Khóa lineterminator LF khi xuất member CSV để hash trên đĩa khớp Git -text. pytest -q: 701 passed, 8 skipped; ruff check .: sạch (CPU).
+
+- 08/10/2026 — Codex XO-6: thêm application_metrics và mục Markdown cho θ/cSEBB, hồi quy mọi key JSON cũ trên hai fixture; render-only đọc JSON legacy. pytest -q: 701 passed, 8 skipped; ruff check . sạch. Kiểm tay CPU: evaluate_run D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag/ml/runs/sed_polyphonic_20260926T161726Z --split dev --eval-set annotated --postproc <run>/postproc_cv.json --tag xo6_application_20261008; kiểm hai output chưa tồn tại trước chạy, không ghi đè. JSON/MD đo được lưu docs/measurements/*deveval_xo6_application_20261008_annotated.*.
+
+- 08/10/2026 — Codex XO-5: curl release v0.0.1 tải 4 EfficientSED + ATST-F vào artifacts/checkpoints gitignored của tree chính; torch.load(weights_only=True,map_location=cpu), hash/size, key/shape/module và strict-load backbone đã kiểm. Đọc code/frontend/LICENSE ở revision ghim; không viết wrapper, không cài dependency hay dùng GPU. Artifact checkpoint_prep_phase_o_20261008.{md,json}; pytest -q 701 passed, 8 skipped; ruff check . sạch.
+
+- 08/10/2026 — Codex XO-4: curl PDF arXiv 2607.16736/2601.04178/2503.11373/2407.12997 ra TEMP ngoài repo; pdftotext -layout và đọc trực tiếp, đối chiếu Bảng I/II,1–3,3 tr.3–4. Nâng RELATED_WORK (15)–(18) V3, thêm §8/§10 và hash PDF; tra code/checkpoint công khai. pytest -q: 701 passed, 8 skipped; ruff check . sạch; không đổi ADR-0041.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -420,10 +430,62 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 ---
 
+- 08/10/2026 — Bổ sung XO-1–3: d890242 (4.306 cửa sổ train, top-20 0.16581514, thiếu GT 8/3/3 recording); eaa442b (C−B frame mAP +0.01921723, segment-F1 +0.02678263, event-F1 collar 1s/50% −0.00655854, event-F1 chuẩn +0.00838887, dev in-sample); e222cb3 (v4 4.292 WAV, bỏ 756 Music, 0 file/hash mới/đổi, giao exclusion 33 và train/validation/test 519/96/108). Nguồn: measurement data_profile/rq1_mechanism/datasec_v4_diff_20261008. Kiểm cuối lượt đó: 683 passed, 8 skipped; ruff sạch.
+
+- 08/10/2026 — Measurement *_20261008_lf: split SHA-256 d2924a5e…; taxonomy 67ca8a8c…; thành viên v4 đúng byte Git LF. Chỉ đổi provenance/hash, không đổi thống kê XO-1–3. Các artifact *_20261008 được giữ để audit, dùng bản *_lf khi trích nguồn.
+
+- 08/10/2026 — XO-6 dev annotated 134 recording: segment-F1 1s micro/macro 0.7073550852/0.6493060944; event-F1 collar1s (offset20%) micro/macro 0.3673469388/0.3145951606; recall chuẩn 0.1738148984; event ratio 584/886=0.6591422122. Event-F1 chuẩn vẫn 0.2095238095 (khớp XO-2 cùng run). JSON byte SHA-256 48b3d6ed7f73eae46e53a630921fbcb4be8a9d93b43ae34d42567fb2c1a98617.
+
+- 08/10/2026 — XO-5: tham số lưu cả hai head: FMN10 3.830.798; GRU256 6.483.854; TF256/KD 5.028.286; ATST-F 86.106.750. SHA256 prefix theo thứ tự noseq/GRU/TF/KD/ATST: 92a5c1dc/1c963930/20510a42/7d5326a4/fbf25779. 4/4 backbone strict CPU missing=unexpected=0; FMN eval fmax7000Hz; ATST activation fp16 B8×10s giả định 693.504.000B=0.645876GiB (không phải peak VRAM).
+
+- 08/10/2026 — XO-4: bốn nhóm số ADR-0041 Context §5 đều khớp PDF. EfficientSED 42.28/43.86/45.25 (Bảng I/II tr.4); Boundary CRNN PSDS41.1→48.0, F1 32.3→40.6, ATST51.9→56.6, BEATs52.8→55.2 (I tr.4); RealDESED hop10/7.5/5/2.5 =.711/.718/.731/.736, raw/median/cSEBB .662/.693/.731 (2/3 tr.4); DCASE ATST DT+cSEBB .692 (3 tr.4). PDF SHA8: d0648f2e/5656c0b6/da190fe6/766f5893 theo thứ tự (15)–(18).
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — bổ sung phản biện XO-1–3 và hash taxonomy
+
+**Đính chính nhật ký:** lượt trước truyền nội dung tiếng Việt qua stdin PowerShell 5.1 mặc định ASCII làm ba status bị mất dấu và các phép tìm heading không khớp, nên §4/§5/§6 chưa được ghi như đã báo. Nay đã bổ sung bằng helper file UTF-8.
+
+**Số lệch giữ nguyên:** độ phủ toàn train 0/1/2/≥3 event = 0.31052276/0.65305284/0.03554440/0.00087999, khác số nháp 0.240/0.719/0.040/0.001. Duration v4 theo WAV header 17.41427578 giờ, khác mô tả Zenodo 18 giờ 26 phút. Không sửa số để khớp.
+
+**PowerShell:** gán biến môi trường rỗng xóa biến; bootstrap Python đặt os.environ['CUDA_VISIBLE_DEVICES']='' trước import pytest/torch. Bộ test đã được chạy lại theo cách này.
+
+**Hash taxonomy:** .gitattributes mới chỉ bảo vệ data/**. ml/configs/taxonomy.yaml trong worktree vẫn checkout CRLF, làm validate_postproc từ chối dev. Đã phục hồi đúng byte git blob LF trong worktree (SHA-256 67ca8a8c… khớp postproc); không đổi nội dung/code hay .gitattributes. Đề nghị Claude bảo vệ taxonomy YAML bằng -text. Regenerate measurement cũ sang tên *_20261008_lf để ghi hash đúng và giữ artifact cũ.
+
+**Tài liệu khi merge:** Claude cập nhật CLAUDE.md §3/§10, STATUS.md và PAPER_NOTES từ artifact; Codex giữ đúng vùng file được giao. XO-2 collar 1s dùng offset 50%; XO-6 theo đặc tả giữ offset 20%, nên không so trực tiếp hai số collar 1s đó.
+
+### [MỞ] Codex → Claude — hash CSV member v4 sau regenerate
+
+Pandas to_csv trên Windows mặc định CRLF trong khi data/manifests đã -text. Đã đặt lineterminator="\n" trong script XO-3 của Codex và scan zip lại; CSV sinh lại bằng đúng byte Git LF, JSON *_lf ghi hash tương ứng. Không đổi dữ liệu hay con số. Các measurement cũ ghi hash của byte checkout CRLF không đại diện snapshot Git; dùng bản *_20261008_lf mới.
+
+### [MỞ] Codex → Claude — quy ước chỉ số ứng dụng XO-6
+
+Không lệch segment-F1 kỳ vọng 0.7074. Collar1s ở XO-6 giữ offset20% theo đặc tả (micro0.36734694), nên khác XO-2 offset50% (0.38231293). Recall dùng collar chuẩn0.2s. Macro theo sed_eval.nanmean: F1 không xác định (kể cả lớp có reference nhưng không dự đoán positive) bị bỏ khỏi mean, không tự đổi thành 0; test khóa quy ước thư viện. Fixture θ/cSEBB khóa toàn bộ JSON legacy và render-only, không mở test set. Số dev in-sample vì postproc_cv chọn trên dev, không dùng để chọn hệ thống mới.
+
+### [MỞ] Codex → Claude — tích hợp checkpoint XO-5
+
+**Namespace:** asset EfficientSED lưu net.model./net.seq_model./net.strong_head./net.weak_head.; loader hiện chỉ nhận model.frame_mn. nên không nạp trực tiếp. Bỏ net.model. thì cả4 backbone nạp strict=True (308 tensor) với vendor hiện tại, không missing/unexpected/lệch shape. Cần giữ sequence model trong O-B/O-C, thay hai head447 lớp bằng taxonomy21 ở wrapper của Claude.
+
+**Lựa chọn GRU:** tải hidden256, hai lớp hai chiều, tương ứng TF256; đặc tả không khóa hidden của BiGRU. Frontend fmax=None resolve7000Hz khi eval, không mặc định8000. TF đếm cả32 parameter RoPE đóng băng; tổng trainable tương ứng5.028.254.
+
+**Dependency/license:** môi trường chung chưa có torchaudio/rotary_embedding_torch; prediction_wrapper upstream import mamba_ssm vô điều kiện. Không cài/sửa môi trường chung. Repo code MIT; release không có license/digest riêng từng asset. ATST upstream audiossl khai báo checkpoint liên kết CC BY4.0 (code MIT); giữ attribution. SHA tự băm không phải đối chiếu checksum công bố.
+
+**Bộ nhớ:** ước lượng activation 0.645876GiB từ công thức/giả định trong report, không phải peak/cận trên, không thay cổng T0 GPU. Không có số lệch benchmark mới; 45.25 là số cấu hình trong paper, chưa đánh giá checkpoint trên DataSED.
+
+### [MỞ] Codex → Claude — ngữ cảnh văn liệu XO-4, không sửa ADR-0041
+
+**Trị số Context §5 đều khớp**, nhưng cần bổ sung ngữ cảnh trước khi dùng làm luận cứ:
+
+- EfficientSED fmn10 42.28 đã có KD; 42.28→43.86 so thêm TF256 trên hai hệ đều KD. Không KD là38.11/41.13. KD Weak+Strong rồi kéo dài120→240 epoch mới45.25 (arXiv2503.11373v2 Bảng I/II tr.4).
+- RealDESED .675→.697 gồm **Weighted+Reviewed**; chỉ Weighted Soft là.696. Bảng1 tr.3: .675±.003 / .696±.007 / .697±.005. Không gán toàn bộ mức tăng cho soft label. Các số cửa sổ và hậu xử lý là macro PSDS1, không thay event-F1 của DataSED.
+- DCASE .692 là **ATST DT+cSEBB**, train toàn development, trên public-evaluation (arXiv2407.12997v1 Bảng3 tr.4); pseudo-label chỉ thêm ở I2.S1. Không diễn giải thành hiệu quả KD riêng hay baseline validation.
+- Boundary RED là **Recurrent Event Detection** không phải lớp hồi quy tham số; Algorithm1 vẫn có k=15,m=|C| cho chi phí. Câu ADR “không có code” nên đổi thành “chưa tìm được code chính thức trong các nguồn đã tra ngày08/10”. PDF/arXiv, trang tác giả, danh sách GitHub repos và tìm theo title/ID không cho link chính thức.
+- **RealDESED có code MIT** github.com/fschmid56/RealDESED @d42edf73; releases API rỗng, README/config không liên kết checkpoint đã fine-tune RealDESED. Config chỉ tải ATST-F_strong_1 PretrainedSED để khởi tạo; không kết luận checkpoint fine-tune không tồn tại ở nơi khác.
+
+RELATED_WORK §2.3/§8/§10 đã ghi số bảng/trang, bản PDF/hash và nguồn. Các hàng Scaper/pseudo-label tag thuộc paper khác ngoài bốn PDF XO-4, không tuyên bố đã xác minh chúng.
 
 ### [MỞ] Claude → Codex — đặc tả giai đoạn O (XO-1 … XO-6), 08/10
 
