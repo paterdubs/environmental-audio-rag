@@ -149,7 +149,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | ✅ (chờ merge) |
 | XO-17 | O1.2: chẩn đoán cSEBB O-C so seed T2b172924Z, chỉ134dev annotated | Codex | `scripts/report_sebb_diagnosis.py`, `tests/`, `docs/measurements/sebb_diagnosis_*` | — | ✅ (chờ merge) |
 | XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
-| XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | TODO |
+| XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -355,6 +355,8 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-18 (PLAN O1.2): vendor TF256 torch-only trong ml/models/external/efficientsed_tf/ + NOTICE MIT +5test. CPU `.agent_logs/check_tf_parity.py` strict-load hai checkpoint,36ca rotary và eval forward sequence so upstream bit-equal; wheels chỉ ZIP sys.path subprocess scratch, không cài package. Artifact efficientsed_tf_vendor_20261008.{md,json}, probe/fetch.py.txt. Gate `.agent_logs/cpu.py pytest -q`:762passed,8skipped,24warnings (80.22s); `-m ruff check .`:sạch. Không sửa wrapper/factory/train của Claude. |
 
+| 08/10/2026 | Codex | XO-19 (PLAN O1 tầng S): report_screening_per_class+4fixture; chạy CLI CPU thật3lần với --label oa/ob/oc, baseline/candidate tuyệt đối repo chính như đặc tả. Đủ21lớp×134dev annotated,886GT; event của họ thắng/refit lưu sẵn, priorθ kiểm nguồn train+percentile, không quét CV. Artifact screening_per_class_{oa,ob,oc}_20261008.{md,json}. Gate `.agent_logs/cpu.py pytest -q`:766passed,8skipped,24warnings (84.17s); `-m ruff check .`:sạch. AST mọi hàm code mới <50dòng. Không merge/GPU/prediction test/ghi main. |
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -505,10 +507,22 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-18: sequence TF256 strong+KD strict-load25key,1,826,864parameter (1,826,832trainable), shape[2,250,256]finite; fullsequence eval forward bit-equal upstream max_abs_diff0.0 cảhai trênCPU torch2.11.0+cu128/2threads/seed20260922. Rotary36ca bit-equal wheel0.9.1; không pip install. Checkpoint strongSHA20510a4235433d3d0867a812fbb1f985c4221e54eb338f5a5842f50d9cff2683, KDSHA7d5326a485b742b323b33dd2bcb366606b614b2a5deaa5e452ef34ddedb9797c. Artifact:efficientsed_tf_vendor_20261008.{md,json}, probe.py.txt; NOTICE và giao diện/giới hạn ở§6.
 
+- 08/10/2026 — XO-19 oa:21lớp,134dev annotated, in-sample; f2(csebb):micro=0.23125000000000007,macro=0.15289281714612504,Nsys=394,Nref=886,nullF1=[]; h5tri(theta):micro=0.24081632653061225,macro=0.18552765754395414,Nsys=584,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.15384615384615385, 'horn'),lớn nhất=(0.19426974143955278, 'vacuum_cleaner_fan_hairdryer'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_oa_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
+- 08/10/2026 — XO-19 ob:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; ob(theta):micro=0.22546972860125258,macro=0.1797667138778188,Nsys=551,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.06834804539722572, 'voices'),lớn nhất=(0.24, 'thunder_fireworks_gunshot'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_ob_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
+- 08/10/2026 — XO-19 oc:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; oc(theta):micro=0.22282608695652176,macro=0.1741198214711463,Nsys=586,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.13783783783783785, 'bells'),lớn nhất=(0.15362731152204834, 'chicken_coop'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_oc_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — per-class tầng S XO-19, in-sample dev
+
+Đã chạy đủ3cặp được giao (f2↔h5tri064740Z; seed172924Z↔O-B062333Z; seed↔O-C083632Z),21lớp×134recording annotated,886GT/cặp. Không quét lại hoặc đổi họ/cấu hình/θ/λ: đọc họ thắng từ hai selection CV annotated và refit đã lưu; θ dùng đúng file postproc_cv_annotated với hash taxonomy/split/manifest, digest nội dung dev và prior train suy lại ở percentile đã thắng. O-A đổi họ cSEBB→θ có cảnh báo; O-B/O-C đềuθ. Không chọn hệ thống từ per-class.
+
+**Giới hạn metric:** sed_eval mặc định trả NaN không chỉ khi lớp vắng cảGT/pred mà cả khi cóGT nhưng Nsys=0. Giữ NaN thành null/“—”, ΔF1=null nếu một vế undefined, luôn báo Nsys/Nref và Δ số lượng; không đổi adapter/luật hoặc tự quy0. Macro chuẩn sed_eval là nanmean bỏ những lớp này nên không được dùng một mình để che lớp không phát hiện. Fixture xác nhận hành vi chuẩn này; cả21lớp của mọi run thật trong3bảng hiện đều có F1 hữu hạn, không có ô null. Không có “số kỳ vọng” per-class để ép khớp; đây là in-sample dev, không là CVmean, OOF hoặc bằng chứng cải thiện tổng quát hóa.
+
+**Checksum:** `dev_predictions_sha256` trong metrics/postproc của dự án là digest nội dung PredictionArtifact, khác SHA256 byte của ZIP/NPZ. XO-19 ghi riêng cả `dev_predictions_sha256` (content, đã load_predictions kiểm lại) và `dev_predictions_file_sha256` (file). Trong artifact XO-17 trường `runs.*.dev_predictions_sha256` là SHA256 file do script báo cáo định nghĩa; không dùng trường ấy thay digest content của postproc. Báo cáo mới ghi rõ phân biệt, không sửa hash hoặc artifact gốc cho khớp. Mọi output ở worktree; không merge master, không ghi main, không mở prediction test.
 
 ### [MỞ] Codex → Claude — giao diện TF256 vendored (XO-18), chờ nối FrameMnSED
 
