@@ -1,0 +1,81 @@
+import hashlib
+import json
+from pathlib import Path
+
+root = Path.cwd()
+result = json.loads((root/'.agent_logs/oof_smoke_state.json').read_text('utf-8'))
+assert result['cleanup'] and 'error' not in result
+assert len(result['stages']) == 7 and all(stage['returncode'] == 0 for stage in result['stages'])
+result['partial_attempts'] = []
+result['wrapper_failure_attempt'] = json.loads(
+    (root/'.agent_logs/oof_smoke_wrapper_failure.json').read_text('utf-8'))
+result['wrapper_failure_fix'] = ('runpy.run_module(..., alter_sys=True); '
+                                'Windows ProcessPool spawn probe passed; no Claude code edits.')
+for hz in (100, 10):
+    partial = json.loads((root/f'.agent_logs/oof_smoke_{hz}hz_partial.json').read_text('utf-8'))
+    partial['operator_stopped'] = True
+    partial['stop_reason'] = 'Cost of CPU smoke; no exception from Claude code, '
+    partial['stop_reason'] += 'Stop-Process of verified own serial theta process; harness traceback retained.'
+    result['partial_attempts'].append(partial)
+result['pipeline_seconds'] = sum(stage['seconds'] for stage in result['stages'])
+result['effective_workers'] = {'theta_b0': 3, 'sebb_b0': 2,
+                               'theta_candidate': 3, 'sebb_candidate': 8}
+result['peak_tree_working_set_bytes_sampled'] = max(
+    stage['peak_tree_working_set_bytes_sampled'] for stage in result['stages'])
+result['peak_tree_private_bytes_sampled'] = max(
+    stage['peak_tree_private_bytes_sampled'] for stage in result['stages'])
+result['limitations'] = [
+    'Synthetic target-contaminated logits; not model performance or scientific evidence.',
+    'Completed pipeline uses 1Hz frames, true recording duration and 10s windows/hop; '
+    'not the native 100Hz T2b grid. Coarse timing can change event F1 and collapses tau '
+    'half-window to 1 frame across the cSEBB grid. Do not use to select a model or budget native OOF.',
+    'Pipeline timing excludes generation and extra prior assertions; shared CPU load is uncontrolled.',
+    'Worker counts differ: theta3, baseline cSEBB2, candidate cSEBB8 (CPU wrapper logs override). '
+    'Do not compare wall times across systems as a model speed benchmark.',
+    'RAM sampled every 0.5s per subprocess tree; misses between-sample peaks, includes shared pages '
+    'and excludes orchestration process. Not GPU VRAM.',
+    '100Hz/10Hz partial attempts stopped deliberately, not passed end-to-end.',
+]
+source = root/'.agent_logs/oof_smoke.py'
+result['harness_sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+result['cpu_wrapper'] = (root/'.agent_logs/cpu.py').read_text('utf-8')
+out = root/'docs/measurements/oof_smoke_20261008.json'
+assert not out.exists() and not out.with_suffix('.md').exists()
+out.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+lines = ['# XO-14 — smoke tầng C bằng logit tổng hợp', '',
+         '> Chỉ kiểm đường chạy; không phải số đo chất lượng model. '
+         'Lượt hoàn tất dùng lưới 1Hz, thời lượng recording thật, cửa sổ/hop10s. '
+         'Không suy chi phí native100Hz từ lượt này.', '',
+         '| Bước | Giây | RAM working-set cây tiến trình (MiB, đỉnh lấy mẫu) | Mã thoát |',
+         '|---|---:|---:|---:|']
+for stage in result['stages']:
+    lines.append(f"| {stage['name']} | {stage['seconds']:.3f} | "
+                 f"{stage['peak_tree_working_set_bytes_sampled']/2**20:.2f} | {stage['returncode']} |")
+lines += ['', f"Tổng bảy bước CLI: {result['pipeline_seconds']:.3f}s. "
+          'Không cộng thời gian tạo fixture và audit prior bổ sung.', '',
+          '## Kiểm tra', '',
+          f"- Recording: {result['checks']['recordings']}; train gốc có reference: "
+          f"{result['checks']['original_train_with_reference']}; "
+          f"reference event: {result['checks']['reference_events']}.",
+          '- Prior từng fold bằng prior suy từ đúng các recording ngoài fold; '
+          'spy priors_for khóa object fold_priors trong một fit run_task thật; '
+          'mọi lời gọi θ của report được audit nếu họ θ được chọn.',
+          '- Hai selector dùng đầy đủ lưới gốc; report bootstrap ghép cặp 1000 lần sinh thành công.',
+          f"- Xóa run giả: {len(result['removed_run_dirs'])}; cleanup={result['cleanup']}.", '',
+          '## Kết quả tổng hợp (không dùng để chọn hệ thống)', '', result['report_markdown'],
+          '## Lượt dừng và giới hạn', '']
+for partial in result['partial_attempts']:
+    lines.append(f"- {1/partial['frame_hop_s']:g}Hz: build hai OOF qua; θ bị dừng sau "
+                 f"{partial['stages'][-1]['seconds']:.3f}s. "
+                 'Traceback của harness do operator stop nằm trong JSON; không phải bug Claude.')
+lines += ['', *('- '+limitation for limitation in result['limitations']), '',
+          'Lượt1Hz trước thất bại do CPU wrapper chạy runpy thiếu alter_sys=True '
+          '(PicklingError khi spawn). Traceback nguyên văn và số bước đã qua giữ trong JSON; '
+          'sửa helper + probe Windows spawn qua, không sửa code Claude.', '',
+          'Harness nguyên văn: `oof_smoke_20261008_harness.py.txt`; '
+          'chép vào `.agent_logs/oof_smoke.py`, đặt CPU wrapper từ JSON ở `.agent_logs/cpu.py`, '
+          'chạy interpreter repo chính với cwd worktree sạch. Logit sinh từ annotation '
+          'train/dev; không cần audio/checkpoint/GPU. Output tạm `.agent_logs/` và `ml/runs/`.', '']
+out.with_suffix('.md').write_text('\n'.join(lines), encoding='utf-8')
+(root/'docs/measurements/oof_smoke_20261008_harness.py.txt').write_bytes(source.read_bytes())
+print('summary', result['pipeline_seconds'], result['checks'], result['peak_tree_working_set_bytes_sampled'])

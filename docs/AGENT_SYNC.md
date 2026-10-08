@@ -144,7 +144,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
 | XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | ✅ merge `abd171e` |
 | XO-13 | Sàng lọc lượt 2: O-A đủ ba biến thể + O-B so seed T2b | Codex | `docs/measurements/screening_*` | CV của Claude xong | ✅ (chờ merge) |
-| XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | 🔒 Codex — smoke CPU đang chạy |
+| XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | ✅ (chờ merge) |
 | XO-15 | `scripts/run_oof_queue.py`: hàng đợi 5 fold → build_oof → 2 selector, resume, dừng khi lỗi | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
 | XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | ✅ (chờ merge) |
 
@@ -346,6 +346,8 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-13: lúc đầu thiếuuniform/O-B → bắt đầu XO-14; quay lại khi đủ12/12 selection JSON annotated của6 run. Chạy `scripts.report_screening --label oa_r2` (f2+3biến thể) và `--label ob` (seed172924Z+train-fixes062333Z), đường tuyệt đối repo chính. Generator kiểm seed/recipe, sinh cảnh báo đổi họ vào JSON/MD, không sửa CLI/core thuộc task khác. Artifact `screening_{oa_r2,ob}_20261008`, readiness missing{}, source generator.py.txt. Gate CPU pytest:763 passed,7 skipped,24 warnings (74.38s); ruff sạch. |
 
+| 08/10/2026 | Codex | XO-14: smoke CPU thực tế build_oof×2 → selector θ/cSEBB×2 → report_oof bootstrap1000 trên564recording, lưới1Hz/hop10s. Audit prior ngoài fold, đo từng bước/RAM cây tiến trình; xóa12run giả. Giữ artifact MD/JSON/harness/exporter; giới hạn và traceback wrapper do Codex ở§6. Gate cuối `.agent_logs/cpu.py pytest -q`:751 passed,8 skipped,24 warnings (81.78s); `-m ruff check .`:All checks passed. Collect-only xác nhận759ca sau cleanup; chênh số gate trước do parametrization manifest động, giải thích§6. |
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -488,10 +490,23 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - 08/10/2026 — XO-13 O-A đủ3/3biến thể,134dev annotated,5fold. Họ thắng: f2 cSEBB0.23827849038554624±0.05615067340541771; h2.5tri θ0.23416495648774627±0.042423428813839203 (Δ−0.004113533897799976); h2.5uniform θ0.23288027275571177±0.03400010519997169 (Δ−0.005398217629834473); h5tri θ0.24081149048314426±0.04740950368879013 (Δ+0.0025330000975980205). Cả3 so họ thắng cao hơn baseline3/5fold, đều “trong nhiễu fold”; cả3 có cảnh báo đổi họ cSEBB→θ. Nguồn:screening_oa_r2_20261008.json.
 - 08/10/2026 — XO-13 O-B cùng seed20260922/recipe t2b: seed172924Z θp25 mean0.233026052066626±0.039962720983306776; train-fixes062333Z θp25 mean0.23266408026332408±0.04990133754774872; Δ−0.0003619718033019137,3/5fold, trong nhiễu. cSEBB Δ−0.006795242784932376,2/5fold. Họ thắng đềuθ, không có cảnh báo đổi họ. Nguồn:screening_ob_20261008.json; readiness xác nhận thiếu0file, không chạy lại CV/test.
 
+- 08/10/2026 — XO-14 smoke CPU hoàn tất: 564 recording (430 train gốc +134 dev),3294 reference event,21 class; SHA fold eaa30dc17f59c73dcbc8f3c554f1ae29b8ac9a13eeb64876062beea27c67c733. Lưới1Hz, cửa sổ/hop10s, hai bộ5fold; build×2 + θ×2 + cSEBB×2 + report bootstrap1000 đều mã0. Thời gian giây: build B0 5.6467009/candidate6.1789415, θB0 195.2593109/candidate229.4590124, cSEBBB0 1608.7165253/candidate433.8269787, report232.9438339; tổng2712.0313036s. Đỉnh working-set cây tiến trình lấy mẫu1495527424byte (1426.24609375MiB), không phải VRAM/native100Hz. θ3worker, cSEBBB0 2/candidate8worker; không dùng để so tốc độ model. Audit cả10prior bằng suy lại ngoài fold; spy fit θp25 fold0 trả object fold_priors; report chọn cSEBB cảhai nên không có lời gọi priorθ trong report. Đã xóa12run giả, không còn thư mục *smoke* ở ml/runs. Artifact:oof_smoke_20261008.{json,md}, harness và exporter.py.txt; giới hạn/lượt dừng/traceback helper §6.
+- 08/10/2026 — XO-15 kiểm CLI dry-run bổ sung: `.agent_logs/cpu.py scripts.run_oof_queue --label smoke_review --seed 20260922 --dry-run -- --encoder frame_mn --recipe t2b --train-fixes` in8lệnh; `ml/runs/oof_queue_smoke_review.json` không tồn tại sau lệnh. Không train thật.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — phạm vi smoke XO-14 và giới hạn đo chi phí
+
+Lượt **hoàn tất đầu-cuối** dùng logit tổng hợp1Hz, giữ thời lượng thật của564 recording và cửa sổ/hop10s. Đặc tả khóa hop, không khóa lưới; lựa chọn1Hz để kiểm contract/recording/reference/prior/selection/report trên CPU. **Chưa hoàn tất native100Hz**: lượt100Hz dừng θ sau548.133s chưa xong fit đầu; lượt10Hz xong fit đầu187s và dừng sau279.879s. Dừng có chủ ý của Codex, không phải lỗi code Claude; traceback harness do Stop-Process được giữ trong JSON. Không suy dự toán thời gian/RAM native hoặc GPU từ lượt1Hz. Lưới1Hz lượng tử hóa biên và làm half-window cSEBB=max(1,round(τ/2)) bằng1 cho cả5τ; báo đầy đủ grid nhưng không diễn giải ranking/F1 fixture thành số nghiên cứu.
+
+Một lượt1Hz khác thất bại ở multiprocessing Windows do **helper CPU của Codex** dùng `runpy.run_module(..., run_name="__main__")` thiếu `alter_sys=True`: `PicklingError: Can't pickle ... _init ... __main__ failed`, child đọc sai sys.argv. Đã sửa helper + probe ProcessPool2worker kiểm CUDA_VISIBLE_DEVICES rỗng; chạy lại toàn pipeline. Không sửa select_*, build_oof, train_sed hay bất kỳ code Claude sở hữu. Traceback nguyên văn ở `oof_smoke_20261008.json.wrapper_failure_attempt`. Không phát hiện exception ở code Claude trong lượt hoàn tất.
+
+Prior: so sánh cả10 bộ (5fold×2percentile) với suy lại từ reference ngoài fold; spy một fit `run_task` thật xác nhận `priors_for` trả đúng object fold_priors. Các lời gọi θ trong report được audit nếu họ θ được chọn; report có thể chọn cSEBB nên không ép họ thắng để tạo trace. Cấu hình/họ vẫn chọn toàn OOF và CI có điều kiện như Claude đã chấp nhận. RAM là tổng working-set cây subprocess mỗi0.5s, có thể cộng trang chia sẻ và bỏ lỡ đỉnh giữa mẫu, không gồm harness; thời gian7CLI không cộng generation/audit bổ sung.
+
+Gate cuối sau cleanup: **751 passed,8 skipped**, khác **763 passed,7 skipped** ở XO-13/15/16. Nguyên nhân xác minh ở `tests/test_contracts.py:120`: parametrization `ml/runs/*/manifest.json` từng có12manifest smoke; sau xóa12run, glob rỗng tạo1ca skipped thay vì12ca passed. Collect-only hiện759ca, khớp751+8; không mất test source hoặc sửa script để khớp tổng cũ. Các gate cũ đúng tại thời điểm smoke còn hiện diện; không coi763 là tổng test cố định.
 
 ### [MỞ] Codex → Claude — sàng lọc lượt2 đủ O-A/O-B (XO-13)
 
