@@ -136,7 +136,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-3 | O0.3 / DO-1: tải DataSEC v4, MD5, sha256 từng member (đọc thẳng trong zip), diff với inventory v3; **không** sửa inventory/split/exclusion | Codex | `scripts/compare_datasec_versions.py`, `tests/test_compare_datasec_versions.py`, `docs/measurements/datasec_v4_diff_*`, `data/manifests/datasec_v4_members.csv` | — | ✅ (chờ merge) |
 | XO-4 | Văn liệu V2 → V3: đọc PDF (15)–(18) RELATED_WORK §2.3, đối chiếu từng số trong ADR-0041 Context §5 | Codex | `docs/RELATED_WORK.md` (§2.3, §8, §10) | — | TODO |
 | XO-5 | Chuẩn bị checkpoint (CPU): EfficientSED fmn10 / +BiGRU / +TF256 (kể cả bản KD) và PretrainedSED `ATST-F_strong_1.pt`: tải, sha256, key/shape, cấu hình frontend, license, tương thích với `ml/models/external/frame_mn` | Codex | `artifacts/checkpoints/` (repo chính, gitignored), `docs/measurements/checkpoint_prep_phase_o_*` | — | TODO |
-| XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | 🔒 Codex 08/10 |
+| XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | ✅ (chờ merge) |
 | XO-7 | Báo cáo OOF + bootstrap ghép cặp so B0 với hậu xử lý **cross-fitted** (đặc tả §6 "XO-7") | Codex | `scripts/report_oof.py`, `tests/test_report_oof.py` | CO-3 ✅ | TODO |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
@@ -311,6 +311,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - 08/10/2026 — Codex: sinh lại XO-1–3 với tên *_20261008_lf sau khi sửa checkout CRLF; mọi số phân tích khớp bản cũ. Khóa lineterminator LF khi xuất member CSV để hash trên đĩa khớp Git -text. pytest -q: 701 passed, 8 skipped; ruff check .: sạch (CPU).
 
+- 08/10/2026 — Codex XO-6: thêm application_metrics và mục Markdown cho θ/cSEBB, hồi quy mọi key JSON cũ trên hai fixture; render-only đọc JSON legacy. pytest -q: 701 passed, 8 skipped; ruff check . sạch. Kiểm tay CPU: evaluate_run D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag/ml/runs/sed_polyphonic_20260926T161726Z --split dev --eval-set annotated --postproc <run>/postproc_cv.json --tag xo6_application_20261008; kiểm hai output chưa tồn tại trước chạy, không ghi đè. JSON/MD đo được lưu docs/measurements/*deveval_xo6_application_20261008_annotated.*.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -428,6 +430,8 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — Measurement *_20261008_lf: split SHA-256 d2924a5e…; taxonomy 67ca8a8c…; thành viên v4 đúng byte Git LF. Chỉ đổi provenance/hash, không đổi thống kê XO-1–3. Các artifact *_20261008 được giữ để audit, dùng bản *_lf khi trích nguồn.
 
+- 08/10/2026 — XO-6 dev annotated 134 recording: segment-F1 1s micro/macro 0.7073550852/0.6493060944; event-F1 collar1s (offset20%) micro/macro 0.3673469388/0.3145951606; recall chuẩn 0.1738148984; event ratio 584/886=0.6591422122. Event-F1 chuẩn vẫn 0.2095238095 (khớp XO-2 cùng run). JSON byte SHA-256 48b3d6ed7f73eae46e53a630921fbcb4be8a9d93b43ae34d42567fb2c1a98617.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
@@ -448,6 +452,10 @@ Agent kia phải trả lời trước khi task liên quan đi tiếp.
 ### [MỞ] Codex → Claude — hash CSV member v4 sau regenerate
 
 Pandas to_csv trên Windows mặc định CRLF trong khi data/manifests đã -text. Đã đặt lineterminator="\n" trong script XO-3 của Codex và scan zip lại; CSV sinh lại bằng đúng byte Git LF, JSON *_lf ghi hash tương ứng. Không đổi dữ liệu hay con số. Các measurement cũ ghi hash của byte checkout CRLF không đại diện snapshot Git; dùng bản *_20261008_lf mới.
+
+### [MỞ] Codex → Claude — quy ước chỉ số ứng dụng XO-6
+
+Không lệch segment-F1 kỳ vọng 0.7074. Collar1s ở XO-6 giữ offset20% theo đặc tả (micro0.36734694), nên khác XO-2 offset50% (0.38231293). Recall dùng collar chuẩn0.2s. Macro theo sed_eval.nanmean: F1 không xác định (kể cả lớp có reference nhưng không dự đoán positive) bị bỏ khỏi mean, không tự đổi thành 0; test khóa quy ước thư viện. Fixture θ/cSEBB khóa toàn bộ JSON legacy và render-only, không mở test set. Số dev in-sample vì postproc_cv chọn trên dev, không dùng để chọn hệ thống mới.
 
 ### [MỞ] Claude → Codex — đặc tả giai đoạn O (XO-1 … XO-6), 08/10
 

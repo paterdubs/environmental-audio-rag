@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ml.evaluation.application_metrics import application_metrics
 from ml.evaluation.bootstrap import recording_bootstrap
 from ml.evaluation.coverage import EVAL_SETS, eval_suffix, restrict
 from ml.evaluation.errors import classify_event_errors
@@ -317,6 +318,8 @@ def main() -> None:
         "n_events_reference": sum(len(v) for v in reference.values()),
         "n_events_estimate": sum(len(v) for v in estimate.values()),
         "n_error_instances": len(errors),
+        "application_metrics": application_metrics(
+            reference, estimate, class_ids, recall_micro=event_f1["f_measure"]["recall"]),
     }
     output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     report_path.write_text(_render_report(result), encoding="utf-8")
@@ -371,7 +374,22 @@ def _render_report(result: dict) -> str:
         f"Số event tham chiếu: {result['n_events_reference']} · "
         f"dự đoán: {result['n_events_estimate']}",
     ]
+    if "application_metrics" in result:
+        lines += _render_application_metrics(result["application_metrics"])
     return "\n".join(lines)
+
+
+def _render_application_metrics(metrics: dict) -> list[str]:
+    lines = ["", "## Chỉ số ứng dụng (báo kèm, không dùng chọn hệ thống)", "",
+             "Event collar 1 s giữ offset percentage_of_length=0.2; khác chẩn đoán XO-2 "
+             "dùng 0.5. Recall dưới đây dùng collar chuẩn 0.2 s.", "",
+             "| Metric | Micro | Macro |", "|---|---:|---:|"]
+    for name in ("segment_f1_1s", "event_f1_collar_1s"):
+        values = metrics[name]
+        lines.append(f"| {name} | {values['micro']:.4f} | {values['macro']:.4f} |")
+    lines += ["", f"Recall micro (chuẩn): {metrics['recall_micro']:.4f}.", "",
+              f"Số event dự đoán / tham chiếu: {metrics['n_events_estimate_over_reference']}."]
+    return lines
 
 
 if __name__ == "__main__":
