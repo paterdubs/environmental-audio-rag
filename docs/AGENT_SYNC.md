@@ -8,6 +8,29 @@
 
 ## 0. Vai trò
 
+### 0.O Giai đoạn O (từ 08/10/2026, [ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md)) — **thay bảng cũ bên dưới**
+
+Người dùng (08/10): Claude làm phần chính ảnh hưởng trực tiếp tới kết quả; Codex làm song song các
+việc phụ.
+
+| | Claude Code | Codex |
+|---|---|---|
+| Vai | **Agent chính**: kế hoạch, code lõi model/train/suy luận, **mọi lần train trên GPU**, theo dõi run, chọn hệ thống | **Công nhân song song**: script báo cáo, tải/kiểm dữ liệu và checkpoint, metric báo kèm, văn liệu V3, test |
+| GPU | ✅ độc quyền | ❌ **không bao giờ** dùng GPU (`CUDA_VISIBLE_DEVICES=""` khi chạy torch) |
+| Nơi làm việc | tree chính `environmental-audio-rag` (`master`) | **chỉ** worktree `../earag-codex-o`, nhánh `codex/phase-o` |
+| Commit | `master` | chỉ trên `codex/phase-o`; **không** commit `master`, không push |
+| Merge | Claude merge `codex/phase-o` → `master` **giữa hai run**, sau khi review | — |
+| Sửa `CLAUDE.md`, `PLAN.md`, `docs/decisions/**`, `docs/PAPER_NOTES.md` | ✅ | ❌ (ghi đề xuất vào §6) |
+
+**Vì sao worktree là bắt buộc:** `git_state()` tính cả file untracked là dirty. Một file Codex tạo
+trong tree chính sẽ làm run Claude đang chuẩn bị chạy mang `git.dirty=true` và mất giá trị chính
+thức. Codex chạy script bằng interpreter của repo chính:
+`..\environmental-audio-rag\.venv\Scripts\python.exe`, với cwd là worktree. Dữ liệu gitignored
+(`ml/runs`, `data/features`, `data/raw`, `artifacts`) thì đọc/ghi bằng **đường dẫn tuyệt đối** vào
+repo chính; các file đó gitignored nên không làm tree chính bẩn.
+
+### 0.cũ Bảng vai trò trước giai đoạn O (lịch sử)
+
 | | Claude Code | Codex |
 |---|---|---|
 | Vai | **Agent chính** — lên kế hoạch, suy luận hướng | **Agent thực thi** — khối lượng việc chính |
@@ -92,6 +115,29 @@ Cổng dữ liệu **đã đóng**, tag `data-v1.0`. SED A/B/C xong, RQ1 chốt 
 ## 3. Bảng task
 
 Trạng thái: `TODO` · `🔒 <agent> <giờ>` đang làm · `✅` xong · `⛔` bị chặn (xem §6)
+
+### 3.O Giai đoạn O — bảng hiện hành (ADR-0041)
+
+Vùng file thuộc **Claude** trong giai đoạn O: `ml/**`, `scripts/train_sed.py`,
+`scripts/dump_predictions.py`, `scripts/build_ensemble.py`, `scripts/select_*.py`,
+`scripts/make_cv_folds.py`, `data/splits/**`. Codex chỉ sửa đúng file ghi ở cột "Vùng file" của task
+mình; cần đụng file khác thì ghi §6.
+
+| ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
+|---|---|---|---|---|---|
+| CO-1 | O0.5 / O-A: suy luận cửa sổ trượt chồng lấn (hop 2.5/5 s, trọng số tam giác sàn 0.3), cho run đơn và ensemble; đo f2/f1/v2 trên dev bằng CV hậu xử lý | Claude | `scripts/dump_predictions.py`, `ml/postprocessing/calibration.py`, `ml/training/**`, `scripts/build_ensemble.py` | — | TODO |
+| CO-2 | O0.4 / DO-2 + DO-3: bỏ recording train thiếu GT polyphonic khỏi loss; gộp 4 cặp gán đôi ở train thành target mềm | Claude | `ml/datasets/**`, `scripts/train_sed.py` | — | TODO |
+| CO-3 | O0.6: fold 5×(train ∪ dev annotated) theo `leakage_group` + đường OOF (train theo fold, dump OOF, ensemble fold, CV hậu xử lý trên OOF). Định nghĩa định dạng artifact OOF cho XO-7 | Claude | `scripts/make_cv_folds.py`, `data/splits/`, `scripts/train_sed.py`, `scripts/select_*.py` | CO-2 | TODO |
+| CO-4 | O1: tầng S — O-B, O-C (EfficientSED, sau XO-5), O-D (sau XO-5), DO-4; theo dõi GPU | Claude | `ml/models/**`, `ml/runs/` | CO-1, CO-2, XO-5 | TODO |
+| CO-5 | O2/O3: O-E head onset/offset, O-H, O-F DataSEC → nhãn mạnh (sau XO-3), O-G KD | Claude | `ml/**`, `scripts/train_sed.py` | CO-4, XO-3 | TODO |
+| CO-6 | O4/O5: ghi ứng viên vào ADR-0041 → tầng C → chọn → commit → test một lần | Claude | — | CO-3..CO-5 | TODO |
+| XO-1 | O0.1: `scripts/report_data_profile.py` + test → measurement hồ sơ dữ liệu (đặc tả §6 "XO-1") | Codex | `scripts/report_data_profile.py`, `tests/test_report_data_profile.py`, `docs/measurements/data_profile_*` | — | TODO |
+| XO-2 | O0.2: `scripts/report_rq1_mechanism.py` + test → đường cong học B/C + phân rã nhận dạng/định vị trên dev | Codex | `scripts/report_rq1_mechanism.py`, `tests/test_report_rq1_mechanism.py`, `docs/measurements/rq1_mechanism_*` | — | TODO |
+| XO-3 | O0.3 / DO-1: tải DataSEC v4, MD5, sha256 từng member (đọc thẳng trong zip), diff với inventory v3; **không** sửa inventory/split/exclusion | Codex | `scripts/compare_datasec_versions.py`, `tests/test_compare_datasec_versions.py`, `docs/measurements/datasec_v4_diff_*`, `data/manifests/datasec_v4_members.csv` | — | TODO |
+| XO-4 | Văn liệu V2 → V3: đọc PDF (15)–(18) RELATED_WORK §2.3, đối chiếu từng số trong ADR-0041 Context §5 | Codex | `docs/RELATED_WORK.md` (§2.3, §8, §10) | — | TODO |
+| XO-5 | Chuẩn bị checkpoint (CPU): EfficientSED fmn10 / +BiGRU / +TF256 (kể cả bản KD) và PretrainedSED `ATST-F_strong_1.pt`: tải, sha256, key/shape, cấu hình frontend, license, tương thích với `ml/models/external/frame_mn` | Codex | `artifacts/checkpoints/` (repo chính, gitignored), `docs/measurements/checkpoint_prep_phase_o_*` | — | TODO |
+| XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | TODO |
+| XO-7 | Báo cáo OOF + bootstrap ghép cặp so B0 (đặc tả sau khi CO-3 chốt định dạng) | Codex | `scripts/report_oof.py`, `tests/` | CO-3 | ⛔ chờ CO-3 |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -378,6 +424,136 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Claude → Codex — đặc tả giai đoạn O (XO-1 … XO-6), 08/10
+
+**Chung cho mọi XO:**
+
+- Chuẩn bị một lần:
+  `git worktree add ..\earag-codex-o -b codex/phase-o master`. Làm **mọi** việc trong
+  `..\earag-codex-o`. Không mở file ghi trong tree chính, trừ đường dẫn gitignored ghi rõ trong task.
+- Interpreter: `..\environmental-audio-rag\.venv\Scripts\python.exe`. Chạy từ cwd worktree. Không GPU:
+  đặt `$env:CUDA_VISIBLE_DEVICES=""` trước mọi lệnh torch.
+- Script mới theo mẫu `scripts/report_*.py` có sẵn: docstring tiếng Việt nói *vì sao*, ghi `git_state`
+  (`ml.provenance`) vào JSON, sinh cả `.md` và `.json` vào `docs/measurements/`, có
+  `sys.stdout.reconfigure(encoding="utf-8")` (bài học console cp1252, 27/09). Hàm < 50 dòng, file
+  < 400 dòng. Có test pytest dùng fixture nhỏ (`tmp_path`), không đọc dữ liệu thật.
+- Số trong measurement **chỉ** sinh từ script, không chép tay. Không chạm `predictions/test.npz`,
+  không chạy `evaluate_run --split test`.
+- Xong mỗi task: `pytest -q` + `ruff check .` trong worktree (không qua pipe), commit trên
+  `codex/phase-o` theo format CLAUDE.md §6 (thân Bối cảnh/Thay đổi/Kiểm chứng/Ảnh hưởng, tiếng Việt),
+  đổi §3.O sang `✅ (chờ merge)`, thêm dòng §4. Số mới → §5. Lệch số kỳ vọng → §6, **không** chỉnh
+  script cho khớp số của Claude: số kỳ vọng dưới đây đến từ script nháp, có thể chính nó sai.
+- Thứ tự đề xuất: XO-3 (tải nền lâu) song song XO-1 → XO-2 → XO-6 → XO-5 → XO-4.
+
+**XO-1 — `scripts/report_data_profile.py`** (chỉ đọc file tracked: `data/manifests/datased_recordings.csv`,
+`data/splits/datased_polyphonic.csv`, `data/annotations/datased_{polyphonic,monophonic}_events.csv`,
+`data/manifests/datasec_inventory.csv`). Báo:
+1. Độ dài recording theo split (count, mean, quantile).
+2. Theo lớp × split: số event polyphonic, trung vị độ dài, % event < 1 s.
+3. Quantile độ dài event toàn bộ; số event < 0.5 s và < 1 s.
+4. Độ phủ thời gian trên lưới 0.1 s cho từng split: tỷ lệ 0 / 1 / 2 / ≥3 event cùng lúc.
+5. Khoảng trống giữa hai event liên tiếp cùng lớp trong một recording: quantile, số < 1 s.
+6. Recording thiếu GT polyphonic theo split; event monophonic trong chúng theo lớp.
+7. Cặp recording trùng byte (`scripts.report_annotation_consistency.identical_pairs`) và split của
+   từng cặp.
+8. Cửa sổ 10 s theo recording ở train: tổng, tỷ lệ của 20 recording dài nhất, 5 recording dài nhất.
+9. Mono vs poly: số event theo lớp, số event mono (21 lớp) trùng khít (recording, lớp, onset, offset)
+   với poly.
+10. DataSEC: quantile độ dài clip, theo lớp (count, median, min, max).
+
+Số kỳ vọng (script nháp 08/10):
+- Mục 4, train: 0.240 / 0.719 / 0.040 / 0.001.
+- Mục 6: train 8, validation 3, test 3; 215 event mono, trong đó `wind_turbine` 113.
+- Mục 7: 8 cặp; S-0569/S-0572, S-0397/S-0585, S-0108/S-0589, S-0289/S-0500 ở train; 3 cặp
+  validation; S-0062/S-0198 ở test.
+- Mục 8: 4,306 cửa sổ; top-20 chiếm 0.166; dài nhất S-0713 (818.3 s).
+- Mục 9: 3,393 / 4,196.
+- Mục 10: median 8.72 s.
+
+Output: `docs/measurements/data_profile_<YYYYMMDD>.{md,json}`.
+
+**XO-2 — `scripts/report_rq1_mechanism.py`**. CLI: `--branch-b <run_dir...> --branch-c <run_dir...>`
+(đường dẫn tuyệt đối vào `..\environmental-audio-rag\ml\runs\`). Run thật: B-v2
+`sed_polyphonic_20260926T{033312,053024,064832}Z`, C-v2 `sed_polyphonic_20260926T{161726,172229,185208}Z`.
+1. Từ `logs/history.json`: validation `macro_average_precision`, `macro_f1`, `loss` ở epoch 1, 3, 5,
+   10, 30, và giá trị tốt nhất; mean mỗi nhánh. Kèm hình PNG đường cong val mAP theo epoch (6 đường,
+   2 màu).
+2. Phân rã trên **dev annotated** (bỏ recording thiếu GT, còn 134), dùng `predictions/dev.npz` +
+   `postproc_cv.json` của từng run. Dùng lại các hàm `load_tables`, `reference_events`, `f1`,
+   `segment_f1` của `scripts/report_sed_ceilings.py`, không viết lại metric. Chỉ số: frame mAP
+   (sklearn `average_precision_score` theo lớp trên frame `mask`, bỏ lớp không có positive, rồi lấy
+   trung bình), segment-F1 1 s, event-F1 collar 1 s (`t_collar=1.0, percentage_of_length=0.5`),
+   event-F1 chỉ onset, chỉ offset, event-F1 chuẩn. Mean mỗi nhánh, C − B, số cặp (B, C) có C > B
+   trên tổng 9 cặp.
+3. Ghi rõ trong `.md`: hậu xử lý chọn trên dev nên số dev là **in-sample**, chỉ để so B với C.
+
+Số kỳ vọng:
+- Epoch 1, val mAP: B 0.3888/0.3777/0.4071; C 0.5141/0.5007/0.5141.
+- Mean (frame mAP, segF1, evF1 1 s, offset-only, onset-only, evF1): B 0.6859/0.6902/0.4039/0.4934/
+  0.2607/0.2079; C 0.7052/0.7170/0.3973/0.5075/0.2752/0.2163.
+
+Output: `docs/measurements/rq1_mechanism_<YYYYMMDD>.{md,json,png}`.
+
+**XO-3 — DataSEC v4** (DO-1).
+- Tải `https://zenodo.org/records/23097290/files/DATASEC.zip?download=1` vào
+  `..\environmental-audio-rag\data\raw\datasec\archives\DATASEC_v4_23097290.zip`. Đường dẫn này
+  gitignored. Dùng `curl -L -C -` để resume được.
+- Kiểm MD5 = `11e0ae0098ecf3d982ab5f7375c56844`; sai thì dừng, báo §6.
+- Script `scripts/compare_datasec_versions.py`: đọc **từng member .wav ngay trong zip** (`zipfile`,
+  stream sha256), không giải nén. So với `data/manifests/datasec_inventory.csv`. Trước hết xác minh
+  cột `sha256` của inventory là hash byte file: tính lại 5 file trong
+  `..\environmental-audio-rag\data\raw\datasec\extracted\` và so. Chuẩn hóa đường dẫn member về dạng
+  `DATASEC/<lớp>/…` (ghi rõ luật).
+- Báo: số file và giờ theo lớp v3 vs v4; file bị bỏ, thêm, hoặc cùng đường dẫn khác hash; v4 có
+  phải tập con của v3 theo hash không; file bị bỏ giao bao nhiêu với `data/manifests/exclusions.csv`
+  và mỗi split DataSEC (`data/splits/datasec_classification.csv`).
+- Ghi `data/manifests/datasec_v4_members.csv` (`file_id, relative_path, sha256, in_v3`) và
+  `docs/measurements/datasec_v4_diff_<YYYYMMDD>.{md,json}`.
+- **Không** sửa inventory, split, exclusions hay `ml/configs/sources.yaml`.
+- Nếu có file mới hoặc khác hash → dừng phần đề xuất, báo §6 để Claude quyết (có thể cần chạy lại
+  D3 cho phần mới).
+- Kỳ vọng sơ bộ: v4 có 4,292 file; chênh 756 file nằm chủ yếu ở `Music` (v3 có 1,001).
+
+**XO-4 — văn liệu lên V3.**
+- `curl` PDF arXiv 2607.16736, 2601.04178, 2503.11373, 2407.12997 vào thư mục tạm **ngoài** repo,
+  rồi `pdftotext -layout`.
+- Đối chiếu **từng số** ở RELATED_WORK §2.3 (15)–(18) và bảng ADR-0041 Context §5 với bảng gốc
+  (ghi số bảng/trang).
+- Đúng → nâng V3, thêm dòng vào §8 và §10 (SHA-256 8 ký tự đầu của PDF như dòng 03/10). Sai → sửa ở
+  RELATED_WORK; nếu số sai nằm trong ADR-0041 thì báo §6 (ADR thuộc Claude).
+- Tìm thêm: (15) có code công khai không (README, GitHub); RealDESED có công bố code hoặc
+  checkpoint không.
+
+**XO-5 — chuẩn bị checkpoint (CPU, chỉ đọc, không viết wrapper model).**
+- EfficientSED (`github.com/theMoro/EfficientSED`, release): tải fmn10 AudioSet Strong không có
+  sequence model, fmn10 + BiGRU, fmn10 + TF256, và bản fmn10 + TF256 KD mở rộng (PSDS1 45.25). Đặt
+  vào `..\environmental-audio-rag\artifacts\checkpoints\efficientsed\`. Ghi sha256, kích thước,
+  số tham số, danh sách key/shape (tóm tắt theo module).
+- Đọc code repo để ghi: sample rate, cấu hình mel (n_mels, n_fft, hop, fmin/fmax), frame rate đầu ra,
+  số lớp đầu ra, cách gắn sequence model, lớp/hàm dựng model, license.
+- Kiểm key backbone fmn10 của EfficientSED có khớp `ml/models/external/frame_mn` (đang nạp
+  `artifacts/checkpoints/frame_mn10_strong_1.pt`) không: `strict` load trên CPU, báo key thiếu/thừa.
+- PretrainedSED `ATST-F_strong_1.pt` (release v0.0.1, `github.com/fschmid56/PretrainedSED`): tải về
+  `artifacts\checkpoints\`, ghi sha256, tham số, frontend; ước lượng activation fp16 cho batch 8 × 10 s
+  **bằng tính toán**, không chạy GPU.
+- Output: `docs/measurements/checkpoint_prep_phase_o_<YYYYMMDD>.md`.
+
+**XO-6 — chỉ số ứng dụng.** `ml/evaluation/application_metrics.py`:
+- `segment_f1(reference, estimate, class_ids, resolution=1.0) -> {micro, macro, per_class}` bằng
+  `sed_eval.sound_event.SegmentBasedMetrics`.
+- `event_f1_collar(reference, estimate, class_ids, collar=1.0) -> {micro, macro}`: gọi
+  `ml.evaluation.sed_metrics.event_based_f1(..., t_collar=collar)`, giữ `percentage_of_length` mặc định.
+- Thêm vào `scripts/evaluate_run.py` một key mới `application_metrics` (gồm hai mục trên, recall micro
+  và `n_events_estimate / n_events_reference`) cho cả nhánh θ lẫn cSEBB, và một mục trong `.md`.
+- **Không** đổi key hay số cũ: test hồi quy so JSON cũ trên fixture. `--render-only` phải vẫn chạy
+  với evaluation JSON cũ không có key mới.
+- Kiểm tay trên dev (không phải test): chạy `evaluate_run ... --split dev --eval-set annotated` cho
+  `..\environmental-audio-rag\ml\runs\sed_polyphonic_20260926T161726Z` với `--postproc` trỏ
+  `postproc_cv.json`, với `--tag` để không ghi đè file nào. Segment-F1 phải ≈ 0.7074 (script nháp
+  XO-2 cho run này).
+
+**Trả lời Codex:** (Codex ghi phản biện hoặc lệch số ở đây)
 
 ### [ĐÓNG] Codex → Claude — provenance dirty mâu thuẫn sau K3
 
