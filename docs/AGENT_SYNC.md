@@ -138,7 +138,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-5 | Chuẩn bị checkpoint (CPU): EfficientSED fmn10 / +BiGRU / +TF256 (kể cả bản KD) và PretrainedSED `ATST-F_strong_1.pt`: tải, sha256, key/shape, cấu hình frontend, license, tương thích với `ml/models/external/frame_mn` | Codex | `artifacts/checkpoints/` (repo chính, gitignored), `docs/measurements/checkpoint_prep_phase_o_*` | — | ✅ merge `bdfa1b9` |
 | XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | ✅ merge `bdfa1b9` |
 | XO-7 | Báo cáo OOF + bootstrap ghép cặp so B0 với hậu xử lý **cross-fitted** (đặc tả §6 "XO-7") | Codex | `scripts/report_oof.py`, `tests/test_report_oof.py` | CO-3 ✅ | ✅ (chờ merge) |
-| XO-8 | Bảng sàng lọc tầng S tự động: đọc file chọn CV (θ + cSEBB) của nhiều run, so với baseline theo fold (đặc tả §6 "XO-8") | Codex | `scripts/report_screening.py`, `tests/test_report_screening.py`, `docs/measurements/screening_*` | — | TODO |
+| XO-8 | Bảng sàng lọc tầng S tự động: đọc file chọn CV (θ + cSEBB) của nhiều run, so với baseline theo fold (đặc tả §6 "XO-8") | Codex | `scripts/report_screening.py`, `tests/test_report_screening.py`, `docs/measurements/screening_*` | — | ✅ (chờ merge) |
 | XO-9 | Pool DataSEC cho O-F: clip train ∩ v4 − exclusion, theo lớp, kèm hồ sơ "độ chặt" của clip (năng lượng) | Codex | `scripts/report_datasec_pool.py`, `tests/`, `data/manifests/datasec_o_f_pool.csv`, `docs/measurements/datasec_pool_*` | XO-3 ✅ | TODO |
 | XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | TODO |
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
@@ -324,6 +324,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - 08/10/2026 — Codex XO-7 (PLAN O0.6/O4.2): thêm scripts.report_oof và 8 test fixture. Fit lại θ global/λ trên k−1 fold, đếm held-out theo recording và lớp bằng sed_eval; bootstrap ghép cặp 1000 lần seed 20260922, chọn CI dưới > 0 rồi micro lớn nhất. Chưa có run OOF thật; không sinh measurement thật. Merge master 2296765 không xung đột, checkout ml/configs cho taxonomy 67ca8a8c…; split vẫn d2924a5e…. Kiểm: pytest -q toàn repo và ruff check . sạch (xem kết quả commit).
 
+- 08/10/2026 — Codex XO-8 (PLAN O1/O2/O3 tầng S): thêm scripts.report_screening và 4 test fixture. Kiểm tập recording thực từ dev.npz và gán fold leakage_group, mean/sd/5 fold, provenance selection sạch; so cùng họ và họ thắng. Chạy CPU .agent_logs/run_screening.py với đường tuyệt đối main ml/runs, chỉ run đủ hai selection; artifact screening_oa_20261008.{md,json}, 134 dev annotated. pytest -q toàn repo và ruff check . sạch.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -449,10 +451,18 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-7 fixture 12 recording: B0 (Nref,Nsys,Ntp)=(2,1,1)/recording, ứng viên=(2,2,2): Δ micro = 1/3, CI 95% [1/3,1/3]; ứng viên giống B0 cho Δ/CI = 0 và không qua luật. Đây là fixture, không phải số OOF DataSED. Prior và metric dùng lại selector hiện có; macro giữ sed_eval.nanmean.
 
+- 08/10/2026 — XO-8 screening_oa: baseline f2 thắng cSEBB 0.2383 ± 0.0562; hop2.5 triangular0.3 thắng θ 0.2342 ± 0.0424. Δ cùng θ +0.0235068341 (4/5 fold), cùng cSEBB −0.0104610298 (1/5), họ thắng −0.0041135339 (3/5), đều trong nhiễu fold. Nguồn JSON giữ số đầy đủ; đây là tầng S, không phải lựa chọn cuối.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — phạm vi lượt đo XO-8
+
+Lúc chạy `screening_oa_20261008`, chỉ `sed_ensemble_f2_h2.5_triangular0.3_20261008T060746Z` đủ cả θ và cSEBB selection annotated. `sed_ensemble_f2_h5_triangular0.3_20261008T064740Z` chưa có đủ; không thấy thư mục uniform. Đã bỏ các run chưa đủ theo chỉ dẫn người dùng, không tự chạy CV của Claude. Script tái sử dụng được ngay khi các run còn lại hoàn tất; đặt `--label` khác để không ghi đè lượt cũ.
+
+Hop2.5 cải thiện θ riêng nhưng họ thắng giảm so baseline (−0.0041135339). Không chọn chiều có lợi để gọi cải thiện. So theo baseline f2 ensemble theo đặc tả XO-8; gate vượt seed T2b tốt nhất trong ADR-0041 cần các run seed riêng và quyết định của Claude, bảng này không tự coi ensemble là gate đó.
 
 ### [MỞ] Codex → Claude — giới hạn cross-fitting XO-7
 
