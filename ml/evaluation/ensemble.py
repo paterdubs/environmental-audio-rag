@@ -25,7 +25,8 @@ def average_predictions(members: Sequence[PredictionArtifact]) -> PredictionArti
         for field in ("recording_ids", "frame_offsets_s", "mask", "targets"):
             if not np.array_equal(getattr(first, field), getattr(other, field)):
                 raise ValueError(f"member {index} differs from member 0 in {field}")
-        for field in ("class_ids", "split", "frame_hop_s", "taxonomy_sha256"):
+        for field in ("class_ids", "split", "frame_hop_s", "taxonomy_sha256",
+                      "window_weighting"):
             if getattr(first, field) != getattr(other, field):
                 raise ValueError(f"member {index} differs from member 0 in {field}")
     probabilities = np.mean(
@@ -37,5 +38,5 @@ def average_predictions(members: Sequence[PredictionArtifact]) -> PredictionArti
         logits=logits, targets=first.targets, recording_ids=first.recording_ids,
         frame_offsets_s=first.frame_offsets_s, mask=first.mask, class_ids=first.class_ids,
         split=first.split, model_version="sed-ensemble-v1.0", frame_hop_s=first.frame_hop_s,
-        taxonomy_sha256=first.taxonomy_sha256,
+        taxonomy_sha256=first.taxonomy_sha256, window_weighting=first.window_weighting,
     )

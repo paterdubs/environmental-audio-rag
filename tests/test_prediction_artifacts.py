@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -46,6 +47,30 @@ def test_prediction_artifact_round_trip(tmp_path: Path) -> None:
     assert loaded.targets.dtype == np.uint8
     assert loaded.mask.dtype == np.bool_
     np.testing.assert_array_equal(loaded.logits, _artifact().logits)
+
+
+def test_uniform_artifact_metadata_is_unchanged_so_old_digests_still_verify(
+        tmp_path: Path) -> None:
+    """ADR-0041 O-A adds `window_weighting`; writing it for the default would change the
+    content digest of every artifact saved before 2026-10-08 and break `--verify-dev`."""
+    path = tmp_path / "dev.npz"
+    save_predictions(path, _artifact(), expected_class_ids=CLASS_IDS)
+    with np.load(path, allow_pickle=False) as stored:
+        metadata = json.loads(str(stored["metadata_json"].item()))
+    assert "window_weighting" not in metadata
+    assert load_predictions(path, expected_class_ids=CLASS_IDS).window_weighting == "uniform"
+
+
+def test_triangular_weighting_round_trips_and_rejects_bad_specs(tmp_path: Path) -> None:
+    path = tmp_path / "dev.npz"
+    save_predictions(path, replace(_artifact(), window_weighting="triangular:0.3"),
+                     expected_class_ids=CLASS_IDS)
+    assert load_predictions(path, expected_class_ids=CLASS_IDS).window_weighting == \
+        "triangular:0.3"
+    for bad in ("triangular", "triangular:1.5", "hann:0.3"):
+        with pytest.raises(ValueError, match="window_weighting"):
+            save_predictions(tmp_path / "bad.npz", replace(_artifact(), window_weighting=bad),
+                             expected_class_ids=CLASS_IDS)
 
 
 def test_prediction_artifact_rejects_wrong_class_order(tmp_path: Path) -> None:

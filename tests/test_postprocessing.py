@@ -16,6 +16,7 @@ from ml.postprocessing import (
     sweep_per_class_thresholds,
     validate_postproc_artifact,
 )
+from ml.postprocessing.calibration import window_weights
 from ml.taxonomy import load_taxonomy
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -100,6 +101,30 @@ def test_stack_places_end_aligned_last_window_by_offset_not_by_concatenation():
     assert np.all(stacked[:2] > 0.99)  # window 0 only
     assert np.allclose(stacked[2:4], 0.5, atol=1e-4)  # overlap: mean of both windows
     assert np.all(stacked[4:] < 0.01)  # window 1 only, at its true position
+
+
+def test_triangular_window_weights_peak_at_centre_and_floor_at_edges():
+    weights = window_weights(5, "triangular:0.3")
+    assert np.allclose(weights, [0.3, 0.65, 1.0, 0.65, 0.3])
+    assert np.array_equal(window_weights(5, "uniform"), np.ones(5))
+
+
+def test_triangular_merge_trusts_the_window_whose_centre_covers_the_frame():
+    """Frame 2 sits at window 0's centre (weight 1) and window 1's left edge (weight 0.3):
+    the weighted mean must lean towards window 0, unlike the uniform 0.5."""
+    from dataclasses import replace
+
+    logits = np.zeros((2, 5, len(CLASS_IDS)), dtype=np.float32)
+    logits[0] = 10.0
+    logits[1] = -10.0
+    uniform = _artifact(logits, [0.0, 0.04], np.ones((2, 5), dtype=bool), ["r1", "r1"])
+    weighted = replace(uniform, window_weighting="triangular:0.3")
+
+    p_high, p_low = 1 / (1 + np.exp(-10.0)), 1 / (1 + np.exp(10.0))
+    frame2 = stack_predictions_by_recording(weighted)["r1"][2, 0]
+    assert np.isclose(frame2, (1.0 * p_high + 0.3 * p_low) / 1.3)
+    assert np.isclose(stack_predictions_by_recording(uniform)["r1"][2, 0], 0.5, atol=1e-4)
+    assert stack_predictions_by_recording(weighted)["r1"].shape == (7, len(CLASS_IDS))
 
 
 def test_stack_rejects_uncovered_frames():

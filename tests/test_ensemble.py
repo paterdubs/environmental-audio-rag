@@ -36,6 +36,10 @@ def test_ensemble_rejects_misaligned_members() -> None:
         average_predictions([artifact(0.0), shifted])
     with pytest.raises(ValueError, match="split"):
         average_predictions([artifact(0.0), replace(artifact(0.0), split="test")])
+    triangular = replace(artifact(0.0), window_weighting="triangular:0.3")
+    with pytest.raises(ValueError, match="window_weighting"):
+        average_predictions([artifact(0.0), triangular])
+    assert average_predictions([triangular, triangular]).window_weighting == "triangular:0.3"
 
 
 def test_ensemble_needs_two_members() -> None:

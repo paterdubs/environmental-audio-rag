@@ -12,7 +12,7 @@ from typing import Any
 
 import numpy as np
 
-from ml.evaluation.predictions import PredictionArtifact
+from ml.evaluation.predictions import PredictionArtifact, triangular_floor
 from ml.postprocessing.events import DurationPrior, process_recordings
 from ml.taxonomy import Taxonomy, load_taxonomy
 
@@ -83,31 +83,47 @@ def stack_predictions_by_recording(artifact: PredictionArtifact) -> dict[str, np
     of audio past the true end and shifted it late — found on W5 (ADR-0022).
     Overlapping frames take the mean of the windows covering them; `mask`
     still drops a zero-padded suffix when a recording is shorter than a window.
+
+    With `window_weighting = "triangular:<floor>"` (ADR-0041 O-A) the mean is weighted:
+    frames near a window's centre, where the model saw context on both sides, count more
+    than frames near its cut edges. Uniform weighting reproduces the old mean exactly.
     """
     probabilities = 1.0 / (1.0 + np.exp(-artifact.logits.astype(np.float64)))
-    placed: dict[str, list[tuple[int, np.ndarray]]] = defaultdict(list)
+    weights = window_weights(artifact.logits.shape[1], artifact.window_weighting)
+    placed: dict[str, list[tuple[int, np.ndarray, np.ndarray]]] = defaultdict(list)
     for window_index, recording_id in enumerate(artifact.recording_ids):
         start = int(round(float(artifact.frame_offsets_s[window_index]) / artifact.frame_hop_s))
-        valid = probabilities[window_index][artifact.mask[window_index]]
-        placed[str(recording_id)].append((start, valid))
+        keep = artifact.mask[window_index]
+        placed[str(recording_id)].append(
+            (start, probabilities[window_index][keep], weights[keep]))
     return {
         recording_id: _overlap_mean(recording_id, windows)
         for recording_id, windows in placed.items()
     }
 
 
-def _overlap_mean(recording_id: str, windows: list[tuple[int, np.ndarray]]) -> np.ndarray:
-    length = max(start + len(values) for start, values in windows)
+def window_weights(window_frames: int, window_weighting: str) -> np.ndarray:
+    """Per-frame merge weight inside one window: all ones, or a triangle with an edge floor."""
+    floor = triangular_floor(window_weighting)
+    if floor is None or window_frames == 1:
+        return np.ones(window_frames, dtype=np.float64)
+    position = np.arange(window_frames, dtype=np.float64) / (window_frames - 1)
+    return floor + (1.0 - floor) * (1.0 - np.abs(2.0 * position - 1.0))
+
+
+def _overlap_mean(recording_id: str,
+                  windows: list[tuple[int, np.ndarray, np.ndarray]]) -> np.ndarray:
+    length = max(start + len(values) for start, values, _ in windows)
     total = np.zeros((length, windows[0][1].shape[1]), dtype=np.float64)
-    count = np.zeros(length, dtype=np.int64)
-    for start, values in windows:
-        total[start : start + len(values)] += values
-        count[start : start + len(values)] += 1
-    if not count.all():
+    weight = np.zeros(length, dtype=np.float64)
+    for start, values, frame_weights in windows:
+        total[start : start + len(values)] += values * frame_weights[:, None]
+        weight[start : start + len(values)] += frame_weights
+    if not (weight > 0).all():
         raise ValueError(
-            f"{recording_id}: {int((count == 0).sum())} frame(s) not covered by any window (gap)"
+            f"{recording_id}: {int((weight <= 0).sum())} frame(s) not covered by any window (gap)"
         )
-    return total / count[:, None]
+    return total / weight[:, None]
 
 
 def derive_duration_priors(

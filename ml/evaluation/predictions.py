@@ -13,6 +13,10 @@ from numpy.typing import NDArray
 SCHEMA_VERSION = "prediction-artifact-v1"
 _MODEL_VERSION_PATTERN = re.compile(r"^[a-z][a-z0-9_-]*-v\d+\.\d+$")
 _SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+UNIFORM_WEIGHTING = "uniform"
+_TRIANGULAR_PATTERN = re.compile(r"^triangular:(0(\.\d+)?|1(\.0+)?)$")
+_BASE_METADATA = {"schema_version", "split", "model_version", "class_ids", "frame_hop_s",
+                  "taxonomy_sha256"}
 _NPZ_KEYS = {
     "logits",
     "targets",
@@ -38,10 +42,14 @@ class PredictionArtifact:
     model_version: str
     frame_hop_s: float
     taxonomy_sha256: str
+    # How overlapping windows are merged into one per-recording track (ADR-0041 O-A):
+    # "uniform" = plain mean (every artifact before 2026-10-08), "triangular:<floor>" =
+    # weighted mean, weight 1 at the window centre falling to <floor> at its edges.
+    window_weighting: str = UNIFORM_WEIGHTING
 
 
 def _metadata(artifact: PredictionArtifact) -> dict[str, object]:
-    return {
+    metadata: dict[str, object] = {
         "schema_version": SCHEMA_VERSION,
         "split": artifact.split,
         "model_version": artifact.model_version,
@@ -49,6 +57,20 @@ def _metadata(artifact: PredictionArtifact) -> dict[str, object]:
         "frame_hop_s": artifact.frame_hop_s,
         "taxonomy_sha256": artifact.taxonomy_sha256,
     }
+    # Written only when non-default so every earlier artifact keeps its content digest.
+    if artifact.window_weighting != UNIFORM_WEIGHTING:
+        metadata["window_weighting"] = artifact.window_weighting
+    return metadata
+
+
+def triangular_floor(window_weighting: str) -> float | None:
+    """`None` for uniform merging, else the edge weight of the triangular window."""
+    if window_weighting == UNIFORM_WEIGHTING:
+        return None
+    if not _TRIANGULAR_PATTERN.fullmatch(window_weighting):
+        raise ValueError(f"window_weighting must be 'uniform' or 'triangular:<0..1>', "
+                         f"got {window_weighting!r}")
+    return float(window_weighting.split(":", 1)[1])
 
 
 def _normalized(artifact: PredictionArtifact) -> PredictionArtifact:
@@ -67,6 +89,7 @@ def _normalized(artifact: PredictionArtifact) -> PredictionArtifact:
         model_version=str(artifact.model_version),
         frame_hop_s=float(artifact.frame_hop_s),
         taxonomy_sha256=str(artifact.taxonomy_sha256),
+        window_weighting=str(artifact.window_weighting),
     )
 
 
@@ -101,6 +124,7 @@ def validate_predictions(
         raise ValueError("taxonomy_sha256 must be a lowercase SHA-256 digest")
     if not np.isfinite(artifact.frame_hop_s) or artifact.frame_hop_s <= 0:
         raise ValueError("frame_hop_s must be finite and positive")
+    triangular_floor(artifact.window_weighting)
     if not np.isfinite(artifact.frame_offsets_s).all() or (artifact.frame_offsets_s < 0).any():
         raise ValueError("frame_offsets_s must be finite and non-negative")
     if any(not str(recording_id).strip() for recording_id in artifact.recording_ids):
@@ -182,15 +206,7 @@ def load_predictions(
             raise ValueError("prediction artifact metadata must be an object")
         if metadata.get("schema_version") != SCHEMA_VERSION:
             raise ValueError(f"unsupported prediction schema: {metadata.get('schema_version')!r}")
-        required_metadata = {
-            "schema_version",
-            "split",
-            "model_version",
-            "class_ids",
-            "frame_hop_s",
-            "taxonomy_sha256",
-        }
-        if set(metadata) != required_metadata:
+        if set(metadata) not in (_BASE_METADATA, _BASE_METADATA | {"window_weighting"}):
             raise ValueError("prediction artifact metadata fields are invalid")
         try:
             artifact = PredictionArtifact(
@@ -204,6 +220,7 @@ def load_predictions(
                 model_version=str(metadata["model_version"]),
                 frame_hop_s=float(metadata["frame_hop_s"]),
                 taxonomy_sha256=str(metadata["taxonomy_sha256"]),
+                window_weighting=str(metadata.get("window_weighting", UNIFORM_WEIGHTING)),
             )
         except (TypeError, ValueError) as error:
             raise ValueError("prediction artifact arrays or metadata types are invalid") from error
