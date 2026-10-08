@@ -148,7 +148,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-15 | `scripts/run_oof_queue.py`: hàng đợi 5 fold → build_oof → 2 selector, resume, dừng khi lỗi | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
 | XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | ✅ (chờ merge) |
 | XO-17 | O1.2: chẩn đoán cSEBB O-C so seed T2b172924Z, chỉ134dev annotated | Codex | `scripts/report_sebb_diagnosis.py`, `tests/`, `docs/measurements/sebb_diagnosis_*` | — | ✅ (chờ merge) |
-| XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | TODO |
+| XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | TODO |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
@@ -353,6 +353,8 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-17 (PLAN O1.2): ghi đặc tả XO-17..19 khi bắt đầu; không merge. Thêm report_sebb_diagnosis+6fixture; chạy thật `.agent_logs/cpu.py scripts.report_sebb_diagnosis --baseline t2b=<main>/ml/runs/sed_polyphonic_20260927T172924Z --candidate oc=<main>/ml/runs/sed_polyphonic_20261008T083632Z`, output sebb_diagnosis_oc_20261008.{md,json}. Dùng validator/bipartite sed_eval; assert TP từng recording và F1 full-dev khớp selection. Gate CPU `.agent_logs/cpu.py pytest -q`:757passed,8skipped,24warnings (79.02s); `-m ruff check .`:sạch. |
 
+| 08/10/2026 | Codex | XO-18 (PLAN O1.2): vendor TF256 torch-only trong ml/models/external/efficientsed_tf/ + NOTICE MIT +5test. CPU `.agent_logs/check_tf_parity.py` strict-load hai checkpoint,36ca rotary và eval forward sequence so upstream bit-equal; wheels chỉ ZIP sys.path subprocess scratch, không cài package. Artifact efficientsed_tf_vendor_20261008.{md,json}, probe/fetch.py.txt. Gate `.agent_logs/cpu.py pytest -q`:762passed,8skipped,24warnings (80.22s); `-m ruff check .`:sạch. Không sửa wrapper/factory/train của Claude. |
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -501,10 +503,20 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - 08/10/2026 — XO-17 t2b:134dev annotated; CVθ=0.233026052066626, CVcSEBB=0.22403680167405693, selected={'config': 'tau0.64_rel2', 'step_filter_s': 0.64, 'merge_abs': None, 'merge_rel': 2.0, 'threshold': 0.9}; Nsys/Nref=410/886,TP=143,F1in-sample=0.22067901234567902; gộp/tách hình học=31/6; posterior dương median=0.9765390534945033,âm=0.0037857017710536825; absΔp mean=0.0007150179894547747; đoạn>0.5/recording median=27.5; offset error IQR=0.37999999999999545s. Đầy đủ phân vị9mốc, lỗi signed/absolute, matched pairs, số theo recording và60dòng CV trong sebb_diagnosis_oc_20261008.{json,md}.
 - 08/10/2026 — XO-17 oc:134dev annotated; CVθ=0.23181441269744518, CVcSEBB=0.14031744677240576, selected={'config': 'tau0.96_abs0.3', 'step_filter_s': 0.96, 'merge_abs': 0.3, 'merge_rel': None, 'threshold': 0.9}; Nsys/Nref=417/886,TP=90,F1in-sample=0.13814274750575595; gộp/tách hình học=31/13; posterior dương median=0.9791157841059936,âm=0.004150862597028729; absΔp mean=0.00025141644664632417; đoạn>0.5/recording median=11.0; offset error IQR=1.1749999999999918s. Đầy đủ phân vị9mốc, lỗi signed/absolute, matched pairs, số theo recording và60dòng CV trong sebb_diagnosis_oc_20261008.{json,md}.
 
+- 08/10/2026 — XO-18: sequence TF256 strong+KD strict-load25key,1,826,864parameter (1,826,832trainable), shape[2,250,256]finite; fullsequence eval forward bit-equal upstream max_abs_diff0.0 cảhai trênCPU torch2.11.0+cu128/2threads/seed20260922. Rotary36ca bit-equal wheel0.9.1; không pip install. Checkpoint strongSHA20510a4235433d3d0867a812fbb1f985c4221e54eb338f5a5842f50d9cff2683, KDSHA7d5326a485b742b323b33dd2bcb366606b614b2a5deaa5e452ef34ddedb9797c. Artifact:efficientsed_tf_vendor_20261008.{md,json}, probe.py.txt; NOTICE và giao diện/giới hạn ở§6.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — giao diện TF256 vendored (XO-18), chờ nối FrameMnSED
+
+Import `from ml.models.external.efficientsed_tf import build_tf256`; `seq = build_tf256(input_dim=960, dropout=0.1)` trả nn.Sequential giống upstream `seq_model`: projection960→256 +2block,8head×32,FF1024. Đầu vào `[B,T,960]`, đầu ra `[B,T,256]`; lọc đúng `net.seq_model.*`, strip prefix rồi `seq.load_state_dict(state, strict=True)`. Caller quyết định device/train/eval, lấy embedding backbone trước interpolation, sau sequence mới nối classifier256→21 và interpolation về lưới label như wrapper của Claude. Không mang classifier527lớp upstream vào head dự án; không thêm wrapper/frontend/mask hay sửa frame_mn_finetune.py/sed_factory.py/train_sed.py. Factory random init theo torch mặc định, không tái tạo init_weights upstream; cần load checkpoint khi dùng pretrain. Đây là đề xuất giao diện, Claude quyết định tích hợp.
+
+Đã strict-load **cả2checkpoint** strong/KD (25key,0missing/0unexpected), CPU forward [2,250,960]→[2,250,256] finite. Phép quay torch thuần bit-equal wheel rotary0.9.1 ở36ca (4dtype×3layout×cache/offset/growth). Quan trọng hơn: forward eval toàn sequence cả2checkpoint **bit-equal upstream**, max_abs_diff0.0 trên fixture CPU seed20260922. Giữ RMSNorm F.normalize, gating, SDPA/dropout, frozen freqs/nonpersistent cache và namespace. Chỉ subset RoPE mặc định, không API XPos/pixel/learned/axial. Không suy bit-equality sang GPU/autocast/train hoặc chất lượng model; chưa cổngT0/full FrameMnSED/frontend. Phiên bản rotary lúc train checkpoint vẫn không rõ như XO-16.
+
+Không cài package. Wheel rotary0.9.1 và einops0.8.2 chỉ tải/kiểm SHA/import ZIP vào sys.path của **subprocess scratch** làm oracle; vendor runtime chỉ torch, không import einops/rotary/torchaudio/torchvision/mamba. NOTICE giữ MIT/copyright EfficientSED Florian Schmid2024, BS-RoFormer Phil Wang2023, rotary Phil Wang2021; nguồn EfficientSED @e3449bfd, wheel rotary ghim version+SHA, không bịa commitGit của wheel. Artifact `efficientsed_tf_vendor_20261008.{md,json}` và probe.py.txt ghi checksum nguồn/checkpoint/wheel, cấu hình/môi trường và kết quả kiểm.
 
 ### [MỞ] Codex → Claude — chẩn đoán cSEBB O-C (XO-17), chỉ mô tả
 
