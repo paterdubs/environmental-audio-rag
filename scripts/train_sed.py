@@ -130,6 +130,8 @@ RECIPES: dict[str, dict[str, object]] = {
 # ADR-0041 O-C: T2b + transformer TF256 EfficientSED đã pretrain (strong / KD), cùng knob T2b.
 for _name, _version in (("oc_tf", "sed-oc-tf-v1.0"), ("oc_tf_kd", "sed-oc-tfkd-v1.0")):
     RECIPES[_name] = {**RECIPES["t2b"], "sequence_model": "tf256", "model_version": _version}
+# ADR-0041 O-E1: T2b với head RED (start/end + loss biên onset/offset), cùng checkpoint T2b.
+RECIPES["oe_red"] = {**RECIPES["t2b"], "boundary_head": "red", "model_version": "sed-oe-red-v1.0"}
 # frame_mn recipe -> (pinned checkpoint SHA-256, manifest weight_source).
 FRAME_MN_RECIPES = {
     "t2b": (FRAME_MN10_STRONG_1_SHA256, "pretrainedsed:frame_mn10_strong_1"),
@@ -137,6 +139,7 @@ FRAME_MN_RECIPES = {
     "oc_tf": (EFFICIENTSED_FMN10_TF256_SHA256, "efficientsed:fmn10+tf-256_strong"),
     "oc_tf_kd": (EFFICIENTSED_FMN10_TF256_KD_SHA256,
                  "efficientsed:fmn10+tf-256_advanced-kd-weak-strong"),
+    "oe_red": (FRAME_MN10_STRONG_1_SHA256, "pretrainedsed:frame_mn10_strong_1"),
 }
 
 # ADR-0020 §2: feature set đi theo encoder, không tách cờ riêng. Với `beats`, feature set chỉ
@@ -385,7 +388,8 @@ def fine_tuned_frame_mn(checkpoint: Path, window_frames: int, classes: int,
     knobs = knobs or RECIPES[recipe]
     model = frame_mn_model({"window_frames": window_frames, "rnn_hidden": knobs["rnn_hidden"],
                             "rnn_layers": knobs["rnn_layers"],
-                            "sequence_model": knobs.get("sequence_model")}, classes)
+                            "sequence_model": knobs.get("sequence_model"),
+                            "boundary_head": knobs.get("boundary_head")}, classes)
     report = model.load_pretrained(checkpoint, expected_sha256=expected_sha256 or pinned_sha256)
     return model, {
         "weight_source": weight_source,
@@ -634,8 +638,8 @@ def main() -> None:
             **{key: knobs[key] for key in ("time_pooling", "rnn_hidden", "rnn_layers",
                                            "upsample", "random_crop", "model_version")},
             # O-C TF256: dump_predictions/serving rebuild the transformer from this key.
-            **({"sequence_model": knobs["sequence_model"]}
-               if knobs.get("sequence_model") is not None else {}),
+            **({key: knobs[key] for key in ("sequence_model", "boundary_head")
+                if knobs.get(key) is not None}),
             **weight_info,
             **({"train_fixes": fix_report} if fix_report is not None else {}),
             **({"cv_fold": args.cv_fold, "cv_folds_sha256": sha256_file(CV_FOLDS_PATH)}

@@ -174,6 +174,40 @@ DO-3, tầng C, luật chọn, test một lần.
 | 4 | Giai đoạn O dùng DataSEC **v4**; có train lại D1 trên v4 không? | Dùng v4; không train lại D1 cho RQ1 cũ, chỉ ghi hạn chế |
 | 5 | Chấp nhận chính sách test §2 (tái sử dụng thích nghi, báo rõ)? | Đồng ý — không còn tập độc lập nào khác |
 
+Người dùng duyệt cả năm điểm ngày 08/10/2026.
+
+### 7. Ghi trước khi train (bổ sung 08/10 tối, trước mọi run liên quan)
+
+**Thành phần suy luận của B0.** O-A trên dev (CV 5 fold annotated) cho họ thắng tốt nhất ở
+hop 5 s, trọng số tam giác sàn 0.3 (θ 0.2408 so với f2 0.2383, trong nhiễu fold). B0 dùng cấu
+hình này. Mọi ứng viên tầng C cũng chạy qua cùng bước chồng lấn này, để Δ so với B0 chỉ đo thay
+đổi của model.
+
+**Ensemble liên họ ở tầng C.** "Hai họ tốt nhất" = B0 cộng họ sequence-model (GRU / TF256 /
+TF256-KD) có điểm tầng S cao nhất, kể cả khi họ đó không tự qua tầng S. Lý do: §2 ghi ensemble
+liên họ là ứng viên riêng, không qua tầng S. Luật chọn tầng C giữ nguyên.
+
+**O-E1 = RED + loss biên, chưa có EPN.** Đặc tả bài báo ở `docs/notes/red_epn_spec.md` (XO-10).
+EPN và suy luận Algorithm 1 (O-E2) cần contract artifact mới và cách ghép cửa sổ mới; theo
+cut-list, phần đó chỉ làm nếu O-E1 có tín hiệu. Các điểm bài báo để ngỏ, khóa như sau:
+
+| Điểm | Chọn | Lý do |
+|---|---|---|
+| Lưới RED | 250 bước/10 s (40 ms) của frame_mn, trước nội suy về 1000 frame nhãn | Lưới gốc của backbone; recurrence trên lưới thô hơn ít bước hơn |
+| Khởi tạo | p trước cửa sổ = e^−30; tham số mặc định PyTorch, không init riêng | Bài không nêu; "không active" là trạng thái mặc định dễ kiểm |
+| Target biên | Suy từ target presence của batch (sau mixup), max-pool 4 frame về lưới bước; y_on = max(0, yₜ − yₜ₋₁), y_off = max(0, yₜ₋₁ − yₜ) | Tự xử lý nhãn mềm (mixup, DO-3); không đụng dataset |
+| Mép cửa sổ | Bước đầu bị loại khỏi loss biên; bước có frame padding bị loại | Không tạo onset/offset giả tại mép cắt |
+| Loss | BCE presence hiện có (giữ `pos_weight` T2b) + 100 × (focal số mũ 2 trên o + trên f) | λ_ool = 100 và số mũ 2 đúng bài; giữ phần còn lại của T2b để chỉ khác RED |
+| Đầu ra | logit = log p − log(1 − p) trên 250 bước, nội suy nearest về 1000 frame | Artifact, gộp cửa sổ, θ, cSEBB, OOF không đổi |
+| Số học | Recurrence log-space, float32 ngoài autocast | Đã đối chiếu với phương trình (1)–(2) tới 1e-5 (test) |
+
+Recipe `oe_red` = T2b + head RED, cùng checkpoint `frame_mn10_strong_1.pt`, seed 20260922. Tầng S
+như mọi ứng viên: phải vượt seed T2b tốt nhất (0.2330) theo cùng phép chấm.
+
+**Hai kết quả tầng S đã có đến lúc ghi mục này** (chỉ dev): O-C GRU 0.2318 và DO-4 0.2174, cả hai
+không qua. Cả hai tăng frame mAP (0.7560, 0.7430 so với 0.7352) mà không tăng event-F1. Điều này
+gợi ý nút thắt nằm ở bước chuyển posterior thành event, nên O-E1 được ưu tiên trước O-F/O-G.
+
 ## Consequences
 
 - Chi phí GPU tầng C: họ fmn khoảng 5 × 45 phút cho mỗi cấu hình; họ transformer khoảng

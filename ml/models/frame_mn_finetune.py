@@ -39,6 +39,7 @@ from torch import Tensor, nn
 
 from ml.models.external.efficientsed_tf import build_tf256
 from ml.models.external.frame_mn import AugmentMelSTFT, get_model
+from ml.models.red import RedHead
 
 SEQUENCE_LENGTH = 250  # PretrainedSED `seq_len`: 40 ms steps per 10 s window
 EMBED_DIM = 960  # frame_mn10: 6 x 160 channels after the last 1x1 convolution
@@ -125,7 +126,8 @@ class FrameMnSED(nn.Module):
 
     def __init__(self, classes: int, *, output_frames: int = 1000,
                  width_mult: float = WIDTH_MULT, rnn_hidden: int | None = None,
-                 rnn_layers: int | None = None, sequence_model: str | None = None) -> None:
+                 rnn_layers: int | None = None, sequence_model: str | None = None,
+                 boundary_head: str | None = None) -> None:
         super().__init__()
         if output_frames <= 0:
             raise ValueError("output_frames must be positive")
@@ -147,7 +149,11 @@ class FrameMnSED(nn.Module):
         elif sequence_model == "tf256":
             self.sequence = build_tf256(input_dim=width, dropout=TF256_DROPOUT)
             width = 256
-        self.head = nn.Linear(width, classes)
+        if boundary_head not in (None, "red"):
+            raise ValueError(f"boundary_head must be None or 'red', got {boundary_head!r}")
+        # O-E1: RED turns start/end logits into presence on the 250-step grid (ml/models/red.py).
+        self.head = RedHead(width, classes) if boundary_head == "red" else nn.Linear(width,
+                                                                                    classes)
 
     def train(self, mode: bool = True) -> FrameMnSED:
         super().train(mode)
@@ -178,6 +184,10 @@ class FrameMnSED(nn.Module):
         logits = self.head(steps)
         return nn.functional.interpolate(logits.transpose(1, 2), size=self.output_frames,
                                          mode="nearest").transpose(1, 2)
+
+    def boundary_loss(self, targets: Tensor, valid: Tensor) -> Tensor | None:
+        """O-E1 onset/offset loss of the last forward pass; None without a RED head."""
+        return self.head.boundary_loss(targets, valid) if isinstance(self.head, RedHead) else None
 
     def load_pretrained(self, path: Path, expected_sha256: str | None = FRAME_MN10_STRONG_1_SHA256
                         ) -> FrameMnLoadReport:

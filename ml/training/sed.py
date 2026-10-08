@@ -196,6 +196,11 @@ def run_epoch(
             loss = masked_loss(logits, targets, valid, pos_weight, loss=loss_name,
                                focal_gamma=focal_gamma, asl_gamma_pos=asl_gamma_pos,
                                asl_gamma_neg=asl_gamma_neg, asl_clip=asl_clip)
+            # ADR-0041 O-E1: models with a RED head add the onset/offset loss of this pass.
+            boundary = (model.boundary_loss(targets, valid)
+                        if hasattr(model, "boundary_loss") else None)
+            if boundary is not None:
+                loss = loss + boundary
         if training:
             if scaler is None:
                 loss.backward()
