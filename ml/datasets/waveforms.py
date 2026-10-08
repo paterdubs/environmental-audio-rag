@@ -31,10 +31,11 @@ class SedWaveformDataset(SedFeatureDataset):
     def __init__(self, recordings: pd.DataFrame, events: pd.DataFrame, *, waveform_root: Path,
                  class_ids: tuple[str, ...], frame_rate: float = 100.0,
                  window_frames: int = 1000, hop_frames: int = 1000, random_crop: bool = False,
-                 sample_rate: int = 16_000) -> None:
+                 sample_rate: int = 16_000, crop_jitter_frames: int | None = None) -> None:
         super().__init__(recordings, events, feature_root=waveform_root, class_ids=class_ids,
                          frame_rate=frame_rate, window_frames=window_frames,
-                         hop_frames=hop_frames, random_crop=random_crop)
+                         hop_frames=hop_frames, random_crop=random_crop,
+                         crop_jitter_frames=crop_jitter_frames)
         samples_per_frame = sample_rate / frame_rate
         if samples_per_frame != int(samples_per_frame):
             raise ValueError(f"{sample_rate} Hz is not a whole number of samples per frame "

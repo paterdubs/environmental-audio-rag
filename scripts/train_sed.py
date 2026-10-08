@@ -53,9 +53,10 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
 from ml.datasets.features import SedFeatureDataset
 from ml.datasets.train_fixes import apply_train_fixes, load_unannotated
@@ -78,6 +79,7 @@ from ml.training.common import (
     write_json,
 )
 from ml.training.encoded import EncodedLoader
+from ml.training.sampling import DEFAULT_POWER, class_balanced_weights, expected_class_share
 from ml.training.sed import (
     LOSSES,
     SedTrainingConfig,
@@ -208,12 +210,36 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-fixes", action="store_true",
                         help="ADR-0041 DO-2 + DO-3: bỏ recording train thiếu GT polyphonic, "
                              "gộp recording trùng byte thành một mẫu nhãn mềm")
+    parser.add_argument("--window-sampling", choices=WINDOW_SAMPLING, default="uniform",
+                        help="ADR-0041 DO-4: class_balanced = rút cửa sổ train theo trọng số "
+                             "(1/tần suất lớp)^0.5, cắt rung ±1/4 cửa sổ quanh cửa sổ được rút")
     parser.add_argument("--evaluate-test", action="store_true")
     parser.add_argument("--device", default="cuda")
     return parser.parse_args()
 
 
 CV_FOLDS_PATH = ROOT / "data" / "splits" / "datased_trainval_folds.csv"
+WINDOW_SAMPLING = ("uniform", "class_balanced")
+CROP_JITTER_FRACTION = 4  # DO-4: crop start = sampled window start ± window_frames // 4
+
+
+def train_sampler(dataset: SedFeatureDataset, mode: str, seed: int
+                  ) -> tuple[WeightedRandomSampler | None, dict[str, object] | None]:
+    """DO-4 sampler for the train split and its manifest record; `uniform` = plain shuffle."""
+    if mode == "uniform":
+        return None, None
+    classes = dataset.window_classes()
+    weights = class_balanced_weights(classes, power=DEFAULT_POWER)
+    generator = torch.Generator().manual_seed(seed)
+    sampler = WeightedRandomSampler(torch.as_tensor(weights), num_samples=len(weights),
+                                    replacement=True, generator=generator)
+    uniform = np.ones(len(weights))
+    return sampler, {
+        "mode": mode, "power": DEFAULT_POWER, "crop_jitter_frames": dataset.crop_jitter_frames,
+        "windows": len(weights), "max_weight": float(weights.max()),
+        "class_share_uniform": expected_class_share(classes, uniform),
+        "class_share_sampled": expected_class_share(classes, weights),
+    }
 
 
 def apply_cv_fold(joined: pd.DataFrame, fold: int | None) -> pd.DataFrame:
@@ -367,14 +393,18 @@ def fine_tuned_frame_mn(checkpoint: Path, window_frames: int, classes: int,
 def split_dataset(joined: pd.DataFrame, events: pd.DataFrame, split: str, *,
                   feature_set: str, class_ids: tuple[str, ...], frame_rate: float,
                   window_frames: int, hop_frames: int, random_crop: bool = False,
-                  waveform: bool = False) -> SedFeatureDataset:
+                  waveform: bool = False, crop_jitter_frames: int | None = None
+                  ) -> SedFeatureDataset:
     """`waveform=True`: same windows and labels, 16 kHz waveform input (Track 2a)."""
     if waveform:
         return SedWaveformDataset(
             joined[joined["split"] == split], events, waveform_root=WAVEFORM_ROOT,
             class_ids=class_ids, frame_rate=frame_rate, window_frames=window_frames,
             hop_frames=hop_frames, random_crop=random_crop,
+            crop_jitter_frames=crop_jitter_frames,
         )
+    if crop_jitter_frames is not None:
+        raise SystemExit("--window-sampling class_balanced mới cài cho đầu vào waveform")
     return SedFeatureDataset(
         joined[joined["split"] == split],
         events,
@@ -473,10 +503,10 @@ def frozen_beats(checkpoint: Path, expected_sha256: str = BEATS_STRONG_1_SHA256
 
 
 def make_loader(dataset: SedFeatureDataset, *, batch_size: int, shuffle: bool,
-                device: torch.device, encoder: FrozenBeatsEncoder | None = None
-                ) -> DataLoader | EncodedLoader:
+                device: torch.device, encoder: FrozenBeatsEncoder | None = None,
+                sampler: WeightedRandomSampler | None = None) -> DataLoader | EncodedLoader:
     loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=0,
-                        pin_memory=device.type == "cuda")
+                        pin_memory=device.type == "cuda", sampler=sampler)
     return loader if encoder is None else EncodedLoader(loader, encoder, device)
 
 
@@ -533,17 +563,28 @@ def main() -> None:
     split_names = (
         ("train", "validation", "test") if args.evaluate_test else ("train", "validation")
     )
+    balanced = args.window_sampling == "class_balanced"
+    if balanced and not knobs["random_crop"]:
+        raise SystemExit("--window-sampling class_balanced cần recipe có random_crop")
+    sampling_info = None
     for split in split_names:
+        is_train = split == "train"
         dataset = split_dataset(
-            joined, train_label_events if split == "train" else events, split,
+            joined, train_label_events if is_train else events, split,
             feature_set=feature_set, class_ids=class_ids,
             frame_rate=frame_rate, window_frames=config.window_frames,
             hop_frames=config.hop_frames,
-            random_crop=bool(knobs["random_crop"]) and split == "train",
+            random_crop=bool(knobs["random_crop"]) and is_train,
             waveform=is_waveform,
+            crop_jitter_frames=(config.window_frames // CROP_JITTER_FRACTION
+                                if balanced and is_train else None),
         )
+        sampler, info = (train_sampler(dataset, args.window_sampling, args.seed) if is_train
+                         else (None, None))
+        sampling_info = info if is_train else sampling_info
         loaders[split] = make_loader(dataset, batch_size=config.batch_size,
-                                     shuffle=split == "train", device=device, encoder=frozen)
+                                     shuffle=is_train and sampler is None, device=device,
+                                     encoder=frozen, sampler=sampler)
 
     train_ids = set(joined.loc[joined["split"] == "train", "recording_id"])
     train_events = events[events["recording_id"].isin(train_ids)]
@@ -587,6 +628,7 @@ def main() -> None:
             **({"train_fixes": fix_report} if fix_report is not None else {}),
             **({"cv_fold": args.cv_fold, "cv_folds_sha256": sha256_file(CV_FOLDS_PATH)}
                if args.cv_fold is not None else {}),
+            **({"window_sampling": sampling_info} if sampling_info is not None else {}),
         },
         "class_ids": class_ids,
         "taxonomy_sha256": taxonomy.checksum,

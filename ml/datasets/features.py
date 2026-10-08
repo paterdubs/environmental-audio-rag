@@ -97,6 +97,7 @@ class SedFeatureDataset(Dataset):
         window_frames: int = 500,
         hop_frames: int = 250,
         random_crop: bool = False,
+        crop_jitter_frames: int | None = None,
     ) -> None:
         recording_required = {"recording_id", "feature_relative_path", "frames"}
         event_required = {"recording_id", "class_id", "onset_s", "offset_s"}
@@ -111,6 +112,11 @@ class SedFeatureDataset(Dataset):
         # SED v2 (ADR-0030), train only: each item is a window at a uniformly random start
         # in its recording, so every epoch sees new crops. Off = the fixed windows of v1.
         self.random_crop = random_crop
+        # ADR-0041 DO-4: with a sampler that picks windows by content, the crop must stay near
+        # the picked window (start ± jitter) instead of anywhere in the recording. None = v2.
+        if crop_jitter_frames is not None and (not random_crop or crop_jitter_frames < 0):
+            raise ValueError("crop_jitter_frames needs random_crop and must be >= 0")
+        self.crop_jitter_frames = crop_jitter_frames
         self.events = {
             str(recording_id): group.reset_index(drop=True)
             for recording_id, group in events.groupby("recording_id", sort=False)
@@ -137,10 +143,30 @@ class SedFeatureDataset(Dataset):
     def __len__(self) -> int:
         return len(self.windows)
 
+    def window_classes(self) -> list[frozenset[str]]:
+        """Classes with an event overlapping each nominal window (before any crop)."""
+        present = []
+        for window in self.windows:
+            events = self.events.get(window.recording_id)
+            if events is None:
+                present.append(frozenset())
+                continue
+            start = window.start_frame / self.frame_rate
+            stop = (window.start_frame + window.available_frames) / self.frame_rate
+            hit = (events["onset_s"] < stop) & (events["offset_s"] > start)
+            present.append(frozenset(events.loc[hit, "class_id"].astype(str)))
+        return present
+
     def _cropped(self, window: SedWindow) -> SedWindow:
         if not self.random_crop or window.recording_frames <= self.window_frames:
             return window
-        start = int(np.random.randint(0, window.recording_frames - self.window_frames + 1))
+        last = window.recording_frames - self.window_frames
+        if self.crop_jitter_frames is None:
+            start = int(np.random.randint(0, last + 1))
+        else:
+            jitter = self.crop_jitter_frames
+            start = min(max(window.start_frame + int(np.random.randint(-jitter, jitter + 1)), 0),
+                        last)
         return SedWindow(window.recording_id, window.feature_relative_path, start,
                          self.window_frames, window.recording_frames)
 
