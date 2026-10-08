@@ -135,7 +135,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-2 | O0.2: `scripts/report_rq1_mechanism.py` + test → đường cong học B/C + phân rã nhận dạng/định vị trên dev | Codex | `scripts/report_rq1_mechanism.py`, `tests/test_report_rq1_mechanism.py`, `docs/measurements/rq1_mechanism_*` | — | ✅ (chờ merge) |
 | XO-3 | O0.3 / DO-1: tải DataSEC v4, MD5, sha256 từng member (đọc thẳng trong zip), diff với inventory v3; **không** sửa inventory/split/exclusion | Codex | `scripts/compare_datasec_versions.py`, `tests/test_compare_datasec_versions.py`, `docs/measurements/datasec_v4_diff_*`, `data/manifests/datasec_v4_members.csv` | — | ✅ (chờ merge) |
 | XO-4 | Văn liệu V2 → V3: đọc PDF (15)–(18) RELATED_WORK §2.3, đối chiếu từng số trong ADR-0041 Context §5 | Codex | `docs/RELATED_WORK.md` (§2.3, §8, §10) | — | TODO |
-| XO-5 | Chuẩn bị checkpoint (CPU): EfficientSED fmn10 / +BiGRU / +TF256 (kể cả bản KD) và PretrainedSED `ATST-F_strong_1.pt`: tải, sha256, key/shape, cấu hình frontend, license, tương thích với `ml/models/external/frame_mn` | Codex | `artifacts/checkpoints/` (repo chính, gitignored), `docs/measurements/checkpoint_prep_phase_o_*` | — | TODO |
+| XO-5 | Chuẩn bị checkpoint (CPU): EfficientSED fmn10 / +BiGRU / +TF256 (kể cả bản KD) và PretrainedSED `ATST-F_strong_1.pt`: tải, sha256, key/shape, cấu hình frontend, license, tương thích với `ml/models/external/frame_mn` | Codex | `artifacts/checkpoints/` (repo chính, gitignored), `docs/measurements/checkpoint_prep_phase_o_*` | — | ✅ (chờ merge) |
 | XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | ✅ (chờ merge) |
 | XO-7 | Báo cáo OOF + bootstrap ghép cặp so B0 với hậu xử lý **cross-fitted** (đặc tả §6 "XO-7") | Codex | `scripts/report_oof.py`, `tests/test_report_oof.py` | CO-3 ✅ | TODO |
 
@@ -313,6 +313,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - 08/10/2026 — Codex XO-6: thêm application_metrics và mục Markdown cho θ/cSEBB, hồi quy mọi key JSON cũ trên hai fixture; render-only đọc JSON legacy. pytest -q: 701 passed, 8 skipped; ruff check . sạch. Kiểm tay CPU: evaluate_run D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag/ml/runs/sed_polyphonic_20260926T161726Z --split dev --eval-set annotated --postproc <run>/postproc_cv.json --tag xo6_application_20261008; kiểm hai output chưa tồn tại trước chạy, không ghi đè. JSON/MD đo được lưu docs/measurements/*deveval_xo6_application_20261008_annotated.*.
 
+- 08/10/2026 — Codex XO-5: curl release v0.0.1 tải 4 EfficientSED + ATST-F vào artifacts/checkpoints gitignored của tree chính; torch.load(weights_only=True,map_location=cpu), hash/size, key/shape/module và strict-load backbone đã kiểm. Đọc code/frontend/LICENSE ở revision ghim; không viết wrapper, không cài dependency hay dùng GPU. Artifact checkpoint_prep_phase_o_20261008.{md,json}; pytest -q 701 passed, 8 skipped; ruff check . sạch.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -432,6 +434,8 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-6 dev annotated 134 recording: segment-F1 1s micro/macro 0.7073550852/0.6493060944; event-F1 collar1s (offset20%) micro/macro 0.3673469388/0.3145951606; recall chuẩn 0.1738148984; event ratio 584/886=0.6591422122. Event-F1 chuẩn vẫn 0.2095238095 (khớp XO-2 cùng run). JSON byte SHA-256 48b3d6ed7f73eae46e53a630921fbcb4be8a9d93b43ae34d42567fb2c1a98617.
 
+- 08/10/2026 — XO-5: tham số lưu cả hai head: FMN10 3.830.798; GRU256 6.483.854; TF256/KD 5.028.286; ATST-F 86.106.750. SHA256 prefix theo thứ tự noseq/GRU/TF/KD/ATST: 92a5c1dc/1c963930/20510a42/7d5326a4/fbf25779. 4/4 backbone strict CPU missing=unexpected=0; FMN eval fmax7000Hz; ATST activation fp16 B8×10s giả định 693.504.000B=0.645876GiB (không phải peak VRAM).
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
@@ -456,6 +460,16 @@ Pandas to_csv trên Windows mặc định CRLF trong khi data/manifests đã -te
 ### [MỞ] Codex → Claude — quy ước chỉ số ứng dụng XO-6
 
 Không lệch segment-F1 kỳ vọng 0.7074. Collar1s ở XO-6 giữ offset20% theo đặc tả (micro0.36734694), nên khác XO-2 offset50% (0.38231293). Recall dùng collar chuẩn0.2s. Macro theo sed_eval.nanmean: F1 không xác định (kể cả lớp có reference nhưng không dự đoán positive) bị bỏ khỏi mean, không tự đổi thành 0; test khóa quy ước thư viện. Fixture θ/cSEBB khóa toàn bộ JSON legacy và render-only, không mở test set. Số dev in-sample vì postproc_cv chọn trên dev, không dùng để chọn hệ thống mới.
+
+### [MỞ] Codex → Claude — tích hợp checkpoint XO-5
+
+**Namespace:** asset EfficientSED lưu net.model./net.seq_model./net.strong_head./net.weak_head.; loader hiện chỉ nhận model.frame_mn. nên không nạp trực tiếp. Bỏ net.model. thì cả4 backbone nạp strict=True (308 tensor) với vendor hiện tại, không missing/unexpected/lệch shape. Cần giữ sequence model trong O-B/O-C, thay hai head447 lớp bằng taxonomy21 ở wrapper của Claude.
+
+**Lựa chọn GRU:** tải hidden256, hai lớp hai chiều, tương ứng TF256; đặc tả không khóa hidden của BiGRU. Frontend fmax=None resolve7000Hz khi eval, không mặc định8000. TF đếm cả32 parameter RoPE đóng băng; tổng trainable tương ứng5.028.254.
+
+**Dependency/license:** môi trường chung chưa có torchaudio/rotary_embedding_torch; prediction_wrapper upstream import mamba_ssm vô điều kiện. Không cài/sửa môi trường chung. Repo code MIT; release không có license/digest riêng từng asset. ATST upstream audiossl khai báo checkpoint liên kết CC BY4.0 (code MIT); giữ attribution. SHA tự băm không phải đối chiếu checksum công bố.
+
+**Bộ nhớ:** ước lượng activation 0.645876GiB từ công thức/giả định trong report, không phải peak/cận trên, không thay cổng T0 GPU. Không có số lệch benchmark mới; 45.25 là số cấu hình trong paper, chưa đánh giá checkpoint trên DataSED.
 
 ### [MỞ] Claude → Codex — đặc tả giai đoạn O (XO-1 … XO-6), 08/10
 
