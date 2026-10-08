@@ -150,6 +150,10 @@ mình; cần đụng file khác thì ghi §6.
 | XO-17 | O1.2: chẩn đoán cSEBB O-C so seed T2b172924Z, chỉ134dev annotated | Codex | `scripts/report_sebb_diagnosis.py`, `tests/`, `docs/measurements/sebb_diagnosis_*` | — | ✅ (chờ merge) |
 | XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
+| XO-20 | O1 tầng S: bảng mọi run so ba seed T2b, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
+| XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | TODO |
+| XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | TODO |
+| XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | TODO |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -357,6 +361,8 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-19 (PLAN O1 tầng S): report_screening_per_class+4fixture; chạy CLI CPU thật3lần với --label oa/ob/oc, baseline/candidate tuyệt đối repo chính như đặc tả. Đủ21lớp×134dev annotated,886GT; event của họ thắng/refit lưu sẵn, priorθ kiểm nguồn train+percentile, không quét CV. Artifact screening_per_class_{oa,ob,oc}_20261008.{md,json}. Gate `.agent_logs/cpu.py pytest -q`:766passed,8skipped,24warnings (84.17s); `-m ruff check .`:sạch. AST mọi hàm code mới <50dòng. Không merge/GPU/prediction test/ghi main. |
 
+- **08/10/2026 — Codex, XO-20:** report_tier_s + 4 fixture test; CLI CPU `python .agent_logs/cpu.py scripts.report_tier_s --runs-dir D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag/ml/runs --stamp 20261009` → tier_s_20261009.{md,json}. pytest -q: **781 passed,12 skipped,26 warnings (118.17s)**; ruff check . sạch. Không đọc test hoặc chạy selector.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -511,10 +517,129 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - 08/10/2026 — XO-19 ob:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; ob(theta):micro=0.22546972860125258,macro=0.1797667138778188,Nsys=551,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.06834804539722572, 'voices'),lớn nhất=(0.24, 'thunder_fireworks_gunshot'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_ob_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
 - 08/10/2026 — XO-19 oc:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; oc(theta):micro=0.22282608695652176,macro=0.1741198214711463,Nsys=586,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.13783783783783785, 'bells'),lớn nhất=(0.15362731152204834, 'chicken_coop'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_oc_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
 
+- **XO-20:** tier_s_20261009.json: 10 run đủ hai selection, 2 đang chờ. Best seed `sed_polyphonic_20260927T172924Z` CVmicro=0.233026052067; mean ba seed=0.226005871832. Mọi số full-dev là in-sample, không dùng chọn.
+- `sed_polyphonic_20260927T172924Z`: frame mAP saved=0.7351536446359367; CV winner theta=0.233026052067; Δ best seed=+0.000000000000; fold>0/5; qua=False; full-dev macro/micro=0.163543487869/0.226818830243.
+- `sed_polyphonic_20260927T180358Z`: frame mAP saved=0.7442710056208708; CV winner csebb=0.220713036799; Δ best seed=-0.012313015268; fold>1/5; qua=False; full-dev macro/micro=0.148303659738/0.214723926380.
+- `sed_polyphonic_20260927T185137Z`: frame mAP saved=0.7495623263537761; CV winner csebb=0.224278526631; Δ best seed=-0.008747525436; fold>1/5; qua=False; full-dev macro/micro=0.182168047146/0.221276595745.
+- `sed_ensemble_f2_h2.5_triangular0.3_20261008T060746Z`: frame mAP saved=None; CV winner theta=0.234164956488; Δ best seed=+0.001138904421; fold>2/5; qua=True; full-dev macro/micro=0.169986008529/0.239886444287.
+- `sed_ensemble_f2_h2.5_uniform_20261008T074349Z`: frame mAP saved=None; CV winner theta=0.232880272756; Δ best seed=-0.000145779311; fold>4/5; qua=False; full-dev macro/micro=0.180275022525/0.244111349036.
+- `sed_ensemble_f2_h5_triangular0.3_20261008T064740Z`: frame mAP saved=None; CV winner theta=0.240811490483; Δ best seed=+0.007785438417; fold>3/5; qua=True; full-dev macro/micro=0.185527657544/0.240816326531.
+- `sed_ensemble_t2b_20260927T200914Z`: frame mAP saved=None; CV winner csebb=0.238278490386; Δ best seed=+0.005252438319; fold>2/5; qua=True; full-dev macro/micro=0.152892817146/0.231250000000.
+- `sed_polyphonic_20261008T062333Z`: frame mAP saved=0.7339902324809666; CV winner theta=0.232664080263; Δ best seed=-0.000361971803; fold>3/5; qua=False; full-dev macro/micro=0.179766713878/0.225469728601.
+- `sed_polyphonic_20261008T083632Z`: frame mAP saved=0.7559966807974785; CV winner theta=0.231814412697; Δ best seed=-0.001211639369; fold>2/5; qua=False; full-dev macro/micro=0.174119821471/0.222826086957.
+- `sed_polyphonic_20261008T131138Z`: frame mAP saved=0.7430186128852598; CV winner csebb=0.217425078154; Δ best seed=-0.015600973913; fold>1/5; qua=False; full-dev macro/micro=0.150751121213/0.221028396009.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — bảng tầng S lượt 6 (XO-20)
+
+Đã tổng hợp 3 seed T2b, f2, 3 O-A, O-B, O-C GRU và DO-4; chỉ run đủ hai selection annotated, cùng134recording/5fold/hash. Best seed dùng số đầy đủ 0.233026052067, khớp0.2330 làm tròn4chữ số. O-C mAP/score khớp0.756/0.2318; DO-4 khớp0.743/0.2174 làm tròn như đặc tả. Không đổi script để ép số. Cột frame mAP dùng best_validation của metrics.json; ensemble không có số ấy giữ null/—, không lấy trung bình member. Recipe/cờ và config nguyên vẹn từ manifest được lưu JSON. Thống kê full-dev dùng lại reconstruct XO-19, in-sample; không phải CV.
+
+Đang chờ tại snapshot: sed_polyphonic_20261008T135047Z: postproc_cv_selection_annotated.json, sebb_cv_selection_annotated.json; sed_polyphonic_20261008T145841Z: postproc_cv_selection_annotated.json, sebb_cv_selection_annotated.json. Không tự chạy selector. Autodiscovery có phạm vi rõ: 3 seed/f2, sed_ensemble_f2_h*, sed_polyphonic_20261008* loại config.cv_fold; --run/--seed-run cho run mới/ngày mới, --stamp và output chống ghi đè.
+
+Lượt7 chưa kích hoạt: sed_oof_B0_h10_20261008T130820Z và sed_oof_B0_h5_20261008T130849Z hiện đều thiếu hai selection annotated. Không suy số OOF từ dev hoặc dựng ensemble fold trên dev. CLAUDE/STATUS/PLAN/PAPER_NOTES giữ cho Claude cập nhật khi merge.
+
+### [MỞ] Người dùng → Codex — lượt 6 XO-20..XO-23 và điều kiện lượt 7
+
+Merge master fast-forward `d4ee68a` → `5cb948d`, không xung đột. Chỉ ghi worktree, đọc run chính bằng đường dẫn tuyệt đối. Không GPU/test/pip install/push, không sửa file Claude. Bám PLAN O1.2/O1.4/tầng S và O0.6/O4.2. Lượt 7 chỉ kích hoạt khi cả hai OOF B0 đủ hai selection annotated. Đặc tả nguyên văn:
+
+## Lượt 6 — giao ngay
+
+```
+Tiếp giai đoạn O, lượt 6. Luật cứng như các lượt trước: worktree ..\earag-codex-o, nhánh
+codex/phase-o, không GPU, không mở predictions/test.npz, không ghi vào tree chính
+..\environmental-audio-rag (chỉ đọc ml/runs ở đó), không pip install/push, lệch số → §6,
+không sửa file của Claude. XO-11 vẫn chặn.
+
+Bắt đầu: git -C ..\earag-codex-o merge master (master = 5cb948d, đã có lượt 5 của bạn và
+recipe oc_gru/oc_tf/oc_tf_kd + DO-4 của Claude). Ghi XO-20..XO-23 vào §3.O.
+
+Bối cảnh (dev, CV 5 fold annotated; luật tầng S = phải vượt seed T2b tốt nhất 0.2330):
+- T2b seed 172924Z/180358Z/185137Z; O-B 20261008T062333Z (--train-fixes);
+  O-C GRU 20261008T083632Z (frame mAP 0.756, họ thắng 0.2318, không qua);
+  DO-4 20261008T131138Z (--train-fixes --window-sampling class_balanced; frame mAP 0.743,
+  họ thắng 0.2174, không qua); O-C TF256 KD 20261008T135047Z và TF256 strong
+  20261008T145841Z (CV đang chạy). Tất cả là sed_polyphonic_<id> trong ml/runs.
+- Mẫu hình cần mô tả: GRU và DO-4 tăng frame mAP nhưng không tăng event-F1.
+
+XO-20 (ưu tiên 1) — scripts/report_tier_s.py: một bảng tầng S cho mọi run sàng lọc so với
+  ba seed T2b. Cột: run, recipe/cờ (đọc manifest), frame mAP tốt nhất (metrics.json),
+  θ CV mean±sd, cSEBB CV mean±sd (cấu hình đã chọn), họ thắng (luật S13: hòa giữ θ), so
+  seed tốt nhất (Δ, "qua"/"không qua"), số fold cao hơn seed tốt nhất, macro/micro full-dev
+  in-sample của họ thắng (dùng lại code report_screening_per_class, ghi rõ in-sample).
+  Chỉ đưa run có đủ hai file *_cv_selection_annotated.json; run thiếu liệt kê ở cuối là
+  "đang chờ". Ra docs/measurements/tier_s_20261009.{md,json}. Chạy lại được khi có run mới
+  (--stamp). Không kết luận ngoài luật đã ghi.
+
+XO-21 (ưu tiên 2) — scripts/report_detection_gap.py: mô tả vì sao frame mAP tăng mà event-F1
+  không tăng, cho T2b 172924Z, O-C GRU, DO-4, TF256 KD (và TF strong nếu đã có CV). Chỉ dev
+  annotated, chỉ mô tả:
+  - theo lớp: frame AP; số event dự đoán/tham chiếu với hậu xử lý họ thắng; tỷ lệ frame có
+    p > θ đã chọn so với tỷ lệ frame dương thật;
+  - "θ tối ưu theo lớp" in-sample (quét lưới θ có sẵn, từng lớp) so với θ global đã chọn —
+    chỉ để đo khoảng cách, ghi rõ không dùng để chọn (A2: θ per-class overfit dev);
+  - phân rã lỗi event: insertion/deletion/substitution, onset-only/offset-only F1.
+  Ra docs/measurements/detection_gap_20261009.{md,json}. Giả thuyết ghi rõ là giả thuyết.
+
+XO-22 (ưu tiên 3) — chạy scripts.report_boundary_errors (đã có, chỉ dev) cho bốn run trên
+  bằng nhiều --run "nhãn=ml/runs/<run>", --out-dir trong worktree của bạn rồi commit
+  measurement. Nếu script cần postproc của run, dùng file *_annotated đã có; thiếu thì ghi
+  §6, không tự chạy selector.
+
+XO-23 (ưu tiên 4) — mở rộng scripts/run_oof_queue.py (của bạn): tùy chọn
+  --rewindow HOP:WEIGHTING (ví dụ 5:triangular:0.3). Khi bật: sau 5 run fold, chạy
+  dump_predictions <run> --split dev --hop-seconds HOP --weighting WEIGHTING --label
+  <label>_f<k>_h<HOP> cho từng fold, build_oof hai lần (thô và chồng lấn, nhãn
+  <label>_h10 và <label>_h<HOP>), rồi hai selector cho từng OOF. Resume theo từng bước;
+  test bằng runner giả; --dry-run in đúng thứ tự lệnh. KHÔNG chạy thật.
+
+Mỗi task xong: pytest + ruff (không pipe), cập nhật §3.O/§4/§5, commit. Xong lượt báo commit
+hash và các điểm ở §6.
+```
+
+---
+
+## Lượt 7 — khi CV B0 OOF xong
+
+Điều kiện: cả `ml/runs/sed_oof_B0_h10_*` và `ml/runs/sed_oof_B0_h5_*` đều có đủ
+`postproc_cv_selection_annotated.json` và `sebb_cv_selection_annotated.json`.
+
+```
+Tiếp giai đoạn O, lượt 7. Luật cứng như các lượt trước (worktree ..\earag-codex-o, nhánh
+codex/phase-o, không GPU, không mở predictions/test.npz, không ghi tree chính, không pip
+install/push, lệch số → §6, không sửa file của Claude). Bắt đầu: git merge master.
+
+Bối cảnh: B0 (ADR-0041 §2 = T2b + --train-fixes + suy luận chồng lấn hop 5 s gộp tam giác
+sàn 0.3) đã train 5 fold (--cv-fold 0..4, seed 20260922) và ghép OOF trên 564 recording:
+ml/runs/sed_oof_B0_h10_<ts> (dự đoán thô) và ml/runs/sed_oof_B0_h5_<ts> (chồng lấn). CV
+θ/cSEBB annotated đã chạy xong cho cả hai (prior theo fold, e428e2b).
+
+XO-24 (ưu tiên 1) — scripts/report_b0_oof.py, chỉ mô tả:
+  - với mỗi OOF: họ thắng, cấu hình, CV mean±sd, 5 giá trị fold; macro/micro full-OOF của
+    họ thắng (refit đã lưu), PSDS không cần;
+  - theo fold mô hình (0..4): micro/macro trên recording của fold đó, số recording, số event
+    tham chiếu; phân rã theo nguồn recording (thuộc train gốc hay dev gốc) — đây là điểm cần
+    xem: OOF trên dev gốc có gần số CV dev của f2 (0.2383) không;
+  - so h5 với h10 cùng phép chấm: Δ, số fold cao hơn, bootstrap ghép cặp theo recording
+    (dùng lại ml/evaluation/multirun.paired_branch_bootstrap như report_oof, 1000 lần, seed
+    20260922). Ghi rõ đây là kiểm tra thành phần chồng lấn của B0, không phải lựa chọn.
+  Ra docs/measurements/b0_oof_20261009.{md,json}.
+
+XO-25 (ưu tiên 2) — kiểm toàn vẹn OOF của B0, chỉ đọc:
+  - mỗi run fold k (5 run sed_polyphonic_* có config.cv_fold = k, liệt kê trong manifest của
+    sed_oof_B0_h10) có predictions/dev.npz chứa đúng recording của fold k trong
+    data/splits/datased_trainval_folds.csv (SHA eaa30dc1…); 5 fold rời nhau, hợp lại đủ 564;
+  - tập train của fold k, dựng lại bằng scripts.train_sed.apply_cv_fold + train_tables
+    (gọi hàm, không sửa), không chứa recording nào của fold k và không chứa recording test;
+  - các cặp gán đôi bị gộp (manifest train_fixes.merged_duplicates) không bắc qua fold.
+  Ra docs/measurements/b0_oof_integrity_20261009.{md,json}. Lỗi → §6 kèm danh sách recording.
+  Lưu ý: không dựng ensemble 5 model fold trên dev gốc — mọi model fold đã thấy 4/5 dev gốc
+  khi train, nên số đó vô nghĩa.
+
+Mỗi task xong: pytest + ruff (không pipe), cập nhật §3.O/§4/§5, commit. Báo hash và §6.
 
 ### [MỞ] Codex → Claude — per-class tầng S XO-19, in-sample dev
 
