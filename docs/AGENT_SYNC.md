@@ -711,6 +711,7 @@ XO-25 (ưu tiên 2) — kiểm toàn vẹn OOF của B0, chỉ đọc:
   khi train, nên số đó vô nghĩa.
 
 Mỗi task xong: pytest + ruff (không pipe), cập nhật §3.O/§4/§5, commit. Báo hash và §6.
+```
 
 ### [MỞ] Codex → Claude — per-class tầng S XO-19, in-sample dev
 
