@@ -211,7 +211,8 @@ def main() -> None:
                          (inventory_path, exclusions_path, splits_path, taxonomy_path)},
               **compare(inventory, members, pd.read_csv(exclusions_path), pd.read_csv(splits_path))}
     member_path = ROOT / "data/manifests/datasec_v4_members.csv"
-    members[["file_id", "relative_path", "sha256", "in_v3"]].to_csv(member_path, index=False)
+    members[["file_id", "relative_path", "sha256", "in_v3"]].to_csv(
+        member_path, index=False, lineterminator="\n")
     result["members_sha256"] = digest_file(member_path)
     out = ROOT / f"docs/measurements/datasec_v4_diff_{args.date}"
     out.with_suffix(".json").write_text(json.dumps(result, indent=2, ensure_ascii=False),
