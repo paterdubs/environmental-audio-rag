@@ -10,15 +10,18 @@ import torch
 
 from ml.models.external.frame_mn.conv_norm import ConvNormActivation
 from ml.models.frame_mn_finetune import (
+    EFFICIENTSED_FMN10_GRU256_SHA256,
     EMBED_DIM,
     SEQUENCE_LENGTH,
     FrameMnSED,
+    efficientsed_state,
     encoder_state_from_checkpoint,
 )
 from ml.training.augment import mixup
 from scripts.train_sed import (
     ENCODER_FEATURE_SET,
     ENCODER_FRAME_RATE,
+    FRAME_MN_RECIPES,
     RECIPES,
     WAVEFORM_ENCODERS,
     validate_checkpoint_flags,
@@ -92,6 +95,58 @@ def test_release_checkpoint_loads_strictly_and_is_hash_checked(tmp_path: Path) -
     other.write_bytes(b"not the release")
     with pytest.raises(ValueError, match="SHA-256"):
         model.load_pretrained(other)
+
+
+GRU_CHECKPOINT = ROOT / "artifacts" / "checkpoints" / "efficientsed" / "fmn10+gru-256_strong.pt"
+
+
+def test_oc_gru_model_runs_the_bidirectional_gru_before_the_head() -> None:
+    torch.manual_seed(0)
+    model = FrameMnSED(21, rnn_hidden=256, rnn_layers=2).eval()
+    assert model.sequence is not None and model.head.in_features == 512
+    with torch.no_grad():
+        assert tuple(model(torch.randn(1, 160_000) * 0.1).shape) == (1, 1000, 21)
+    with pytest.raises(ValueError, match="go together"):
+        FrameMnSED(21, rnn_hidden=256)
+
+
+def test_efficientsed_split_keeps_backbone_and_gru_and_drops_only_heads() -> None:
+    tensor = torch.zeros(1)
+    encoder, sequence, ignored = efficientsed_state({
+        "net.model.features.0.0.weight": tensor, "net.seq_model.0.gru.weight_ih_l0": tensor,
+        "net.strong_head.weight": tensor})
+    assert list(encoder) == ["features.0.0.weight"] and list(sequence) == ["weight_ih_l0"]
+    assert ignored == ("net.strong_head.weight",)
+    with pytest.raises(ValueError, match="unexpected keys"):
+        efficientsed_state({"net.model.a": tensor, "net.other.b": tensor})
+
+
+@pytest.mark.skipif(not GRU_CHECKPOINT.exists(), reason="EfficientSED GRU256 not downloaded")
+def test_efficientsed_gru_checkpoint_loads_backbone_and_gru_strictly() -> None:
+    model = FrameMnSED(21, rnn_hidden=256, rnn_layers=2)
+    report = model.load_pretrained(GRU_CHECKPOINT,
+                                   expected_sha256=EFFICIENTSED_FMN10_GRU256_SHA256)
+    assert report.loaded_tensors == 308 + 16 and report.loaded_sequence_tensors == 16
+    assert report.ignored_keys == ("net.strong_head.bias", "net.strong_head.weight",
+                                   "net.weak_head.bias", "net.weak_head.weight")
+    # A GRU checkpoint never feeds a model without a GRU (pretrained weights silently lost).
+    with pytest.raises(ValueError, match="GRU"):
+        FrameMnSED(21).load_pretrained(GRU_CHECKPOINT,
+                                       expected_sha256=EFFICIENTSED_FMN10_GRU256_SHA256)
+
+
+@pytest.mark.skipif(not CHECKPOINT.exists(), reason="frame_mn10_strong_1.pt not downloaded")
+def test_gru_model_refuses_a_checkpoint_without_a_pretrained_gru() -> None:
+    with pytest.raises(ValueError, match="GRU"):
+        FrameMnSED(21, rnn_hidden=256, rnn_layers=2).load_pretrained(CHECKPOINT)
+
+
+def test_oc_gru_recipe_differs_from_t2b_only_by_the_gru() -> None:
+    t2b, oc = dict(RECIPES["t2b"]), dict(RECIPES["oc_gru"])
+    changed = {key for key in t2b if t2b[key] != oc[key]}
+    assert changed == {"rnn_hidden", "rnn_layers", "model_version"}
+    assert FRAME_MN_RECIPES["oc_gru"][0] == EFFICIENTSED_FMN10_GRU256_SHA256
+    validate_track2b(_args(recipe="oc_gru"), oc)  # must not raise
 
 
 def test_mixup_on_waveforms_matches_the_logmel_formula() -> None:

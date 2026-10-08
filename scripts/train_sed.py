@@ -35,6 +35,13 @@ lớp, không sequence model; cùng cache 16 kHz và lưới cửa sổ/nhãn. K
     .venv/Scripts/python.exe -m scripts.train_sed --encoder frame_mn --recipe t2b \
         --frame-mn-checkpoint artifacts/checkpoints/frame_mn10_strong_1.pt \
         --learning-rate <lr pilot> --seed <s>
+
+O-C (ADR-0041): như T2b nhưng giữ GRU 2×256 hai chiều đã pretrain của EfficientSED
+`fmn10+gru-256_strong.pt`; chỉ head 21 lớp khởi tạo mới.
+
+    .venv/Scripts/python.exe -m scripts.train_sed --encoder frame_mn --recipe oc_gru \
+        --frame-mn-checkpoint "artifacts/checkpoints/efficientsed/fmn10+gru-256_strong.pt" \
+        --seed <s>
 """
 
 from __future__ import annotations
@@ -56,7 +63,10 @@ from ml.datasets.waveforms import SedWaveformDataset
 from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
 from ml.models.beats_frozen import BEATS_STRONG_1_SHA256, EMBED_DIM, FrozenBeatsEncoder
-from ml.models.frame_mn_finetune import FRAME_MN10_STRONG_1_SHA256
+from ml.models.frame_mn_finetune import (
+    EFFICIENTSED_FMN10_GRU256_SHA256,
+    FRAME_MN10_STRONG_1_SHA256,
+)
 from ml.models.sed_factory import embedding_head, frame_mn_model, panns_encoder, sed_model
 from ml.taxonomy import load_taxonomy
 from ml.training.common import (
@@ -105,6 +115,18 @@ RECIPES: dict[str, dict[str, object]] = {
             "filter_augment_p": 0.0, "random_crop": True, "pos_weight_cap": 10.0,
             "time_pooling": None, "rnn_hidden": None, "rnn_layers": None,
             "upsample": None, "model_version": "sed-t2b-v1.0"},
+    # ADR-0041 O-C: T2b + GRU EfficientSED đã pretrain; giữ mọi knob của T2b để chỉ khác GRU.
+    "oc_gru": {"epochs": 30, "learning_rate": 0.0003, "encoder_learning_rate": None,
+               "warmup_epochs": 1, "cosine_decay": True,
+               "select_metric": "macro_average_precision", "mixup_p": 0.5,
+               "filter_augment_p": 0.0, "random_crop": True, "pos_weight_cap": 10.0,
+               "time_pooling": None, "rnn_hidden": 256, "rnn_layers": 2,
+               "upsample": None, "model_version": "sed-oc-gru-v1.0"},
+}
+# frame_mn recipe -> (pinned checkpoint SHA-256, manifest weight_source).
+FRAME_MN_RECIPES = {
+    "t2b": (FRAME_MN10_STRONG_1_SHA256, "pretrainedsed:frame_mn10_strong_1"),
+    "oc_gru": (EFFICIENTSED_FMN10_GRU256_SHA256, "efficientsed:fmn10+gru-256_strong"),
 }
 
 # ADR-0020 §2: feature set đi theo encoder, không tách cờ riêng. Với `beats`, feature set chỉ
@@ -305,8 +327,9 @@ def validate_track2a(args: argparse.Namespace, knobs: dict[str, object]) -> None
 
 def validate_track2b(args: argparse.Namespace, knobs: dict[str, object]) -> None:
     """ADR-0032 §3 guards for the fine-tuned frame_mn branch (and its recipe)."""
-    if (args.recipe == "t2b") != (args.encoder == "frame_mn"):
-        raise SystemExit("--recipe t2b chỉ đi với --encoder frame_mn, và ngược lại (ADR-0032 §3)")
+    if (args.recipe in FRAME_MN_RECIPES) != (args.encoder == "frame_mn"):
+        raise SystemExit("--recipe t2b/oc_gru chỉ đi với --encoder frame_mn, và ngược lại "
+                         "(ADR-0032 §3, ADR-0041 O-C)")
     if args.encoder != "frame_mn":
         return
     if args.evaluate_test:
@@ -319,13 +342,19 @@ def validate_track2b(args: argparse.Namespace, knobs: dict[str, object]) -> None
 
 
 def fine_tuned_frame_mn(checkpoint: Path, window_frames: int, classes: int,
-                        expected_sha256: str = FRAME_MN10_STRONG_1_SHA256
+                        knobs: dict[str, object] | None = None, recipe: str = "t2b",
+                        expected_sha256: str | None = None,
                         ) -> tuple[torch.nn.Module, dict[str, object]]:
-    """frame_mn10 with a fresh 21-class head (ADR-0032 §3) and its manifest provenance."""
-    model = frame_mn_model({"window_frames": window_frames}, classes)
-    report = model.load_pretrained(checkpoint, expected_sha256=expected_sha256)
+    """frame_mn10 (+ the pretrained GRU for O-C) with a fresh 21-class head (ADR-0032 §3,
+    ADR-0041 O-C) and its manifest provenance."""
+    pinned_sha256, weight_source = FRAME_MN_RECIPES[recipe]
+    knobs = knobs or RECIPES[recipe]
+    model = frame_mn_model({"window_frames": window_frames, "rnn_hidden": knobs["rnn_hidden"],
+                            "rnn_layers": knobs["rnn_layers"]}, classes)
+    report = model.load_pretrained(checkpoint, expected_sha256=expected_sha256 or pinned_sha256)
     return model, {
-        "weight_source": "pretrainedsed:frame_mn10_strong_1",
+        "weight_source": weight_source,
+        "pretrained_sequence_tensors": report.loaded_sequence_tensors,
         "checkpoint_path": str(checkpoint),
         "checkpoint_sha256": report.checkpoint_sha256,
         "encoder_frozen": False,
@@ -530,7 +559,8 @@ def main() -> None:
                                 "window_frames": config.window_frames}, len(class_ids))
     elif args.encoder == "frame_mn":
         model, weight_info = fine_tuned_frame_mn(args.frame_mn_checkpoint,
-                                                 config.window_frames, len(class_ids))
+                                                 config.window_frames, len(class_ids),
+                                                 knobs, args.recipe)
     elif args.encoder == "panns":
         encoder, weight_info = build_encoder(args, knobs)
         model = sed_model(knobs, len(class_ids), encoder)
