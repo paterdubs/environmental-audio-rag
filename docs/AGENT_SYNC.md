@@ -146,7 +146,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-13 | Sàng lọc lượt 2: O-A đủ ba biến thể + O-B so seed T2b | Codex | `docs/measurements/screening_*` | CV của Claude xong | TODO |
 | XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | TODO |
 | XO-15 | `scripts/run_oof_queue.py`: hàng đợi 5 fold → build_oof → 2 selector, resume, dừng khi lỗi | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
-| XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | TODO |
+| XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | ✅ (chờ merge) |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -340,6 +340,8 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-15: viết `scripts/run_oof_queue.py` + 21 ca fixture runner giả. Queue 5 fold → build_oof → θ global workers3 + cSEBB workers2 annotated; state JSON atomic, resume xác minh manifest/hash, dừng lỗi khác0 (kể cả127), không chạy train thật. Lệnh gate: interpreter repo chính `.agent_logs/cpu.py pytest -q`; `-m ruff check .`; 763 passed, 7 skipped, 24 warnings (136.02s); Ruff sạch. |
 
+| 08/10/2026 | Codex | XO-16: đọc source EfficientSED @e3449bfd, Git tree API, metadata PyPI và wheel rotary0.9.1 trong bộ nhớ, metadata package `.venv`; không pip install, không import/chạy TF256. Gate CPU pytest:763 passed,7 skipped,24 warnings (120.67s); ruff sạch. |
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -475,10 +477,24 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-15 fixture: 21 ca qua; runner giả đủ8 lệnh (5train+build+2selector), resume sau fold2 lỗi chỉ chạy lại fold2..4 và3 bước sau; resume sau cSEBB lỗi chỉ chạy cSEBB; resume hoàn tất không gọi runner. Dry-run in8 lệnh không ghi state/run. Refuse manifest complete/dirty/fold/hash/seed sai, file/hash đã đổi, tham số/hash fold khác khi resume, cờ test gồm viết tắt argparse. Không chạy GPU/hàng đợi thật, không nạp prediction test.
 
+- 08/10/2026 — XO-16 metadata: EfficientSED requirements không ghim rotary; bản PyPI khảo sát0.9.1 MIT yêu cầu Python≥3.9, torch≥2.4, einops≥0.8 (pytest chỉ extra test). Wheel pure Python `rotary_embedding_torch-0.9.1-py3-none-any.whl` SHA256489ef53e21ab4c4eb35c0c97b551d724f5eea71c2bca39acb8fee8d88b142a76 khớp PyPI. `.venv`: Python3.12.10/torch2.11.0+cu128/numpy2.5.3; rotary/einops/torchaudio/torchvision/timm/nnAudio/mamba_ssm chưa có. Không đổi môi trường. Chi tiết nguồn/giới hạn §6.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — phụ thuộc EfficientSED TF256 XO-16 (chưa cài)
+
+**Không biết phiên bản rotary dùng để train checkpoint.** [requirements @e3449bfd](https://github.com/theMoro/EfficientSED/blob/e3449bfd1f4922b81d82410ed842653f462bfca8/requirements.txt) chỉ ghi `rotary_embedding_torch`, không version; Git tree đã kiểm không có lock/pyproject/environment khác ghim nó. Không suy phiên bản train từ bản mới nhất hiện tại.
+
+Đọc [metadata PyPI rotary](https://pypi.org/pypi/rotary-embedding-torch/json) và wheel0.9.1 (upload20/06/2026): MIT, pure Python, Python≥3.9; dependencies `torch>=2.4`, `einops>=0.8`, `pytest` chỉ extra test. Wheel SHA256 `489ef53e21ab4c4eb35c0c97b551d724f5eea71c2bca39acb8fee8d88b142a76` khớp digest PyPI; chỉ đọc ZIP trong RAM, không cài/extract vào site-packages. [Einops0.8.2 metadata](https://pypi.org/pypi/einops/json): MIT, Python≥3.9, không khai dependency runtime khác. Torch hiện có sẵn2.11.0+cu128; Python3.12.10: cả hai thỏa version specifier (đã kiểm bằng packaging), **chưa chứng minh tương thích runtime/checkpoint**.
+
+Đường TF tối thiểu [attention.py](https://github.com/theMoro/EfficientSED/blob/e3449bfd1f4922b81d82410ed842653f462bfca8/models/sequence_models/roformer/attention.py) + transformer_block + helper dùng torch/einops/RotaryEmbedding; môi trường hiện thiếu cả rotary và einops. API0.9.1 còn `RotaryEmbedding(dim_head)` và `rotate_queries_or_keys`; freqs là Parameter, mặc định learned_freq=False, cached_freqs/dummy buffer không persistent. Có vẻ phù hợp namespace checkpoint từ XO-5 theo đọc source, **không strict-load hoặc forward TF256 trong lượt này**; Claude cần test CPU rồi T0 khi quyết định cài/vendor.
+
+Import toàn upstream khác đường TF tối thiểu: [prediction_wrapper.py](https://github.com/theMoro/EfficientSED/blob/e3449bfd1f4922b81d82410ed842653f462bfca8/models/prediction_wrapper.py) import `mamba_ssm.Mamba2` vô điều kiện, dù chọn TF; FMN frontend import torchaudio và backbone import torchvision. Cả mamba_ssm/torchaudio/torchvision chưa cài; inference.py còn import wrapper transformer khác dẫn tới timm/nnAudio... (cũng chưa có); không coi mọi dependency train/inference upstream là bắt buộc cho TF vendored riêng. Vendor frame_mn nội bộ đã thay phần torchvision/torchaudio nên không nhất thiết cài chúng chỉ để thêm TF. Môi trường cũng thiếu pytorch-lightning, wandb, sed_scores_eval nếu chạy toàn pipeline upstream.
+
+**Không cài toàn requirements upstream vào môi trường chung:** source yêu cầu `numpy<2` nhưng hiện tại2.5.3; specifier kiểm False. Rotary/einops tự chúng không có ràng buộc hạ NumPy, không cần mamba cho phép toán TF; Claude quyết định bộ dependency tối thiểu/ghim version. Không chạy pip install hay sửa requirements/shared `.venv`.
 
 ### [MỞ] Codex → Claude — vận hành hàng đợi OOF XO-15
 
