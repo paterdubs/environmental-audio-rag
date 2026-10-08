@@ -57,7 +57,19 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 08/10/2026 (mới nhất) — Lập kế hoạch giai đoạn O: tối ưu SED ([ADR-0041](docs/decisions/ADR-0041-giai-doan-toi-uu-sed.md), Proposed).**
+**Cập nhật 08/10/2026 tối (mới nhất) — Giai đoạn O đang chạy (ADR-0041, Accepted).** Claude làm
+phần chính, Codex làm việc phụ song song trên `codex/phase-o` (AGENT_SYNC §0.O, §3.O). Tầng S chỉ
+trên dev (PAPER_NOTES S48–S50):
+- O-A suy luận chồng lấn: θ global tăng (0.2107 → 0.2408 ở hop 5 s tam giác), nhưng họ thắng chỉ
+  0.2408 so với f2 0.2383, trong nhiễu fold. hop 5 s tam giác thành phần suy luận của B0.
+- O-B sửa dữ liệu train (DO-2/DO-3): trung tính (θ 0.2330 → 0.2327); vẫn giữ trong B0.
+- O-C (frame_mn10 + GRU pretrain EfficientSED, recipe `oc_gru`, `bfbab8c`): run sàng lọc
+  `sed_polyphonic_20261008T083632Z` đang train.
+- Hàng đợi qua đêm (scratchpad `night_queue.py`): CV O-C → B0 OOF 5 fold (+ `--train-fixes`, hop 5 s)
+  → `build_oof` → CV; nếu O-C vượt seed T2b tốt nhất thì OOF O-C. Prior tầng C theo fold
+  (`e428e2b`). Chưa mở test.
+
+**Trước đó, 08/10/2026 — Lập kế hoạch giai đoạn O: tối ưu SED ([ADR-0041](docs/decisions/ADR-0041-giai-doan-toi-uu-sed.md)).**
 Sau báo cáo giữa kỳ, người dùng chọn dồn sức vào SED. Chẩn đoán:
 - f2 test dự đoán 295/740 event, recall 0.115, 7/21 lớp F1 = 0, nhưng PSDS-2 0.725.
 - RQ1: DataSEC giúp nhận dạng (C dẫn val mAP +0.12 ở epoch 1, segment-F1 dev +0.027), không giúp
@@ -69,8 +81,8 @@ Sau báo cáo giữa kỳ, người dùng chọn dồn sức vào SED. Chẩn đ
 Kế hoạch: sửa dữ liệu phía train, suy luận chồng lấn, EfficientSED/transformer fine-tune, học biên
 onset/offset, DataSEC → nhãn mạnh (RQ1b), KD. Chọn bằng OOF 5 fold trên train ∪ dev, luật ghi
 trước; test một lần; đóng băng dự kiến 24/10. Văn liệu mới ở RELATED_WORK §2.3 (V2). Các số chẩn
-đoán đến từ script nháp — O0.1/O0.2 sinh lại bằng script repo. **Chưa train gì; chờ người dùng trả
-lời ADR-0041 Decision §6.**
+đoán đến từ script nháp — O0.1/O0.2 đã sinh lại bằng script repo (`data_profile_20261008_lf`,
+`rq1_mechanism_20261008_lf`). Người dùng duyệt toàn bộ ADR-0041 ngày 08/10.
 
 **Cập nhật 03/10/2026 — Biên tập báo cáo giữa kỳ L3.** Theo yêu cầu người dùng: điền thông
 tin (Phạm Hoàng Phát 22703861, Thân Trọng Tính 22665711, TS. Huỳnh Công Bằng, lớp KHDL18A, tháng 10,
@@ -695,6 +707,25 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-10-08 (chiều–tối) — Giai đoạn O: tầng S cho O-A/O-B, code O-C, merge hai lượt Codex
+
+Người dùng giao vai: Claude làm phần chính (kế hoạch, train, code cải thiện), Codex làm phần phụ
+song song (prompt do Claude soạn). Merge hai lượt Codex (`bdfa1b9`, `abd171e`; XO-1..XO-10,
+XO-12). Khóa đuôi dòng cho `ml/configs/**` sau khi autocrlf đổi hash taxonomy trong worktree.
+
+- **O-A** (`dump_predictions --hop-seconds --weighting`, gộp tam giác): bốn biến thể CV dev
+  annotated. Sửa hai lỗi OOM của selector với artifact hop 2.5 s (`_is_binary` thay `np.isin`;
+  sigmoid theo cửa sổ, kết quả trùng bit). Kết quả S49.
+- **O-B** (`--train-fixes`): trung tính, S50. Chạy thêm CV annotated cho seed T2b gốc để so cùng
+  thước.
+- **Tầng C**: Codex phát hiện prior duration của selector lấy từ train gốc, rò nhãn fold held-out
+  trên artifact OOF → sửa `e428e2b` (prior theo fold). Kiểm tay `apply_cv_fold` + `train_tables`
+  cho 5 fold trước khi xếp hàng train.
+- **O-C** (`bfbab8c`): `FrameMnSED` thêm GRU tùy chọn, nạp strict 308 + 16 tensor từ
+  EfficientSED, từ chối checkpoint/model lệch GRU; recipe `oc_gru` chỉ khác `t2b` ở GRU.
+- Gate cuối: ruff sạch, pytest 835 pass / 4 skip. Không mở test, không push. Người dùng ngủ:
+  hàng đợi qua đêm tự chạy B0 OOF và O-C OOF có điều kiện (luật tầng S ghi trong ADR-0041 §2).
 
 ### 2026-10-08 — Kiểm tra RQ1 và lập kế hoạch giai đoạn O (ADR-0041, Proposed)
 
