@@ -73,10 +73,16 @@ def triangular_floor(window_weighting: str) -> float | None:
     return float(window_weighting.split(":", 1)[1])
 
 
+def _is_binary(array: np.ndarray) -> bool:
+    """Same answer as `np.isin(array, (0, 1)).all()` without its int64 temporaries
+    (≈840 MB for a hop-2.5 s dev artifact, enough to OOM parallel CV workers)."""
+    return bool(np.logical_or(array == 0, array == 1).all())
+
+
 def _normalized(artifact: PredictionArtifact) -> PredictionArtifact:
-    if not np.isin(artifact.targets, (0, 1)).all():
+    if not _is_binary(artifact.targets):
         raise ValueError("targets must be binary")
-    if not np.isin(artifact.mask, (0, 1)).all():
+    if not _is_binary(artifact.mask):
         raise ValueError("mask must be binary")
     return PredictionArtifact(
         logits=np.ascontiguousarray(artifact.logits, dtype=np.float32),
@@ -131,7 +137,7 @@ def validate_predictions(
         raise ValueError("recording_ids cannot contain empty values")
     if not np.isfinite(artifact.logits[artifact.mask]).all():
         raise ValueError("valid logits must be finite")
-    if not np.isin(artifact.targets, (0, 1)).all():
+    if not _is_binary(artifact.targets):
         raise ValueError("targets must be binary")
     for row in artifact.mask:
         false_indices = np.flatnonzero(~row)

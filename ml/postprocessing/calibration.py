@@ -88,14 +88,16 @@ def stack_predictions_by_recording(artifact: PredictionArtifact) -> dict[str, np
     frames near a window's centre, where the model saw context on both sides, count more
     than frames near its cut edges. Uniform weighting reproduces the old mean exactly.
     """
-    probabilities = 1.0 / (1.0 + np.exp(-artifact.logits.astype(np.float64)))
     weights = window_weights(artifact.logits.shape[1], artifact.window_weighting)
     placed: dict[str, list[tuple[int, np.ndarray, np.ndarray]]] = defaultdict(list)
     for window_index, recording_id in enumerate(artifact.recording_ids):
         start = int(round(float(artifact.frame_offsets_s[window_index]) / artifact.frame_hop_s))
         keep = artifact.mask[window_index]
+        # Sigmoid per window, not over the whole [window, frame, class] array at once: same
+        # float64 values, but no full-size float64 copy (≈1 GB at hop 2.5 s).
+        logits = artifact.logits[window_index][keep].astype(np.float64)
         placed[str(recording_id)].append(
-            (start, probabilities[window_index][keep], weights[keep]))
+            (start, 1.0 / (1.0 + np.exp(-logits)), weights[keep]))
     return {
         recording_id: _overlap_mean(recording_id, windows)
         for recording_id, windows in placed.items()
