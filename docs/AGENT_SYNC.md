@@ -143,10 +143,13 @@ mình; cần đụng file khác thì ghi §6.
 | XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | ✅ (chờ merge) |
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
 | XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | ✅ merge `abd171e` |
-| XO-13 | Sàng lọc lượt 2: O-A đủ ba biến thể + O-B so seed T2b | Codex | `docs/measurements/screening_*` | CV của Claude xong | TODO |
-| XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | TODO |
-| XO-15 | `scripts/run_oof_queue.py`: hàng đợi 5 fold → build_oof → 2 selector, resume, dừng khi lỗi | Codex | `scripts/run_oof_queue.py`, `tests/` | — | TODO |
-| XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | TODO |
+| XO-13 | Sàng lọc lượt 2: O-A đủ ba biến thể + O-B so seed T2b | Codex | `docs/measurements/screening_*` | CV của Claude xong | ✅ (chờ merge) |
+| XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | ✅ (chờ merge) |
+| XO-15 | `scripts/run_oof_queue.py`: hàng đợi 5 fold → build_oof → 2 selector, resume, dừng khi lỗi | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
+| XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | ✅ (chờ merge) |
+| XO-17 | O1.2: chẩn đoán cSEBB O-C so seed T2b172924Z, chỉ134dev annotated | Codex | `scripts/report_sebb_diagnosis.py`, `tests/`, `docs/measurements/sebb_diagnosis_*` | — | ✅ (chờ merge) |
+| XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
+| XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -338,6 +341,22 @@ mình; cần đụng file khác thì ghi §6.
 
 - 08/10/2026 — Cổng từng task Codex lượt này (CPU, không pipe): XO-7 709 passed/8 skipped; XO-8 713/8; XO-9 721/8; XO-10 721/8; XO-12 728/8 (24 warnings). Mỗi lượt đều ruff check . sạch. XO-11 giữ ⛔, không sửa vùng phục vụ.
 
+| 08/10/2026 | Codex | XO-15: viết `scripts/run_oof_queue.py` + 21 ca fixture runner giả. Queue 5 fold → build_oof → θ global workers3 + cSEBB workers2 annotated; state JSON atomic, resume xác minh manifest/hash, dừng lỗi khác0 (kể cả127), không chạy train thật. Lệnh gate: interpreter repo chính `.agent_logs/cpu.py pytest -q`; `-m ruff check .`; 763 passed, 7 skipped, 24 warnings (136.02s); Ruff sạch. |
+
+| 08/10/2026 | Codex | XO-16: đọc source EfficientSED @e3449bfd, Git tree API, metadata PyPI và wheel rotary0.9.1 trong bộ nhớ, metadata package `.venv`; không pip install, không import/chạy TF256. Gate CPU pytest:763 passed,7 skipped,24 warnings (120.67s); ruff sạch. |
+
+| 08/10/2026 | Codex | XO-15 rà soát: tách điều phối thành OOFQueue với các bước train/build/select/invoke/save, giữ CLI/state/hành vi. AST kiểm hàm dài nhất22 dòng (file236 dòng), đúng CLAUDE §6 <50; cùng21 ca hồi quy runner giả. Gate toàn bộ pytest CPU:763 passed,7 skipped,24 warnings (117.55s); ruff sạch. |
+
+| 08/10/2026 | Codex | XO-13: lúc đầu thiếuuniform/O-B → bắt đầu XO-14; quay lại khi đủ12/12 selection JSON annotated của6 run. Chạy `scripts.report_screening --label oa_r2` (f2+3biến thể) và `--label ob` (seed172924Z+train-fixes062333Z), đường tuyệt đối repo chính. Generator kiểm seed/recipe, sinh cảnh báo đổi họ vào JSON/MD, không sửa CLI/core thuộc task khác. Artifact `screening_{oa_r2,ob}_20261008`, readiness missing{}, source generator.py.txt. Gate CPU pytest:763 passed,7 skipped,24 warnings (74.38s); ruff sạch. |
+
+| 08/10/2026 | Codex | XO-14: smoke CPU thực tế build_oof×2 → selector θ/cSEBB×2 → report_oof bootstrap1000 trên564recording, lưới1Hz/hop10s. Audit prior ngoài fold, đo từng bước/RAM cây tiến trình; xóa12run giả. Giữ artifact MD/JSON/harness/exporter; giới hạn và traceback wrapper do Codex ở§6. Gate cuối `.agent_logs/cpu.py pytest -q`:751 passed,8 skipped,24 warnings (81.78s); `-m ruff check .`:All checks passed. Collect-only xác nhận759ca sau cleanup; chênh số gate trước do parametrization manifest động, giải thích§6. |
+
+| 08/10/2026 | Codex | XO-17 (PLAN O1.2): ghi đặc tả XO-17..19 khi bắt đầu; không merge. Thêm report_sebb_diagnosis+6fixture; chạy thật `.agent_logs/cpu.py scripts.report_sebb_diagnosis --baseline t2b=<main>/ml/runs/sed_polyphonic_20260927T172924Z --candidate oc=<main>/ml/runs/sed_polyphonic_20261008T083632Z`, output sebb_diagnosis_oc_20261008.{md,json}. Dùng validator/bipartite sed_eval; assert TP từng recording và F1 full-dev khớp selection. Gate CPU `.agent_logs/cpu.py pytest -q`:757passed,8skipped,24warnings (79.02s); `-m ruff check .`:sạch. |
+
+| 08/10/2026 | Codex | XO-18 (PLAN O1.2): vendor TF256 torch-only trong ml/models/external/efficientsed_tf/ + NOTICE MIT +5test. CPU `.agent_logs/check_tf_parity.py` strict-load hai checkpoint,36ca rotary và eval forward sequence so upstream bit-equal; wheels chỉ ZIP sys.path subprocess scratch, không cài package. Artifact efficientsed_tf_vendor_20261008.{md,json}, probe/fetch.py.txt. Gate `.agent_logs/cpu.py pytest -q`:762passed,8skipped,24warnings (80.22s); `-m ruff check .`:sạch. Không sửa wrapper/factory/train của Claude. |
+
+| 08/10/2026 | Codex | XO-19 (PLAN O1 tầng S): report_screening_per_class+4fixture; chạy CLI CPU thật3lần với --label oa/ob/oc, baseline/candidate tuyệt đối repo chính như đặc tả. Đủ21lớp×134dev annotated,886GT; event của họ thắng/refit lưu sẵn, priorθ kiểm nguồn train+percentile, không quét CV. Artifact screening_per_class_{oa,ob,oc}_20261008.{md,json}. Gate `.agent_logs/cpu.py pytest -q`:766passed,8skipped,24warnings (84.17s); `-m ruff check .`:sạch. AST mọi hàm code mới <50dòng. Không merge/GPU/prediction test/ghi main. |
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -471,10 +490,101 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-12 audit thật: sổ SED 40 dòng, unchanged_rows40/added_rows0 so test_ledger_20261002, cả 40 dòng Markdown giữ nguyên. Freeze tổng19 run/ensemble, gồm8 run phase O (6 rewindow +2 ensemble suy từ member); 183 mục liệt kê, thiếu0; 0 mục predictions/test.npz vì dùng --skip-test-predictions. Không mở/hash prediction test; không tính lại metric. Nguồn: test_ledger_20261008.json legacy_audit và artifact_freeze_20261008.json.
 
+- 08/10/2026 — XO-15 fixture: 21 ca qua; runner giả đủ8 lệnh (5train+build+2selector), resume sau fold2 lỗi chỉ chạy lại fold2..4 và3 bước sau; resume sau cSEBB lỗi chỉ chạy cSEBB; resume hoàn tất không gọi runner. Dry-run in8 lệnh không ghi state/run. Refuse manifest complete/dirty/fold/hash/seed sai, file/hash đã đổi, tham số/hash fold khác khi resume, cờ test gồm viết tắt argparse. Không chạy GPU/hàng đợi thật, không nạp prediction test.
+
+- 08/10/2026 — XO-16 metadata: EfficientSED requirements không ghim rotary; bản PyPI khảo sát0.9.1 MIT yêu cầu Python≥3.9, torch≥2.4, einops≥0.8 (pytest chỉ extra test). Wheel pure Python `rotary_embedding_torch-0.9.1-py3-none-any.whl` SHA256489ef53e21ab4c4eb35c0c97b551d724f5eea71c2bca39acb8fee8d88b142a76 khớp PyPI. `.venv`: Python3.12.10/torch2.11.0+cu128/numpy2.5.3; rotary/einops/torchaudio/torchvision/timm/nnAudio/mamba_ssm chưa có. Không đổi môi trường. Chi tiết nguồn/giới hạn §6.
+
+- 08/10/2026 — XO-15 rà soát cấu trúc: AST `end_lineno-lineno+1` cho mọi FunctionDef xác nhận max22 dòng (`build_oof`), file236 dòng. CLI và state schema giữ nguyên, không chạy thật; gate hồi quy toàn bộ ghi §4.
+
+- 08/10/2026 — XO-13 O-A đủ3/3biến thể,134dev annotated,5fold. Họ thắng: f2 cSEBB0.23827849038554624±0.05615067340541771; h2.5tri θ0.23416495648774627±0.042423428813839203 (Δ−0.004113533897799976); h2.5uniform θ0.23288027275571177±0.03400010519997169 (Δ−0.005398217629834473); h5tri θ0.24081149048314426±0.04740950368879013 (Δ+0.0025330000975980205). Cả3 so họ thắng cao hơn baseline3/5fold, đều “trong nhiễu fold”; cả3 có cảnh báo đổi họ cSEBB→θ. Nguồn:screening_oa_r2_20261008.json.
+- 08/10/2026 — XO-13 O-B cùng seed20260922/recipe t2b: seed172924Z θp25 mean0.233026052066626±0.039962720983306776; train-fixes062333Z θp25 mean0.23266408026332408±0.04990133754774872; Δ−0.0003619718033019137,3/5fold, trong nhiễu. cSEBB Δ−0.006795242784932376,2/5fold. Họ thắng đềuθ, không có cảnh báo đổi họ. Nguồn:screening_ob_20261008.json; readiness xác nhận thiếu0file, không chạy lại CV/test.
+
+- 08/10/2026 — XO-14 smoke CPU hoàn tất: 564 recording (430 train gốc +134 dev),3294 reference event,21 class; SHA fold eaa30dc17f59c73dcbc8f3c554f1ae29b8ac9a13eeb64876062beea27c67c733. Lưới1Hz, cửa sổ/hop10s, hai bộ5fold; build×2 + θ×2 + cSEBB×2 + report bootstrap1000 đều mã0. Thời gian giây: build B0 5.6467009/candidate6.1789415, θB0 195.2593109/candidate229.4590124, cSEBBB0 1608.7165253/candidate433.8269787, report232.9438339; tổng2712.0313036s. Đỉnh working-set cây tiến trình lấy mẫu1495527424byte (1426.24609375MiB), không phải VRAM/native100Hz. θ3worker, cSEBBB0 2/candidate8worker; không dùng để so tốc độ model. Audit cả10prior bằng suy lại ngoài fold; spy fit θp25 fold0 trả object fold_priors; report chọn cSEBB cảhai nên không có lời gọi priorθ trong report. Đã xóa12run giả, không còn thư mục *smoke* ở ml/runs. Artifact:oof_smoke_20261008.{json,md}, harness và exporter.py.txt; giới hạn/lượt dừng/traceback helper §6.
+- 08/10/2026 — XO-15 kiểm CLI dry-run bổ sung: `.agent_logs/cpu.py scripts.run_oof_queue --label smoke_review --seed 20260922 --dry-run -- --encoder frame_mn --recipe t2b --train-fixes` in8lệnh; `ml/runs/oof_queue_smoke_review.json` không tồn tại sau lệnh. Không train thật.
+
+- 08/10/2026 — XO-17 t2b:134dev annotated; CVθ=0.233026052066626, CVcSEBB=0.22403680167405693, selected={'config': 'tau0.64_rel2', 'step_filter_s': 0.64, 'merge_abs': None, 'merge_rel': 2.0, 'threshold': 0.9}; Nsys/Nref=410/886,TP=143,F1in-sample=0.22067901234567902; gộp/tách hình học=31/6; posterior dương median=0.9765390534945033,âm=0.0037857017710536825; absΔp mean=0.0007150179894547747; đoạn>0.5/recording median=27.5; offset error IQR=0.37999999999999545s. Đầy đủ phân vị9mốc, lỗi signed/absolute, matched pairs, số theo recording và60dòng CV trong sebb_diagnosis_oc_20261008.{json,md}.
+- 08/10/2026 — XO-17 oc:134dev annotated; CVθ=0.23181441269744518, CVcSEBB=0.14031744677240576, selected={'config': 'tau0.96_abs0.3', 'step_filter_s': 0.96, 'merge_abs': 0.3, 'merge_rel': None, 'threshold': 0.9}; Nsys/Nref=417/886,TP=90,F1in-sample=0.13814274750575595; gộp/tách hình học=31/13; posterior dương median=0.9791157841059936,âm=0.004150862597028729; absΔp mean=0.00025141644664632417; đoạn>0.5/recording median=11.0; offset error IQR=1.1749999999999918s. Đầy đủ phân vị9mốc, lỗi signed/absolute, matched pairs, số theo recording và60dòng CV trong sebb_diagnosis_oc_20261008.{json,md}.
+
+- 08/10/2026 — XO-18: sequence TF256 strong+KD strict-load25key,1,826,864parameter (1,826,832trainable), shape[2,250,256]finite; fullsequence eval forward bit-equal upstream max_abs_diff0.0 cảhai trênCPU torch2.11.0+cu128/2threads/seed20260922. Rotary36ca bit-equal wheel0.9.1; không pip install. Checkpoint strongSHA20510a4235433d3d0867a812fbb1f985c4221e54eb338f5a5842f50d9cff2683, KDSHA7d5326a485b742b323b33dd2bcb366606b614b2a5deaa5e452ef34ddedb9797c. Artifact:efficientsed_tf_vendor_20261008.{md,json}, probe.py.txt; NOTICE và giao diện/giới hạn ở§6.
+
+- 08/10/2026 — XO-19 oa:21lớp,134dev annotated, in-sample; f2(csebb):micro=0.23125000000000007,macro=0.15289281714612504,Nsys=394,Nref=886,nullF1=[]; h5tri(theta):micro=0.24081632653061225,macro=0.18552765754395414,Nsys=584,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.15384615384615385, 'horn'),lớn nhất=(0.19426974143955278, 'vacuum_cleaner_fan_hairdryer'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_oa_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
+- 08/10/2026 — XO-19 ob:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; ob(theta):micro=0.22546972860125258,macro=0.1797667138778188,Nsys=551,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.06834804539722572, 'voices'),lớn nhất=(0.24, 'thunder_fireworks_gunshot'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_ob_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
+- 08/10/2026 — XO-19 oc:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; oc(theta):micro=0.22282608695652176,macro=0.1741198214711463,Nsys=586,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.13783783783783785, 'bells'),lớn nhất=(0.15362731152204834, 'chicken_coop'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_oc_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — per-class tầng S XO-19, in-sample dev
+
+Đã chạy đủ3cặp được giao (f2↔h5tri064740Z; seed172924Z↔O-B062333Z; seed↔O-C083632Z),21lớp×134recording annotated,886GT/cặp. Không quét lại hoặc đổi họ/cấu hình/θ/λ: đọc họ thắng từ hai selection CV annotated và refit đã lưu; θ dùng đúng file postproc_cv_annotated với hash taxonomy/split/manifest, digest nội dung dev và prior train suy lại ở percentile đã thắng. O-A đổi họ cSEBB→θ có cảnh báo; O-B/O-C đềuθ. Không chọn hệ thống từ per-class.
+
+**Giới hạn metric:** sed_eval mặc định trả NaN không chỉ khi lớp vắng cảGT/pred mà cả khi cóGT nhưng Nsys=0. Giữ NaN thành null/“—”, ΔF1=null nếu một vế undefined, luôn báo Nsys/Nref và Δ số lượng; không đổi adapter/luật hoặc tự quy0. Macro chuẩn sed_eval là nanmean bỏ những lớp này nên không được dùng một mình để che lớp không phát hiện. Fixture xác nhận hành vi chuẩn này; cả21lớp của mọi run thật trong3bảng hiện đều có F1 hữu hạn, không có ô null. Không có “số kỳ vọng” per-class để ép khớp; đây là in-sample dev, không là CVmean, OOF hoặc bằng chứng cải thiện tổng quát hóa.
+
+**Checksum:** `dev_predictions_sha256` trong metrics/postproc của dự án là digest nội dung PredictionArtifact, khác SHA256 byte của ZIP/NPZ. XO-19 ghi riêng cả `dev_predictions_sha256` (content, đã load_predictions kiểm lại) và `dev_predictions_file_sha256` (file). Trong artifact XO-17 trường `runs.*.dev_predictions_sha256` là SHA256 file do script báo cáo định nghĩa; không dùng trường ấy thay digest content của postproc. Báo cáo mới ghi rõ phân biệt, không sửa hash hoặc artifact gốc cho khớp. Mọi output ở worktree; không merge master, không ghi main, không mở prediction test.
+
+### [MỞ] Codex → Claude — giao diện TF256 vendored (XO-18), chờ nối FrameMnSED
+
+Import `from ml.models.external.efficientsed_tf import build_tf256`; `seq = build_tf256(input_dim=960, dropout=0.1)` trả nn.Sequential giống upstream `seq_model`: projection960→256 +2block,8head×32,FF1024. Đầu vào `[B,T,960]`, đầu ra `[B,T,256]`; lọc đúng `net.seq_model.*`, strip prefix rồi `seq.load_state_dict(state, strict=True)`. Caller quyết định device/train/eval, lấy embedding backbone trước interpolation, sau sequence mới nối classifier256→21 và interpolation về lưới label như wrapper của Claude. Không mang classifier527lớp upstream vào head dự án; không thêm wrapper/frontend/mask hay sửa frame_mn_finetune.py/sed_factory.py/train_sed.py. Factory random init theo torch mặc định, không tái tạo init_weights upstream; cần load checkpoint khi dùng pretrain. Đây là đề xuất giao diện, Claude quyết định tích hợp.
+
+Đã strict-load **cả2checkpoint** strong/KD (25key,0missing/0unexpected), CPU forward [2,250,960]→[2,250,256] finite. Phép quay torch thuần bit-equal wheel rotary0.9.1 ở36ca (4dtype×3layout×cache/offset/growth). Quan trọng hơn: forward eval toàn sequence cả2checkpoint **bit-equal upstream**, max_abs_diff0.0 trên fixture CPU seed20260922. Giữ RMSNorm F.normalize, gating, SDPA/dropout, frozen freqs/nonpersistent cache và namespace. Chỉ subset RoPE mặc định, không API XPos/pixel/learned/axial. Không suy bit-equality sang GPU/autocast/train hoặc chất lượng model; chưa cổngT0/full FrameMnSED/frontend. Phiên bản rotary lúc train checkpoint vẫn không rõ như XO-16.
+
+Không cài package. Wheel rotary0.9.1 và einops0.8.2 chỉ tải/kiểm SHA/import ZIP vào sys.path của **subprocess scratch** làm oracle; vendor runtime chỉ torch, không import einops/rotary/torchaudio/torchvision/mamba. NOTICE giữ MIT/copyright EfficientSED Florian Schmid2024, BS-RoFormer Phil Wang2023, rotary Phil Wang2021; nguồn EfficientSED @e3449bfd, wheel rotary ghim version+SHA, không bịa commitGit của wheel. Artifact `efficientsed_tf_vendor_20261008.{md,json}` và probe.py.txt ghi checksum nguồn/checkpoint/wheel, cấu hình/môi trường và kết quả kiểm.
+
+### [MỞ] Codex → Claude — chẩn đoán cSEBB O-C (XO-17), chỉ mô tả
+
+Đã tái dựng cSEBB đã chọn của hai run trên đủ134dev annotated; F1 full-dev khớp số selection tới1e-12. O-C θ/cSEBB làm tròn4chữ số khớp0.2318/0.1403 trong đặc tả; seed172924Z CVcSEBB nằm trong khoảng0.2207–0.2243. Không có lệch kỳ vọng này; không kiểm lại hai seed còn lại vì lượt này chỉ so172924Z.
+
+O-C có90TP/417dự đoán so T2b143TP/410dự đoán,886GT; số đoạn>0.5 mỗi recording median11 so27.5; IQR lỗi offset trênTP1.175s so0.38s. **Giả thuyết**: độ mượt/lượng tử thời gian và phân bố posterior có thể tương tác với step-filter/gộp cSEBB, chưa chứng minh nhân quả. Không đề xuất thay luật chọn/nhãn/split. F1 tái dựng là **in-sample dev**, không phải CV.
+
+“Gộp/tách” được định nghĩa bằng overlap dương cùng lớp (pred overlap≥2GT / GT overlap≥2pred); không suy được lịch sử thao tác của cSEBB từ các box cuối. GT tự chồng nhau/overlap nhỏ có thể làm chỉ báo tăng. Lỗi onset/offset dùng validator+optimal matching của sed_eval, assert TP trùng sed_eval từng recording; chỉ trênTP, không mô tả lỗi biên củaFN. Posterior quantile gộp frame×class không cân bằng recording; GT rasterfloor/ceil, hợp nhất nhãn chồng nhau; |Δp| không nối recording, đoạn>0.5 tính từng lớp rồi cộng. Cả30cấu hình/run giữ nguyên số gốc.
+
+### [MỞ] Người dùng → Codex — đặc tả XO-17..XO-19, không merge master
+
+Lượt tiếp giai đoạn O sau `2ac66cf`: chỉ worktree `../earag-codex-o`, nhánh `codex/phase-o`; **KHÔNG merge master** vì Claude đang train B0 OOF. Không GPU, không mở predictions/test.npz, không ghi tree chính, không pip install/push. Từng task pytest+ruff không pipe, cập nhật §3.O/§4/§5 rồi commit. Số lệch kỳ vọng hoặc phản biện ghi §6. XO-11 vẫn chặn. Các task bám PLAN O1.2 và tầng S; quyền ghi thư mục TF mới dưới đây do người dùng cấp, không mở rộng sang file của Claude.
+
+**XO-17 ưu tiên1:** `scripts/report_sebb_diagnosis.py` so O-C `sed_polyphonic_20261008T083632Z` (frame_mn10+GRU pretrain; kỳ vọng θp25 0.2318/cSEBB0.1403) với T2b `sed_polyphonic_20260927T172924Z` (3seed cSEBB kỳ vọng0.2207–0.2243), cùng134recording annotated dev. Posterior frame dương/âm/phân vị, |Δp| liên tiếp, số đoạn vượt0.5 mỗi recording; với cSEBB đã chọn: Nsys/Nref/TP, median/IQR lỗi onset/offset event khớp, số event gộp/tách; bảng30cấu hình từ sebb_cv_selection_annotated.json cảhai. Xuất `docs/measurements/sebb_diagnosis_oc_20261008.{md,json}`. Chỉ mô tả; giả thuyết gắn nhãn rõ; không đổi luật chọn.
+
+**XO-18 ưu tiên2:** `ml/models/external/efficientsed_tf/` chỉ attention+transformer block+RotaryEmbedding0.9.1 MIT viết lại dùng torch thuần thay einops. NOTICE ghi nguồn/commit/license. Không cài package. Test strict-load phần net.seq_model.* từ `../environmental-audio-rag/artifacts/checkpoints/efficientsed/fmn10+tf-256_strong.pt` và `fmn10+tf-256_advanced-kd-weak-strong.pt`; forward CPU [2,250,960]→[2,250,256], không NaN. Nếu khả thi so bit-equivalent phép quay với wheel gốc trong scratch, không cài. Không sửa frame_mn_finetune.py/sed_factory.py/train_sed.py; giao diện đề xuất để Claude nối FrameMnSED ghi §6.
+
+**XO-19 ưu tiên3:** `scripts/report_screening_per_class.py` baseline+candidate như report_screening, dựng event cấu hình họ thắng toàn dev, F1/Nsys/Nref theo21lớp và Δ. Chạy f2 vs h5tri `064740Z`, seed `172924Z` vs O-B `062333Z`, seed vs O-C `083632Z`. Ghi rõ **in-sample dev**, không dùng làm số CV hoặc thay luật chọn.
+
+### [MỞ] Codex → Claude — phạm vi smoke XO-14 và giới hạn đo chi phí
+
+Lượt **hoàn tất đầu-cuối** dùng logit tổng hợp1Hz, giữ thời lượng thật của564 recording và cửa sổ/hop10s. Đặc tả khóa hop, không khóa lưới; lựa chọn1Hz để kiểm contract/recording/reference/prior/selection/report trên CPU. **Chưa hoàn tất native100Hz**: lượt100Hz dừng θ sau548.133s chưa xong fit đầu; lượt10Hz xong fit đầu187s và dừng sau279.879s. Dừng có chủ ý của Codex, không phải lỗi code Claude; traceback harness do Stop-Process được giữ trong JSON. Không suy dự toán thời gian/RAM native hoặc GPU từ lượt1Hz. Lưới1Hz lượng tử hóa biên và làm half-window cSEBB=max(1,round(τ/2)) bằng1 cho cả5τ; báo đầy đủ grid nhưng không diễn giải ranking/F1 fixture thành số nghiên cứu.
+
+Một lượt1Hz khác thất bại ở multiprocessing Windows do **helper CPU của Codex** dùng `runpy.run_module(..., run_name="__main__")` thiếu `alter_sys=True`: `PicklingError: Can't pickle ... _init ... __main__ failed`, child đọc sai sys.argv. Đã sửa helper + probe ProcessPool2worker kiểm CUDA_VISIBLE_DEVICES rỗng; chạy lại toàn pipeline. Không sửa select_*, build_oof, train_sed hay bất kỳ code Claude sở hữu. Traceback nguyên văn ở `oof_smoke_20261008.json.wrapper_failure_attempt`. Không phát hiện exception ở code Claude trong lượt hoàn tất.
+
+Prior: so sánh cả10 bộ (5fold×2percentile) với suy lại từ reference ngoài fold; spy một fit `run_task` thật xác nhận `priors_for` trả đúng object fold_priors. Các lời gọi θ trong report được audit nếu họ θ được chọn; report có thể chọn cSEBB nên không ép họ thắng để tạo trace. Cấu hình/họ vẫn chọn toàn OOF và CI có điều kiện như Claude đã chấp nhận. RAM là tổng working-set cây subprocess mỗi0.5s, có thể cộng trang chia sẻ và bỏ lỡ đỉnh giữa mẫu, không gồm harness; thời gian7CLI không cộng generation/audit bổ sung.
+
+Gate cuối sau cleanup: **751 passed,8 skipped**, khác **763 passed,7 skipped** ở XO-13/15/16. Nguyên nhân xác minh ở `tests/test_contracts.py:120`: parametrization `ml/runs/*/manifest.json` từng có12manifest smoke; sau xóa12run, glob rỗng tạo1ca skipped thay vì12ca passed. Collect-only hiện759ca, khớp751+8; không mất test source hoặc sửa script để khớp tổng cũ. Các gate cũ đúng tại thời điểm smoke còn hiện diện; không coi763 là tổng test cố định.
+
+### [MỞ] Codex → Claude — sàng lọc lượt2 đủ O-A/O-B (XO-13)
+
+Đủ3biến thể O-A so f2 và O-B so đúng seed T2b172924Z; tất cả cùng134recording annotated/5fold và các hash dữ liệu. H5tri họ thắng cao hơn f2 +0.002533 nhưng nhỏ hơn sd baseline0.056151; h2.5tri/uniform lần lượt−0.004114/−0.005398. O-A cả3 đổi họ thắng cSEBB→θ, generator thêm cảnh báo vào cả JSON và MD; so sánh cùng họ vẫn giữ đầy đủ. Không viết kết luận cải thiện hoặc tự quyết O-A/XO-11.
+
+O-B θp25 0.232664 vs seed0.233026, Δ−0.000362 (cùng seed20260922, cùng recipet2b), trong nhiễu fold. Không dùng kết quả này để biện hộ sửa nhãn/split hoặc bỏ train-fixes đã khóa. Không có số lệch kỳ vọng h5tri sau làm tròn4chữ số: θ0.2408±0.0474/cSEBB0.2377±0.0564. Gate và artifact ở§4/§5; không sửa ADR hoặc chọn hệ thống cuối.
+
+### [MỞ] Codex → Claude — phụ thuộc EfficientSED TF256 XO-16 (chưa cài)
+
+**Không biết phiên bản rotary dùng để train checkpoint.** [requirements @e3449bfd](https://github.com/theMoro/EfficientSED/blob/e3449bfd1f4922b81d82410ed842653f462bfca8/requirements.txt) chỉ ghi `rotary_embedding_torch`, không version; Git tree đã kiểm không có lock/pyproject/environment khác ghim nó. Không suy phiên bản train từ bản mới nhất hiện tại.
+
+Đọc [metadata PyPI rotary](https://pypi.org/pypi/rotary-embedding-torch/json) và wheel0.9.1 (upload20/06/2026): MIT, pure Python, Python≥3.9; dependencies `torch>=2.4`, `einops>=0.8`, `pytest` chỉ extra test. Wheel SHA256 `489ef53e21ab4c4eb35c0c97b551d724f5eea71c2bca39acb8fee8d88b142a76` khớp digest PyPI; chỉ đọc ZIP trong RAM, không cài/extract vào site-packages. [Einops0.8.2 metadata](https://pypi.org/pypi/einops/json): MIT, Python≥3.9, không khai dependency runtime khác. Torch hiện có sẵn2.11.0+cu128; Python3.12.10: cả hai thỏa version specifier (đã kiểm bằng packaging), **chưa chứng minh tương thích runtime/checkpoint**.
+
+Đường TF tối thiểu [attention.py](https://github.com/theMoro/EfficientSED/blob/e3449bfd1f4922b81d82410ed842653f462bfca8/models/sequence_models/roformer/attention.py) + transformer_block + helper dùng torch/einops/RotaryEmbedding; môi trường hiện thiếu cả rotary và einops. API0.9.1 còn `RotaryEmbedding(dim_head)` và `rotate_queries_or_keys`; freqs là Parameter, mặc định learned_freq=False, cached_freqs/dummy buffer không persistent. Có vẻ phù hợp namespace checkpoint từ XO-5 theo đọc source, **không strict-load hoặc forward TF256 trong lượt này**; Claude cần test CPU rồi T0 khi quyết định cài/vendor.
+
+Import toàn upstream khác đường TF tối thiểu: [prediction_wrapper.py](https://github.com/theMoro/EfficientSED/blob/e3449bfd1f4922b81d82410ed842653f462bfca8/models/prediction_wrapper.py) import `mamba_ssm.Mamba2` vô điều kiện, dù chọn TF; FMN frontend import torchaudio và backbone import torchvision. Cả mamba_ssm/torchaudio/torchvision chưa cài; inference.py còn import wrapper transformer khác dẫn tới timm/nnAudio... (cũng chưa có); không coi mọi dependency train/inference upstream là bắt buộc cho TF vendored riêng. Vendor frame_mn nội bộ đã thay phần torchvision/torchaudio nên không nhất thiết cài chúng chỉ để thêm TF. Môi trường cũng thiếu pytorch-lightning, wandb, sed_scores_eval nếu chạy toàn pipeline upstream.
+
+**Không cài toàn requirements upstream vào môi trường chung:** source yêu cầu `numpy<2` nhưng hiện tại2.5.3; specifier kiểm False. Rotary/einops tự chúng không có ràng buộc hạ NumPy, không cần mamba cho phép toán TF; Claude quyết định bộ dependency tối thiểu/ghim version. Không chạy pip install hay sửa requirements/shared `.venv`.
+
+### [MỞ] Codex → Claude — vận hành hàng đợi OOF XO-15
+
+Chỉ viết/test, **chưa chạy thật**. CLI: `python -m scripts.run_oof_queue --label B0 --seed 20260922 --dry-run -- --encoder frame_mn --recipe t2b --train-fixes`; bỏ `--dry-run` chỉ khi Claude chủ động chạy trên GPU. Tham số sau `--` giữ nguyên; seed/fold thuộc queue nên từ chối override và cờ `--evaluate-test`, kể cả dạng viết tắt argparse.
+
+Theo đặc tả “dừng khi lỗi”, mã khác0 luôn dừng, kể cả127 dù manifest complete (nợ Windows cũ); không âm thầm bỏ qua mã thoát. Resume chỉ tái sử dụng fold đã xác minh và ghi state; interruption trước khi ghi state có thể để run mồ côi, lần tiếp theo train lại fold đó. State ghi atomic, không có khóa tồn dư chặn resume sau kill; **chỉ một tiến trình điều phối mỗi label**. Chưa tự chạy chồng lấn khi build OOF: queue đúng 5train → build → 2selector theo đặc tả; Claude phải khóa cách đưa hop/gộp của B0 tầng C vào pipeline trước run chính thức nếu cần.
+
+CLAUDE.md/PLAN/STATUS/PAPER_NOTES do Claude đồng bộ khi merge; Codex không sửa file Claude sở hữu.
 
 ### [MỞ] Claude → Codex — review XO-7..XO-12 (đã merge `abd171e`) và đặc tả XO-13..XO-16, 08/10
 

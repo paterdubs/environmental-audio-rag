@@ -1,0 +1,69 @@
+"""XO-13: only complete pairs; warnings generated without editing owned CLI/core."""
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
+import json
+from pathlib import Path
+import subprocess
+import sys
+from datetime import UTC, datetime
+
+ROOT = Path.cwd().resolve()
+sys.path.insert(0, str(ROOT))
+from scripts.report_screening import render
+
+RUNS = ROOT.parent / 'environmental-audio-rag/ml/runs'
+PAIRS = ['postproc_cv_selection_annotated.json', 'sebb_cv_selection_annotated.json']
+
+def ready(run):
+    return all((run / name).is_file() for name in PAIRS)
+
+def generate(label, baseline, candidates):
+    command = [sys.executable, str(ROOT/'.agent_logs/cpu.py'), 'scripts.report_screening',
+               '--label', label, '--baseline', f'{baseline[0]}={baseline[1]}']
+    for name, path in candidates:
+        command += ['--candidate', f'{name}={path}']
+    subprocess.run(command, cwd=ROOT, check=True)
+    out = ROOT/'docs/measurements'/f'screening_{label}_{datetime.now(UTC):%Y%m%d}.json'
+    result = json.loads(out.read_text('utf-8'))
+    base_family = result['baseline']['winner']['family']
+    warnings = []
+    for candidate in result['candidates']:
+        family = candidate['winner']['family']
+        if family != base_family:
+            warnings.append(f"{candidate['label']}: họ thắng khác baseline "
+                            f"({base_family} → {family}); xem cả so sánh cùng họ.")
+    result['winner_family_warnings'] = warnings
+    result['screening_command'] = command
+    result['generator'] = 'screening_r2_generator_20261008.py.txt'
+    out.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding='utf-8')
+    extra = '\n'.join('> Cảnh báo: '+line for line in warnings) if warnings else \
+        '> Họ thắng của ứng viên giống baseline.'
+    out.with_suffix('.md').write_text(render(result)+'\n'+extra+'\n', encoding='utf-8')
+    return str(out)
+
+def main():
+    oa_base = ('f2', RUNS/'sed_ensemble_t2b_20260927T200914Z')
+    oa_all = [(path.name.split('_20261008')[0].removeprefix('sed_ensemble_f2_'), path)
+              for path in sorted(RUNS.glob('sed_ensemble_f2_h*'))]
+    ob_base = ('t2b_seed_20260922', RUNS/'sed_polyphonic_20260927T172924Z')
+    ob_candidates = [('ob_train_fixes', RUNS/'sed_polyphonic_20261008T062333Z')]
+    for _, run in [ob_base, *ob_candidates]:
+        config = json.loads((run/'manifest.json').read_text('utf-8'))['config']
+        assert config['seed'] == 20260922 and config['recipe'] == 't2b'
+    readiness = {'checked_at_utc': datetime.now(UTC).isoformat(), 'outputs': [],
+                 'expected_oa_variants': 3, 'oa_complete_candidates': sum(ready(p) for _, p in oa_all),
+                 'missing': {str(p): [name for name in PAIRS if not (p/name).is_file()]
+                             for _, p in [oa_base, *oa_all, ob_base, *ob_candidates] if not ready(p)}}
+    if ready(oa_base[1]) and any(ready(p) for _, p in oa_all):
+        readiness['outputs'].append(generate('oa_r2', oa_base,
+                                             [(n,p) for n,p in oa_all if ready(p)]))
+    if all(ready(p) for _,p in [ob_base, *ob_candidates]):
+        readiness['outputs'].append(generate('ob', ob_base, ob_candidates))
+    out = ROOT/'docs/measurements/screening_r2_readiness_20261008.json'
+    if out.exists():
+        raise FileExistsError(out)
+    out.write_text(json.dumps(readiness, indent=2, ensure_ascii=False), encoding='utf-8')
+    print(json.dumps(readiness, indent=2, ensure_ascii=False))
+
+if __name__ == '__main__':
+    main()

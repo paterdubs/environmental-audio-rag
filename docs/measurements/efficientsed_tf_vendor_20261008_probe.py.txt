@@ -1,0 +1,88 @@
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
+import hashlib
+import json
+import sys
+import time
+from pathlib import Path
+
+root = Path.cwd()
+scratch = root/'.agent_logs/tf_reference'
+provenance = json.loads((scratch/'provenance.json').read_text('utf-8'))
+sys.path.insert(0, str(root))
+for package in provenance.values():
+    sys.path.insert(0, str(scratch/package['filename']))
+sys.path.insert(0, str(root/'.agent_logs/efficientsed_source'))
+import torch
+from rotary_embedding_torch import RotaryEmbedding as OriginalRotary
+from models.sequence_models.roformer.transformer_block import TransformerBlock as OriginalBlock
+from ml.models.external.efficientsed_tf import build_tf256
+from ml.models.external.efficientsed_tf.rotary import RotaryEmbedding
+
+torch.set_num_threads(2)
+torch.manual_seed(20260922)
+result = {'torch': torch.__version__, 'cpu_threads': 2,
+          'cuda_visible_devices': os.environ['CUDA_VISIBLE_DEVICES'],
+          'upstream_commit': 'e3449bfd1f4922b81d82410ed842653f462bfca8',
+          'wheels': provenance, 'rotary_cases': [], 'checkpoints': []}
+for dtype in (torch.float32, torch.float64, torch.float16, torch.bfloat16):
+    for seq_dim, shape in [(-2, (2,8,250,32)), (-3, (2,250,8,32)), (-2, (2,250,32))]:
+        original, vendor = OriginalRotary(32), RotaryEmbedding(32)
+        for length, offset in [(250,0), (11,7), (260,0)]:
+            dims = list(shape)
+            dims[seq_dim] = length
+            x = torch.randn(*dims).to(dtype)
+            a = original.rotate_queries_or_keys(x, seq_dim=seq_dim, offset=offset)
+            b = vendor.rotate_queries_or_keys(x, seq_dim=seq_dim, offset=offset)
+            assert torch.equal(a, b)
+            result['rotary_cases'].append({'dtype': str(dtype), 'shape': dims,
+                                           'seq_dim': seq_dim, 'offset': offset, 'bit_equal': True})
+for path in (root.parent/'environmental-audio-rag/artifacts/checkpoints/efficientsed').glob('*tf-256*.pt'):
+    start = time.perf_counter()
+    data = torch.load(path, map_location='cpu', weights_only=True)
+    state = {k.removeprefix('net.seq_model.'): v for k,v in data.items()
+             if k.startswith('net.seq_model.')}
+    original = torch.nn.Sequential(torch.nn.Linear(960,256),
+        OriginalBlock(dim=256, depth=2, dim_head=32, heads=8))
+    vendor = build_tf256()
+    original.load_state_dict(state, strict=True)
+    loaded = vendor.load_state_dict(state, strict=True)
+    original.eval(); vendor.eval()
+    x = torch.randn(2,250,960)
+    with torch.inference_mode():
+        a, b = original(x), vendor(x)
+    assert b.shape == (2,250,256) and torch.isfinite(b).all()
+    assert torch.equal(a,b)
+    result['checkpoints'].append({'name': path.name,
+        'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'sequence_keys': len(state),
+        'sequence_parameters': sum(p.numel() for p in vendor.parameters()),
+        'trainable_parameters': sum(p.numel() for p in vendor.parameters() if p.requires_grad),
+        'missing_keys': loaded.missing_keys, 'unexpected_keys': loaded.unexpected_keys,
+        'shape': list(b.shape), 'finite': True, 'upstream_forward_bit_equal': True,
+        'max_abs_diff': float((a-b).abs().max()), 'seconds_load_and_compare': time.perf_counter()-start})
+source_paths = ['models/sequence_models/roformer/attention.py',
+                'models/sequence_models/roformer/transformer_block.py',
+                'models/sequence_models/helper.py', 'models/prediction_wrapper.py']
+result['upstream_source_sha256'] = {p: hashlib.sha256(
+    (root/'.agent_logs/efficientsed_source'/p).read_bytes()).hexdigest() for p in source_paths}
+out = root/'docs/measurements/efficientsed_tf_vendor_20261008.json'
+assert not out.exists()
+out.write_text(json.dumps(result, indent=2), 'utf-8')
+out.with_suffix('.md').write_text(
+    '# XO-18 — kiểm vendor EfficientSED TF256 trên CPU\n\n'
+    'Chỉ phần sequence, không kiểm frontend/classifier hoặc chất lượng SED. Không cài package; '
+    'wheel rotary0.9.1/einops0.8.2 chỉ import qua ZIP trong scratch subprocess để làm oracle. '
+    'Runtime vendor chỉ torch. CUDA_VISIBLE_DEVICES rỗng.\n\n'
+    f'- Rotary: {len(result["rotary_cases"])} ca bit-equal ở float32/64/16/bfloat16, '
+    '3D/4D, seq_dim−2/−3, cache hit, cache growth và offset.\n'
+    + '\n'.join(f'- {c["name"]}: strict-load {c["sequence_keys"]} key, '
+        f'{c["sequence_parameters"]} parameter ({c["trainable_parameters"]} trainable); '
+        f'[2,250,960]→{c["shape"]}, finite, eval forward bit-equal upstream, '
+        f'max_abs_diff={c["max_abs_diff"]}.' for c in result['checkpoints'])
+    + '\n\nSeed20260922, CPU threads2, torch '+torch.__version__
+    + '. Checksum nguồn/wheel/checkpoint và toàn bộ ca kiểm trong JSON. '
+    'Không suy bit-equality sang GPU/autocast/training/dropout hoặc frontend. '
+    'Phiên bản rotary dùng train checkpoint vẫn không biết.\n', 'utf-8')
+(root/'docs/measurements/efficientsed_tf_vendor_20261008_probe.py.txt').write_bytes(Path(__file__).read_bytes())
+print('rotary cases', len(result['rotary_cases']))
+print(result['checkpoints'])

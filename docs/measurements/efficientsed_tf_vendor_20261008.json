@@ -1,0 +1,489 @@
+{
+  "torch": "2.11.0+cu128",
+  "cpu_threads": 2,
+  "cuda_visible_devices": "",
+  "upstream_commit": "e3449bfd1f4922b81d82410ed842653f462bfca8",
+  "wheels": {
+    "rotary-embedding-torch": {
+      "version": "0.9.1",
+      "url": "https://files.pythonhosted.org/packages/ea/63/ca681366df98d207876c6ad7761ef6910668c83ec766fd5a70c56b9c3567/rotary_embedding_torch-0.9.1-py3-none-any.whl",
+      "sha256": "489ef53e21ab4c4eb35c0c97b551d724f5eea71c2bca39acb8fee8d88b142a76",
+      "license": "MIT License\n\nCopyright (c) 2021 Phil Wang\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+      "filename": "rotary_embedding_torch-0.9.1-py3-none-any.whl",
+      "source_sha256": "89dde5c22dec22aa84e279d29ffc77631e3d92b9559ff50464695dd548bb5d97"
+    },
+    "einops": {
+      "version": "0.8.2",
+      "url": "https://files.pythonhosted.org/packages/2a/09/f8d8f8f31e4483c10a906437b4ce31bdf3d6d417b73fe33f1a8b59e34228/einops-0.8.2-py3-none-any.whl",
+      "sha256": "54058201ac7087911181bfec4af6091bb59380360f069276601256a76af08193",
+      "license": "MIT License\n\nCopyright (c) 2018 Alex Rogozhnikov\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+      "filename": "einops-0.8.2-py3-none-any.whl"
+    }
+  },
+  "rotary_cases": [
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        8,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        8,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        8,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        250,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        11,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        260,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float32",
+      "shape": [
+        2,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        8,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        8,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        8,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        250,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        11,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        260,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float64",
+      "shape": [
+        2,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        8,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        8,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        8,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        250,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        11,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        260,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.float16",
+      "shape": [
+        2,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        8,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        8,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        8,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        250,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        11,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        260,
+        8,
+        32
+      ],
+      "seq_dim": -3,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        250,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        11,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 7,
+      "bit_equal": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        2,
+        260,
+        32
+      ],
+      "seq_dim": -2,
+      "offset": 0,
+      "bit_equal": true
+    }
+  ],
+  "checkpoints": [
+    {
+      "name": "fmn10+tf-256_advanced-kd-weak-strong.pt",
+      "sha256": "7d5326a485b742b323b33dd2bcb366606b614b2a5deaa5e452ef34ddedb9797c",
+      "sequence_keys": 25,
+      "sequence_parameters": 1826864,
+      "trainable_parameters": 1826832,
+      "missing_keys": [],
+      "unexpected_keys": [],
+      "shape": [
+        2,
+        250,
+        256
+      ],
+      "finite": true,
+      "upstream_forward_bit_equal": true,
+      "max_abs_diff": 0.0,
+      "seconds_load_and_compare": 0.2590611000014178
+    },
+    {
+      "name": "fmn10+tf-256_strong.pt",
+      "sha256": "20510a4235433d3d0867a812fbb1f985c4221e54eb338f5a5842f50d9cff2683",
+      "sequence_keys": 25,
+      "sequence_parameters": 1826864,
+      "trainable_parameters": 1826832,
+      "missing_keys": [],
+      "unexpected_keys": [],
+      "shape": [
+        2,
+        250,
+        256
+      ],
+      "finite": true,
+      "upstream_forward_bit_equal": true,
+      "max_abs_diff": 0.0,
+      "seconds_load_and_compare": 0.1685985999974946
+    }
+  ],
+  "upstream_source_sha256": {
+    "models/sequence_models/roformer/attention.py": "24b5180f6c95df92989e08ae15b5e4df6c850498fde976cee72ccc03a4bb621e",
+    "models/sequence_models/roformer/transformer_block.py": "5345698ab4f04c0cd85ee3c0eacd0a4e8c1d5859b0d7b13c618c75ea5ef8e368",
+    "models/sequence_models/helper.py": "041f005dce7b46077b4fcd76d868a02115cf43f2014b5669329fe5d187fad720",
+    "models/prediction_wrapper.py": "8608776a1a18474b7e06939366052712966f0a35fd422817bbd0f51c0b43b413"
+  }
+}

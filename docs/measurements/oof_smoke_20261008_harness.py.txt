@@ -1,0 +1,221 @@
+"""CPU smoke, synthetic logits over real non-test annotations; no model training."""
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
+import ctypes
+from ctypes import wintypes
+import json
+import math
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+
+ROOT = Path.cwd().resolve()
+sys.path.insert(0, str(ROOT))
+import numpy as np
+import pandas as pd
+from ml.evaluation.predictions import PredictionArtifact, save_predictions
+from ml.datasets.features import window_starts
+from ml.taxonomy import load_taxonomy
+from ml.training.common import sha256_file
+from scripts.sweep_threshold import load_events_by_recording
+
+class Entry(ctypes.Structure):
+    _fields_ = [('dwSize', wintypes.DWORD), ('cntUsage', wintypes.DWORD),
+                ('th32ProcessID', wintypes.DWORD), ('th32DefaultHeapID', ctypes.c_size_t),
+                ('th32ModuleID', wintypes.DWORD), ('cntThreads', wintypes.DWORD),
+                ('th32ParentProcessID', wintypes.DWORD), ('pcPriClassBase', wintypes.LONG),
+                ('dwFlags', wintypes.DWORD), ('szExeFile', wintypes.WCHAR * 260)]
+
+class Memory(ctypes.Structure):
+    _fields_ = [('cb', wintypes.DWORD), ('PageFaultCount', wintypes.DWORD)] + [
+        (name, ctypes.c_size_t) for name in ['PeakWorkingSetSize', 'WorkingSetSize',
+        'QuotaPeakPagedPoolUsage', 'QuotaPagedPoolUsage', 'QuotaPeakNonPagedPoolUsage',
+        'QuotaNonPagedPoolUsage', 'PagefileUsage', 'PeakPagefileUsage']]
+
+kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+kernel.CreateToolhelp32Snapshot.restype = wintypes.HANDLE
+kernel.OpenProcess.restype = wintypes.HANDLE
+kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+kernel.Process32FirstW.argtypes = [wintypes.HANDLE, ctypes.POINTER(Entry)]
+kernel.Process32NextW.argtypes = [wintypes.HANDLE, ctypes.POINTER(Entry)]
+ctypes.WinDLL('psapi').GetProcessMemoryInfo.argtypes = [
+    wintypes.HANDLE, ctypes.POINTER(Memory), wintypes.DWORD]
+
+def memory_tree(pid):
+    snapshot = kernel.CreateToolhelp32Snapshot(2, 0)
+    entry = Entry(dwSize=ctypes.sizeof(Entry))
+    parents = {}
+    ok = kernel.Process32FirstW(snapshot, ctypes.byref(entry))
+    while ok:
+        parents[entry.th32ProcessID] = entry.th32ParentProcessID
+        ok = kernel.Process32NextW(snapshot, ctypes.byref(entry))
+    kernel.CloseHandle(snapshot)
+    selected = {pid}
+    while True:
+        expanded = selected | {p for p, parent in parents.items() if parent in selected}
+        if expanded == selected:
+            break
+        selected = expanded
+    rss = private = 0
+    for proc in selected:
+        handle = kernel.OpenProcess(0x410, False, proc)
+        if handle:
+            info = Memory(cb=ctypes.sizeof(Memory))
+            if ctypes.WinDLL('psapi').GetProcessMemoryInfo(handle, ctypes.byref(info), info.cb):
+                rss += info.WorkingSetSize
+                private += info.PagefileUsage
+            kernel.CloseHandle(handle)
+    return rss, private
+
+def run_stage(name, module, *args):
+    command = [sys.executable, str(ROOT / '.agent_logs/cpu.py'), module, *map(str, args)]
+    start = time.perf_counter()
+    log = ROOT / '.agent_logs' / f'smoke_{name}.log'
+    peak_rss = peak_private = 0
+    with log.open('w', encoding='utf-8') as stream:
+        process = subprocess.Popen(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
+        while process.poll() is None:
+            rss, private = memory_tree(process.pid)
+            peak_rss, peak_private = max(rss, peak_rss), max(private, peak_private)
+            time.sleep(.5)
+    record = dict(name=name, command=command, seconds=time.perf_counter()-start,
+                  peak_tree_working_set_bytes_sampled=peak_rss,
+                  peak_tree_private_bytes_sampled=peak_private, returncode=process.returncode,
+                  log=log.read_text(encoding='utf-8'))
+    result['stages'].append(record)
+    checkpoint()
+    print(name, record['seconds'], process.returncode, flush=True)
+    if process.returncode:
+        raise RuntimeError(record['log'])
+
+result = dict(synthetic=True, seed=20260922, frame_hop_s=1., window_s=10,
+              hop_s=10, stages=[], checks={}, cleanup=False,
+              ram_method='Windows GetProcessMemoryInfo, sum process and descendants every 0.5s; '
+                         'working set includes shared pages, excludes harness; sampled lower bound')
+def checkpoint():
+    (ROOT / '.agent_logs/oof_smoke_state.json').write_text(
+        json.dumps(result, indent=2, ensure_ascii=False), encoding='utf-8')
+
+def generate():
+    taxonomy = load_taxonomy(ROOT / 'ml/configs/taxonomy.yaml')
+    folds = pd.read_csv(ROOT / 'data/splits/datased_trainval_folds.csv')
+    assert len(folds) == 564 and set(folds['fold']) == set(range(5))
+    durations = pd.read_csv(ROOT / 'data/manifests/datased_recordings.csv').set_index('recording_id')
+    template = json.loads((ROOT.parent / 'environmental-audio-rag/ml/runs/'
+                          'sed_polyphonic_20260927T172924Z/manifest.json').read_text('utf-8'))
+    reference = load_events_by_recording(set(folds.recording_id))
+    result['checks']['original_train_with_reference'] = sum(
+        bool(reference[r.recording_id]) for r in folds.itertuples() if r.original_split == 'train')
+    result['checks']['recordings'] = len(reference)
+    result['checks']['reference_events'] = sum(map(len, reference.values()))
+    result['checks']['folds_sha256'] = sha256_file(ROOT / 'data/splits/datased_trainval_folds.csv')
+    result['generation'] = dict(background_logit=-4., target_logit=4.,
+        baseline_noise_sd=1.8, candidate_noise_sd=1.4,
+        method='seed 20260922/20260923; independent Gaussian noise plus rasterized GT; '
+               'ceil(duration), end-aligned 10-frame windows, padded suffix masked; '
+               '1Hz correctness smoke, not a 100Hz cost benchmark')
+    members = {}
+    for label, sd, seed in [('b0', 1.8, 20260922), ('candidate', 1.4, 20260923)]:
+        rng = np.random.default_rng(seed)
+        members[label] = []
+        for fold in range(5):
+            out = ROOT / 'ml/runs' / f'sed_polyphonic_smoke_{label}_f{fold}'
+            if out.exists():
+                raise FileExistsError(out)
+            made.append(out)
+            logits, targets, ids, offsets, masks = [], [], [], [], []
+            for rid in sorted(folds.loc[folds.fold == fold, 'recording_id']):
+                n = math.ceil(float(durations.loc[rid, 'duration_s']))
+                target = np.zeros((n, 21), dtype=np.uint8)
+                for event in reference[rid]:
+                    start = max(0, int(math.floor(event['onset'])))
+                    stop = min(n, int(math.ceil(event['offset'])))
+                    target[start:stop, taxonomy.polyphonic_class_ids.index(event['event_label'])] = 1
+                noise = rng.normal(0, sd, target.shape).astype(np.float32)
+                values = noise - 4 + 8 * target
+                for start in window_starts(n, 10, 10):
+                    length = min(10, n-start)
+                    x = np.zeros((10, 21), dtype=np.float32)
+                    y = np.zeros((10, 21), dtype=np.uint8)
+                    x[:length], y[:length] = values[start:start+length], target[start:start+length]
+                    logits.append(x); targets.append(y); ids.append(rid); offsets.append(float(start))
+                    masks.append(np.arange(10) < length)
+            artifact = PredictionArtifact(np.array(logits), np.array(targets), np.array(ids),
+                np.array(offsets, dtype=np.float64), np.array(masks), taxonomy.polyphonic_class_ids,
+                'dev', 'sed-smoke-v1.0', 1., taxonomy.checksum)
+            digest = save_predictions(out / 'predictions/dev.npz', artifact,
+                                      expected_class_ids=taxonomy.polyphonic_class_ids)
+            manifest = {**template, 'run_id': out.name, 'complete': True, 'synthetic': True,
+                        'command': ['synthetic smoke, no training'],
+                        'config': {**template['config'], 'cv_fold': fold,
+                          'frame_rate': 1., 'window_frames': 10, 'hop_frames': 10,
+                          'cv_folds_sha256': result['checks']['folds_sha256']}}
+            (out/'manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+            (out/'metrics.json').write_text(json.dumps({'dev_predictions_sha256': digest}), encoding='utf-8')
+            members[label].append(out)
+            del logits, targets, artifact, noise, values, target
+    return members
+
+made = []
+try:
+    members = generate()
+    oofs = {}
+    for label, paths in members.items():
+        run_stage(f'build_{label}', 'scripts.build_oof', '--label', f'smoke_{label}', *paths)
+        oof = Path(json.loads(result['stages'][-1]['log'])['run_dir'])
+        assert oof.is_relative_to(ROOT / 'ml/runs')
+        made.append(oof); oofs[label] = oof
+    for label, oof in oofs.items():
+        run_stage(f'theta_{label}', 'scripts.select_postproc_cv', oof, '--modes', 'global',
+                  '--eval-set', 'annotated', '--workers', '3')
+        run_stage(f'sebb_{label}', 'scripts.select_sebb_cv', oof,
+                  '--eval-set', 'annotated', '--workers', '2')
+    from scripts import select_postproc_cv as theta
+    from ml.postprocessing import derive_duration_priors
+    ctx = theta.load_context(oofs['b0'], 5, 'annotated')
+    calls = []
+    original = theta.priors_for
+    def audited(context, percentile, fold):
+        value = original(context, percentile, fold)
+        if fold is not None:
+            assert value is context['fold_priors'][fold][percentile]
+            calls.append((percentile, fold))
+        return value
+    theta.priors_for = audited
+    for fold in range(5):
+        refs = {r: ctx['reference'][r] for r, f in ctx['folds'].items() if f != fold}
+        for p in theta.G_MAX_PERCENTILES:
+            expected = derive_duration_priors(refs, class_ids=ctx['class_ids'],
+                frame_rate=ctx['frame_rate'], source_split='train', taxonomy=ctx['taxonomy'],
+                g_max_percentile=p)
+            assert ctx['fold_priors'][fold][p] == expected
+    result['checks']['all_10_fold_priors_equal_excluded_reference_derivation'] = True
+    theta.run_task(ctx, 'global', 25., 0)
+    result['checks']['theta_run_task_prior_calls'] = list(calls)
+    theta.priors_for = original
+    del ctx
+    out = ROOT / '.agent_logs/smoke_report'
+    run_stage('report', 'scripts.report_oof', '--baseline', oofs['b0'],
+              '--candidate', f"smoke_candidate={oofs['candidate']}", '--out-dir', out)
+    trace_path = ROOT / '.agent_logs/smoke_report_prior_trace.jsonl'
+    result['checks']['report_oof_theta_prior_calls'] = [json.loads(line)
+        for line in trace_path.read_text('utf-8').splitlines()] if trace_path.exists() else []
+    report_path = next(out.glob('oof_selection_*.json'))
+    result['report'] = json.loads(report_path.read_text('utf-8'))
+    result['report_markdown'] = report_path.with_suffix('.md').read_text('utf-8')
+    assert all(s['nref'] > 0 and len(s['counts']) == 564 and s['micro_f1'] > 0
+               for s in result['report']['systems'].values())
+except BaseException:
+    import traceback
+    result['error'] = traceback.format_exc()
+    raise
+finally:
+    for path in made:
+        resolved = path.resolve()
+        assert resolved.is_relative_to(ROOT/'ml/runs') and 'smoke' in resolved.name
+        shutil.rmtree(resolved)
+    result['cleanup'] = all(not p.exists() for p in made)
+    result['removed_run_dirs'] = [str(p) for p in made]
+    checkpoint()

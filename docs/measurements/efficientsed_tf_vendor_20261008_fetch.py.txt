@@ -1,0 +1,29 @@
+import hashlib
+import io
+import json
+import urllib.request
+import zipfile
+from pathlib import Path
+
+scratch = Path('.agent_logs/tf_reference')
+scratch.mkdir(exist_ok=True)
+info = {}
+for package, version in [('rotary-embedding-torch', '0.9.1'), ('einops', '0.8.2')]:
+    metadata = json.load(urllib.request.urlopen(f'https://pypi.org/pypi/{package}/{version}/json'))
+    item = next(i for i in metadata['urls'] if i['filename'].endswith('.whl'))
+    content = urllib.request.urlopen(item['url']).read()
+    digest = hashlib.sha256(content).hexdigest()
+    assert digest == item['digests']['sha256']
+    (scratch/item['filename']).write_bytes(content)
+    archive = zipfile.ZipFile(io.BytesIO(content))
+    license_path = next(n for n in archive.namelist() if n.endswith('/LICENSE'))
+    license_text = archive.read(license_path).decode()
+    (scratch/f'{package}_LICENSE').write_text(license_text, 'utf-8')
+    info[package] = {'version': version, 'url': item['url'], 'sha256': digest,
+                     'license': license_text, 'filename': item['filename']}
+    if package.startswith('rotary'):
+        source = archive.read('rotary_embedding_torch/rotary_embedding_torch.py')
+        (scratch/'rotary_original.py').write_bytes(source)
+        info[package]['source_sha256'] = hashlib.sha256(source).hexdigest()
+(scratch/'provenance.json').write_text(json.dumps(info, indent=2), 'utf-8')
+print(info['rotary-embedding-torch']['license'])

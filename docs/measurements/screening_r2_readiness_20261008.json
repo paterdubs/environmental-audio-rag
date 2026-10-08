@@ -1,0 +1,10 @@
+{
+  "checked_at_utc": "2026-10-08T08:41:09.213099+00:00",
+  "outputs": [
+    "D:\\IUH_K18\\HK1N5\\KLTN2\\earag-codex-o\\docs\\measurements\\screening_oa_r2_20261008.json",
+    "D:\\IUH_K18\\HK1N5\\KLTN2\\earag-codex-o\\docs\\measurements\\screening_ob_20261008.json"
+  ],
+  "expected_oa_variants": 3,
+  "oa_complete_candidates": 3,
+  "missing": {}
+}
