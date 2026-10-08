@@ -143,8 +143,8 @@ mình; cần đụng file khác thì ghi §6.
 | XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | ✅ (chờ merge) |
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
 | XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | ✅ merge `abd171e` |
-| XO-13 | Sàng lọc lượt 2: O-A đủ ba biến thể + O-B so seed T2b | Codex | `docs/measurements/screening_*` | CV của Claude xong | TODO |
-| XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | TODO |
+| XO-13 | Sàng lọc lượt 2: O-A đủ ba biến thể + O-B so seed T2b | Codex | `docs/measurements/screening_*` | CV của Claude xong | ✅ (chờ merge) |
+| XO-14 | Smoke tầng C đầu-cuối trên logit tổng hợp (564 recording), đo thời gian | Codex | worktree Codex, `ml/runs/` của worktree (xóa sau), `docs/measurements/`, `tests/` | — | 🔒 Codex — smoke CPU đang chạy |
 | XO-15 | `scripts/run_oof_queue.py`: hàng đợi 5 fold → build_oof → 2 selector, resume, dừng khi lỗi | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
 | XO-16 | Khảo sát phụ thuộc EfficientSED TF256 (`rotary_embedding_torch`), không cài | Codex | `docs/AGENT_SYNC.md` §6 | — | ✅ (chờ merge) |
 
@@ -344,6 +344,8 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-15 rà soát: tách điều phối thành OOFQueue với các bước train/build/select/invoke/save, giữ CLI/state/hành vi. AST kiểm hàm dài nhất22 dòng (file236 dòng), đúng CLAUDE §6 <50; cùng21 ca hồi quy runner giả. Gate toàn bộ pytest CPU:763 passed,7 skipped,24 warnings (117.55s); ruff sạch. |
 
+| 08/10/2026 | Codex | XO-13: lúc đầu thiếuuniform/O-B → bắt đầu XO-14; quay lại khi đủ12/12 selection JSON annotated của6 run. Chạy `scripts.report_screening --label oa_r2` (f2+3biến thể) và `--label ob` (seed172924Z+train-fixes062333Z), đường tuyệt đối repo chính. Generator kiểm seed/recipe, sinh cảnh báo đổi họ vào JSON/MD, không sửa CLI/core thuộc task khác. Artifact `screening_{oa_r2,ob}_20261008`, readiness missing{}, source generator.py.txt. Gate CPU pytest:763 passed,7 skipped,24 warnings (74.38s); ruff sạch. |
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -483,10 +485,19 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-15 rà soát cấu trúc: AST `end_lineno-lineno+1` cho mọi FunctionDef xác nhận max22 dòng (`build_oof`), file236 dòng. CLI và state schema giữ nguyên, không chạy thật; gate hồi quy toàn bộ ghi §4.
 
+- 08/10/2026 — XO-13 O-A đủ3/3biến thể,134dev annotated,5fold. Họ thắng: f2 cSEBB0.23827849038554624±0.05615067340541771; h2.5tri θ0.23416495648774627±0.042423428813839203 (Δ−0.004113533897799976); h2.5uniform θ0.23288027275571177±0.03400010519997169 (Δ−0.005398217629834473); h5tri θ0.24081149048314426±0.04740950368879013 (Δ+0.0025330000975980205). Cả3 so họ thắng cao hơn baseline3/5fold, đều “trong nhiễu fold”; cả3 có cảnh báo đổi họ cSEBB→θ. Nguồn:screening_oa_r2_20261008.json.
+- 08/10/2026 — XO-13 O-B cùng seed20260922/recipe t2b: seed172924Z θp25 mean0.233026052066626±0.039962720983306776; train-fixes062333Z θp25 mean0.23266408026332408±0.04990133754774872; Δ−0.0003619718033019137,3/5fold, trong nhiễu. cSEBB Δ−0.006795242784932376,2/5fold. Họ thắng đềuθ, không có cảnh báo đổi họ. Nguồn:screening_ob_20261008.json; readiness xác nhận thiếu0file, không chạy lại CV/test.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — sàng lọc lượt2 đủ O-A/O-B (XO-13)
+
+Đủ3biến thể O-A so f2 và O-B so đúng seed T2b172924Z; tất cả cùng134recording annotated/5fold và các hash dữ liệu. H5tri họ thắng cao hơn f2 +0.002533 nhưng nhỏ hơn sd baseline0.056151; h2.5tri/uniform lần lượt−0.004114/−0.005398. O-A cả3 đổi họ thắng cSEBB→θ, generator thêm cảnh báo vào cả JSON và MD; so sánh cùng họ vẫn giữ đầy đủ. Không viết kết luận cải thiện hoặc tự quyết O-A/XO-11.
+
+O-B θp25 0.232664 vs seed0.233026, Δ−0.000362 (cùng seed20260922, cùng recipet2b), trong nhiễu fold. Không dùng kết quả này để biện hộ sửa nhãn/split hoặc bỏ train-fixes đã khóa. Không có số lệch kỳ vọng h5tri sau làm tròn4chữ số: θ0.2408±0.0474/cSEBB0.2377±0.0564. Gate và artifact ở§4/§5; không sửa ADR hoặc chọn hệ thống cuối.
 
 ### [MỞ] Codex → Claude — phụ thuộc EfficientSED TF256 XO-16 (chưa cài)
 
