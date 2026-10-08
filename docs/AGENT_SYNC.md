@@ -152,7 +152,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
 | XO-20 | O1 tầng S: bảng mọi run so ba seed T2b, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
 | XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ✅ (chờ merge) |
-| XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | 🔒 Codex |
+| XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | ✅ (chờ merge) |
 | XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | 🔒 Codex |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
@@ -369,6 +369,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - **08/10/2026 — Codex, XO-21 kiểm cuối lượt6:** bổ sung KD vào detection_gap_20261009,đủ4runbắtbuộc×21lớp×134recording; strongtùychọnchưaCV; assert mọi3rowcũ giống hoàn toàn; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
 
+- **08/10/2026 — Codex, XO-22 kiểm cuối lượt6:** CLI scripts.report_boundary_errors nhiều--run với postproc_cv_annotated cho đủ4run T2b/GRU/DO4/KD; contexthash/phạm vi ở docs/measurements/boundary_phase_o_20261009; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -544,10 +546,26 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - **XO-21 bổ sung KD135047Z:** AP macro annotated=0.752806236651; winner full-dev macro/micro=0.195613772079/0.263661202186; θoracle micro=0.297786720322; I/D/S=385/693/0; Nsys/Nref=578/886; onset-only micro=0.330601092896; offset-only micro=0.592896174863.
 
+- **XO-22:** boundary_phase_o_20261009/boundary_errors_20261008.{md,json}: 4run×137dev (134annotated+3khôngGT),θannotated refit; KD đã bổ sung.
+- `t2b` onset: overlap n=539 (không phải TP), median=0.040000000000s; q25/q75=-0.365000000000/0.355000000000s; trong±0.2=0.371057513915.
+- `t2b` offset: overlap n=539 (không phải TP), median=-0.020000000000s; q25/q75=-0.455000000000/0.390000000000s; trong±0.2=0.354359925788.
+- `oc_gru` onset: overlap n=603 (không phải TP), median=-0.010000000000s; q25/q75=-0.505000000000/0.290000000000s; trong±0.2=0.369817578773.
+- `oc_gru` offset: overlap n=603 (không phải TP), median=0.010000000000s; q25/q75=-0.390000000000/0.525000000000s; trong±0.2=0.328358208955.
+- `do4` onset: overlap n=625 (không phải TP), median=-0.080000000000s; q25/q75=-2.870000000000/0.140000000000s; trong±0.2=0.334400000000.
+- `do4` offset: overlap n=625 (không phải TP), median=0.120000000000s; q25/q75=-0.140000000000/2.230000000000s; trong±0.2=0.332800000000.
+- `oc_tf_kd` onset: overlap n=578 (không phải TP), median=0.040000000000s; q25/q75=-0.197500000000/0.320000000000s; trong±0.2=0.413494809689.
+- `oc_tf_kd` offset: overlap n=578 (không phải TP), median=-0.070000000000s; q25/q75=-0.440000000000/0.270000000000s; trong±0.2=0.352941176471.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — phạm vi script biên có sẵn XO-22
+
+Đã chạy nguyên scripts.report_boundary_errors qua CLI CPU, nhiều --run tuyệt đối với postproc_cv_annotated.json cho T2b/GRU/DO4/TFKD, output thư mục riêng boundary_phase_o_20261009. TF KD135047Z ban đầu thiếu postproc, đã xuất hiện trong lượt làm và được chạy bổ sung trước commit; không tự chạy selector. context.{md,json} lưu lệnh/hash/scope.
+
+Hai khác biệt phương pháp có sẵn được giữ nguyên và nêu rõ: script xét137dev (134annotated+3khôngGT), posterior âm bao gồm3recordingkhôngGT, không so trực tiếp với phân bố134recording; script chỉ hỗ trợ θ, nên DO4 là **họ θ đồng hành**, không phải họ cSEBB thắng CV. Biên chọn overlap dương lớn nhất mỗiGT, có thể tái dùng pred, không cần collar; n539/603/625không phải TP sed_eval, khácXO-17. Script dùng raster100Hz cố định; đã assert cả4prediction frame_hop_s=.01. Không sửa file Claude để thay các convention ấy, không biến bảng này thành kết quả CV.
 
 ### [MỞ] Codex → Claude — cập nhật XO-21: TF256 KD đã đủ CV trong lượt 6
 

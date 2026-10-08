@@ -1,0 +1,92 @@
+{
+  "command": [
+    "../environmental-audio-rag/.venv/Scripts/python.exe",
+    ".agent_logs/cpu.py",
+    "scripts.report_boundary_errors",
+    "--run",
+    "t2b=D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20260927T172924Z:postproc_cv_annotated.json",
+    "--run",
+    "oc_gru=D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T083632Z:postproc_cv_annotated.json",
+    "--run",
+    "do4=D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T131138Z:postproc_cv_annotated.json",
+    "--run",
+    "oc_tf_kd=D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T135047Z:postproc_cv_annotated.json",
+    "--out-dir",
+    "docs\\measurements\\boundary_phase_o_20261009"
+  ],
+  "cuda_visible_devices": "",
+  "inputs": [
+    {
+      "label": "t2b",
+      "run": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20260927T172924Z",
+      "postproc": "postproc_cv_annotated.json",
+      "n_recordings": 137,
+      "n_annotated_recordings": 134,
+      "unannotated_recordings": [
+        "S-0706",
+        "S-0708",
+        "S-0714"
+      ],
+      "postproc_sha256": "df2533605c06a5c6a23a42966a74ff4520580e227118498a6970d679c1bf2d76",
+      "manifest_sha256": "17388e20e2cc97b57e5ef693a2d627c57e814b9826a92c28b2ecc27077174160",
+      "dev_predictions_file_sha256": "2afa9b944e13b53fcdd9d17bf1be534fdc1d1d881173192629e62a2174baef28",
+      "dev_predictions_content_sha256": "20cba7e7a51075847cd1a0d83abb9aab3a0c37f700aac5f6b8edbc437ecac37f"
+    },
+    {
+      "label": "oc_gru",
+      "run": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T083632Z",
+      "postproc": "postproc_cv_annotated.json",
+      "n_recordings": 137,
+      "n_annotated_recordings": 134,
+      "unannotated_recordings": [
+        "S-0706",
+        "S-0708",
+        "S-0714"
+      ],
+      "postproc_sha256": "c0f08453bf0e9f92befdafa175afa92358b338a8866c06d700a96c2d25c40403",
+      "manifest_sha256": "5517e6b6c65739852f45660fa46f50043d62bfac6519f0f9baf9d91db23a3368",
+      "dev_predictions_file_sha256": "0a3776695072e8eaa183ffd20472e4adbca5d95f3fc3b6dd6a61549d95541d0a",
+      "dev_predictions_content_sha256": "dbb5028d28ffb28a1b075cae0f312d08532e1d0eb2551c840ab627026ece1b8c"
+    },
+    {
+      "label": "do4",
+      "run": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T131138Z",
+      "postproc": "postproc_cv_annotated.json",
+      "n_recordings": 137,
+      "n_annotated_recordings": 134,
+      "unannotated_recordings": [
+        "S-0706",
+        "S-0708",
+        "S-0714"
+      ],
+      "postproc_sha256": "18971161fa546b149269d7ba7eebc170feaa9c4efac14c761e22488e71690db7",
+      "manifest_sha256": "c7e92e91708c7f6045e36d35e441cc141cd17358db3287c9f9242e3fdb35f85a",
+      "dev_predictions_file_sha256": "a6168253b73bbc38104a16a74d3937e7d7a96a99d16db64920b17fc6855a0e16",
+      "dev_predictions_content_sha256": "445888859a9fe73f17d7c9d93bb8edbbf65491cc8847adf160ff85b44bb6ae79"
+    },
+    {
+      "label": "oc_tf_kd",
+      "run": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\ml\\runs\\sed_polyphonic_20261008T135047Z",
+      "postproc": "postproc_cv_annotated.json",
+      "n_recordings": 137,
+      "n_annotated_recordings": 134,
+      "unannotated_recordings": [
+        "S-0706",
+        "S-0708",
+        "S-0714"
+      ],
+      "postproc_sha256": "bcc11c3a3dbe308f16f40b7c443a5c0a67f9eac3bbc34ad779e4b97073bd28d5",
+      "manifest_sha256": "75823df1ce7fecf5bdba7d9abe205b924fbddc7725ca06b026ab8206a93f784d",
+      "dev_predictions_file_sha256": "45ec68b5d93fc28126448bbaa0144c43bce9f548b33a91b0c269278242a68b44",
+      "dev_predictions_content_sha256": "e9e54a0e670864cd6b1d792b0d16612a723960a1a64d8e91b6afe5c4c84a7b54"
+    }
+  ],
+  "pending": [],
+  "report": "docs\\measurements\\boundary_phase_o_20261009\\boundary_errors_20261008.json",
+  "report_sha256": "c81c7a244ba5eb65395e917e751b4c4e2988816b1d6f838307c5b65f0f36b45a",
+  "scope": "full dev 137, posterior negatives include 3 unannotated recordings",
+  "matching": "best same-class positive-overlap per reference, predictions can be reused",
+  "postprocessing": "theta family from saved annotated refit; DO4 CV winner is cSEBB",
+  "ground_truth_frame_rate": 100.0,
+  "generated_by": "unmodified scripts.report_boundary_errors"
+}
