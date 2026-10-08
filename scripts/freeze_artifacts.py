@@ -9,6 +9,7 @@ cây file theo thứ tự tên (đường dẫn tương đối, kích thước v
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import sys
@@ -17,6 +18,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from ml.provenance import git_state
+from scripts.report_test_ledger import run_details
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "ml" / "runs"
@@ -63,7 +65,7 @@ def sha256_tree(path: Path) -> tuple[str, int, int]:
 
 
 def artifact(path: Path, *, kind: str = "file") -> dict:
-    relative = path.relative_to(ROOT).as_posix()
+    relative = path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else str(path)
     if not path.exists():
         return {"path": relative, "kind": kind, "exists": False, "sha256": None}
     if path.is_dir():
@@ -74,15 +76,48 @@ def artifact(path: Path, *, kind: str = "file") -> dict:
             "bytes": path.stat().st_size}
 
 
-def member_runs(run: Path, manifest: dict) -> Iterable[Path]:
-    members = manifest.get("config", {}).get("members", [])
+def member_runs(run: Path, manifest: dict, *, seen: frozenset[Path] = frozenset()
+                ) -> Iterable[Path]:
+    """Resolve OOF/ensemble/rewindow dependencies to checkpoint-owning training runs."""
+    if run.resolve() in seen:
+        raise ValueError(f'dependency cycle: {run}')
+    config = manifest.get('config', {})
+    members = config.get("members", []) or (
+        [config['source_run']] if 'source_run' in config else [])
     for member in members:
-        yield RUNS / member
+        dependency = RUNS / member
+        path = dependency / 'manifest.json'
+        nested = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+        yield from member_runs(dependency, nested, seen=seen | {run.resolve()})
     if not members:
         yield run
 
 
-def run_entry(label: str, run_id: str) -> dict:
+def dependency_manifests(run: Path, manifest: dict, seen: frozenset[Path] = frozenset()
+                         ) -> Iterable[Path]:
+    if run.resolve() in seen:
+        raise ValueError(f'dependency cycle: {run}')
+    config = manifest.get('config', {})
+    refs = config.get('members', []) or ([config['source_run']] if 'source_run' in config else [])
+    for ref in refs:
+        dependency = RUNS / ref
+        path = dependency / 'manifest.json'
+        yield path
+        if path.exists():
+            nested = json.loads(path.read_text(encoding='utf-8'))
+            yield from dependency_manifests(dependency, nested, seen | {run.resolve()})
+
+
+def phase_o_runs() -> dict[str, str]:
+    found = {}
+    for path in sorted(RUNS.glob('*/manifest.json')):
+        manifest = json.loads(path.read_text(encoding='utf-8'))
+        if manifest.get('complete') and run_details(path.parent, runs_dir=RUNS):
+            found[f"phase O: {path.parent.name}"] = path.parent.name
+    return found
+
+
+def run_entry(label: str, run_id: str, *, skip_test_predictions: bool = False) -> dict:
     run = RUNS / run_id
     manifest_path = run / "manifest.json"
     entry = {"label": label, "run_id": run_id, "exists": run.is_dir(), "artifacts": []}
@@ -90,6 +125,7 @@ def run_entry(label: str, run_id: str) -> dict:
         entry["missing_reason"] = "Không có manifest.json; không thể suy dependency."
         return entry
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    entry.update(run_details(run, runs_dir=RUNS))
     entry["git"] = manifest.get("git")
     entry["split_sha256"] = manifest.get("split_sha256")
     entry["taxonomy_sha256"] = manifest.get("taxonomy_sha256")
@@ -97,13 +133,15 @@ def run_entry(label: str, run_id: str) -> dict:
     entry["artifacts"].append(artifact(manifest_path, kind="run_manifest"))
     # Không coi một split chưa từng chạy là "thiếu": các ứng viên S13 chỉ có dev,
     # còn output f2 chỉ có test theo protocol mở test đúng một lần.
-    for filename in ("dev.npz", "test.npz"):
+    for filename in (('dev.npz',) if skip_test_predictions else ('dev.npz', 'test.npz')):
         prediction = run / "predictions" / filename
         if prediction.exists():
             entry["artifacts"].append(artifact(prediction, kind="prediction"))
     for path in sorted([*run.glob("postproc*.json"), *run.glob("sebb*.json")]):
         entry["artifacts"].append(artifact(path, kind="postproc_or_sebb"))
-    for member in member_runs(run, manifest):
+    for path in sorted(set(dependency_manifests(run, manifest))):
+        entry['artifacts'].append(artifact(path, kind='dependency_manifest'))
+    for member in sorted(set(member_runs(run, manifest))):
         checkpoint = member / "checkpoints" / "best.pt"
         entry["artifacts"].append(artifact(checkpoint, kind="best_checkpoint"))
     return entry
@@ -116,11 +154,17 @@ def render(result: dict) -> str:
              "",
              f"Git lúc bắt đầu: `{result['git']['revision']}` · dirty={result['git']['dirty']}", "",
              "## Run và ensemble", "",
-             "| Hệ thống | Run | Artifact có/thiếu |", "|---|---|---:|"]
+             "| Hệ thống | Run | Artifact có/thiếu | Hop (s) | Gộp | Fold |",
+             "|---|---|---:|---|---|---|"]
     for run in result["runs"]:
         present = sum(item["exists"] for item in run["artifacts"])
         missing = sum(not item["exists"] for item in run["artifacts"])
-        lines.append(f"| {run['label']} | `{run['run_id']}` | {present}/{missing} |")
+        lines.append(f"| {run['label']} | `{run['run_id']}` | {present}/{missing} | "
+                     f"{run.get('hop_seconds', '—')} | {run.get('window_weighting', '—')} | "
+                     f"{run.get('cv_fold', '—')} |")
+    if result.get('skip_test_predictions'):
+        lines += ['', 'Lượt này bỏ qua toàn bộ predictions/test.npz: không mở hoặc hash file đó. '
+                  'Các hash này không được xác minh lại trong lượt freeze này.']
     lines += ["", "## SHA-256 và sự tồn tại", "",
               "| Nhóm | Đường dẫn | Kiểu | Tồn tại | SHA-256 |",
               "|---|---|---|:---:|---|"]
@@ -142,16 +186,28 @@ def render(result: dict) -> str:
 
 
 def main() -> None:
+    global RUNS
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--runs-dir', type=Path, default=RUNS)
+    parser.add_argument('--asset-root', type=Path, default=ROOT)
+    parser.add_argument('--out-dir', type=Path, default=MEASUREMENTS)
+    parser.add_argument('--skip-test-predictions', action='store_true')
+    args = parser.parse_args()
+    RUNS = args.runs_dir.resolve()
+    git = git_state(ROOT)
     external = [
-        artifact(ROOT / "artifacts/checkpoints/Cnn14_mAP=0.431.pth", kind="AudioSet_CNN14"),
-        artifact(ROOT / "artifacts/checkpoints/BEATs_strong_1.pt", kind="BEATs"),
-        artifact(ROOT / "artifacts/checkpoints/frame_mn10_strong_1.pt", kind="frame_mn10"),
-        artifact(ROOT / "artifacts/llm/Qwen_Qwen3.5-9B-Q4_K_M.gguf", kind="Qwen_GGUF"),
-        artifact(ROOT / "artifacts/hf/models--BAAI--bge-m3", kind="BGE-M3_cache_tree"),
+        artifact(args.asset_root / "artifacts/checkpoints/Cnn14_mAP=0.431.pth",
+                 kind="AudioSet_CNN14"),
+        artifact(args.asset_root / "artifacts/checkpoints/BEATs_strong_1.pt", kind="BEATs"),
+        artifact(args.asset_root / "artifacts/checkpoints/frame_mn10_strong_1.pt",
+                 kind="frame_mn10"),
+        artifact(args.asset_root / "artifacts/llm/Qwen_Qwen3.5-9B-Q4_K_M.gguf", kind="Qwen_GGUF"),
+        artifact(args.asset_root / "artifacts/hf/models--BAAI--bge-m3", kind="BGE-M3_cache_tree"),
     ]
     frozen_paths = [
         ROOT / "data/splits/datased_polyphonic.frozen.json",
+        ROOT / "data/splits/datased_trainval_folds.csv",
         ROOT / "ml/configs/taxonomy.yaml",
         ROOT / "ml/configs/caption_lexicon.yaml",
         ROOT / "ml/configs/caption_lexicon_vi.yaml",
@@ -160,20 +216,25 @@ def main() -> None:
         ROOT / "ml/captioning/constrained.py",
     ]
     result = {
-        "git": git_state(ROOT),
-        "runs": [run_entry(label, run_id) for label, run_id in REPORT_RUNS.items()],
+        "git": git,
+        "runs": [run_entry(label, run_id, skip_test_predictions=args.skip_test_predictions)
+                 for label, run_id in {**REPORT_RUNS, **phase_o_runs()}.items()],
         "external": external,
         "frozen_inputs": [artifact(path, kind="frozen_input") for path in frozen_paths],
+        "skip_test_predictions": args.skip_test_predictions,
     }
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    output = MEASUREMENTS / f"artifact_freeze_{stamp}.md"
+    output = args.out_dir / f"artifact_freeze_{stamp}.md"
+    if output.exists() or output.with_suffix('.json').exists():
+        raise FileExistsError(output)
+    args.out_dir.mkdir(parents=True, exist_ok=True)
     output.with_suffix(".json").write_text(json.dumps(result, ensure_ascii=False, indent=2),
                                               encoding="utf-8")
     output.write_text(render(result), encoding="utf-8")
     missing = [item for run in result["runs"] for item in run["artifacts"] if not item["exists"]]
     missing += [item for item in external + result["frozen_inputs"] if not item["exists"]]
     print(render(result))
-    print(f"Đã ghi {output.relative_to(ROOT)}; thiếu {len(missing)} artifact.")
+    print(f"Đã ghi {output}; thiếu {len(missing)} artifact.")
 
 
 if __name__ == "__main__":

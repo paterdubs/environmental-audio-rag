@@ -10,6 +10,7 @@ lại. Mục đích: không cấu hình nào được chạy trên test mà vắ
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -36,6 +37,35 @@ def _read(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def run_details(run: Path, *, runs_dir: Path | None = None,
+                seen: frozenset[Path] = frozenset()) -> dict:
+    """Metadata of phase-O runs, including inherited rewindow/fold recipes; no predictions."""
+    run = run.resolve()
+    if run in seen:
+        raise ValueError(f"dependency cycle: {run}")
+    if not (run / 'manifest.json').exists():
+        return {}
+    manifest = _read(run / 'manifest.json')
+    config = manifest.get('config', {})
+    task = manifest.get('task')
+    refs = config.get('members', []) or ([config['source_run']] if 'source_run' in config else [])
+    children = [run_details((runs_dir or run.parent) / ref, runs_dir=runs_dir,
+                            seen=seen | {run}) for ref in refs]
+    keys = ('hop_seconds', 'window_weighting', 'cv_fold')
+    details = {}
+    for key in keys:
+        values = [config[key]] if key in config else [c[key] for c in children if key in c]
+        flattened = [v for value in values for v in (value if isinstance(value, list) else [value])]
+        distinct = list(dict.fromkeys(flattened))
+        if distinct:
+            details[key] = distinct[0] if len(distinct) == 1 else distinct
+    if 'fold_of_member' in config:
+        details['cv_fold'] = config['fold_of_member']
+    if details or task in ('sed_rewindow', 'sed_oof'):
+        return {'task': task, **details}
+    return {}
+
+
 def sed_row(evaluation: Path) -> dict:
     run = evaluation.parent
     manifest = _read(run / "manifest.json")
@@ -53,7 +83,22 @@ def sed_row(evaluation: Path) -> dict:
             "postproc": Path(result.get("postproc", "postproc.json")).name,
             "git_dirty": manifest.get("git", {}).get("dirty"),
             "event_f1": result["event_based_f1"]["f_measure"], "psds_1": psds[0],
-            "psds_2": psds[1]}
+            "psds_2": psds[1], **run_details(run)}
+
+
+def collect_sed(runs_dir: Path) -> list[dict]:
+    """Historical evaluation*.json names imply test; explicit dev split is excluded."""
+    return [sed_row(path) for path in sorted(runs_dir.glob('*/evaluation*.json'))
+            if _read(path).get('split', 'test') == 'test']
+
+
+def verify_legacy(rows: list[dict], previous: dict) -> dict:
+    current = {(r['run'], r['evaluation']): r for r in rows}
+    old = previous['sed']
+    if any(current.get((r['run'], r['evaluation'])) != r for r in old):
+        raise ValueError('dòng sổ test cũ bị đổi hoặc mất')
+    return {'previous_rows': len(old), 'unchanged_rows': len(old),
+            'added_rows': len(rows) - len(old)}
 
 
 def other_artifacts() -> dict[str, list[str]]:
@@ -77,6 +122,16 @@ def render(result: dict) -> str:
                      f"| {r['pos_weight_cap']} | `{r['postproc']}` "
                      f"| {'có' if r['git_dirty'] else 'không'} | {r['event_f1']:.4f} "
                      f"| {r['psds_1']:.4f} | {r['psds_2']:.4f} |")
+    new_rows = [r for r in rows if 'task' in r]
+    if new_rows:
+        # Bảng phụ giữ nguyên byte các dòng lịch sử trong bảng metric phía trên.
+        lines += ['', '## Công thức giai đoạn O', '',
+                  '| Run | Đánh giá | Task | Hop (s) | Gộp cửa sổ | Fold |',
+                  '|---|---|---|---|---|---|']
+        for r in new_rows:
+            lines.append(f"| `{r['run']}` | `{r['evaluation']}` | {r['task']} | "
+                         f"{r.get('hop_seconds', '—')} | {r.get('window_weighting', '—')} | "
+                         f"{r.get('cv_fold', '—')} |")
     lines += ["", "## Thành phần khác chạm test", ""]
     for component, files in result["other"].items():
         listed = ", ".join(f"`{f}`" for f in files) if files else "—"
@@ -86,11 +141,20 @@ def render(result: dict) -> str:
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    evaluations = sorted(RUNS.glob("*/evaluation*.json"))
-    result = {"git": git_state(ROOT), "sed": [sed_row(e) for e in evaluations],
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--runs-dir', type=Path, default=RUNS)
+    parser.add_argument('--out-dir', type=Path, default=MEASUREMENTS)
+    parser.add_argument('--compare-ledger', type=Path)
+    args = parser.parse_args()
+    result = {"git": git_state(ROOT), "sed": collect_sed(args.runs_dir),
               "other": other_artifacts()}
+    if args.compare_ledger:
+        result['legacy_audit'] = verify_legacy(result['sed'], _read(args.compare_ledger))
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    out = MEASUREMENTS / f"test_ledger_{stamp}.md"
+    out = args.out_dir / f"test_ledger_{stamp}.md"
+    if out.exists() or out.with_suffix('.json').exists():
+        raise FileExistsError(out)
+    args.out_dir.mkdir(parents=True, exist_ok=True)
     out.with_suffix(".json").write_text(json.dumps(result, indent=1, ensure_ascii=False),
                                         encoding="utf-8")
     out.write_text(render(result), encoding="utf-8")

@@ -142,7 +142,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-9 | Pool DataSEC cho O-F: clip train ∩ v4 − exclusion, theo lớp, kèm hồ sơ "độ chặt" của clip (năng lượng) | Codex | `scripts/report_datasec_pool.py`, `tests/`, `data/manifests/datasec_o_f_pool.csv`, `docs/measurements/datasec_pool_*` | XO-3 ✅ | ✅ (chờ merge) |
 | XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | ✅ (chờ merge) |
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
-| XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | TODO |
+| XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | ✅ (chờ merge) |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -330,6 +330,10 @@ mình; cần đụng file khác thì ghi §6.
 
 - 08/10/2026 — Codex XO-10 (PLAN O2.1): đọc lại PDF 2601.04178v2, SHA d0648f2e…, pdftotext -layout và ảnh trang 3; ghi docs/notes/red_epn_spec.md với (1)–(5), Algorithm 1, cấu hình đã nêu, phần thiếu, và đề xuất ổn định số/contract frame_mn40ms. Không viết model. pytest -q toàn repo và ruff check . sạch.
 
+- 08/10/2026 — Codex XO-12 (PLAN O5.1/O6.1): ledger/freeze nhận sed_rewindow, sed_oof và cv_fold=0, kế thừa hop/gộp/fold qua dependency; freeze lần về checkpoint train gốc, hash dependency manifest, nhận file fold. 7 test manifest giả kiểm hồi quy legacy, chỉ thêm test-evaluation, kế thừa metadata, dependency DAG/cycle/missing, và guard không mở test.npz. Chạy scripts.report_test_ledger --runs-dir D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag/ml/runs --compare-ledger docs/measurements/test_ledger_20261002.json; scripts.freeze_artifacts cùng --runs-dir, --asset-root D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag --skip-test-predictions. Output test_ledger_20261008 và artifact_freeze_20261008.{md,json}. pytest -q toàn repo + ruff check . sạch.
+
+- 08/10/2026 — Cổng từng task Codex lượt này (CPU, không pipe): XO-7 709 passed/8 skipped; XO-8 713/8; XO-9 721/8; XO-10 721/8; XO-12 728/8 (24 warnings). Mỗi lượt đều ruff check . sạch. XO-11 giữ ⛔, không sửa vùng phục vụ.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -461,10 +465,18 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-10 PDF: focal exponent α=2 (API thường gọi γ), λool=100, λiou grid {0.5,1,2,4}; IoU loss chia cả tổng active frame và duration GT; EPN BiGRU 2 lớp+Softplus, per-class khoảng26K tham số/lớp, Single GRU hidden256. Algorithm1 k15 theo lớp, m=C. PDF không nêu Δt cụ thể, hidden per-class, init RED hoặc rounding/censoring target. Nguồn có trang/phương trình: docs/notes/red_epn_spec.md.
 
+- 08/10/2026 — XO-12 audit thật: sổ SED 40 dòng, unchanged_rows40/added_rows0 so test_ledger_20261002, cả 40 dòng Markdown giữ nguyên. Freeze tổng19 run/ensemble, gồm8 run phase O (6 rewindow +2 ensemble suy từ member); 183 mục liệt kê, thiếu0; 0 mục predictions/test.npz vì dùng --skip-test-predictions. Không mở/hash prediction test; không tính lại metric. Nguồn: test_ledger_20261008.json legacy_audit và artifact_freeze_20261008.json.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — phạm vi freeze XO-12 và hồi quy sổ test
+
+Sổ thật giữ nguyên40/40 dòng JSON cũ và nguyên văn40 dòng Markdown; chỉ mở evaluation metadata đã có theo task, không mở prediction test. Hop/gộp/fold có bảng phụ khi xuất hiện run giai đoạn O đã đánh giá test để không thay dòng lịch sử. Run mới chỉ có manifest/dev không sinh dòng sổ test.
+
+Freeze thật dùng --skip-test-predictions (có guard Path.open từ chối test.npz) để tuân thủ luật lượt này. Không xác minh lại hash test prediction và không gọi lượt freeze này là kiểm toàn bộ test artifact. 183 mục khác tồn tại; “thiếu0” chỉ là các mục đã liệt kê, không chứng minh mọi run đã đủ CV. Hop5 hiện có θ selection nhưng chưa đủ hai họ; uniform chưa thấy ở lượt kiểm cuối. Run OOF/cv_fold thật chưa có, đã kiểm bằng manifest fixture. Freeze lần theo source_run/members và hash dependency manifest để không đòi checkpoint giả ở run dẫn xuất.
 
 ### [MỞ] Codex → Claude — các lựa chọn RED/EPN chưa được PDF khóa (XO-10)
 
