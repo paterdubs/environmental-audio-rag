@@ -51,6 +51,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from ml.datasets.features import SedFeatureDataset
+from ml.datasets.train_fixes import apply_train_fixes, load_unannotated
 from ml.datasets.waveforms import SedWaveformDataset
 from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
@@ -179,9 +180,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--asl-gamma-pos", type=float, default=0.0)
     parser.add_argument("--asl-gamma-neg", type=float, default=4.0)
     parser.add_argument("--asl-clip", type=float, default=0.05)
+    parser.add_argument("--train-fixes", action="store_true",
+                        help="ADR-0041 DO-2 + DO-3: bỏ recording train thiếu GT polyphonic, "
+                             "gộp recording trùng byte thành một mẫu nhãn mềm")
     parser.add_argument("--evaluate-test", action="store_true")
     parser.add_argument("--device", default="cuda")
     return parser.parse_args()
+
+
+def train_tables(joined: pd.DataFrame, events: pd.DataFrame, enabled: bool
+                 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict | None]:
+    """(joined for building splits, events for the train dataset, events for pos_weight, report).
+
+    Without `--train-fixes` everything is the original tables (bit-identical runs).
+    pos_weight counts each kept recording's own annotation once, never the merged copies.
+    """
+    if not enabled:
+        return joined, events, events, None
+    train = joined[joined["split"] == "train"]
+    kept, weighted, report = apply_train_fixes(
+        train, events, load_unannotated(ROOT), drop_unannotated=True, merge_duplicates=True)
+    fixed = pd.concat([kept, joined[joined["split"] != "train"]], ignore_index=True)
+    return fixed, weighted, events, report.as_manifest()
 
 
 def validate_checkpoint_flags(args: argparse.Namespace) -> None:
@@ -447,13 +467,16 @@ def main() -> None:
 
     frozen, beats_info = frozen_beats(args.beats_checkpoint) if is_beats else (None, {})
     joined, events = load_datased_tables(feature_set)
+    joined, train_label_events, events, fix_report = train_tables(joined, events,
+                                                                  args.train_fixes)
     loaders: dict[str, DataLoader | EncodedLoader] = {}
     split_names = (
         ("train", "validation", "test") if args.evaluate_test else ("train", "validation")
     )
     for split in split_names:
         dataset = split_dataset(
-            joined, events, split, feature_set=feature_set, class_ids=class_ids,
+            joined, train_label_events if split == "train" else events, split,
+            feature_set=feature_set, class_ids=class_ids,
             frame_rate=frame_rate, window_frames=config.window_frames,
             hop_frames=config.hop_frames,
             random_crop=bool(knobs["random_crop"]) and split == "train",
@@ -500,6 +523,7 @@ def main() -> None:
             **{key: knobs[key] for key in ("time_pooling", "rnn_hidden", "rnn_layers",
                                            "upsample", "random_crop", "model_version")},
             **weight_info,
+            **({"train_fixes": fix_report} if fix_report is not None else {}),
         },
         "class_ids": class_ids,
         "taxonomy_sha256": taxonomy.checksum,
