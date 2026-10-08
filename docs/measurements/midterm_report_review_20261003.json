@@ -1,0 +1,1095 @@
+{
+  "review_date": "2026-10-03",
+  "task": "PLAN L3, read-only review of existing report and frozen metrics; no test inference or evaluation",
+  "inputs": {
+    "report\\Bao_cao_KLTN_giua_ky_environmental_audio_rag.docx": "14ddab28b594de454dcb75c64ed35a5e77607520f6dac6bef2b9bae88e51ed5a",
+    "report\\Bao_cao_KLTN_giua_ky_environmental_audio_rag.pdf": "ff80aa734900bb02a19cd4781c0c9fae415a752e23a3a2001656ffa8da529c88",
+    "report\\Mau bao cao KLTN_DS.docx": "9d3bc27605d682083e9aea09de9aabae47ba499a85344d95936d06a3cb4c6667",
+    "ml\\runs\\sed_ensemble_s13_f2_20260929T045053Z\\evaluation_cv_annotated.json": "a83989acdc3d19f07b25f169a72d62413d72ab7624a3bb5f1e1643ad8071d18b",
+    "ml\\runs\\classifier_datasec_20260923T121808Z\\metrics.json": "e4767d8ea8a296ccfa3ea077e3e31aa2409c6d7a85b2f466f4a0eebfcae8d5fc"
+  },
+  "pdf_pages": 85,
+  "blank_pdf_pages": [
+    4
+  ],
+  "paragraph_style_counts": {
+    "Normal-No-Indent": 12,
+    "Normal": 16,
+    "CoverB": 5,
+    "Content": 180,
+    "TOC1": 13,
+    "TOC2": 47,
+    "TOC3": 51,
+    "Heading1N": 6,
+    "TableofFigures": 31,
+    "TableText": 916,
+    "Heading1": 7,
+    "Heading2": 43,
+    "Equation": 13,
+    "Caption": 35,
+    "TableNote": 35,
+    "Heading3": 51,
+    "Bullet": 89,
+    "TableTextSmall": 623,
+    "Bibliography1": 14,
+    "Heading2N": 4
+  },
+  "placeholder_occurrences_body": 18,
+  "duplicate_reference_labels": [
+    "Bảng Bảng 4.1 giải thích các mã nội bộ được dùng trong báo cáo. Các mã này cần thiết vì đề tài so sánh nhiều thế hệ mô hình và nhiều tổ hợp ensemble, và mỗi mã ứng với một thư mục run có manifest đầy đủ.",
+    "Dịch vụ API (services/api, FastAPI) chịu trách nhiệm tải lên, kiểm tra đầu vào, lưu trữ và điều phối. Mọi phản hồi dùng một khuôn chung {success, data, error, meta}. Tệp tải lên bị từ chối nếu không đúng định dạng âm thanh cho phép (mã 415), lớn hơn 50 MB hoặc dài hơn 600 s. Bảng Bảng 5.1 liệt kê các điểm cuối đã triển khai."
+  ],
+  "styles_inherited_attributes": {
+    "Content": {
+      "paragraph": {
+        "spacing": {
+          "before": "200",
+          "after": "0",
+          "line": "360",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "0"
+        },
+        "jc": {
+          "val": "both"
+        }
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "minorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Times New Roman",
+          "eastAsia": "Times New Roman"
+        },
+        "sz": {
+          "val": "26"
+        },
+        "szCs": {
+          "val": "20"
+        }
+      }
+    },
+    "Heading1": {
+      "paragraph": {
+        "spacing": {
+          "before": "480",
+          "after": "480",
+          "line": "276",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "567"
+        },
+        "jc": {
+          "val": "left"
+        },
+        "keepNext": {},
+        "keepLines": {},
+        "pageBreakBefore": {},
+        "numPr": {},
+        "outlineLvl": {
+          "val": "0"
+        }
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "minorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Arial"
+        },
+        "sz": {
+          "val": "28"
+        },
+        "szCs": {
+          "val": "28"
+        },
+        "b": {},
+        "bCs": {},
+        "caps": {},
+        "kern": {
+          "val": "32"
+        }
+      }
+    },
+    "Heading2": {
+      "paragraph": {
+        "spacing": {
+          "before": "120",
+          "after": "240",
+          "line": "276",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "0",
+          "left": "0"
+        },
+        "jc": {
+          "val": "left"
+        },
+        "keepNext": {},
+        "keepLines": {},
+        "numPr": {},
+        "outlineLvl": {
+          "val": "1"
+        }
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "majorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Times New Roman"
+        },
+        "sz": {
+          "val": "26"
+        },
+        "szCs": {
+          "val": "26"
+        },
+        "b": {},
+        "bCs": {}
+      }
+    },
+    "Heading3": {
+      "paragraph": {
+        "spacing": {
+          "before": "120",
+          "after": "240",
+          "line": "276",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "0",
+          "left": "0"
+        },
+        "jc": {
+          "val": "left"
+        },
+        "keepNext": {},
+        "keepLines": {},
+        "numPr": {},
+        "outlineLvl": {
+          "val": "2"
+        }
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "minorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Arial"
+        },
+        "sz": {
+          "val": "26"
+        },
+        "szCs": {
+          "val": "26"
+        },
+        "b": {},
+        "bCs": {},
+        "i": {}
+      }
+    },
+    "Caption": {
+      "paragraph": {
+        "spacing": {
+          "before": "120",
+          "after": "240",
+          "line": "276",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "0"
+        },
+        "jc": {
+          "val": "center"
+        }
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "minorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Times New Roman"
+        },
+        "sz": {
+          "val": "26"
+        },
+        "szCs": {
+          "val": "18"
+        }
+      }
+    },
+    "TableText": {
+      "paragraph": {
+        "spacing": {
+          "before": "20",
+          "after": "20",
+          "line": "240",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "0"
+        },
+        "jc": {
+          "val": "left"
+        },
+        "keepLines": {}
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "minorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Times New Roman"
+        },
+        "sz": {
+          "val": "22"
+        },
+        "szCs": {
+          "val": "22"
+        }
+      }
+    },
+    "TableTextSmall": {
+      "paragraph": {
+        "spacing": {
+          "before": "20",
+          "after": "20",
+          "line": "240",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "0"
+        },
+        "jc": {
+          "val": "left"
+        },
+        "keepLines": {}
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "minorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Times New Roman"
+        },
+        "sz": {
+          "val": "20"
+        },
+        "szCs": {
+          "val": "20"
+        }
+      }
+    },
+    "Bibliography1": {
+      "paragraph": {
+        "spacing": {
+          "before": "0",
+          "after": "120",
+          "line": "276",
+          "lineRule": "auto"
+        },
+        "ind": {
+          "firstLine": "567",
+          "left": "567",
+          "hanging": "567"
+        },
+        "jc": {
+          "val": "both"
+        }
+      },
+      "run": {
+        "rFonts": {
+          "ascii": "Times New Roman",
+          "eastAsiaTheme": "minorEastAsia",
+          "hAnsi": "Times New Roman",
+          "cs": "Times New Roman"
+        },
+        "sz": {
+          "val": "26"
+        },
+        "szCs": {
+          "val": "24"
+        }
+      }
+    }
+  },
+  "sections": [
+    {
+      "pgSz": {
+        "w": "11907",
+        "h": "16840",
+        "code": "9"
+      },
+      "pgMar": {
+        "top": "1701",
+        "right": "1134",
+        "bottom": "1701",
+        "left": "1985",
+        "header": "340",
+        "footer": "227",
+        "gutter": "0"
+      }
+    },
+    {
+      "pgSz": {
+        "w": "11906",
+        "h": "16838",
+        "code": "9"
+      },
+      "pgMar": {
+        "top": "1701",
+        "right": "1134",
+        "bottom": "1701",
+        "left": "1985",
+        "header": "990",
+        "footer": "810",
+        "gutter": "0"
+      },
+      "pgNumType": {
+        "fmt": "lowerRoman",
+        "start": "1"
+      }
+    },
+    {
+      "pgSz": {
+        "w": "11906",
+        "h": "16838",
+        "code": "9"
+      },
+      "pgMar": {
+        "top": "1701",
+        "right": "1134",
+        "bottom": "1701",
+        "left": "1985",
+        "header": "990",
+        "footer": "810",
+        "gutter": "0"
+      },
+      "pgNumType": {
+        "start": "1"
+      }
+    },
+    {
+      "pgSz": {
+        "w": "11906",
+        "h": "16838",
+        "code": "9"
+      },
+      "pgMar": {
+        "top": "1701",
+        "right": "1134",
+        "bottom": "1701",
+        "left": "1985",
+        "header": "990",
+        "footer": "810",
+        "gutter": "0"
+      },
+      "pgNumType": {
+        "fmt": "lowerLetter",
+        "start": "1"
+      }
+    },
+    {
+      "pgSz": {
+        "w": "11906",
+        "h": "16838",
+        "code": "9"
+      },
+      "pgMar": {
+        "top": "1701",
+        "right": "1134",
+        "bottom": "1701",
+        "left": "1985",
+        "header": "990",
+        "footer": "810",
+        "gutter": "0"
+      },
+      "pgNumType": {
+        "fmt": "lowerLetter"
+      }
+    }
+  ],
+  "headings": [
+    {
+      "number": "1",
+      "style": "Heading1",
+      "title": "GIỚI THIỆU"
+    },
+    {
+      "number": "1.1",
+      "style": "Heading2",
+      "title": "Bối cảnh và lý do chọn đề tài"
+    },
+    {
+      "number": "1.2",
+      "style": "Heading2",
+      "title": "Phát biểu bài toán"
+    },
+    {
+      "number": "1.3",
+      "style": "Heading2",
+      "title": "Mục tiêu nghiên cứu"
+    },
+    {
+      "number": "1.4",
+      "style": "Heading2",
+      "title": "Câu hỏi nghiên cứu"
+    },
+    {
+      "number": "1.4.1",
+      "style": "Heading3",
+      "title": "RQ1 — Chuyển giao từ DataSEC sang DataSED"
+    },
+    {
+      "number": "1.4.2",
+      "style": "Heading3",
+      "title": "RQ2 — Mức căn cứ và ảo giác của mô tả"
+    },
+    {
+      "number": "1.4.3",
+      "style": "Heading3",
+      "title": "RQ3 — Truy hồi có cấu trúc, vector và lai"
+    },
+    {
+      "number": "1.5",
+      "style": "Heading2",
+      "title": "Phạm vi và giới hạn"
+    },
+    {
+      "number": "1.6",
+      "style": "Heading2",
+      "title": "Đóng góp dự kiến và bằng chứng hiện có"
+    },
+    {
+      "number": "1.7",
+      "style": "Heading2",
+      "title": "Cấu trúc báo cáo"
+    },
+    {
+      "number": "2",
+      "style": "Heading1",
+      "title": "CƠ SỞ LÝ THUYẾT VÀ NGHIÊN CỨU LIÊN QUAN"
+    },
+    {
+      "number": "2.1",
+      "style": "Heading2",
+      "title": "Phát hiện sự kiện âm thanh đa âm"
+    },
+    {
+      "number": "2.1.1",
+      "style": "Heading3",
+      "title": "Nhãn yếu, nhãn mạnh và tính đa âm"
+    },
+    {
+      "number": "2.1.2",
+      "style": "Heading3",
+      "title": "Biểu diễn log-mel và kiến trúc CRNN"
+    },
+    {
+      "number": "2.2",
+      "style": "Heading2",
+      "title": "Đánh giá phát hiện sự kiện âm thanh"
+    },
+    {
+      "number": "2.2.1",
+      "style": "Heading3",
+      "title": "Metric theo khung, theo đoạn và theo sự kiện"
+    },
+    {
+      "number": "2.2.2",
+      "style": "Heading3",
+      "title": "Trung bình micro và macro"
+    },
+    {
+      "number": "2.2.3",
+      "style": "Heading3",
+      "title": "Điểm PSDS"
+    },
+    {
+      "number": "2.2.4",
+      "style": "Heading3",
+      "title": "Mức tham chiếu từ ghi âm thực"
+    },
+    {
+      "number": "2.3",
+      "style": "Heading2",
+      "title": "Hậu xử lý posterior thành sự kiện"
+    },
+    {
+      "number": "2.3.1",
+      "style": "Heading3",
+      "title": "Ngưỡng và ưu tiên thời lượng"
+    },
+    {
+      "number": "2.3.2",
+      "style": "Heading3",
+      "title": "Hộp bao sự kiện cSEBB"
+    },
+    {
+      "number": "2.4",
+      "style": "Heading2",
+      "title": "Học chuyển giao cho âm thanh môi trường"
+    },
+    {
+      "number": "2.4.1",
+      "style": "Heading3",
+      "title": "Tiền huấn luyện trên AudioSet"
+    },
+    {
+      "number": "2.4.2",
+      "style": "Heading3",
+      "title": "Tiền huấn luyện theo khung và tự giám sát"
+    },
+    {
+      "number": "2.4.3",
+      "style": "Heading3",
+      "title": "Tăng cường dữ liệu"
+    },
+    {
+      "number": "2.4.4",
+      "style": "Heading3",
+      "title": "Rò rỉ dữ liệu giữa các bộ dữ liệu"
+    },
+    {
+      "number": "2.5",
+      "style": "Heading2",
+      "title": "Sinh mô tả có căn cứ và hiện tượng ảo giác"
+    },
+    {
+      "number": "2.6",
+      "style": "Heading2",
+      "title": "Sinh tăng cường truy hồi và truy hồi lai"
+    },
+    {
+      "number": "2.6.1",
+      "style": "Heading3",
+      "title": "Kiến trúc RAG"
+    },
+    {
+      "number": "2.6.2",
+      "style": "Heading3",
+      "title": "Embedding đa ngữ và bộ lọc có cấu trúc"
+    },
+    {
+      "number": "2.7",
+      "style": "Heading2",
+      "title": "Tổng hợp và định vị đề tài"
+    },
+    {
+      "number": "3",
+      "style": "Heading1",
+      "title": "DỮ LIỆU VÀ QUY TRÌNH CHUẨN BỊ DỮ LIỆU"
+    },
+    {
+      "number": "3.1",
+      "style": "Heading2",
+      "title": "Hai bộ dữ liệu"
+    },
+    {
+      "number": "3.1.1",
+      "style": "Heading3",
+      "title": "DataSEC"
+    },
+    {
+      "number": "3.1.2",
+      "style": "Heading3",
+      "title": "DataSED"
+    },
+    {
+      "number": "3.2",
+      "style": "Heading2",
+      "title": "Hệ lớp: 22 lớp gộp và 21 lớp đa âm"
+    },
+    {
+      "number": "3.3",
+      "style": "Heading2",
+      "title": "Quy trình chuẩn bị dữ liệu D0–D4"
+    },
+    {
+      "number": "3.3.1",
+      "style": "Heading3",
+      "title": "Kiểm chứng tệp nén và kiểm kê (D0–D1)"
+    },
+    {
+      "number": "3.3.2",
+      "style": "Heading3",
+      "title": "Hợp đồng chú giải (D2)"
+    },
+    {
+      "number": "3.3.3",
+      "style": "Heading3",
+      "title": "Khử trùng lặp nội bộ và xuyên bộ dữ liệu (D3)"
+    },
+    {
+      "number": "3.3.4",
+      "style": "Heading3",
+      "title": "Chia tập theo nhóm rò rỉ (D4)"
+    },
+    {
+      "number": "3.4",
+      "style": "Heading2",
+      "title": "Độ phủ nhãn và độ nhất quán chú giải"
+    },
+    {
+      "number": "3.4.1",
+      "style": "Heading3",
+      "title": "Độ phủ nhãn gốc đa âm"
+    },
+    {
+      "number": "3.4.2",
+      "style": "Heading3",
+      "title": "Độ nhất quán giữa hai lần chú giải"
+    },
+    {
+      "number": "3.5",
+      "style": "Heading2",
+      "title": "Rủi ro dữ liệu còn lại"
+    },
+    {
+      "number": "4",
+      "style": "Heading1",
+      "title": "PHƯƠNG PHÁP"
+    },
+    {
+      "number": "4.1",
+      "style": "Heading2",
+      "title": "Kiến trúc tổng thể"
+    },
+    {
+      "number": "4.2",
+      "style": "Heading2",
+      "title": "Mô hình phân loại phân cấp trên DataSEC"
+    },
+    {
+      "number": "4.3",
+      "style": "Heading2",
+      "title": "Mô hình phát hiện sự kiện âm thanh"
+    },
+    {
+      "number": "4.3.1",
+      "style": "Heading3",
+      "title": "Hàm mất mát và trọng số lớp dương"
+    },
+    {
+      "number": "4.3.2",
+      "style": "Heading3",
+      "title": "Thế hệ v1 và ba nhánh của RQ1"
+    },
+    {
+      "number": "4.3.3",
+      "style": "Heading3",
+      "title": "Thế hệ SED v2"
+    },
+    {
+      "number": "4.3.4",
+      "style": "Heading3",
+      "title": "Track 2: bộ mã hóa tiền huấn luyện theo khung"
+    },
+    {
+      "number": "4.3.5",
+      "style": "Heading3",
+      "title": "Ensemble và tập ứng viên"
+    },
+    {
+      "number": "4.4",
+      "style": "Heading2",
+      "title": "Hậu xử lý và lựa chọn trên dev"
+    },
+    {
+      "number": "4.4.1",
+      "style": "Heading3",
+      "title": "Ngưỡng và ưu tiên thời lượng"
+    },
+    {
+      "number": "4.4.2",
+      "style": "Heading3",
+      "title": "Hậu xử lý cSEBB"
+    },
+    {
+      "number": "4.5",
+      "style": "Heading2",
+      "title": "Sinh mô tả có căn cứ"
+    },
+    {
+      "number": "4.5.1",
+      "style": "Heading3",
+      "title": "Ba ràng buộc G1–G3"
+    },
+    {
+      "number": "4.5.2",
+      "style": "Heading3",
+      "title": "Bốn chế độ sinh"
+    },
+    {
+      "number": "4.5.3",
+      "style": "Heading3",
+      "title": "Mô tả tiếng Việt"
+    },
+    {
+      "number": "4.6",
+      "style": "Heading2",
+      "title": "Truy hồi và trả lời có bằng chứng"
+    },
+    {
+      "number": "4.6.1",
+      "style": "Heading3",
+      "title": "Kho sự kiện và tài liệu truy hồi"
+    },
+    {
+      "number": "4.6.2",
+      "style": "Heading3",
+      "title": "Ba chế độ truy hồi và vị từ thời gian"
+    },
+    {
+      "number": "4.6.3",
+      "style": "Heading3",
+      "title": "Bộ phân tích câu hỏi"
+    },
+    {
+      "number": "4.6.4",
+      "style": "Heading3",
+      "title": "Trả lời ràng buộc bằng chứng"
+    },
+    {
+      "number": "4.7",
+      "style": "Heading2",
+      "title": "Giao thức đánh giá"
+    },
+    {
+      "number": "4.7.1",
+      "style": "Heading3",
+      "title": "Chọn trên dev, kiểm tra một lần"
+    },
+    {
+      "number": "4.7.2",
+      "style": "Heading3",
+      "title": "Metric cho mô tả và truy hồi"
+    },
+    {
+      "number": "4.7.3",
+      "style": "Heading3",
+      "title": "Khoảng tin cậy bootstrap"
+    },
+    {
+      "number": "5",
+      "style": "Heading1",
+      "title": "TRIỂN KHAI HỆ THỐNG"
+    },
+    {
+      "number": "5.1",
+      "style": "Heading2",
+      "title": "Tổ chức mã nguồn và nguyên tắc ranh giới"
+    },
+    {
+      "number": "5.2",
+      "style": "Heading2",
+      "title": "Các dịch vụ"
+    },
+    {
+      "number": "5.2.1",
+      "style": "Heading3",
+      "title": "Dịch vụ suy luận"
+    },
+    {
+      "number": "5.2.2",
+      "style": "Heading3",
+      "title": "Dịch vụ API và cơ sở dữ liệu"
+    },
+    {
+      "number": "5.2.3",
+      "style": "Heading3",
+      "title": "Giao diện người dùng"
+    },
+    {
+      "number": "5.3",
+      "style": "Heading2",
+      "title": "Triển khai và kịch bản demo"
+    },
+    {
+      "number": "5.4",
+      "style": "Heading2",
+      "title": "Tái lập và truy nguồn kết quả"
+    },
+    {
+      "number": "5.5",
+      "style": "Heading2",
+      "title": "Kiểm thử và tích hợp liên tục"
+    },
+    {
+      "number": "6",
+      "style": "Heading1",
+      "title": "KẾT QUẢ HIỆN CÓ VÀ THẢO LUẬN"
+    },
+    {
+      "number": "6.1",
+      "style": "Heading2",
+      "title": "Mô hình phân loại DataSEC"
+    },
+    {
+      "number": "6.2",
+      "style": "Heading2",
+      "title": "RQ1 — Tiền huấn luyện thêm trên DataSEC"
+    },
+    {
+      "number": "6.2.1",
+      "style": "Heading3",
+      "title": "RQ1 với công thức v1"
+    },
+    {
+      "number": "6.2.2",
+      "style": "Heading3",
+      "title": "RQ1 với công thức v2"
+    },
+    {
+      "number": "6.3",
+      "style": "Heading2",
+      "title": "Tiến triển của mô hình SED"
+    },
+    {
+      "number": "6.3.1",
+      "style": "Heading3",
+      "title": "Chẩn đoán lỗi và giới hạn trên"
+    },
+    {
+      "number": "6.3.2",
+      "style": "Heading3",
+      "title": "SED v2 và các ablation"
+    },
+    {
+      "number": "6.3.3",
+      "style": "Heading3",
+      "title": "Vòng chọn cuối S13 và kết quả test"
+    },
+    {
+      "number": "6.3.4",
+      "style": "Heading3",
+      "title": "Hậu xử lý cSEBB"
+    },
+    {
+      "number": "6.4",
+      "style": "Heading2",
+      "title": "RQ2 — Mô tả có căn cứ"
+    },
+    {
+      "number": "6.5",
+      "style": "Heading2",
+      "title": "RQ3 — Truy hồi và câu trả lời có bằng chứng"
+    },
+    {
+      "number": "6.6",
+      "style": "Heading2",
+      "title": "Bộ phân tích câu hỏi và độ khớp khi phục vụ"
+    },
+    {
+      "number": "6.7",
+      "style": "Heading2",
+      "title": "Thảo luận và các mối đe dọa đến tính hợp lệ"
+    },
+    {
+      "number": "7",
+      "style": "Heading1",
+      "title": "TIẾN ĐỘ, KẾT LUẬN GIỮA KỲ VÀ KẾ HOẠCH TIẾP THEO"
+    },
+    {
+      "number": "7.1",
+      "style": "Heading2",
+      "title": "Đối chiếu tiến độ với kế hoạch"
+    },
+    {
+      "number": "7.2",
+      "style": "Heading2",
+      "title": "Mức độ đạt mục tiêu tại giữa kỳ"
+    },
+    {
+      "number": "7.3",
+      "style": "Heading2",
+      "title": "Hạn chế"
+    },
+    {
+      "number": "7.4",
+      "style": "Heading2",
+      "title": "Kế hoạch giai đoạn tiếp theo"
+    },
+    {
+      "number": "7.5",
+      "style": "Heading2",
+      "title": "Kết luận giữa kỳ"
+    }
+  ],
+  "existing_checker": [
+    {
+      "name": "Số section",
+      "value": "5",
+      "pass": true
+    },
+    {
+      "name": "Section 1: khổ, lề, đánh số",
+      "value": "21.0×29.7 cm; lề T/D/Tr/P 1701/1701/1985/1134 twip; không đánh số",
+      "pass": true
+    },
+    {
+      "name": "Section 2: khổ, lề, đánh số",
+      "value": "21.0×29.7 cm; lề T/D/Tr/P 1701/1701/1985/1134 twip; <w:pgNumType w:fmt=\"lowerRoman\" w:start=\"1\"/>",
+      "pass": true
+    },
+    {
+      "name": "Section 3: khổ, lề, đánh số",
+      "value": "21.0×29.7 cm; lề T/D/Tr/P 1701/1701/1985/1134 twip; <w:pgNumType w:start=\"1\"/>",
+      "pass": true
+    },
+    {
+      "name": "Section 4: khổ, lề, đánh số",
+      "value": "21.0×29.7 cm; lề T/D/Tr/P 1701/1701/1985/1134 twip; <w:pgNumType w:fmt=\"lowerLetter\" w:start=\"1\"/>",
+      "pass": true
+    },
+    {
+      "name": "Section 5: khổ, lề, đánh số",
+      "value": "21.0×29.7 cm; lề T/D/Tr/P 1701/1701/1985/1134 twip; <w:pgNumType w:fmt=\"lowerLetter\"/>",
+      "pass": true
+    },
+    {
+      "name": "Style Heading1",
+      "value": "sz=28, before=480, after=480, line=276, caps=yes, italic=no",
+      "pass": true
+    },
+    {
+      "name": "Style Heading2",
+      "value": "sz=26, before=120, after=240, line=276, caps=no, italic=no",
+      "pass": true
+    },
+    {
+      "name": "Style Heading3",
+      "value": "sz=26, before=120, after=240, line=276, caps=no, italic=yes",
+      "pass": true
+    },
+    {
+      "name": "Style Heading4",
+      "value": "sz=26, before=120, after=240, line=276, caps=no, italic=yes",
+      "pass": true
+    },
+    {
+      "name": "Style Content",
+      "value": "sz=26, before=200, after=0, line=360, caps=no, italic=no",
+      "pass": true
+    },
+    {
+      "name": "Style Caption",
+      "value": "sz=26, before=120, after=240, line=276, caps=no, italic=no",
+      "pass": true
+    },
+    {
+      "name": "Style TOC1",
+      "value": "sz=26, before=0, after=0, line=276, caps=no, italic=no",
+      "pass": true
+    },
+    {
+      "name": "Style TableofFigures",
+      "value": "sz=26, before=0, after=0, line=276, caps=no, italic=no",
+      "pass": true
+    },
+    {
+      "name": "Font Normal",
+      "value": "Times New Roman 13",
+      "pass": true
+    },
+    {
+      "name": "Field trong thân",
+      "value": "PAGEREF: 142, REF: 36, SEQ Bảng: 24, SEQ Hình: 7, SEQ PT: 13, STYLEREF: 44, TOC \\h: 2, TOC \\o: 1",
+      "pass": true
+    },
+    {
+      "name": "Footer có số trang",
+      "value": "word/footer2.xml",
+      "pass": true
+    },
+    {
+      "name": "Marker nguồn còn sót",
+      "value": "không",
+      "pass": true
+    },
+    {
+      "name": "Placeholder [CẦN ĐIỀN",
+      "value": "18",
+      "pass": true
+    },
+    {
+      "name": "Đánh dấu ⚠️ CẦN XÁC MINH",
+      "value": "0",
+      "pass": true
+    },
+    {
+      "name": "Bảng có hàng tiêu đề lặp",
+      "value": "31/31",
+      "pass": true
+    },
+    {
+      "name": "Ảnh trong thân (gồm logo bìa)",
+      "value": "13",
+      "pass": true
+    },
+    {
+      "name": "PDF: số trang",
+      "value": "85",
+      "pass": true
+    },
+    {
+      "name": "PDF: lỗi tham chiếu field",
+      "value": "0",
+      "pass": true
+    },
+    {
+      "name": "PDF: thực thể XML lọt ra chữ",
+      "value": "0",
+      "pass": true
+    }
+  ],
+  "classifier": {
+    "source": "ml\\runs\\classifier_datasec_20260923T121808Z\\metrics.json",
+    "coarse_macro_f1": 0.8466317979797467,
+    "rounded_4dp": "0.8466"
+  },
+  "f2": {
+    "source": "ml\\runs\\sed_ensemble_s13_f2_20260929T045053Z\\evaluation_cv_annotated.json",
+    "f1_micro": {
+      "f_measure": 0.1642512077294686,
+      "precision": 0.288135593220339,
+      "recall": 0.11486486486486487
+    },
+    "f1_macro": {
+      "f_measure": 0.12060188619454669,
+      "precision": 0.1845322864623639,
+      "recall": 0.09599964908944601
+    },
+    "ci_micro": {
+      "estimate": 0.1642512077294686,
+      "lower": 0.1102698530945499,
+      "upper": 0.22424874611266796,
+      "confidence": 0.95,
+      "n_recordings": 139
+    },
+    "psds": {
+      "psds_1": 0.3163911571585601,
+      "psds_2": 0.7252608509998574
+    },
+    "diagnostic_errors": {
+      "deletion": 349,
+      "merging": 34,
+      "fragmentation": 4,
+      "insertion": 1,
+      "confusion": 7
+    },
+    "n_reference": 740,
+    "n_estimate": 295,
+    "counts_inferred_from_saved_metrics": {
+      "TP": 85,
+      "FN": 655,
+      "FP": 210
+    },
+    "note": "Counts algebraically inferred from saved precision/recall and counts. No evaluation rerun; diagnostic deletion is not FN."
+  }
+}
