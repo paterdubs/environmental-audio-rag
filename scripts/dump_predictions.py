@@ -34,6 +34,7 @@ from __future__ import annotations
 import argparse
 import dataclasses
 import json
+import platform
 import sys
 import tempfile
 from datetime import UTC, datetime
@@ -170,6 +171,7 @@ def derived_run_dir(args: argparse.Namespace, source: dict, hop_frames: int) -> 
                    "model_version": source["config"].get("model_version"),
                    "source_git": source.get("git")},
         "git": git_state(ROOT),
+        "environment": {"python": platform.python_version(), "torch": torch.__version__},
     }
     out.mkdir(parents=True)
     write_json(out / "manifest.json", manifest)
