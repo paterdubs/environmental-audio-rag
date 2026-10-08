@@ -5,3 +5,4 @@ data/splits/** -text
 data/manifests/** -text
 data/annotations/** -text
 data/reference/** -text
+ml/configs/** -text

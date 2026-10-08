@@ -66,15 +66,15 @@ f2). ADR-0031 đã đóng băng f2 (`c3f0033`); mở lại là quyết định m
    thứ hạng CV dev).
 8. **Nhãn có nhiễu biên:** event-F1 người–người 0.58 ở collar 0.2 s, 0.76 ở collar 1 s (8 cặp, D6).
 
-### 5. Văn liệu (V2, qua WebSearch/WebFetch 08/10 — RELATED_WORK §2.3)
+### 5. Văn liệu (08/10 — RELATED_WORK §2.3; bốn dòng đầu lên V3 qua PDF ở XO-4)
 
 | Kỹ thuật | Nguồn | Số đã báo | Áp vào đây |
 |---|---|---|---|
-| Suy luận cửa sổ trượt chồng lấn, trung bình trọng số tam giác | RealDESED, Schmid và cs., arXiv 2607.16736 | PSDS1-M: hop 10 s 0.711 → 2.5 s **0.736**; mean > max; sàn tam giác 0.3 tốt nhất | Không cần train lại |
-| Sequence model trên frame-MobileNet | EfficientSED, Morocutti và cs., EUSIPCO 2025 (arXiv 2503.11373) | AS-Strong PSDS1 fmn10 42.28 → +TF256 43.86; KD 45.25; checkpoint MIT | f2 là fmn10 **không** có sequence model |
-| Học biên trực tiếp: RED layer + Event Proposal Network, focal loss onset/offset | Schmid và cs., IEEE SPL 2026 (arXiv 2601.04178) | AS-Strong-10, CRNN: PSDS1 41.1 → 48.0, F1 32.3 → 40.6 (so với SEBB) | Nhắm đúng nút thắt onset; **không có code** |
-| Multi-iteration fine-tune + KD từ ensemble | Schmid và cs., DCASE 2024 hạng 1 (arXiv 2407.12997) | DESED PSDS1 0.692 single model | Dùng ensemble làm teacher |
-| Nhãn mềm từ nhiều người gán | RealDESED | PSDS1-M 0.675 → 0.697 | 8 cặp gán đôi; làm mượt biên |
+| Suy luận cửa sổ trượt chồng lấn, trung bình trọng số tam giác | RealDESED, Schmid và cs., arXiv 2607.16736 (V3, Bảng 3 tr.4) | PSDS1-M: hop 10 s 0.711 → 2.5 s **0.736**; mean > max; sàn tam giác 0.3 tốt nhất. Macro PSDS1 trên RealDESED, không phải event-F1 DataSED | Không cần train lại |
+| Sequence model trên frame-MobileNet | EfficientSED, Morocutti và cs., EUSIPCO 2025, arXiv 2503.11373 (V3, Bảng I/II tr.4) | AS-Strong PSDS1, **cả hai đều có KD**: fmn10 42.28 → +TF256 43.86. Không KD: 38.11 / 41.13. KD Weak+Strong và train 240 epoch: 45.25 | f2 là fmn10 **không** có sequence model |
+| Học biên trực tiếp: Recurrent Event Detection (RED) + Event Proposal Network, focal loss onset/offset | Schmid và cs., IEEE SPL 2026, arXiv 2601.04178 (V3, Bảng I tr.4) | AS-Strong-10, CRNN: PSDS1 41.1 → 48.0, F1 32.3 → 40.6 (so với SEBB); suy luận NMS vẫn có tham số k = 15, m = \|C\| | Nhắm đúng nút thắt onset; **chưa tìm được code chính thức** trong các nguồn đã tra ngày 08/10 |
+| Multi-iteration fine-tune + KD từ ensemble | Schmid và cs., DCASE 2024 hạng 1, arXiv 2407.12997 (V3, Bảng 3 tr.4) | DESED public-eval PSDS1 0.692 là **ATST DT + cSEBB**, train trên toàn development; pseudo-label chỉ thêm ở I2.S1. Không phải hiệu quả riêng của KD | Dùng ensemble làm teacher |
+| Nhãn mềm từ nhiều người gán | RealDESED (V3, Bảng 1 tr.3) | PSDS1-M 0.675 → 0.696 (soft có trọng số) → 0.697 (cộng thêm bước reviewed) | 8 cặp gán đôi; làm mượt biên |
 | Soundscape tổng hợp / trộn event cô lập | Scaper; Turpault/Ronchini và cs. arXiv 2109.14061 | Event không phải mục tiêu ảnh hưởng hiệu năng; domain gap | DataSEC → nhãn mạnh |
 | Pseudo-label có điều kiện theo tag | FBCRNN + tag conditioning, arXiv 2103.06581 | Event-F1 50.1 → 53.4% | Nhãn clip DataSEC chặn lớp được phép |
 
@@ -204,8 +204,12 @@ DO-3, tầng C, luật chọn, test một lần.
 
 - Mọi số ở Context §3–§4 đến từ script nháp ngày 08/10 → O0.1/O0.2 sinh lại bằng script repo
   thành measurement trước khi dùng trong PAPER_NOTES hoặc báo cáo.
-- Văn liệu §5 đang ở V2 (qua tóm tắt WebFetch). Phải đọc PDF trước khi trích dẫn: RealDESED (số
-  hop/tam giác), boundary-aware SPL 2026 (Bảng I/III), EfficientSED (bảng sequence model, KD).
-- DataSEC v4: MD5 và danh sách file chưa tải về kiểm.
+- ~~Văn liệu §5 ở V2~~ — **xong 08/10 (XO-4):** bốn nguồn đầu đọc PDF, mọi số khớp; ngữ cảnh đã
+  bổ sung vào bảng §5. Scaper và pseudo-label theo tag vẫn V2.
+- ~~DataSEC v4 chưa kiểm~~ — **xong 08/10 (XO-3, `datasec_v4_diff_20261008_lf`):** MD5 khớp;
+  4,292 WAV; v4 ⊂ v3 theo hash, chỉ bỏ 756 file Music (33 file nằm trong exclusion, còn lại
+  train/validation/test 519/96/108); không có file mới hay đổi hash. DO-1 vì vậy chỉ cần lọc
+  theo `data/manifests/datasec_v4_members.csv`, không phải chạy lại D3/D4. Thời lượng đo từ
+  header WAV là 17.41 h, khác mô tả "18 h 26 m" trên Zenodo.
 - Đánh giá DO-2 ở tầng S: bỏ khoảng 1 giờ train có thể làm thiếu mẫu lớp dài (vehicle_pass_by).
   So sánh có/không ở O-B.
