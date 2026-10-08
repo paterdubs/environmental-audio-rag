@@ -140,7 +140,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-7 | Báo cáo OOF + bootstrap ghép cặp so B0 với hậu xử lý **cross-fitted** (đặc tả §6 "XO-7") | Codex | `scripts/report_oof.py`, `tests/test_report_oof.py` | CO-3 ✅ | ✅ (chờ merge) |
 | XO-8 | Bảng sàng lọc tầng S tự động: đọc file chọn CV (θ + cSEBB) của nhiều run, so với baseline theo fold (đặc tả §6 "XO-8") | Codex | `scripts/report_screening.py`, `tests/test_report_screening.py`, `docs/measurements/screening_*` | — | ✅ (chờ merge) |
 | XO-9 | Pool DataSEC cho O-F: clip train ∩ v4 − exclusion, theo lớp, kèm hồ sơ "độ chặt" của clip (năng lượng) | Codex | `scripts/report_datasec_pool.py`, `tests/`, `data/manifests/datasec_o_f_pool.csv`, `docs/measurements/datasec_pool_*` | XO-3 ✅ | ✅ (chờ merge) |
-| XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | TODO |
+| XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | ✅ (chờ merge) |
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
 | XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | TODO |
 
@@ -328,6 +328,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - 08/10/2026 — Codex XO-9 (PLAN O3.1): scripts.report_datasec_pool + 8 test fixture; chạy CPU, 4 worker thread, đọc raw DataSEC main bằng đường tuyệt đối. Kiểm SHA-256 từng WAV so inventory/v4 trước decode; tái sử dụng load_pcm(32000), RMS 640 mẫu không chồng lấn. Ghi data/manifests/datasec_o_f_pool.csv LF và datasec_pool_20261008.{md,json}; không tạo nhãn/giải nén/sửa raw. pytest -q toàn repo + ruff check . sạch.
 
+- 08/10/2026 — Codex XO-10 (PLAN O2.1): đọc lại PDF 2601.04178v2, SHA d0648f2e…, pdftotext -layout và ảnh trang 3; ghi docs/notes/red_epn_spec.md với (1)–(5), Algorithm 1, cấu hình đã nêu, phần thiếu, và đề xuất ổn định số/contract frame_mn40ms. Không viết model. pytest -q toàn repo và ruff check . sạch.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -457,10 +459,18 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-9 pool: train 3.434 → giao v4 2.915 → trừ exclusion vẫn 2.915 → bỏ 69 wind_turbine còn 2.846 clip / 10.763301114890401 giờ, 21/21 lớp. Tất cả byte SHA khớp; CSV SHA256 dd22705aaa7d5cfda1d5823b61bb7971d70f818b45625459e300726c36aaf908. 293 clip không có RMS-frame vượt median+6dB. Nhóm ngắn (median event train ≤3s) có 7 lớp: cat/chicken/crows/dog/glass/horn/voices; thunder_fireworks_gunshot median 3.09s, không ngắn. Nguồn: datasec_pool_20261008 và CSV pool.
 
+- 08/10/2026 — XO-10 PDF: focal exponent α=2 (API thường gọi γ), λool=100, λiou grid {0.5,1,2,4}; IoU loss chia cả tổng active frame và duration GT; EPN BiGRU 2 lớp+Softplus, per-class khoảng26K tham số/lớp, Single GRU hidden256. Algorithm1 k15 theo lớp, m=C. PDF không nêu Δt cụ thể, hidden per-class, init RED hoặc rounding/censoring target. Nguồn có trang/phương trình: docs/notes/red_epn_spec.md.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — các lựa chọn RED/EPN chưa được PDF khóa (XO-10)
+
+Không phát hiện cản trở toán học cho frame_mn40ms+BiGRU. Nhưng PDF dùng α=2 làm số mũ focal, không có class-balance α riêng; λiou còn phụ thuộc đơn vị duration do (4) chia nghịch độ dài. Đổi frame sang giây ở25Hz làm loss đó đổi25 lần nếu giữ λ. Không nêu init RED, hidden per-class GRU, frame rate từng backbone, rounding nhãn hoặc censoring mép clip; ghi rõ các điểm này để Claude khóa trước train, không bịa thông số paper.
+
+Algorithm1 thực tế giới hạn k=15 **mỗi lớp**, thử trên clip10s; không áp 15 event/lớp cho cả recording dài DataSED mà không đánh giá nguy cơ cắt recall. Ghép conditional trước RED không tương đương ghép presence sau RED, duration EPN chưa có contract ở prediction artifact hiện tại. Ghi chú đưa các phương án kỹ thuật và phép biến đổi log-space với nhãn “suy ra”, không tự thay code/contract của Claude. RED affine có hệ số 1−s−q có thể âm nên không lấy log hệ số rồi dùng scan dương một cách máy móc. Không có số ADR mới sai để sửa.
 
 ### [MỞ] Codex → Claude — diễn giải hồ sơ RMS và nhóm ngắn XO-9
 
