@@ -1,0 +1,273 @@
+{
+  "git": {
+    "revision": "2121161a85d46c8b636b56a85c47bd81acab8802",
+    "dirty": true
+  },
+  "source": {
+    "record_id": 23097290,
+    "version": "v4",
+    "doi": "10.5281/zenodo.23097290",
+    "publication_date": "2026-10-02",
+    "license": "cc-by-nc-sa-4.0",
+    "license_source": "https://zenodo.org/api/records/23097290",
+    "archive_md5": "11e0ae0098ecf3d982ab5f7375c56844",
+    "archive_bytes": 4572906250,
+    "record_metadata_sha256": "ee07a26e3852f5b59c7947dd8c0de72697ff275e1ea419a86c59db2fdb4a2923"
+  },
+  "stages": {
+    "train": 3434,
+    "train_intersect_v4": 2915,
+    "after_exclusions": 2915,
+    "polyphonic_pool": 2846
+  },
+  "count": 2846,
+  "hours": 10.763301114890401,
+  "by_class": [
+    {
+      "class_id": "bells",
+      "count": 46,
+      "hours": 0.3651709435626103,
+      "median_clip_s": 29.493333333333332,
+      "median_energy_active_fraction": 0.1375790267284283,
+      "median_longest_active_s": 0.27999999999999936,
+      "zero_active_clips": 2,
+      "datased_train_event_median_s": 8.36,
+      "short_class": false
+    },
+    {
+      "class_id": "birds",
+      "count": 48,
+      "hours": 0.18084887881078357,
+      "median_clip_s": 5.0,
+      "median_energy_active_fraction": 0.23418019793496422,
+      "median_longest_active_s": 0.19000000000000034,
+      "zero_active_clips": 2,
+      "datased_train_event_median_s": 4.210000000000008,
+      "short_class": false
+    },
+    {
+      "class_id": "cat_fights_and_moans",
+      "count": 34,
+      "hours": 0.20992709750566896,
+      "median_clip_s": 18.728956916099776,
+      "median_energy_active_fraction": 0.21212468249423716,
+      "median_longest_active_s": 0.5499999999999999,
+      "zero_active_clips": 0,
+      "datased_train_event_median_s": 1.9699999999999989,
+      "short_class": true
+    },
+    {
+      "class_id": "chicken_coop",
+      "count": 41,
+      "hours": 0.1355832136558327,
+      "median_clip_s": 11.478526077097506,
+      "median_energy_active_fraction": 0.24368231046931407,
+      "median_longest_active_s": 0.3800000000000008,
+      "zero_active_clips": 4,
+      "datased_train_event_median_s": 2.16,
+      "short_class": true
+    },
+    {
+      "class_id": "cicadas_and_crickets",
+      "count": 48,
+      "hours": 0.2523853741496599,
+      "median_clip_s": 13.455748299319726,
+      "median_energy_active_fraction": 0.0034307402165091143,
+      "median_longest_active_s": 0.020000000000000018,
+      "zero_active_clips": 20,
+      "datased_train_event_median_s": 5.195,
+      "short_class": false
+    },
+    {
+      "class_id": "crows_seagulls_magpies",
+      "count": 66,
+      "hours": 0.43069557823129256,
+      "median_clip_s": 21.982233560090705,
+      "median_energy_active_fraction": 0.1341919414702829,
+      "median_longest_active_s": 0.2499999999999999,
+      "zero_active_clips": 1,
+      "datased_train_event_median_s": 2.6950000000000003,
+      "short_class": true
+    },
+    {
+      "class_id": "dog_barkings_and_howlings",
+      "count": 47,
+      "hours": 0.13094405391786343,
+      "median_clip_s": 7.445487528344671,
+      "median_energy_active_fraction": 0.35379061371841153,
+      "median_longest_active_s": 0.2599999999999998,
+      "zero_active_clips": 0,
+      "datased_train_event_median_s": 2.3049999999999997,
+      "short_class": true
+    },
+    {
+      "class_id": "glass_breaking",
+      "count": 54,
+      "hours": 0.38806790753338366,
+      "median_clip_s": 8.095521541950113,
+      "median_energy_active_fraction": 0.2893073450060566,
+      "median_longest_active_s": 0.4099999999999999,
+      "zero_active_clips": 0,
+      "datased_train_event_median_s": 1.964999999999998,
+      "short_class": true
+    },
+    {
+      "class_id": "horn",
+      "count": 39,
+      "hours": 0.05781746661627616,
+      "median_clip_s": 1.8799773242630389,
+      "median_energy_active_fraction": 0.2564102564102564,
+      "median_longest_active_s": 0.12,
+      "zero_active_clips": 12,
+      "datased_train_event_median_s": 1.5,
+      "short_class": true
+    },
+    {
+      "class_id": "jet_aircrafts",
+      "count": 72,
+      "hours": 0.5501984189972285,
+      "median_clip_s": 25.06456916099773,
+      "median_energy_active_fraction": 0.09765786340776014,
+      "median_longest_active_s": 0.40000000000000036,
+      "zero_active_clips": 0,
+      "datased_train_event_median_s": 20.450000000000003,
+      "short_class": false
+    },
+    {
+      "class_id": "lawn_mower_brush_cutter_olive_shaker",
+      "count": 68,
+      "hours": 0.7227445830183925,
+      "median_clip_s": 32.40622448979592,
+      "median_energy_active_fraction": 0.005595488546049555,
+      "median_longest_active_s": 0.07000000000000028,
+      "zero_active_clips": 21,
+      "datased_train_event_median_s": 14.254999999999981,
+      "short_class": false
+    },
+    {
+      "class_id": "music",
+      "count": 159,
+      "hours": 1.325,
+      "median_clip_s": 30.0,
+      "median_energy_active_fraction": 0.02266666666666667,
+      "median_longest_active_s": 0.06000000000000005,
+      "zero_active_clips": 36,
+      "datased_train_event_median_s": 15.695,
+      "short_class": false
+    },
+    {
+      "class_id": "propeller_aircrafts",
+      "count": 74,
+      "hours": 0.6154183043587804,
+      "median_clip_s": 20.954467120181405,
+      "median_energy_active_fraction": 0.044469696969696965,
+      "median_longest_active_s": 0.09999999999999964,
+      "zero_active_clips": 6,
+      "datased_train_event_median_s": 38.010000000000005,
+      "short_class": false
+    },
+    {
+      "class_id": "sirens_and_alarms",
+      "count": 65,
+      "hours": 0.3357849206349206,
+      "median_clip_s": 9.6778231292517,
+      "median_energy_active_fraction": 0.044,
+      "median_longest_active_s": 0.06000000000000005,
+      "zero_active_clips": 23,
+      "datased_train_event_median_s": 11.48,
+      "short_class": false
+    },
+    {
+      "class_id": "thunder_fireworks_gunshot",
+      "count": 165,
+      "hours": 0.4155629692617787,
+      "median_clip_s": 2.0,
+      "median_energy_active_fraction": 0.2893258426966292,
+      "median_longest_active_s": 0.36,
+      "zero_active_clips": 9,
+      "datased_train_event_median_s": 3.09,
+      "short_class": false
+    },
+    {
+      "class_id": "train",
+      "count": 45,
+      "hours": 0.3670487654320987,
+      "median_clip_s": 19.33065759637188,
+      "median_energy_active_fraction": 0.08981233243967829,
+      "median_longest_active_s": 0.15999999999999992,
+      "zero_active_clips": 4,
+      "datased_train_event_median_s": 24.49,
+      "short_class": false
+    },
+    {
+      "class_id": "vacuum_cleaner_fan_hairdryer",
+      "count": 66,
+      "hours": 0.6733536218190981,
+      "median_clip_s": 21.844285714285714,
+      "median_energy_active_fraction": 0.0009149130832570906,
+      "median_longest_active_s": 0.019999999999999574,
+      "zero_active_clips": 31,
+      "datased_train_event_median_s": 16.775,
+      "short_class": false
+    },
+    {
+      "class_id": "vehicle_idling",
+      "count": 79,
+      "hours": 0.8473099332325521,
+      "median_clip_s": 24.676666666666662,
+      "median_energy_active_fraction": 0.05090909090909091,
+      "median_longest_active_s": 0.120000000000001,
+      "zero_active_clips": 18,
+      "datased_train_event_median_s": 12.190000000000001,
+      "short_class": false
+    },
+    {
+      "class_id": "vehicle_pass_by",
+      "count": 151,
+      "hours": 0.49513624338624335,
+      "median_clip_s": 5.268548752834467,
+      "median_energy_active_fraction": 0.20395327942497754,
+      "median_longest_active_s": 0.6600000000000001,
+      "zero_active_clips": 20,
+      "datased_train_event_median_s": 7.920000000000002,
+      "short_class": false
+    },
+    {
+      "class_id": "voices",
+      "count": 1330,
+      "hours": 1.1977457168052406,
+      "median_clip_s": 2.29702947845805,
+      "median_energy_active_fraction": 0.29281723433974427,
+      "median_longest_active_s": 0.19999999999999996,
+      "zero_active_clips": 19,
+      "datased_train_event_median_s": 2.434999999999995,
+      "short_class": true
+    },
+    {
+      "class_id": "workshop",
+      "count": 149,
+      "hours": 1.0665571239606955,
+      "median_clip_s": 20.605124716553288,
+      "median_energy_active_fraction": 0.0038797284190106693,
+      "median_longest_active_s": 0.020000000000000018,
+      "zero_active_clips": 65,
+      "datased_train_event_median_s": 9.059999999999999,
+      "short_class": false
+    }
+  ],
+  "audio_root": "D:\\IUH_K18\\HK1N5\\KLTN2\\environmental-audio-rag\\data\\raw\\datasec\\extracted",
+  "sample_rate": 32000,
+  "rms_frame_samples": 640,
+  "threshold_db_above_median": 6.0,
+  "pool_path": "D:\\IUH_K18\\HK1N5\\KLTN2\\earag-codex-o\\data\\manifests\\datasec_o_f_pool.csv",
+  "pool_sha256": "dd22705aaa7d5cfda1d5823b61bb7971d70f818b45625459e300726c36aaf908",
+  "sources_sha256": {
+    "data\\manifests\\datasec_inventory.csv": "1e9a9e92485d3061395968e7e1f5abb52e361769da8ff2f9543376f035d7a2ae",
+    "data\\splits\\datasec_classification.csv": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+    "data\\manifests\\datasec_v4_members.csv": "79741b06fcf6d134701b89196902c3f12c0bbdd9a147d4520a2c9273889e15fe",
+    "data\\manifests\\exclusions.csv": "67e17709d52aac3d9efa0c4936f78f4f76c11bf8afd35060ce7314d883d5f2af",
+    "docs\\measurements\\data_profile_20261008_lf.json": "8609832eb4803ca60a1a157d181ded76168bdbdac8ff7650941bb994d6d99847",
+    "docs\\measurements\\datasec_v4_diff_20261008_lf.json": "7f3d3aa62a6d1795f70939465c8b4ccdd3611229b897bee5026026e765c498d8",
+    "ml\\configs\\taxonomy.yaml": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a"
+  }
+}

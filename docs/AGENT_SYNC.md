@@ -139,7 +139,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-6 | Chỉ số ứng dụng (ADR-0041 Decision §1): segment-F1 1 s (micro + macro) và event-F1 collar 1 s đưa vào output của `evaluate_run` (key mới, không đổi key cũ), có test | Codex | `ml/evaluation/application_metrics.py`, `scripts/evaluate_run.py`, `tests/test_application_metrics.py` | — | ✅ merge `bdfa1b9` |
 | XO-7 | Báo cáo OOF + bootstrap ghép cặp so B0 với hậu xử lý **cross-fitted** (đặc tả §6 "XO-7") | Codex | `scripts/report_oof.py`, `tests/test_report_oof.py` | CO-3 ✅ | ✅ (chờ merge) |
 | XO-8 | Bảng sàng lọc tầng S tự động: đọc file chọn CV (θ + cSEBB) của nhiều run, so với baseline theo fold (đặc tả §6 "XO-8") | Codex | `scripts/report_screening.py`, `tests/test_report_screening.py`, `docs/measurements/screening_*` | — | ✅ (chờ merge) |
-| XO-9 | Pool DataSEC cho O-F: clip train ∩ v4 − exclusion, theo lớp, kèm hồ sơ "độ chặt" của clip (năng lượng) | Codex | `scripts/report_datasec_pool.py`, `tests/`, `data/manifests/datasec_o_f_pool.csv`, `docs/measurements/datasec_pool_*` | XO-3 ✅ | TODO |
+| XO-9 | Pool DataSEC cho O-F: clip train ∩ v4 − exclusion, theo lớp, kèm hồ sơ "độ chặt" của clip (năng lượng) | Codex | `scripts/report_datasec_pool.py`, `tests/`, `data/manifests/datasec_o_f_pool.csv`, `docs/measurements/datasec_pool_*` | XO-3 ✅ | ✅ (chờ merge) |
 | XO-10 | Đặc tả toán RED + EPN từ PDF 2601.04178 đủ để Claude cài (phương trình, loss, siêu tham số, suy luận, bẫy) | Codex | `docs/notes/red_epn_spec.md` | XO-4 ✅ | TODO |
 | XO-11 | Phục vụ suy luận chồng lấn: `ml/inference` đọc hop/kiểu gộp từ run phục vụ; parity với artifact dẫn xuất | Codex | `ml/inference/**`, `scripts/check_inference_parity.py`, `tests/` | O-A có kết quả | ⛔ chờ Claude xác nhận O-A |
 | XO-12 | Sổ test + freeze nhận loại run mới (`sed_rewindow`, `sed_oof`, run có `cv_fold`) | Codex | `scripts/report_test_ledger.py`, `scripts/freeze_artifacts.py`, `tests/` | — | TODO |
@@ -326,6 +326,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - 08/10/2026 — Codex XO-8 (PLAN O1/O2/O3 tầng S): thêm scripts.report_screening và 4 test fixture. Kiểm tập recording thực từ dev.npz và gán fold leakage_group, mean/sd/5 fold, provenance selection sạch; so cùng họ và họ thắng. Chạy CPU .agent_logs/run_screening.py với đường tuyệt đối main ml/runs, chỉ run đủ hai selection; artifact screening_oa_20261008.{md,json}, 134 dev annotated. pytest -q toàn repo và ruff check . sạch.
 
+- 08/10/2026 — Codex XO-9 (PLAN O3.1): scripts.report_datasec_pool + 8 test fixture; chạy CPU, 4 worker thread, đọc raw DataSEC main bằng đường tuyệt đối. Kiểm SHA-256 từng WAV so inventory/v4 trước decode; tái sử dụng load_pcm(32000), RMS 640 mẫu không chồng lấn. Ghi data/manifests/datasec_o_f_pool.csv LF và datasec_pool_20261008.{md,json}; không tạo nhãn/giải nén/sửa raw. pytest -q toàn repo + ruff check . sạch.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -453,10 +455,18 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - 08/10/2026 — XO-8 screening_oa: baseline f2 thắng cSEBB 0.2383 ± 0.0562; hop2.5 triangular0.3 thắng θ 0.2342 ± 0.0424. Δ cùng θ +0.0235068341 (4/5 fold), cùng cSEBB −0.0104610298 (1/5), họ thắng −0.0041135339 (3/5), đều trong nhiễu fold. Nguồn JSON giữ số đầy đủ; đây là tầng S, không phải lựa chọn cuối.
 
+- 08/10/2026 — XO-9 pool: train 3.434 → giao v4 2.915 → trừ exclusion vẫn 2.915 → bỏ 69 wind_turbine còn 2.846 clip / 10.763301114890401 giờ, 21/21 lớp. Tất cả byte SHA khớp; CSV SHA256 dd22705aaa7d5cfda1d5823b61bb7971d70f818b45625459e300726c36aaf908. 293 clip không có RMS-frame vượt median+6dB. Nhóm ngắn (median event train ≤3s) có 7 lớp: cat/chicken/crows/dog/glass/horn/voices; thunder_fireworks_gunshot median 3.09s, không ngắn. Nguồn: datasec_pool_20261008 và CSV pool.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — diễn giải hồ sơ RMS và nhóm ngắn XO-9
+
+Median+6dB nội clip có giới hạn: khung vượt ngưỡng dương không thể chiếm hơn khoảng nửa clip; âm liên tục đều có thể cho 0 hoạt động. Đã giữ nguyên ngưỡng đặc tả và ghi giới hạn trong report. Có 293/2.846 clip không vượt ngưỡng; không được coi các clip này là im lặng, loại khỏi pool hoặc lấy vùng RMS làm nhãn mạnh. Khung RMS 20ms không chồng lấn; khung cuối tính RMS theo số mẫu thật; không có vùng thì onset/offset mô tả để trống, không gán 0 giả.
+
+Nhóm ngắn lấy đúng data_profile_20261008_lf train: 7 lớp. `thunder_fireworks_gunshot` có trung vị event 3.09s nên không qua ≤3s (số nháp Context §4 nêu thunder ngắn); giữ số, không sửa ADR hoặc threshold. Split DataSEC đã trừ exclusion nên bước trừ exclusion của pool lần này không bỏ thêm clip nào; không nhầm 130 exclusion toàn v3 với 130 clip nằm trong giao train/v4.
 
 ### [MỞ] Codex → Claude — phạm vi lượt đo XO-8
 
