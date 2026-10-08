@@ -1,0 +1,184 @@
+{
+ "n_folds": 5,
+ "seed": 20260922,
+ "csv_sha256": "eaa30dc17f59c73dcbc8f3c554f1ae29b8ac9a13eeb64876062beea27c67c733",
+ "split_sha256": "fad1c9f818e3a3fbe271c64c385a5359c31e687d549b8158d7971e6c646c0cb7",
+ "events_sha256": "b0ce93f2401b819c676a11e0ad368569e93b6c87f18a208525b03d9375b7bb82",
+ "git": {
+  "revision": "55de2cd2b2aa441f3bfd836ff49fe74cb0f9bb0b",
+  "dirty": true
+ },
+ "balance": {
+  "recordings_per_fold": [
+   109,
+   114,
+   114,
+   112,
+   115
+  ],
+  "events_per_fold": [
+   587,
+   659,
+   632,
+   690,
+   726
+  ],
+  "min_recordings_with_class_in_any_fold": 2,
+  "per_class_recordings": {
+   "bells": [
+    6,
+    5,
+    4,
+    5,
+    6
+   ],
+   "birds": [
+    15,
+    14,
+    10,
+    12,
+    13
+   ],
+   "cat_fights_and_moans": [
+    3,
+    3,
+    3,
+    3,
+    2
+   ],
+   "chicken_coop": [
+    6,
+    5,
+    6,
+    6,
+    6
+   ],
+   "cicadas_and_crickets": [
+    7,
+    9,
+    8,
+    7,
+    9
+   ],
+   "crows_seagulls_magpies": [
+    5,
+    6,
+    7,
+    6,
+    6
+   ],
+   "dog_barkings_and_howlings": [
+    8,
+    9,
+    9,
+    9,
+    10
+   ],
+   "glass_breaking": [
+    2,
+    3,
+    3,
+    2,
+    3
+   ],
+   "horn": [
+    9,
+    10,
+    9,
+    11,
+    10
+   ],
+   "jet_aircrafts": [
+    12,
+    12,
+    11,
+    12,
+    11
+   ],
+   "lawn_mower_brush_cutter_olive_shaker": [
+    8,
+    7,
+    6,
+    7,
+    7
+   ],
+   "music": [
+    6,
+    7,
+    8,
+    7,
+    7
+   ],
+   "propeller_aircrafts": [
+    16,
+    14,
+    13,
+    15,
+    13
+   ],
+   "sirens_and_alarms": [
+    14,
+    14,
+    15,
+    12,
+    12
+   ],
+   "thunder_fireworks_gunshot": [
+    3,
+    3,
+    3,
+    4,
+    3
+   ],
+   "train": [
+    16,
+    17,
+    18,
+    21,
+    19
+   ],
+   "vacuum_cleaner_fan_hairdryer": [
+    7,
+    6,
+    6,
+    6,
+    6
+   ],
+   "vehicle_idling": [
+    13,
+    11,
+    15,
+    13,
+    10
+   ],
+   "vehicle_pass_by": [
+    22,
+    22,
+    23,
+    20,
+    21
+   ],
+   "voices": [
+    21,
+    21,
+    20,
+    24,
+    24
+   ],
+   "workshop": [
+    17,
+    15,
+    15,
+    12,
+    16
+   ]
+  },
+  "dev_recordings_per_fold": [
+   20,
+   30,
+   31,
+   29,
+   24
+  ]
+ }
+}

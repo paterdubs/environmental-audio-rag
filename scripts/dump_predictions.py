@@ -34,6 +34,7 @@ from __future__ import annotations
 import argparse
 import dataclasses
 import json
+import platform
 import sys
 import tempfile
 from datetime import UTC, datetime
@@ -52,6 +53,7 @@ from ml.training.sed import collect_predictions
 from scripts.train_sed import (
     WAVEFORM_ENCODERS,
     WAVEFORM_MANIFEST,
+    apply_cv_fold,
     frozen_beats,
     load_datased_tables,
     make_loader,
@@ -124,6 +126,8 @@ def dump(run_dir: Path, split: str, out_path: Path, device: torch.device, *,
     is_beats = config["encoder_type"] == "beats"
     is_waveform = config["encoder_type"] in WAVEFORM_ENCODERS
     joined, events = load_datased_tables(config["feature_set"])
+    # OOF fold run (ADR-0041 tầng C): its "dev" is the held-out fold, never the frozen dev.
+    joined = apply_cv_fold(joined, config.get("cv_fold"))
     dataset = split_dataset(joined, events, CONTRACT_SPLIT[split],
                             feature_set=config["feature_set"], class_ids=class_ids,
                             frame_rate=float(config["frame_rate"]),
@@ -167,6 +171,7 @@ def derived_run_dir(args: argparse.Namespace, source: dict, hop_frames: int) -> 
                    "model_version": source["config"].get("model_version"),
                    "source_git": source.get("git")},
         "git": git_state(ROOT),
+        "environment": {"python": platform.python_version(), "torch": torch.__version__},
     }
     out.mkdir(parents=True)
     write_json(out / "manifest.json", manifest)

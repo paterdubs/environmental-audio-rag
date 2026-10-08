@@ -166,8 +166,15 @@ class SedFeatureDataset(Dataset):
             offset = math.ceil(float(event.offset_s) * self.frame_rate) - window.start_frame
             onset = max(0, min(onset, self.window_frames))
             offset = max(onset + 1, min(offset, self.window_frames))
-            if onset < self.window_frames:
-                target[onset:offset, self.class_index[str(event.class_id)]] = 1.0
+            if onset >= self.window_frames:
+                continue
+            column = self.class_index[str(event.class_id)]
+            weight = getattr(event, "weight", None)
+            if weight is None:  # hard labels: unchanged path of every run before phase O
+                target[onset:offset, column] = 1.0
+            else:  # DO-3 soft labels: annotations of a merged duplicate add up, capped at 1
+                span = target[onset:offset, column]
+                target[onset:offset, column] = np.minimum(span + float(weight), 1.0)
         valid = np.zeros(self.window_frames, dtype=np.float32)
         valid[: window.available_frames] = 1.0
         return torch.from_numpy(target), torch.from_numpy(valid)

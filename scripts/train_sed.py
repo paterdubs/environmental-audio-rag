@@ -51,6 +51,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from ml.datasets.features import SedFeatureDataset
+from ml.datasets.train_fixes import apply_train_fixes, load_unannotated
 from ml.datasets.waveforms import SedWaveformDataset
 from ml.evaluation.predictions import save_predictions
 from ml.models import SoundEventDetector
@@ -179,9 +180,56 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--asl-gamma-pos", type=float, default=0.0)
     parser.add_argument("--asl-gamma-neg", type=float, default=4.0)
     parser.add_argument("--asl-clip", type=float, default=0.05)
+    parser.add_argument("--cv-fold", type=int, default=None,
+                        help="ADR-0041 tầng C: train trên 4 fold của train ∪ dev, validation = "
+                             "fold này (data/splits/datased_trainval_folds.csv)")
+    parser.add_argument("--train-fixes", action="store_true",
+                        help="ADR-0041 DO-2 + DO-3: bỏ recording train thiếu GT polyphonic, "
+                             "gộp recording trùng byte thành một mẫu nhãn mềm")
     parser.add_argument("--evaluate-test", action="store_true")
     parser.add_argument("--device", default="cuda")
     return parser.parse_args()
+
+
+CV_FOLDS_PATH = ROOT / "data" / "splits" / "datased_trainval_folds.csv"
+
+
+def apply_cv_fold(joined: pd.DataFrame, fold: int | None) -> pd.DataFrame:
+    """Relabel `split` for OOF fold `fold`: train = other folds, validation = this fold.
+
+    Test keeps its label; train/dev recordings outside the fold file (no polyphonic GT) get
+    `excluded` so they enter no loader. `fold=None` returns the frozen split unchanged.
+    """
+    if fold is None:
+        return joined
+    folds = pd.read_csv(CV_FOLDS_PATH)
+    if fold not in set(folds["fold"]):
+        raise SystemExit(f"fold {fold} không có trong {CV_FOLDS_PATH.name}")
+    of = dict(zip(folds["recording_id"].astype(str), folds["fold"], strict=True))
+    split = [
+        original if original == "test" else
+        "excluded" if recording not in of else
+        "validation" if of[recording] == fold else "train"
+        for recording, original in zip(joined["recording_id"].astype(str), joined["split"],
+                                       strict=True)
+    ]
+    return joined.assign(split=split)
+
+
+def train_tables(joined: pd.DataFrame, events: pd.DataFrame, enabled: bool
+                 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict | None]:
+    """(joined for building splits, events for the train dataset, events for pos_weight, report).
+
+    Without `--train-fixes` everything is the original tables (bit-identical runs).
+    pos_weight counts each kept recording's own annotation once, never the merged copies.
+    """
+    if not enabled:
+        return joined, events, events, None
+    train = joined[joined["split"] == "train"]
+    kept, weighted, report = apply_train_fixes(
+        train, events, load_unannotated(ROOT), drop_unannotated=True, merge_duplicates=True)
+    fixed = pd.concat([kept, joined[joined["split"] != "train"]], ignore_index=True)
+    return fixed, weighted, events, report.as_manifest()
 
 
 def validate_checkpoint_flags(args: argparse.Namespace) -> None:
@@ -447,13 +495,19 @@ def main() -> None:
 
     frozen, beats_info = frozen_beats(args.beats_checkpoint) if is_beats else (None, {})
     joined, events = load_datased_tables(feature_set)
+    if args.cv_fold is not None and args.evaluate_test:
+        raise SystemExit("--cv-fold không đi với --evaluate-test: test chỉ sau khi chọn (ADR-0041)")
+    joined = apply_cv_fold(joined, args.cv_fold)
+    joined, train_label_events, events, fix_report = train_tables(joined, events,
+                                                                  args.train_fixes)
     loaders: dict[str, DataLoader | EncodedLoader] = {}
     split_names = (
         ("train", "validation", "test") if args.evaluate_test else ("train", "validation")
     )
     for split in split_names:
         dataset = split_dataset(
-            joined, events, split, feature_set=feature_set, class_ids=class_ids,
+            joined, train_label_events if split == "train" else events, split,
+            feature_set=feature_set, class_ids=class_ids,
             frame_rate=frame_rate, window_frames=config.window_frames,
             hop_frames=config.hop_frames,
             random_crop=bool(knobs["random_crop"]) and split == "train",
@@ -500,6 +554,9 @@ def main() -> None:
             **{key: knobs[key] for key in ("time_pooling", "rnn_hidden", "rnn_layers",
                                            "upsample", "random_crop", "model_version")},
             **weight_info,
+            **({"train_fixes": fix_report} if fix_report is not None else {}),
+            **({"cv_fold": args.cv_fold, "cv_folds_sha256": sha256_file(CV_FOLDS_PATH)}
+               if args.cv_fold is not None else {}),
         },
         "class_ids": class_ids,
         "taxonomy_sha256": taxonomy.checksum,
