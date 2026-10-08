@@ -1,0 +1,7 @@
+# Provenance files are hashed byte-for-byte (split_sha256, data_manifest_sha256, fold files).
+# Never let core.autocrlf rewrite their line endings on checkout: a worktree would otherwise
+# get CRLF copies whose SHA-256 differs from the frozen value (found 2026-10-08, ADR-0041).
+data/splits/** -text
+data/manifests/** -text
+data/annotations/** -text
+data/reference/** -text
