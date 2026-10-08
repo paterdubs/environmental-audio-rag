@@ -47,11 +47,12 @@ def embedding_head(config: Mapping[str, Any], classes: int) -> EmbeddingSequence
 def frame_mn_model(config: Mapping[str, Any], classes: int) -> FrameMnSED:
     """Track 2b (ADR-0032 §3): the whole network trains, so the encoder is in the model.
     T2b manifests record `rnn_hidden: null` (no sequence model); O-C (ADR-0041) records the
-    pretrained EfficientSED GRU's size."""
+    pretrained EfficientSED GRU's size, or `sequence_model: tf256`."""
     hidden, layers = config.get("rnn_hidden"), config.get("rnn_layers")
     return FrameMnSED(classes, output_frames=int(config["window_frames"]),
                       rnn_hidden=None if hidden is None else int(hidden),
-                      rnn_layers=None if layers is None else int(layers))
+                      rnn_layers=None if layers is None else int(layers),
+                      sequence_model=config.get("sequence_model"))
 
 
 def sed_model(config: Mapping[str, Any], classes: int,

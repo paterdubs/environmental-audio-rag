@@ -115,7 +115,7 @@ def test_efficientsed_split_keeps_backbone_and_gru_and_drops_only_heads() -> Non
     encoder, sequence, ignored = efficientsed_state({
         "net.model.features.0.0.weight": tensor, "net.seq_model.0.gru.weight_ih_l0": tensor,
         "net.strong_head.weight": tensor})
-    assert list(encoder) == ["features.0.0.weight"] and list(sequence) == ["weight_ih_l0"]
+    assert list(encoder) == ["features.0.0.weight"] and list(sequence) == ["0.gru.weight_ih_l0"]
     assert ignored == ("net.strong_head.weight",)
     with pytest.raises(ValueError, match="unexpected keys"):
         efficientsed_state({"net.model.a": tensor, "net.other.b": tensor})
@@ -139,6 +139,49 @@ def test_efficientsed_gru_checkpoint_loads_backbone_and_gru_strictly() -> None:
 def test_gru_model_refuses_a_checkpoint_without_a_pretrained_gru() -> None:
     with pytest.raises(ValueError, match="GRU"):
         FrameMnSED(21, rnn_hidden=256, rnn_layers=2).load_pretrained(CHECKPOINT)
+
+
+TF_CHECKPOINTS = {
+    "oc_tf": ROOT / "artifacts" / "checkpoints" / "efficientsed" / "fmn10+tf-256_strong.pt",
+    "oc_tf_kd": (ROOT / "artifacts" / "checkpoints" / "efficientsed"
+                 / "fmn10+tf-256_advanced-kd-weak-strong.pt"),
+}
+
+
+def test_tf256_model_runs_the_transformer_before_a_256_wide_head() -> None:
+    torch.manual_seed(0)
+    model = FrameMnSED(21, sequence_model="tf256").eval()
+    assert model.head.in_features == 256
+    with torch.no_grad():
+        logits = model(torch.randn(1, 160_000) * 0.1)
+    assert tuple(logits.shape) == (1, 1000, 21) and torch.isfinite(logits).all()
+    with pytest.raises(ValueError, match="sequence_model"):
+        FrameMnSED(21, sequence_model="tf256", rnn_hidden=256, rnn_layers=2)
+    with pytest.raises(ValueError, match="sequence_model"):
+        FrameMnSED(21, sequence_model="mamba")
+
+
+@pytest.mark.parametrize("recipe", sorted(TF_CHECKPOINTS))
+def test_tf256_checkpoints_load_backbone_and_transformer_strictly(recipe: str) -> None:
+    path = TF_CHECKPOINTS[recipe]
+    if not path.exists():
+        pytest.skip(f"{path.name} not downloaded")
+    model = FrameMnSED(21, sequence_model="tf256")
+    report = model.load_pretrained(path, expected_sha256=FRAME_MN_RECIPES[recipe][0])
+    assert report.loaded_tensors == 308 + 25 and report.loaded_sequence_tensors == 25
+    # A transformer checkpoint never feeds a GRU model (strict load would be meaningless).
+    with pytest.raises(ValueError, match="not a GRU"):
+        FrameMnSED(21, rnn_hidden=256, rnn_layers=2).load_pretrained(
+            path, expected_sha256=FRAME_MN_RECIPES[recipe][0])
+
+
+def test_tf_recipes_differ_from_t2b_only_by_the_transformer() -> None:
+    t2b = dict(RECIPES["t2b"])
+    for name in ("oc_tf", "oc_tf_kd"):
+        recipe = dict(RECIPES[name])
+        assert recipe.pop("sequence_model") == "tf256"
+        assert {key for key in t2b if t2b[key] != recipe[key]} == {"model_version"}
+        validate_track2b(_args(recipe=name), recipe)
 
 
 def test_oc_gru_recipe_differs_from_t2b_only_by_the_gru() -> None:

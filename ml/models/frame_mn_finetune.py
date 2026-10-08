@@ -20,7 +20,10 @@ fmin/fmax jitter is a data augmentation, and ADR-0032 §3 keeps only mixup from 
 ADR-0041 O-C adds an optional sequence model between the 250 steps and the head: EfficientSED's
 `fmn10+gru-256_strong.pt` (release v0.0.1, code @e3449bfd) is the same Frame-MobileNet followed
 by a 2-layer bidirectional GRU (960 -> 256 per direction), both trained on AudioSet Strong, so
-both load from the checkpoint and only the 21-class head starts fresh.
+both load from the checkpoint and only the 21-class head starts fresh. `sequence_model="tf256"`
+uses EfficientSED's 2-block RoPE transformer instead (Linear 960 -> 256, vendored in
+`ml/models/external/efficientsed_tf`, bit-equal to upstream on CPU per XO-18), loaded from
+`fmn10+tf-256_strong.pt` or the knowledge-distilled `fmn10+tf-256_advanced-kd-weak-strong.pt`.
 """
 
 from __future__ import annotations
@@ -34,6 +37,7 @@ from pathlib import Path
 import torch
 from torch import Tensor, nn
 
+from ml.models.external.efficientsed_tf import build_tf256
 from ml.models.external.frame_mn import AugmentMelSTFT, get_model
 
 SEQUENCE_LENGTH = 250  # PretrainedSED `seq_len`: 40 ms steps per 10 s window
@@ -44,12 +48,19 @@ FRAME_MN10_STRONG_1_SHA256 = "4a0fe320d5369987b772394c51881fb20a602967e6842f72f3
 # EfficientSED release v0.0.1, `fmn10+gru-256_strong.pt` (26,139,225 bytes), XO-5 08/10/2026.
 EFFICIENTSED_FMN10_GRU256_SHA256 = (
     "1c963930f92d7cd42ff01f4bff940701aa2db8f5c6d64601cf8c0d1d5d5bf007")
+EFFICIENTSED_FMN10_TF256_SHA256 = (
+    "20510a4235433d3d0867a812fbb1f985c4221e54eb338f5a5842f50d9cff2683")
+EFFICIENTSED_FMN10_TF256_KD_SHA256 = (
+    "7d5326a485b742b323b33dd2bcb366606b614b2a5deaa5e452ef34ddedb9797c")
+SEQUENCE_MODELS = ("tf256",)  # GRUs are chosen by rnn_hidden/rnn_layers instead
+TF256_DROPOUT = 0.1  # EfficientSED default for attention and feed-forward
 CHECKPOINT_PREFIX = "model.frame_mn."  # PredictionsWrapper.model(FrameMNWrapper).frame_mn
 HEAD_PREFIXES = ("strong_head.", "weak_head.")
 # EfficientSED wraps the same PredictionsWrapper in a Lightning module (`net.`), and its
 # backbone sits directly under `model.` (no `frame_mn.` level).
 EFFICIENTSED_PREFIX = "net.model."
-EFFICIENTSED_SEQUENCE_PREFIX = "net.seq_model.0.gru."
+EFFICIENTSED_SEQUENCE_PREFIX = "net.seq_model."
+GRU_PREFIX = "0.gru."  # the GRU is wrapped as seq_model[0].gru upstream
 EFFICIENTSED_HEAD_PREFIXES = ("net.strong_head.", "net.weak_head.")
 
 
@@ -93,7 +104,8 @@ def encoder_state_from_checkpoint(state: dict[str, Tensor]) -> tuple[dict[str, T
 
 def efficientsed_state(state: dict[str, Tensor]) -> tuple[dict[str, Tensor], dict[str, Tensor],
                                                          tuple[str, ...]]:
-    """(Frame-MobileNet, GRU, dropped head keys) of an EfficientSED checkpoint, unprefixed."""
+    """(Frame-MobileNet, sequence model, dropped head keys) of an EfficientSED checkpoint, with
+    `net.model.` / `net.seq_model.` stripped."""
     def strip(prefix: str) -> dict[str, Tensor]:
         return {key.removeprefix(prefix): value for key, value in state.items()
                 if key.startswith(prefix)}
@@ -113,22 +125,28 @@ class FrameMnSED(nn.Module):
 
     def __init__(self, classes: int, *, output_frames: int = 1000,
                  width_mult: float = WIDTH_MULT, rnn_hidden: int | None = None,
-                 rnn_layers: int | None = None) -> None:
+                 rnn_layers: int | None = None, sequence_model: str | None = None) -> None:
         super().__init__()
         if output_frames <= 0:
             raise ValueError("output_frames must be positive")
         if (rnn_hidden is None) != (rnn_layers is None):
             raise ValueError("rnn_hidden and rnn_layers go together")
+        if sequence_model is not None and (sequence_model not in SEQUENCE_MODELS
+                                           or rnn_hidden is not None):
+            raise ValueError(f"sequence_model must be one of {SEQUENCE_MODELS}, without a GRU")
         self.output_frames = output_frames
         self.mel = frame_mn_frontend()
         with contextlib.redirect_stdout(io.StringIO()):  # get_model prints the whole network
             self.encoder = get_model(width_mult=width_mult)
         width = self.encoder.lastconv_output_channels
-        self.sequence: nn.GRU | None = None
+        self.sequence: nn.Module | None = None
         if rnn_hidden is not None:
             self.sequence = nn.GRU(width, rnn_hidden, num_layers=int(rnn_layers),
                                    batch_first=True, bidirectional=True)
             width = 2 * rnn_hidden
+        elif sequence_model == "tf256":
+            self.sequence = build_tf256(input_dim=width, dropout=TF256_DROPOUT)
+            width = 256
         self.head = nn.Linear(width, classes)
 
     def train(self, mode: bool = True) -> FrameMnSED:
@@ -153,8 +171,10 @@ class FrameMnSED(nn.Module):
 
     def forward(self, waveforms: Tensor) -> Tensor:
         steps = self.embed(waveforms)
-        if self.sequence is not None:
+        if isinstance(self.sequence, nn.GRU):
             steps, _ = self.sequence(steps)
+        elif self.sequence is not None:
+            steps = self.sequence(steps)
         logits = self.head(steps)
         return nn.functional.interpolate(logits.transpose(1, 2), size=self.output_frames,
                                          mode="nearest").transpose(1, 2)
@@ -162,7 +182,7 @@ class FrameMnSED(nn.Module):
     def load_pretrained(self, path: Path, expected_sha256: str | None = FRAME_MN10_STRONG_1_SHA256
                         ) -> FrameMnLoadReport:
         """Load every pretrained tensor this model has, strict: the Frame-MobileNet of a
-        PretrainedSED checkpoint, or the Frame-MobileNet + GRU of an EfficientSED one."""
+        PretrainedSED checkpoint, or the Frame-MobileNet + GRU/TF256 of an EfficientSED one."""
         digest = sha256_of(path)
         if expected_sha256 is not None and digest != expected_sha256:
             raise ValueError(f"{path} has SHA-256 {digest}, expected {expected_sha256} "
@@ -172,11 +192,16 @@ class FrameMnSED(nn.Module):
             encoder, sequence, ignored = efficientsed_state(state)
         else:
             (encoder, ignored), sequence = encoder_state_from_checkpoint(state), {}
-        # Never drop pretrained sequence weights silently, nor train a GRU from scratch while
-        # the run claims a pretrained one.
+        # Never drop pretrained sequence weights silently, nor train a sequence model from
+        # scratch while the run claims a pretrained one. A GRU/TF mismatch fails strict loading.
         if bool(sequence) != (self.sequence is not None):
-            raise ValueError(f"{path}: checkpoint has {len(sequence)} GRU tensors but the model "
-                             f"{'has' if self.sequence is not None else 'has no'} GRU")
+            raise ValueError(f"{path}: checkpoint has {len(sequence)} sequence-model tensors but "
+                             f"the model {'has' if self.sequence is not None else 'has no'} "
+                             "sequence model (GRU/TF256)")
+        if isinstance(self.sequence, nn.GRU):
+            if any(not key.startswith(GRU_PREFIX) for key in sequence):
+                raise ValueError(f"{path}: sequence model is not a GRU")
+            sequence = {key.removeprefix(GRU_PREFIX): value for key, value in sequence.items()}
         self.encoder.load_state_dict(encoder, strict=True)
         if self.sequence is not None:
             self.sequence.load_state_dict(sequence, strict=True)
