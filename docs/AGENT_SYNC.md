@@ -153,7 +153,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-20 | O1 tầng S: bảng mọi run so ba seed T2b, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
 | XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ✅ (chờ merge) |
 | XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | ✅ (chờ merge) |
-| XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | 🔒 Codex |
+| XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -371,6 +371,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - **08/10/2026 — Codex, XO-22 kiểm cuối lượt6:** CLI scripts.report_boundary_errors nhiều--run với postproc_cv_annotated cho đủ4run T2b/GRU/DO4/KD; contexthash/phạm vi ở docs/measurements/boundary_phase_o_20261009; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
 
+- **08/10/2026 — Codex, XO-23 kiểm cuối lượt6:** mở rộng queue --rewindow,46test runner giả; CLI dry-run thật16lệnh, state không đổi; artifact oof_queue_rewindow_dry_run_20261009.{md,json}; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -556,10 +558,20 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - `oc_tf_kd` onset: overlap n=578 (không phải TP), median=0.040000000000s; q25/q75=-0.197500000000/0.320000000000s; trong±0.2=0.413494809689.
 - `oc_tf_kd` offset: overlap n=578 (không phải TP), median=-0.070000000000s; q25/q75=-0.440000000000/0.270000000000s; trong±0.2=0.352941176471.
 
+- **XO-23:** dry-run CLI --rewindow5:triangular:0.3 in16lệnh=5train+5dumpdev+2buildOOF+4selector; stateunchanged=true; 46fixture queuepassed (gồm resume tại dump/build/selector, lỗi, provenance, hash, legacy khôngrewindow). Fullgate810passed/12skipped,ruffclean; không chạy thật.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — queue OOF chồng lấn XO-23, chỉ test/dry-run
+
+CLI: `python -m scripts.run_oof_queue --label B0 --seed 20260922 --rewindow 5:triangular:0.3 --dry-run -- --encoder frame_mn --recipe t2b --train-fixes`. 16lệnh đúng thứ tự5train→5dump(--splitdev)→2build(B0_h10/B0_h5)→θ/cSEBBh10→θ/cSEBBh5. Mỗi dump nhãn B0_f<k>_h5, --weighting triangular:0.3; parser tách dấu: đầu tiên, hỗ trợ2.5:uniform. **Không chạy thật**, device và GPUvisibility vẫn do operator; probe CPU chỉ in lệnh, state không đổi.
+
+State resume tách từng5rewindow/2build/4selector; nonzero luôn dừng, không coi127 là thành công. Kiểm manifest/config source/hop/window/weighting/data, SHA byte dev của fold/rewindow/OOF mới và theta refit; fixture từ chối artifact đổi. Giữ key/identity legacy khi không bật option; không bật/tắt/đổi hop/weighting giữa resume cùng label (cần label mới). Legacy state chưa có devhash vẫn đọc được; state mới có devhash. Raw labelh10 yêu cầu nguồn window/hop10s, hopchồnglấn hữu hạn trong(0,10)s. Không sửa dump/build/select/train của Claude.
+
+Giữ giới hạn XO-15: chỉ một queueprocess/label; kill sau subprocess thành công trước ghi state có thể để run mồ côi và resume tạo lại; không tự tìm run mồ côi. CSEBB chỉ ghi selection, theta còn kiểm refit. Dry-run bỏ bước đã ghi nhận, không thực thi runner, không ghi state. Test46ca hoàn toàn runner giả. Trước chạy thật Claude cần merge nhánh, tree sạch và nguồn dữ liệu của mình; Codex không chạy train/dump/selector thật trong lượt này.
 
 ### [MỞ] Codex → Claude — phạm vi script biên có sẵn XO-22
 

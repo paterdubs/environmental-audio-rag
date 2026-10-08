@@ -10,12 +10,15 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 import subprocess
 import sys
 from collections.abc import Callable
 from pathlib import Path
+
+from ml.evaluation.predictions import triangular_floor
 
 ROOT = Path(__file__).resolve().parents[1]
 FOLDS = Path('data/splits/datased_trainval_folds.csv')
@@ -41,6 +44,20 @@ def validate_arguments(label: str, forwarded: list[str]) -> None:
 
 def read(path: Path) -> dict:
     return json.loads(path.read_text(encoding='utf-8'))
+
+
+def parse_rewindow(value: str | None) -> dict | None:
+    if value is None:
+        return None
+    hop, separator, weighting = value.partition(':')
+    try:
+        seconds = float(hop)
+    except ValueError as error:
+        raise ValueError('rewindow phải là HOP:WEIGHTING') from error
+    if not separator or not math.isfinite(seconds) or not 0 < seconds < 10:
+        raise ValueError('rewindow cần hop hữu hạn trong (0,10) giây')
+    triangular_floor(weighting)
+    return {'hop_seconds': seconds, 'hop_label': f'{seconds:g}', 'weighting': weighting}
 
 
 def validate_fold(run: Path, fold: int, folds_hash: str, seed: int) -> None:
@@ -85,17 +102,22 @@ def subprocess_runner(command: list[str], root: Path) -> subprocess.CompletedPro
 
 
 class OOFQueue:
-    def __init__(self, label: str, seed: int, forwarded: list[str], root: Path, runner: Runner):
+    def __init__(self, label: str, seed: int, forwarded: list[str], root: Path, runner: Runner,
+                 rewindow: str | None = None):
         validate_arguments(label, forwarded)
         self.root, self.runner = root.resolve(), runner
         self.label, self.seed, self.forwarded = label, seed, forwarded
+        self.rewindow = parse_rewindow(rewindow)
         self.folds_hash = digest(self.root / FOLDS)
         identity = {'label': label, 'seed': seed, 'train_args': forwarded,
                     'cv_folds_sha256': self.folds_hash}
+        if self.rewindow is not None:
+            identity['rewindow'] = self.rewindow
         self.path = self.root / 'ml/runs' / f'oof_queue_{label}.json'
         self.state = read(self.path) if self.path.exists() else {
             **identity, 'folds': {}, 'steps': {}}
-        if any(self.state.get(k) != v for k, v in identity.items()):
+        if (any(self.state.get(k) != v for k, v in identity.items())
+                or self.state.get('rewindow') != self.rewindow):
             raise ValueError('resume khác label/seed/tham số/hash fold; cần label mới')
 
     @staticmethod
@@ -107,17 +129,38 @@ class OOFQueue:
         for fold in range(5):
             existing = self.state['folds'].get(str(fold))
             if existing:
-                validate_fold(Path(existing['run']), fold, self.folds_hash, self.seed)
+                self.train_fold(fold)
             else:
                 print(subprocess.list2cmdline(self.command('train_sed', *self.forwarded,
                       '--seed', self.seed, '--cv-fold', fold)))
             members.append(existing['run'] if existing else f'<fold-{fold}-run>')
-        oof = self.state['steps'].get('build_oof', {}).get('run', '<oof-run>')
-        print(subprocess.list2cmdline(self.command('build_oof', '--label', self.label, *members)))
-        print(subprocess.list2cmdline(self.command('select_postproc_cv', oof, '--modes', 'global',
-                                             '--workers', 3, '--eval-set', 'annotated')))
-        print(subprocess.list2cmdline(self.command('select_sebb_cv', oof, '--workers', 2,
-                                             '--eval-set', 'annotated')))
+        branches = [('build_oof', self.label, members, '')]
+        if self.rewindow:
+            overlapped = []
+            for fold, member in enumerate(members):
+                name = f'rewindow_f{fold}'
+                entry = self.state['steps'].get(name)
+                if entry:
+                    self.validate_rewindow(Path(entry['run']), Path(member), entry)
+                else:
+                    print(subprocess.list2cmdline(self.dump_command(Path(member), fold)))
+                overlapped.append(entry['run'] if entry else f'<rewindow-fold-{fold}-run>')
+            hop = self.rewindow['hop_label']
+            branches = [('build_oof_h10', f'{self.label}_h10', members, '_h10'),
+                        (f'build_oof_h{hop}', f'{self.label}_h{hop}', overlapped, f'_h{hop}')]
+        planned = []
+        for name, label, sources, suffix in branches:
+            entry = self.state['steps'].get(name)
+            oof = entry['run'] if entry else f'<oof{suffix}-run>'
+            if not entry:
+                print(subprocess.list2cmdline(self.command('build_oof', '--label',
+                                                           label, *sources)))
+            planned.append((oof, suffix))
+        for oof, suffix in planned:
+            for module, _, knobs in self.selector_specs():
+                if module + suffix not in self.state['steps']:
+                    print(subprocess.list2cmdline(self.command(module, oof, *knobs,
+                                                               '--eval-set', 'annotated')))
         return self.state
 
     def save(self) -> None:
@@ -145,25 +188,80 @@ class OOFQueue:
             validate_fold(run, fold, self.folds_hash, self.seed)
             if digest(run/'manifest.json') != entry['manifest_sha256']:
                 raise ValueError(f'{run}: manifest đã đổi sau khi queue ghi nhận')
+            if entry.get('dev_file_sha256') and digest(run/'predictions/dev.npz') != (
+                    entry['dev_file_sha256']):
+                raise ValueError(f'{run}: predictions dev fold đã đổi')
         else:
             stdout = self.invoke(f'fold_{fold}', self.command('train_sed', *self.forwarded,
                 '--seed', self.seed, '--cv-fold', fold))
             run = reported_run(stdout, 'run', self.root)
             validate_fold(run, fold, self.folds_hash, self.seed)
             self.state['folds'][str(fold)] = {'run': str(run),
-                                           'manifest_sha256': digest(run/'manifest.json')}
+                'manifest_sha256': digest(run/'manifest.json'),
+                'dev_file_sha256': digest(run/'predictions/dev.npz')}
             self.save()
         return run
 
-    def build_oof(self, members: list[Path]) -> Path:
-        entry = self.state['steps'].get('build_oof')
+    def dump_command(self, member: Path, fold: int) -> list[str]:
+        hop = self.rewindow['hop_label']
+        return self.command('dump_predictions', member, '--split', 'dev', '--hop-seconds', hop,
+                            '--weighting', self.rewindow['weighting'], '--label',
+                            f'{self.label}_f{fold}_h{hop}')
+
+    def validate_rewindow(self, run: Path, member: Path, entry: dict | None = None) -> None:
+        manifest = read(run / 'manifest.json')
+        config, source = manifest.get('config', {}), read(member / 'manifest.json')
+        if entry and digest(run / 'manifest.json') != entry['manifest_sha256']:
+            raise ValueError(f'{run}: manifest rewindow đã đổi')
+        expected = {'source_run': member.name, 'hop_seconds': self.rewindow['hop_seconds'],
+                    'window_weighting': self.rewindow['weighting'],
+                    'window_frames': source['config']['window_frames'],
+                    'frame_rate': source['config']['frame_rate'],
+                    'hop_frames': round(self.rewindow['hop_seconds'] *
+                                        source['config']['frame_rate'])}
+        shared = ('split_sha256', 'taxonomy_sha256', 'data_manifest_sha256')
+        if (manifest.get('task') != 'sed_rewindow' or manifest.get('complete') is not True
+                or manifest.get('git', {}).get('dirty') is not False
+                or any(config.get(k) != v for k, v in expected.items())
+                or any(manifest.get(k) != source.get(k) for k in shared)
+                or not (run / 'predictions/dev.npz').is_file()):
+            raise ValueError(f'{run}: provenance rewindow không hợp lệ')
+        if entry and digest(run / 'predictions/dev.npz') != entry['dev_file_sha256']:
+            raise ValueError(f'{run}: predictions dev rewindow đã đổi')
+
+    def rewindow_fold(self, member: Path, fold: int) -> Path:
+        config = read(member / 'manifest.json')['config']
+        if any(not math.isclose(config[key] / config['frame_rate'], 10.)
+               for key in ('window_frames', 'hop_frames')):
+            raise ValueError('nhánh thô h10 cần window/hop nguồn đều10giây')
+        name = f'rewindow_f{fold}'
+        entry = self.state['steps'].get(name)
+        if entry:
+            run = Path(entry['run'])
+        else:
+            stdout = self.invoke(name, self.dump_command(member, fold))
+            run = reported_run(stdout, 'run_dir', self.root)
+        self.validate_rewindow(run, member, entry)
+        if not entry:
+            self.state['steps'][name] = {'run': str(run),
+                'manifest_sha256': digest(run / 'manifest.json'),
+                'dev_file_sha256': digest(run / 'predictions/dev.npz')}
+            self.save()
+        return run
+
+    def build_oof(self, members: list[Path], name: str = 'build_oof',
+                  label: str | None = None) -> Path:
+        entry = self.state['steps'].get(name)
         if entry:
             oof = Path(entry['run'])
             if digest(oof/'manifest.json') != entry['manifest_sha256']:
                 raise ValueError('manifest OOF đã đổi')
+            if entry.get('dev_file_sha256') and digest(oof/'predictions/dev.npz') != (
+                    entry['dev_file_sha256']):
+                raise ValueError('predictions dev OOF đã đổi')
         else:
-            stdout = self.invoke('build_oof', self.command('build_oof', '--label',
-                                                         self.label, *members))
+            stdout = self.invoke(name, self.command('build_oof', '--label',
+                                                    label or self.label, *members))
             oof = reported_run(stdout, 'run_dir', self.root)
         manifest = read(oof/'manifest.json')
         config = manifest.get('config', {})
@@ -173,34 +271,58 @@ class OOFQueue:
                 or config.get('members') != [p.name for p in members]
                 or not (oof/'predictions/dev.npz').is_file()):
             raise ValueError('manifest OOF không hợp lệ')
-        self.state['steps']['build_oof'] = {'run': str(oof),
-                                          'manifest_sha256': digest(oof/'manifest.json')}
+        self.state['steps'][name] = {'run': str(oof),
+                                    'manifest_sha256': digest(oof/'manifest.json'),
+                                    'dev_file_sha256': digest(oof/'predictions/dev.npz')}
         self.save()
         return oof
 
-    def select(self, oof: Path, module: str, prefix: str, knobs: list[str]) -> None:
+    def select(self, oof: Path, module: str, prefix: str, knobs: list[str],
+               suffix: str = '') -> None:
         output = oof / f'{prefix}_cv_selection_annotated.json'
-        entry = self.state['steps'].get(module)
+        name = module + suffix
+        entry = self.state['steps'].get(name)
         if entry:
             if digest(output) != entry['sha256']:
                 raise ValueError(f'{output}: selection đã đổi')
         else:
-            self.invoke(module, self.command(module, oof, *knobs, '--eval-set', 'annotated'))
+            self.invoke(name, self.command(module, oof, *knobs, '--eval-set', 'annotated'))
         selected = read(output)
         if (selected.get('run') != oof.name or selected.get('eval_set') != 'annotated'
                 or selected.get('git', {}).get('dirty') is not False):
             raise ValueError(f'{output}: provenance selection không hợp lệ')
-        self.state['steps'][module] = {'path': str(output), 'sha256': digest(output)}
+        completed = {'path': str(output), 'sha256': digest(output)}
+        if prefix == 'postproc':
+            refit = oof / 'postproc_cv_annotated.json'
+            if not refit.is_file():
+                raise ValueError(f'{refit}: thiếu refit theta')
+            if entry and entry.get('refit_sha256') and digest(refit) != entry['refit_sha256']:
+                raise ValueError(f'{refit}: refit theta đã đổi')
+            completed['refit_sha256'] = digest(refit)
+        self.state['steps'][name] = completed
         self.save()
+
+    @staticmethod
+    def selector_specs() -> list[tuple]:
+        return [('select_postproc_cv', 'postproc', ['--modes', 'global', '--workers', '3']),
+                ('select_sebb_cv', 'sebb', ['--workers', '2'])]
 
     def run(self) -> dict:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         try:
             members = [self.train_fold(fold) for fold in range(5)]
-            oof = self.build_oof(members)
-            self.select(oof, 'select_postproc_cv', 'postproc',
-                        ['--modes', 'global', '--workers', '3'])
-            self.select(oof, 'select_sebb_cv', 'sebb', ['--workers', '2'])
+            if self.rewindow:
+                overlapped = [self.rewindow_fold(member, fold)
+                              for fold, member in enumerate(members)]
+                hop = self.rewindow['hop_label']
+                branches = [(self.build_oof(members, 'build_oof_h10', f'{self.label}_h10'), '_h10'),
+                            (self.build_oof(overlapped, f'build_oof_h{hop}',
+                                            f'{self.label}_h{hop}'), f'_h{hop}')]
+            else:
+                branches = [(self.build_oof(members), '')]
+            for oof, suffix in branches:
+                for module, prefix, knobs in self.selector_specs():
+                    self.select(oof, module, prefix, knobs, suffix)
             self.state.pop('active', None)
             self.state.pop('error', None)
             self.state['complete'] = True
@@ -214,8 +336,9 @@ class OOFQueue:
 
 
 def execute_queue(label: str, seed: int, forwarded: list[str], *, dry_run: bool = False,
-                  root: Path = ROOT, runner: Runner = subprocess_runner) -> dict:
-    queue = OOFQueue(label, seed, forwarded, root, runner)
+                  root: Path = ROOT, runner: Runner = subprocess_runner,
+                  rewindow: str | None = None) -> dict:
+    queue = OOFQueue(label, seed, forwarded, root, runner, rewindow)
     return queue.dry_run() if dry_run else queue.run()
 
 
@@ -227,9 +350,10 @@ def main() -> None:
     parser.add_argument('--label', required=True)
     parser.add_argument('--seed', type=int, required=True)
     parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('--rewindow', help='HOP:WEIGHTING, e.g. 5:triangular:0.3')
     args = parser.parse_args(raw[:boundary])
     forwarded = raw[boundary+1:]
-    execute_queue(args.label, args.seed, forwarded, dry_run=args.dry_run)
+    execute_queue(args.label, args.seed, forwarded, dry_run=args.dry_run, rewindow=args.rewindow)
 
 
 if __name__ == '__main__':
