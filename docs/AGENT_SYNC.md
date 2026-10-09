@@ -150,10 +150,10 @@ mình; cần đụng file khác thì ghi §6.
 | XO-17 | O1.2: chẩn đoán cSEBB O-C so seed T2b172924Z, chỉ134dev annotated | Codex | `scripts/report_sebb_diagnosis.py`, `tests/`, `docs/measurements/sebb_diagnosis_*` | — | ✅ (chờ merge) |
 | XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
-| XO-20 | O1 tầng S: bảng mọi run so ba seed T2b, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
-| XO-21 | O1.2/O1.4: khoảng cách frame AP và event-F1, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ✅ (chờ merge) |
-| XO-22 | O1.2/O1.4: chạy báo cáo biên có sẵn với postproc annotated | Codex | `docs/measurements/` | postproc đã có | ✅ (chờ merge) |
-| XO-23 | O0.6/O4.2: queue OOF thêm rewindow, resume từng bước, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
+| XO-20 | O1/O2.1 tầng S: mọi run so ba seed T2b; bảng S→C cùng recipe, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
+| XO-21 | O1.2/O1.4/O2.1: frame AP/event-F1 và độ mượt posterior sáu run, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | 🔒 Codex — lượt 6 cập nhật 09/10 |
+| XO-22 | O1.2/O1.4/O2.1: báo cáo biên có sẵn sáu run với postproc annotated | Codex | `docs/measurements/` | postproc đã có | 🔒 Codex — lượt 6 cập nhật 09/10 |
+| XO-23 | O0.6/O4.2: queue OOF rewindow + skip-raw-cv, resume từng bước, workers2, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | 🔒 Codex — lượt 6 cập nhật 09/10 |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -373,6 +373,8 @@ mình; cần đụng file khác thì ghi §6.
 
 - **08/10/2026 — Codex, XO-23 kiểm cuối lượt6:** mở rộng queue --rewindow,46test runner giả; CLI dry-run thật16lệnh, state không đổi; artifact oof_queue_rewindow_dry_run_20261009.{md,json}; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
 
+[09/10/2026] Codex XO-20 — lượt6 cập nhật: bổ sung prompt mới; artifact measurement sinh lại từ dev/selection đã lưu hoặc dry-run; 827 passed, 12 skipped, 29 warnings, 97.32s, ruff sạch. Chờ merge.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -560,10 +562,47 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 
 - **XO-23:** dry-run CLI --rewindow5:triangular:0.3 in16lệnh=5train+5dumpdev+2buildOOF+4selector; stateunchanged=true; 46fixture queuepassed (gồm resume tại dump/build/selector, lỗi, provenance, hash, legacy khôngrewindow). Fullgate810passed/12skipped,ruffclean; không chạy thật.
 
+- **XO-20 lượt6 cập nhật:** 13 run đủ CV, 0 đang chờ; bảng S→C 4 cặp recipe, 3 OOF chờ.
+- `sed_polyphonic_20260927T172924Z`: mAP=0.7351536446359367, CV=0.233026052067±0.039962720983 theta, Δbest=+0.000000000000, qua=False.
+- `sed_polyphonic_20260927T180358Z`: mAP=0.7442710056208708, CV=0.220713036799±0.046403701360 csebb, Δbest=-0.012313015268, qua=False.
+- `sed_polyphonic_20260927T185137Z`: mAP=0.7495623263537761, CV=0.224278526631±0.040871625850 csebb, Δbest=-0.008747525436, qua=False.
+- `sed_ensemble_f2_h2.5_triangular0.3_20261008T060746Z`: mAP=None, CV=0.234164956488±0.042423428814 theta, Δbest=+0.001138904421, qua=True.
+- `sed_ensemble_f2_h2.5_uniform_20261008T074349Z`: mAP=None, CV=0.232880272756±0.034000105200 theta, Δbest=-0.000145779311, qua=False.
+- `sed_ensemble_f2_h5_triangular0.3_20261008T064740Z`: mAP=None, CV=0.240811490483±0.047409503689 theta, Δbest=+0.007785438417, qua=True.
+- `sed_ensemble_t2b_20260927T200914Z`: mAP=None, CV=0.238278490386±0.056150673405 csebb, Δbest=+0.005252438319, qua=True.
+- `sed_polyphonic_20261008T062333Z`: mAP=0.7339902324809666, CV=0.232664080263±0.049901337548 theta, Δbest=-0.000361971803, qua=False.
+- `sed_polyphonic_20261008T083632Z`: mAP=0.7559966807974785, CV=0.231814412697±0.064059228597 theta, Δbest=-0.001211639369, qua=False.
+- `sed_polyphonic_20261008T131138Z`: mAP=0.7430186128852598, CV=0.217425078154±0.055380754831 csebb, Δbest=-0.015600973913, qua=False.
+- `sed_polyphonic_20261008T135047Z`: mAP=0.7386101645078149, CV=0.277893741776±0.086759158776 theta, Δbest=+0.044867689709, qua=True.
+- `sed_polyphonic_20261008T145841Z`: mAP=0.7461796026644167, CV=0.255924867213±0.061603805396 theta, Δbest=+0.022898815147, qua=True.
+- `sed_polyphonic_20261008T162136Z`: mAP=0.7386801876733315, CV=0.218845014324±0.044501034813 theta, Δbest=-0.014181037742, qua=False.
+- S→C `sed_polyphonic_20261008T062333Z` 0.232664080263 → `sed_oof_B0_h10_20261008T130820Z` 0.220101348149; chỉ mô tả.
+- S→C `sed_polyphonic_20261008T062333Z` 0.232664080263 → `sed_oof_B0_h5_20261008T130849Z` 0.233613549481; chỉ mô tả.
+- S→C `sed_polyphonic_20261008T135047Z` 0.277893741776 → `sed_oof_TFKD_h10_20261008T224140Z` 0.204868943379; chỉ mô tả.
+- S→C `sed_polyphonic_20261008T135047Z` 0.277893741776 → `sed_oof_TFKD_h5_20261008T224209Z` 0.207277533022; chỉ mô tả.
+- XO-20: gate 827 passed, 12 skipped, 29 warnings, 97.32s; ruff check . sạch, CPU, không test predictions.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — XO-20 cập nhật đủ TF strong/RED và S→C
+
+- **XO-20 lượt6 cập nhật:** 13 run đủ CV, 0 đang chờ; bảng S→C 4 cặp recipe, 3 OOF chờ.
+
+Ghép recipe qua manifest OOF→rewindow→run fold, không suy recipe từ nhãn. Ghép recipe/window_sampling/boundary_head; train_fixes khác nhau được ghi riêng (TFKD tầng S chưa bật, OOF đã bật); CV S dev134 và C OOF564, suy luận có thể khác (O-B raw10s so B0 h5); không phải Δ ghép cặp, không kết luận chọn. OOF ensemble trộn recipe được liệt kê chưa ghép, không ép vào một recipe. Chỉ đọc selection CV đã lưu, không chạy report_oof/selector. cSEBB không lưu dev_recordings, lấy phạm vi564 từ θ đồng hành và kiểm foldhash; không thêm số vào artifact nguồn.
+
+### [MỞ] Codex → Claude — tiếp nhận lượt 6 cập nhật 09/10/2026
+
+Đã merge master `14e2e5f` vào codex/phase-o, không xung đột. Prompt cập nhật của người dùng ưu tiên hơn docs/notes/codex_prompts_phase_o.md. Tiếp tục các artifact XO-20..23 đã có, không làm XO-24/25 trong lượt này. Chỉ worktree, CPU, đọc main ml/runs, không test/pip/push; XO-11 vẫn chặn. Không sửa file Claude ngoài nội dung merge được yêu cầu.
+
+- XO-20 (PLAN O1.1/O1.2/O2.1): bổ sung mọi run đủ hai selection annotated, gồm TF strong/O-E1; bảng phụ tầng S→C theo cùng recipe/provenance, số CV đã lưu, chỉ mô tả, không chọn.
+- XO-21 (PLAN O1.2/O1.4/O2.1): đủ sáu run T2b/GRU/DO4/TFKD/TFstrong/RED, AP + event họ thắng + θ oracle không chọn + I/D/S/onset/offset như trước, thêm |Δp| và đoạn >0.5/recording dùng lại XO-17, chỉ134dev annotated.
+- XO-22: chạy nguyên report_boundary_errors cho sáu run bằng postproc annotated đã có; output trong worktree; thiếu ghi §6, không selector.
+- XO-23 (PLAN O0.6): thêm --skip-raw-cv (vẫn dựng raw OOF, bỏ hai selector raw), theta --modes global --workers 2 và cSEBB --workers 2; resume/runner giả/dry-run, không chạy queue thật.
+
+Mỗi task pytest -q và ruff check . không pipe, cập nhật §3.O/§4/§5 và commit tiếng Việt có Bối cảnh/Thay đổi/Kiểm chứng/Ảnh hưởng. Các số kỳ vọng của prompt chỉ dùng đối chiếu sau khi đo, lệch ghi §6.
 
 ### [MỞ] Codex → Claude — queue OOF chồng lấn XO-23, chỉ test/dry-run
 
