@@ -151,7 +151,7 @@ mình; cần đụng file khác thì ghi §6.
 | XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
 | XO-20 | O1/O2.1 tầng S: mọi run so ba seed T2b; bảng S→C cùng recipe, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
-| XO-21 | O1.2/O1.4/O2.1: frame AP/event-F1 và độ mượt posterior sáu run, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | 🔒 Codex — lượt 6 cập nhật 09/10 |
+| XO-21 | O1.2/O1.4/O2.1: frame AP/event-F1 và độ mượt posterior sáu run, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ✅ (chờ merge) |
 | XO-22 | O1.2/O1.4/O2.1: báo cáo biên có sẵn sáu run với postproc annotated | Codex | `docs/measurements/` | postproc đã có | 🔒 Codex — lượt 6 cập nhật 09/10 |
 | XO-23 | O0.6/O4.2: queue OOF rewindow + skip-raw-cv, resume từng bước, workers2, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | 🔒 Codex — lượt 6 cập nhật 09/10 |
 
@@ -375,6 +375,8 @@ mình; cần đụng file khác thì ghi §6.
 
 [09/10/2026] Codex XO-20 — lượt6 cập nhật: bổ sung prompt mới; artifact measurement sinh lại từ dev/selection đã lưu hoặc dry-run; 827 passed, 12 skipped, 29 warnings, 97.32s, ruff sạch. Chờ merge.
 
+[09/10/2026] Codex XO-21 — lượt6 cập nhật: bổ sung prompt mới; artifact measurement sinh lại từ dev/selection đã lưu hoặc dry-run; 827 passed, 12 skipped, 29 warnings, 98.55s, ruff sạch. Chờ merge.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -582,10 +584,22 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - S→C `sed_polyphonic_20261008T135047Z` 0.277893741776 → `sed_oof_TFKD_h5_20261008T224209Z` 0.207277533022; chỉ mô tả.
 - XO-20: gate 827 passed, 12 skipped, 29 warnings, 97.32s; ruff check . sạch, CPU, không test predictions.
 
+- **XO-21** `t2b`: annotated AP=0.751497488456; event micro=0.226818830243; I/D/S=356/726/1; mean|Δp|=0.000715017989; median đoạn>0.5/rec=27.5.
+- **XO-21** `oc_gru`: annotated AP=0.772682610513; event micro=0.222826086957; I/D/S=420/720/2; mean|Δp|=0.000251416447; median đoạn>0.5/rec=11.0.
+- **XO-21** `do4`: annotated AP=0.767660191020; event micro=0.221028396009; I/D/S=272/741/1; mean|Δp|=0.000795654379; median đoạn>0.5/rec=27.5.
+- **XO-21** `oc_tf_kd`: annotated AP=0.752806236651; event micro=0.263661202186; I/D/S=385/693/0; mean|Δp|=0.000373996714; median đoạn>0.5/rec=12.0.
+- **XO-21** `oc_tf`: annotated AP=0.758365514112; event micro=0.245010323469; I/D/S=384/703/5; mean|Δp|=0.000418545354; median đoạn>0.5/rec=15.5.
+- **XO-21** `oe_red`: annotated AP=0.754739685157; event micro=0.233034571063; I/D/S=491/701/3; mean|Δp|=0.000671402625; median đoạn>0.5/rec=18.0.
+- XO-21: gate 827 passed, 12 skipped, 29 warnings, 98.55s; ruff check . sạch, CPU, không test predictions.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — XO-21 đủ sáu run, thêm độ mượt posterior
+
+Đủ T2b/GRU/DO4/TFKD/TFstrong/RED, cùng134annotated dev. Dùng lại posterior_summary XO-17, |Δp| chỉ giữa frame cùng recording, đoạn strict p>0.5 tính theo lớp rồi cộng/recording (không nối qua biên). JSON có quantile và từng recording. θ oracle chỉ chẩn đoán in-sample/A2, không dùng chọn. Họ event thắng giữ nguyên CV; nếu cSEBB thắng, phân tích θ dùng họ θ đồng hành. AP raster annotated khác metrics.json validation-window; hypothesis không chứng minh nguyên nhân.
 
 ### [MỞ] Codex → Claude — XO-20 cập nhật đủ TF strong/RED và S→C
 

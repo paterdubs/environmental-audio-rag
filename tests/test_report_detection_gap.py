@@ -6,6 +6,16 @@ from ml.postprocessing import DurationPrior, process_recordings
 from scripts import report_detection_gap as report
 
 
+def test_posterior_smoothness_never_connects_recording_boundaries():
+    p = {'a': np.array([[.9], [.9]]), 'b': np.array([[.1], [.1]])}
+    measured = report.posterior_summary(p, {'a': [], 'b': []}, ('x',), 10.)
+    assert measured['abs_adjacent_delta']['mean'] == 0.
+    assert measured['abs_adjacent_delta']['n'] == 2
+    assert measured['recordings']['a']['segments_over_0_5'] == 1
+    assert measured['recordings']['b']['segments_over_0_5'] == 0
+    assert measured['segments_per_recording']['median'] == .5
+
+
 def test_cached_median_oracle_matches_native_grid_with_edges_gaps_and_min_duration():
     probabilities = {'r': np.array([[.8], [.8], [.1], [.9], [.9], [.1], [.7], [.7]])}
     reference = {'r': [{'event_label': 'x', 'onset': 0., 'offset': .8}]}

@@ -17,7 +17,12 @@ from ml.provenance import git_state
 from ml.training.common import sha256_file
 from scripts.report_screening import compare, load_run
 from scripts.report_screening_per_class import class_scores, finite, fmt, validate_theta_refit
-from scripts.report_sebb_diagnosis import load_dev, raster_reference, selected_csebb
+from scripts.report_sebb_diagnosis import (
+    load_dev,
+    posterior_summary,
+    raster_reference,
+    selected_csebb,
+)
 from scripts.report_tier_s import SELECTIONS, best_frame_map, read, write_report
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -121,6 +126,7 @@ def diagnose(run: dict) -> dict:
     for cid in class_ids:
         rows[cid]['winning_family_events'] = winner['per_class'][cid]
     return {'screening': run, 'n_recordings': len(p), 'class_ids': class_ids,
+            'posterior': posterior_summary(p, reference, class_ids, rate),
             'frame_map_saved': best_frame_map(Path(run['run'])),
             'frame_map_annotated_stacked': float(np.mean([r['frame_ap'] for r in rows.values()
                                                          if r['frame_ap'] is not None])),
@@ -135,8 +141,7 @@ def diagnose(run: dict) -> dict:
 def render(result: dict) -> str:
     lines = ['# Khoảng cách frame AP và event-F1 — dev annotated', '',
              '> **Chỉ mô tả, in-sample dev**, không chứng minh nhân quả. '
-             'Họ/config thắng giữ nguyên '
-             'CV đã lưu. θ tối ưu theo lớp là oracle trên cùng dev để đo khoảng cách; '
+             'Giữ họ/config CV đã lưu. θ per-class là oracle trên cùng dev để đo khoảng cách; '
              '**không dùng để chọn**, không lưu postproc, không đổi A2/S13. Prior từ train, '
              'percentile theo họ θ đã chọn; hòa oracle giữ θ nhỏ nhất, '
              'NaN objective→0 như sweep gốc. '
@@ -159,6 +164,7 @@ def render(result: dict) -> str:
                      f"{errors['insertion']}/{errors['deletion']}/{errors['substitution']} | "
                      f"{fmt(on['micro_f1'])}/{fmt(on['macro_f1'])} | "
                      f"{fmt(off['micro_f1'])}/{fmt(off['macro_f1'])} |")
+    lines += render_smoothness(result['runs'])
     for row in result['runs']:
         lines += ['', f"## {row['screening']['label']}", '',
                   '| Lớp | Frame AP | F1 họ thắng | Nsys/Nref | p>θ | Frame GT+ | '
@@ -181,6 +187,24 @@ def render(result: dict) -> str:
               '**Giả thuyết:** frame AP cao hơn có thể cùng tồn tại với biên chưa khớp collar '
               'hoặc operating point chưa phù hợp; các bảng này không tách được tác động nhân quả.']
     return '\n'.join([*lines, ''])
+
+
+def render_smoothness(rows: list[dict]) -> list[str]:
+    lines = ['', '## Độ mượt posterior (cùng phép đo XO-17)', '',
+             '| Run | Mean / median / IQR của \\|Δp\\| | Median / IQR đoạn >0.5 mỗi recording |',
+             '|---|---:|---:|']
+    for row in rows:
+        p = row['posterior']
+        d, s = p['abs_adjacent_delta'], p['segments_per_recording']
+        lines.append(f"| {row['screening']['label']} | "
+                     f"{fmt(d['mean'])} / {fmt(d['median'])} / {fmt(d['iqr'])} | "
+                     f"{fmt(s['median'])} / {fmt(s['iqr'])} |")
+    lines += ['', '|Δp| chỉ giữa frame liền kề **trong cùng recording**, gộp mọi lớp/frame. '
+              'Đoạn dùng strict p>0.5, đếm riêng từng lớp rồi cộng trong mỗi recording; '
+              'không nối qua biên recording. Quantile và từng recording trong JSON. '
+              '**Giả thuyết:** độ mượt có thể tương tác với hậu xử lý/biên; '
+              'các thống kê này không chứng minh nguyên nhân.']
+    return lines
 
 
 def main() -> None:

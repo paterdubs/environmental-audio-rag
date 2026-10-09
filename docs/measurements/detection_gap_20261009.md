@@ -1,6 +1,6 @@
 # Khoảng cách frame AP và event-F1 — dev annotated
 
-> **Chỉ mô tả, in-sample dev**, không chứng minh nhân quả. Họ/config thắng giữ nguyên CV đã lưu. θ tối ưu theo lớp là oracle trên cùng dev để đo khoảng cách; **không dùng để chọn**, không lưu postproc, không đổi A2/S13. Prior từ train, percentile theo họ θ đã chọn; hòa oracle giữ θ nhỏ nhất, NaN objective→0 như sweep gốc. F1 chuẩn sed_eval; macro bỏ NaN, null/— giữ nguyên trong bảng. AP dùng sigmoid đã gộp cửa sổ, raster floor/ceil hợp GT trên 134 recording; khác best_validation (window/mask validation) trong metrics.json. Tỷ lệ p>θ tính posterior thô, khác hậu xử lý dùng median và ≥θ. Nếu cSEBB thắng, θ là họ θ global đồng hành, không phải λ cSEBB.
+> **Chỉ mô tả, in-sample dev**, không chứng minh nhân quả. Giữ họ/config CV đã lưu. θ per-class là oracle trên cùng dev để đo khoảng cách; **không dùng để chọn**, không lưu postproc, không đổi A2/S13. Prior từ train, percentile theo họ θ đã chọn; hòa oracle giữ θ nhỏ nhất, NaN objective→0 như sweep gốc. F1 chuẩn sed_eval; macro bỏ NaN, null/— giữ nguyên trong bảng. AP dùng sigmoid đã gộp cửa sổ, raster floor/ceil hợp GT trên 134 recording; khác best_validation (window/mask validation) trong metrics.json. Tỷ lệ p>θ tính posterior thô, khác hậu xử lý dùng median và ≥θ. Nếu cSEBB thắng, θ là họ θ global đồng hành, không phải λ cSEBB.
 
 | Run | mAP metrics | AP macro annotated | Họ | Macro event | Micro event | Micro θ global | Micro θ oracle | I/D/S | Onset-only micro/macro | Offset-only micro/macro |
 |---|---:|---:|---|---:|---:|---:|---:|---|---|---|
@@ -8,6 +8,21 @@
 | oc_gru | 0.7560 | 0.7727 | theta | 0.1741 | 0.2228 | 0.2228 | 0.2469 | 420/720/2 | 0.3098/0.2576 | 0.5747/0.5453 |
 | do4 | 0.7430 | 0.7677 | csebb | 0.1508 | 0.2210 | 0.2204 | 0.2517 | 272/741/1 | 0.2701/0.2074 | 0.5234/0.4464 |
 | oc_tf_kd | 0.7386 | 0.7528 | theta | 0.1956 | 0.2637 | 0.2637 | 0.2978 | 385/693/0 | 0.3306/0.2604 | 0.5929/0.5376 |
+| oc_tf | 0.7462 | 0.7584 | theta | 0.1815 | 0.2450 | 0.2450 | 0.2807 | 384/703/5 | 0.3180/0.2631 | 0.5547/0.4914 |
+| oe_red | 0.7387 | 0.7547 | theta | 0.1808 | 0.2330 | 0.2330 | 0.2780 | 491/701/3 | 0.3009/0.2504 | 0.5467/0.5082 |
+
+## Độ mượt posterior (cùng phép đo XO-17)
+
+| Run | Mean / median / IQR của \|Δp\| | Median / IQR đoạn >0.5 mỗi recording |
+|---|---:|---:|
+| t2b | 0.0007 / 0.0000 / 0.0000 | 27.5000 / 49.0000 |
+| oc_gru | 0.0003 / 0.0000 / 0.0000 | 11.0000 / 15.7500 |
+| do4 | 0.0008 / 0.0000 / 0.0000 | 27.5000 / 56.5000 |
+| oc_tf_kd | 0.0004 / 0.0000 / 0.0000 | 12.0000 / 23.7500 |
+| oc_tf | 0.0004 / 0.0000 / 0.0000 | 15.5000 / 27.5000 |
+| oe_red | 0.0007 / 0.0000 / 0.0000 | 18.0000 / 34.2500 |
+
+|Δp| chỉ giữa frame liền kề **trong cùng recording**, gộp mọi lớp/frame. Đoạn dùng strict p>0.5, đếm riêng từng lớp rồi cộng trong mỗi recording; không nối qua biên recording. Quantile và từng recording trong JSON. **Giả thuyết:** độ mượt có thể tương tác với hậu xử lý/biên; các thống kê này không chứng minh nguyên nhân.
 
 ## t2b
 
@@ -113,8 +128,60 @@
 | voices | 0.9263 | 0.3971 | 59/77 | 0.0359 | 0.0466 | 0.95 | 0.95 | 0.3971 | 0.3971 | +0.0000 |
 | workshop | 0.9877 | 0.7191 | 84/94 | 0.0951 | 0.0992 | 0.95 | 0.95 | 0.7191 | 0.7191 | +0.0000 |
 
+## oc_tf
+
+| Lớp | Frame AP | F1 họ thắng | Nsys/Nref | p>θ | Frame GT+ | θ global | θ oracle | F1 θ global | F1 θ oracle | Δ oracle |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| bells | 0.8605 | 0.1622 | 11/26 | 0.0056 | 0.0165 | 0.95 | 0.8 | 0.1622 | 0.1951 | +0.0330 |
+| birds | 0.6584 | 0.0328 | 35/87 | 0.0203 | 0.0844 | 0.95 | 0.8 | 0.0328 | 0.0851 | +0.0523 |
+| cat_fights_and_moans | 0.9489 | 0.3200 | 35/40 | 0.0145 | 0.0195 | 0.95 | 0.9 | 0.3200 | 0.3797 | +0.0597 |
+| chicken_coop | 0.8035 | 0.3590 | 15/24 | 0.0041 | 0.0063 | 0.95 | 0.95 | 0.3590 | 0.3590 | +0.0000 |
+| cicadas_and_crickets | 0.9033 | 0.3275 | 62/109 | 0.0351 | 0.0564 | 0.95 | 0.75 | 0.3275 | 0.3392 | +0.0117 |
+| crows_seagulls_magpies | 0.3376 | 0.0667 | 2/28 | 0.0006 | 0.0032 | 0.95 | 0.9 | 0.0667 | 0.1818 | +0.1152 |
+| dog_barkings_and_howlings | 0.8997 | 0.1765 | 48/88 | 0.0201 | 0.0295 | 0.95 | 0.9 | 0.1765 | 0.2222 | +0.0458 |
+| glass_breaking | 0.4175 | 0.2069 | 12/17 | 0.0018 | 0.0049 | 0.95 | 0.65 | 0.2069 | 0.2667 | +0.0598 |
+| horn | 0.4354 | 0.0800 | 4/21 | 0.0008 | 0.0055 | 0.95 | 0.8 | 0.0800 | 0.1176 | +0.0376 |
+| jet_aircrafts | 0.7525 | 0.0000 | 14/17 | 0.0332 | 0.0423 | 0.95 | 0.9 | 0.0000 | 0.0556 | +0.0556 |
+| lawn_mower_brush_cutter_olive_shaker | 0.7127 | 0.0455 | 16/28 | 0.0165 | 0.0357 | 0.95 | 0.6 | 0.0455 | 0.2545 | +0.2091 |
+| music | 0.9675 | 0.1200 | 24/26 | 0.0431 | 0.0552 | 0.95 | 0.65 | 0.1200 | 0.2500 | +0.1300 |
+| propeller_aircrafts | 0.9163 | 0.1143 | 14/21 | 0.0330 | 0.0455 | 0.95 | 0.95 | 0.1143 | 0.1143 | +0.0000 |
+| sirens_and_alarms | 0.7835 | 0.0444 | 22/23 | 0.0204 | 0.0354 | 0.95 | 0.7 | 0.0444 | 0.1887 | +0.1442 |
+| thunder_fireworks_gunshot | 0.4311 | 0.2308 | 8/18 | 0.0060 | 0.0160 | 0.95 | 0.95 | 0.2308 | 0.2308 | +0.0000 |
+| train | 0.9578 | 0.0426 | 23/24 | 0.0936 | 0.1018 | 0.95 | 0.85 | 0.0426 | 0.1200 | +0.0774 |
+| vacuum_cleaner_fan_hairdryer | 0.9106 | 0.3571 | 26/30 | 0.0377 | 0.0429 | 0.95 | 0.85 | 0.3571 | 0.4286 | +0.0714 |
+| vehicle_idling | 0.5936 | 0.0000 | 10/28 | 0.0143 | 0.0428 | 0.95 | 0.75 | 0.0000 | 0.1132 | +0.1132 |
+| vehicle_pass_by | 0.7259 | 0.0755 | 46/60 | 0.0311 | 0.0553 | 0.95 | 0.95 | 0.0755 | 0.0755 | +0.0000 |
+| voices | 0.9257 | 0.4179 | 57/77 | 0.0334 | 0.0466 | 0.95 | 0.95 | 0.4179 | 0.4179 | +0.0000 |
+| workshop | 0.9838 | 0.6328 | 83/94 | 0.0922 | 0.0992 | 0.95 | 0.95 | 0.6328 | 0.6328 | +0.0000 |
+
+## oe_red
+
+| Lớp | Frame AP | F1 họ thắng | Nsys/Nref | p>θ | Frame GT+ | θ global | θ oracle | F1 θ global | F1 θ oracle | Δ oracle |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| bells | 0.8572 | 0.3636 | 18/26 | 0.0080 | 0.0165 | 0.75 | 0.8 | 0.3636 | 0.4103 | +0.0466 |
+| birds | 0.6442 | 0.0432 | 52/87 | 0.0543 | 0.0844 | 0.75 | 0.6 | 0.0432 | 0.0719 | +0.0288 |
+| cat_fights_and_moans | 0.9577 | 0.3380 | 31/40 | 0.0167 | 0.0195 | 0.75 | 0.65 | 0.3380 | 0.4110 | +0.0729 |
+| chicken_coop | 0.8029 | 0.1538 | 15/24 | 0.0057 | 0.0063 | 0.75 | 0.85 | 0.1538 | 0.3590 | +0.2051 |
+| cicadas_and_crickets | 0.9015 | 0.3889 | 71/109 | 0.0418 | 0.0564 | 0.75 | 0.65 | 0.3889 | 0.4088 | +0.0200 |
+| crows_seagulls_magpies | 0.3096 | 0.1212 | 5/28 | 0.0012 | 0.0032 | 0.75 | 0.85 | 0.1212 | 0.1875 | +0.0663 |
+| dog_barkings_and_howlings | 0.8831 | 0.0870 | 50/88 | 0.0268 | 0.0295 | 0.75 | 0.9 | 0.0870 | 0.1014 | +0.0145 |
+| glass_breaking | 0.4450 | 0.3333 | 13/17 | 0.0020 | 0.0049 | 0.75 | 0.85 | 0.3333 | 0.3704 | +0.0370 |
+| horn | 0.4593 | 0.0000 | 7/21 | 0.0025 | 0.0055 | 0.75 | 0.9 | 0.0000 | 0.0741 | +0.0741 |
+| jet_aircrafts | 0.7746 | 0.0000 | 28/17 | 0.0495 | 0.0423 | 0.75 | 0.9 | 0.0000 | 0.0588 | +0.0588 |
+| lawn_mower_brush_cutter_olive_shaker | 0.7186 | 0.1569 | 23/28 | 0.0279 | 0.0357 | 0.75 | 0.85 | 0.1569 | 0.2083 | +0.0515 |
+| music | 0.9447 | 0.0833 | 22/26 | 0.0473 | 0.0552 | 0.75 | 0.6 | 0.0833 | 0.1702 | +0.0869 |
+| propeller_aircrafts | 0.8984 | 0.0444 | 24/21 | 0.0663 | 0.0455 | 0.75 | 0.95 | 0.0444 | 0.2105 | +0.1661 |
+| sirens_and_alarms | 0.7920 | 0.1923 | 29/23 | 0.0459 | 0.0354 | 0.75 | 0.85 | 0.1923 | 0.2174 | +0.0251 |
+| thunder_fireworks_gunshot | 0.4352 | 0.0000 | 5/18 | 0.0094 | 0.0160 | 0.75 | 0.9 | 0.0000 | 0.1429 | +0.1429 |
+| train | 0.9477 | 0.0769 | 28/24 | 0.1066 | 0.1018 | 0.75 | 0.9 | 0.0769 | 0.0833 | +0.0064 |
+| vacuum_cleaner_fan_hairdryer | 0.8838 | 0.3636 | 25/30 | 0.0375 | 0.0429 | 0.75 | 0.75 | 0.3636 | 0.3636 | +0.0000 |
+| vehicle_idling | 0.5454 | 0.0741 | 26/28 | 0.0381 | 0.0428 | 0.75 | 0.6 | 0.0741 | 0.0833 | +0.0093 |
+| vehicle_pass_by | 0.7367 | 0.0183 | 49/60 | 0.0550 | 0.0553 | 0.75 | 0.65 | 0.0183 | 0.0678 | +0.0494 |
+| voices | 0.9254 | 0.3597 | 62/77 | 0.0470 | 0.0466 | 0.75 | 0.8 | 0.3597 | 0.4348 | +0.0751 |
+| workshop | 0.9864 | 0.5989 | 93/94 | 0.1046 | 0.0992 | 0.75 | 0.85 | 0.5989 | 0.6203 | +0.0214 |
+
 ## Đang chờ
 
-- `D:\IUH_K18\HK1N5\KLTN2\environmental-audio-rag\ml\runs\sed_polyphonic_20261008T145841Z`: thiếu postproc_cv_selection_annotated.json, sebb_cv_selection_annotated.json, postproc_cv_annotated.json.
+Không có.
 
 I/D/S là số sed_eval error-rate × Nref: substitution ghép sai lớp nhưng khớp collar; không phải mọi confusion theo overlap. Lỗi biên có thể thành I+D. **Giả thuyết:** frame AP cao hơn có thể cùng tồn tại với biên chưa khớp collar hoặc operating point chưa phù hợp; các bảng này không tách được tác động nhân quả.
