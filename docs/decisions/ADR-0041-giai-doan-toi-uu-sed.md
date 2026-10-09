@@ -219,6 +219,32 @@ một run tầng S 30 epoch với lr đã chọn, chấm như mọi ứng viên 
 không qua. Cả hai tăng frame mAP (0.7560, 0.7430 so với 0.7352) mà không tăng event-F1. Điều này
 gợi ý nút thắt nằm ở bước chuyển posterior thành event, nên O-E1 được ưu tiên trước O-F/O-G.
 
+### 8. Kết quả tầng C vòng 1 (10/10, trước mọi logit test)
+
+Ứng viên theo luật §2/§7: TF256-KD và TF256 (hai run duy nhất qua tầng S: 0.2779, 0.2559 so với
+0.2330), cộng ensemble liên họ B0 + TF256-KD. Mọi hệ thống: `--train-fixes`, 5 fold, suy luận hop
+5 s tam giác, prior theo fold. `scripts.report_oof` (bootstrap ghép cặp 1000 lần, seed 20260922,
+tree sạch `14e2e5f`, mọi hash nguồn khớp file hiện tại) — `docs/measurements/oof_selection_20261009`:
+
+| Hệ thống | Họ | Micro OOF | Macro OOF | Δ micro so B0 [95% CI] |
+|---|---|---:|---:|---|
+| **B0** | cSEBB | **0.2342** | 0.1797 | — |
+| Ensemble B0 + TF256-KD | θ | 0.2305 | **0.1939** | −0.0037 [−0.0293, +0.0248] |
+| TF256 | θ | 0.2136 | 0.1810 | −0.0206 [−0.0453, +0.0062] |
+| TF256-KD | θ | 0.2076 | 0.1756 | −0.0267 [−0.0522, −0.0004] |
+
+**Lựa chọn theo luật: B0.** Không ứng viên nào có CI của Δ nằm trên 0. Lợi thế của TF256-KD ở tầng
+S (+0.045, sd fold 0.087 trên 134 recording) không lặp lại trên 564 recording; tầng C làm đúng việc
+nó được thiết kế để làm. Ensemble có macro cao nhất (+0.014) nhưng luật chọn bằng micro (ADR-0031).
+
+**Sai lệch quy trình, ghi trung thực:** PLAN O4.1 đòi ghi tên ứng viên vào ADR này trước khi chạy
+fold. Tên được hàng đợi chọn tự động theo luật §2/§7 (đã ghi trước khi có số tầng S của TF) và ghi
+trong log hàng đợi, nhưng chưa được chép vào ADR trước khi fold chạy. Luật có trước số, nên lựa
+chọn không đổi; mục này là bản ghi muộn.
+
+O-D (BEATs fine-tune) đang ở tầng S; nếu qua, nó là vòng tầng C thứ hai so với cùng B0 trên cùng
+fold, và lựa chọn cuối chỉ commit sau vòng đó.
+
 ## Consequences
 
 - Chi phí GPU tầng C: họ fmn khoảng 5 × 45 phút cho mỗi cấu hình; họ transformer khoảng
