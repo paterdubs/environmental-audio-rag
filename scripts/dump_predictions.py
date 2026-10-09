@@ -45,7 +45,13 @@ import torch
 from ml.evaluation.predictions import UNIFORM_WEIGHTING, save_predictions, triangular_floor
 from ml.models import SoundEventDetector
 from ml.models.embedding_sed import EmbeddingSequenceSED
-from ml.models.sed_factory import embedding_head, frame_mn_model, sed_architecture, sed_model
+from ml.models.sed_factory import (
+    beats_finetune_model,
+    embedding_head,
+    frame_mn_model,
+    sed_architecture,
+    sed_model,
+)
 from ml.provenance import git_state
 from ml.taxonomy import load_taxonomy
 from ml.training.common import seed_everything, sha256_file, write_json
@@ -95,6 +101,8 @@ def load_model(run_dir: Path, config: dict, classes: int, device: torch.device
         model = embedding_head(config, classes)  # Track 2a: head only, BEATs stays frozen
     elif config["encoder_type"] == "frame_mn":
         model = frame_mn_model(config, classes)  # Track 2b: whole network is in best.pt
+    elif config["encoder_type"] == "beats_ft":
+        model = beats_finetune_model(config, classes)  # O-D: whole BEATs is in best.pt
     elif config["encoder_type"] == "panns":
         model = sed_model(config, classes)
     else:

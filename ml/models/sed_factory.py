@@ -12,6 +12,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from ml.models.audio import SoundEventDetector
+from ml.models.beats_finetune import BeatsFinetuneSED
 from ml.models.embedding_sed import EmbeddingSequenceSED
 from ml.models.frame_mn_finetune import FrameMnSED
 from ml.models.panns import PannsCNN14Encoder
@@ -54,6 +55,11 @@ def frame_mn_model(config: Mapping[str, Any], classes: int) -> FrameMnSED:
                       rnn_layers=None if layers is None else int(layers),
                       sequence_model=config.get("sequence_model"),
                       boundary_head=config.get("boundary_head"))
+
+
+def beats_finetune_model(config: Mapping[str, Any], classes: int) -> BeatsFinetuneSED:
+    """O-D (ADR-0041): BEATs fine-tuned end to end, so the encoder is in the model."""
+    return BeatsFinetuneSED(classes, output_frames=int(config["window_frames"]))
 
 
 def sed_model(config: Mapping[str, Any], classes: int,

@@ -204,6 +204,17 @@ cut-list, phần đó chỉ làm nếu O-E1 có tín hiệu. Các điểm bài b
 Recipe `oe_red` = T2b + head RED, cùng checkpoint `frame_mn10_strong_1.pt`, seed 20260922. Tầng S
 như mọi ứng viên: phải vượt seed T2b tốt nhất (0.2330) theo cùng phép chấm.
 
+**O-D = BEATs strong fine-tune toàn bộ (ghi 09/10, trước pilot).** Chọn BEATs trước ATST-F vì mã
+BEATs đã vendor (Track 2a); ATST-F để sau nếu còn thời gian. Cổng T0 (RTX 3070 Laptop 8 GB, fp16,
+AdamW, đo 08/10): batch 8 → 5.5 GB, 0.33 s/bước; batch 12 → 7.5 GB; batch 16 tràn sang bộ nhớ
+chia sẻ (4.1 s/bước). Recipe `od_beats` = T2b (mixup 0.5, random crop, trần `pos_weight` 10,
+30 epoch, warmup 1, cosine) với head 768→21 lr 1e-3, **batch 8**, lr encoder riêng.
+
+Pilot lr encoder ghi trước: ba run 10 epoch, seed 20260922, lr encoder ∈ {1e-5, 2e-5, 5e-5}, chọn
+theo frame mAP validation tốt nhất (như pilot T2b); hòa (chênh < 0.002) thì lấy lr nhỏ hơn. Sau đó
+một run tầng S 30 epoch với lr đã chọn, chấm như mọi ứng viên tầng S. Không có layer-wise lr decay
+(PretrainedSED dùng; ghi là khác biệt).
+
 **Hai kết quả tầng S đã có đến lúc ghi mục này** (chỉ dev): O-C GRU 0.2318 và DO-4 0.2174, cả hai
 không qua. Cả hai tăng frame mAP (0.7560, 0.7430 so với 0.7352) mà không tăng event-F1. Điều này
 gợi ý nút thắt nằm ở bước chuyển posterior thành event, nên O-E1 được ưu tiên trước O-F/O-G.

@@ -70,7 +70,13 @@ from ml.models.frame_mn_finetune import (
     EFFICIENTSED_FMN10_TF256_SHA256,
     FRAME_MN10_STRONG_1_SHA256,
 )
-from ml.models.sed_factory import embedding_head, frame_mn_model, panns_encoder, sed_model
+from ml.models.sed_factory import (
+    beats_finetune_model,
+    embedding_head,
+    frame_mn_model,
+    panns_encoder,
+    sed_model,
+)
 from ml.taxonomy import load_taxonomy
 from ml.training.common import (
     create_run_directory,
@@ -132,6 +138,11 @@ for _name, _version in (("oc_tf", "sed-oc-tf-v1.0"), ("oc_tf_kd", "sed-oc-tfkd-v
     RECIPES[_name] = {**RECIPES["t2b"], "sequence_model": "tf256", "model_version": _version}
 # ADR-0041 O-E1: T2b với head RED (start/end + loss biên onset/offset), cùng checkpoint T2b.
 RECIPES["oe_red"] = {**RECIPES["t2b"], "boundary_head": "red", "model_version": "sed-oe-red-v1.0"}
+# ADR-0041 O-D: BEATs strong fine-tune toàn bộ; T0 08/10 → batch 8 (5.5 GB). Encoder học chậm
+# (lr riêng, pilot chọn), head mới lr cao; còn lại như T2b (mixup, random crop, trần 10).
+RECIPES["od_beats"] = {**RECIPES["t2b"], "learning_rate": 0.001,
+                       "encoder_learning_rate": 0.00002, "model_version": "sed-od-beats-v1.0"}
+OD_MAX_BATCH = 12  # T0: batch 16 spills to shared GPU memory (12x slower)
 # frame_mn recipe -> (pinned checkpoint SHA-256, manifest weight_source).
 FRAME_MN_RECIPES = {
     "t2b": (FRAME_MN10_STRONG_1_SHA256, "pretrainedsed:frame_mn10_strong_1"),
@@ -145,9 +156,11 @@ FRAME_MN_RECIPES = {
 # ADR-0020 §2: feature set đi theo encoder, không tách cờ riêng. Với `beats`, feature set chỉ
 # cho lưới cửa sổ/nhãn (trùng v2); đầu vào thật là cache waveform 16 kHz.
 ENCODER_FEATURE_SET = {"audio": "logmel_v1", "panns": "logmel_panns_v1",
-                       "beats": "logmel_panns_v1", "frame_mn": "logmel_panns_v1"}
-ENCODER_FRAME_RATE = {"audio": 50.0, "panns": 100.0, "beats": 100.0, "frame_mn": 100.0}
-WAVEFORM_ENCODERS = ("beats", "frame_mn")
+                       "beats": "logmel_panns_v1", "frame_mn": "logmel_panns_v1",
+                       "beats_ft": "logmel_panns_v1"}
+ENCODER_FRAME_RATE = {"audio": 50.0, "panns": 100.0, "beats": 100.0, "frame_mn": 100.0,
+                      "beats_ft": 100.0}
+WAVEFORM_ENCODERS = ("beats", "frame_mn", "beats_ft")
 WAVEFORM_ROOT = ROOT / "data" / "cache" / "datased_wav16k"
 WAVEFORM_MANIFEST = ROOT / "data" / "manifests" / "datased_wav16k.csv"
 # ADR-0020 §3: cùng cửa sổ/hop THEO GIÂY (10 s / 10 s, không overlap) giữa các nhánh.
@@ -183,7 +196,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rnn-layers", type=int, default=None)
     parser.add_argument("--upsample", choices=("before_rnn", "after_rnn"), default=None)
     parser.add_argument("--seed", type=int, default=20260922)
-    parser.add_argument("--encoder", choices=("audio", "panns", "beats", "frame_mn"),
+    parser.add_argument("--encoder", choices=("audio", "panns", "beats", "frame_mn", "beats_ft"),
                         default="audio")
     parser.add_argument(
         "--frame-mn-checkpoint", type=Path, default=None,
@@ -302,7 +315,7 @@ def validate_checkpoint_flags(args: argparse.Namespace) -> None:
     if has_frame_mn:
         raise SystemExit("--frame-mn-checkpoint chỉ dùng với --encoder frame_mn")
     has_beats = args.beats_checkpoint is not None
-    if args.encoder == "beats":
+    if args.encoder in ("beats", "beats_ft"):
         if args.audioset_checkpoint or args.datasec_checkpoint or not has_beats:
             raise SystemExit(
                 "--encoder beats cần --beats-checkpoint và không nhận checkpoint CNN14 -- "
@@ -310,7 +323,7 @@ def validate_checkpoint_flags(args: argparse.Namespace) -> None:
             )
         return
     if has_beats:
-        raise SystemExit("--beats-checkpoint chỉ dùng với --encoder beats")
+        raise SystemExit("--beats-checkpoint chỉ dùng với --encoder beats/beats_ft")
     if args.encoder == "audio":
         if args.audioset_checkpoint or args.datasec_checkpoint:
             raise SystemExit(
@@ -515,6 +528,40 @@ def frozen_beats(checkpoint: Path, expected_sha256: str = BEATS_STRONG_1_SHA256
     }
 
 
+def fine_tuned_beats(checkpoint: Path, window_frames: int, classes: int,
+                     expected_sha256: str = BEATS_STRONG_1_SHA256
+                     ) -> tuple[torch.nn.Module, dict[str, object]]:
+    """O-D (ADR-0041): BEATs strong with a fresh 21-class head, every weight trainable."""
+    model = beats_finetune_model({"window_frames": window_frames}, classes)
+    report = model.load_pretrained(checkpoint, expected_sha256=expected_sha256)
+    return model, {
+        "weight_source": "pretrainedsed:BEATs_strong_1",
+        "checkpoint_path": str(checkpoint),
+        "checkpoint_sha256": report.checkpoint_sha256,
+        "encoder_frozen": False,
+        "encoder_parameters": report.loaded_parameters,
+        "input": "waveform_16k",
+        "waveform_manifest_sha256": sha256_file(WAVEFORM_MANIFEST),
+    }
+
+
+def validate_od(args: argparse.Namespace, knobs: dict[str, object]) -> None:
+    """ADR-0041 O-D guards: recipe od_beats <-> encoder beats_ft, T0 batch limit."""
+    if (args.recipe == "od_beats") != (args.encoder == "beats_ft"):
+        raise SystemExit("--recipe od_beats chỉ đi với --encoder beats_ft, và ngược lại "
+                         "(ADR-0041 O-D)")
+    if args.encoder != "beats_ft":
+        return
+    if args.evaluate_test:
+        raise SystemExit("O-D không --evaluate-test: test chỉ sau lựa chọn tầng C (ADR-0041 §2)")
+    if knobs["filter_augment_p"]:
+        raise SystemExit("FilterAugment cần log-mel đầu vào; BEATs tự tính fbank trong model")
+    if knobs["encoder_learning_rate"] is None:
+        raise SystemExit("O-D cần lr encoder riêng (BEATs học chậm hơn head mới)")
+    if args.batch_size is None or args.batch_size > OD_MAX_BATCH:
+        raise SystemExit(f"O-D cần --batch-size <= {OD_MAX_BATCH} (cổng T0, VRAM 8 GB)")
+
+
 def make_loader(dataset: SedFeatureDataset, *, batch_size: int, shuffle: bool,
                 device: torch.device, encoder: FrozenBeatsEncoder | None = None,
                 sampler: WeightedRandomSampler | None = None) -> DataLoader | EncodedLoader:
@@ -537,6 +584,7 @@ def main() -> None:
     knobs = resolve_recipe(args)
     validate_track2a(args, knobs)
     validate_track2b(args, knobs)
+    validate_od(args, knobs)
     is_beats = args.encoder == "beats"
     is_waveform = args.encoder in WAVEFORM_ENCODERS
     feature_set = ENCODER_FEATURE_SET[args.encoder]
@@ -615,6 +663,9 @@ def main() -> None:
         model, weight_info = fine_tuned_frame_mn(args.frame_mn_checkpoint,
                                                  config.window_frames, len(class_ids),
                                                  knobs, args.recipe)
+    elif args.encoder == "beats_ft":
+        model, weight_info = fine_tuned_beats(args.beats_checkpoint, config.window_frames,
+                                              len(class_ids))
     elif args.encoder == "panns":
         encoder, weight_info = build_encoder(args, knobs)
         model = sed_model(knobs, len(class_ids), encoder)
