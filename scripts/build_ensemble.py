@@ -39,6 +39,20 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def oof_folds_sha256(manifests: list[dict]) -> str | None:
+    """Fold-file hash when every member is an OOF run on the same folds, else None.
+    Mixing OOF and ordinary runs is refused: the result would be neither."""
+    is_oof = [m.get("task") == "sed_oof" for m in manifests]
+    if not any(is_oof):
+        return None
+    if not all(is_oof):
+        raise SystemExit("không trộn run OOF với run thường trong một ensemble")
+    hashes = {m.get("config", {}).get("cv_folds_sha256") for m in manifests}
+    if len(hashes) != 1 or None in hashes:
+        raise SystemExit("các run OOF không cùng file fold")
+    return hashes.pop()
+
+
 def ensemble_manifest(
     run_id: str, label: str, members: list[Path], manifests: list[dict],
     class_ids: tuple[str, ...], *, command: list[str], git: dict,
@@ -48,13 +62,18 @@ def ensemble_manifest(
     Not `manifest_version` 2: v2 requires training-only fields (seeds, checkpoint
     selection, wall clock) that an average of frozen predictions does not have.
     """
+    oof = oof_folds_sha256(manifests)
     return {
-        "run_id": run_id, "task": "sed_ensemble", "command": command, "complete": True,
+        "run_id": run_id, "task": "sed_oof" if oof else "sed_ensemble", "command": command,
+        "complete": True,
         "class_ids": list(class_ids), **{key: manifests[0][key] for key in SHARED},
         "config": {
             "ensemble_label": label, "method": "mean_probability",
             "members": [m.name for m in members],
             "members_git_dirty": [bool(x.get("git", {}).get("dirty")) for x in manifests],
+            # ADR-0041 §7: the cross-family tier-C ensemble averages OOF runs and is itself
+            # OOF, so selectors keep per-fold priors and report_oof accepts it.
+            **({"oof_label": label, "cv_folds_sha256": oof} if oof else {}),
         },
         "environment": {"python": platform.python_version(), "numpy": np.__version__},
         "git": git,
@@ -74,7 +93,8 @@ def main() -> None:
                 raise SystemExit(f"{member}: {key} khác thành viên đầu — không cùng dữ liệu")
 
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
-    out = ROOT / "ml" / "runs" / f"sed_ensemble_{args.label}_{stamp}"
+    kind = "sed_oof" if oof_folds_sha256(manifests) else "sed_ensemble"
+    out = ROOT / "ml" / "runs" / f"{kind}_{args.label}_{stamp}"
     digests: dict[str, str] = {}
     for split in args.splits:
         members = [load_predictions(m / "predictions" / f"{split}.npz",

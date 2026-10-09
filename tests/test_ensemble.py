@@ -64,3 +64,22 @@ def test_ensemble_manifest_satisfies_run_manifest_contract() -> None:
         git={"revision": "d" * 40, "dirty": False},
     )
     Draft202012Validator(schema).validate(manifest)
+    assert manifest["task"] == "sed_ensemble" and "cv_folds_sha256" not in manifest["config"]
+
+
+def test_ensemble_of_oof_runs_stays_oof_and_refuses_mixed_members() -> None:
+    """ADR-0041 §7: the cross-family tier-C ensemble must keep per-fold priors downstream."""
+    from scripts.build_ensemble import ensemble_manifest, oof_folds_sha256
+
+    base = {"split_sha256": "a" * 64, "data_manifest_sha256": "b" * 64,
+            "taxonomy_sha256": TAXONOMY.checksum, "git": {"revision": "c" * 40, "dirty": False}}
+    oof = {**base, "task": "sed_oof", "config": {"cv_folds_sha256": "e" * 64}}
+    manifest = ensemble_manifest("sed_oof_X_20261009T000000Z", "X", [Path("a"), Path("b")],
+                                 [oof, oof], CLASS_IDS, command=["python"],
+                                 git={"revision": "d" * 40, "dirty": False})
+    assert manifest["task"] == "sed_oof" and manifest["config"]["cv_folds_sha256"] == "e" * 64
+    with pytest.raises(SystemExit, match="không trộn"):
+        oof_folds_sha256([oof, {**base, "task": "sed_polyphonic"}])
+    other = {**oof, "config": {"cv_folds_sha256": "f" * 64}}
+    with pytest.raises(SystemExit, match="file fold"):
+        oof_folds_sha256([oof, other])

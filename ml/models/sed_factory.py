@@ -52,7 +52,8 @@ def frame_mn_model(config: Mapping[str, Any], classes: int) -> FrameMnSED:
     return FrameMnSED(classes, output_frames=int(config["window_frames"]),
                       rnn_hidden=None if hidden is None else int(hidden),
                       rnn_layers=None if layers is None else int(layers),
-                      sequence_model=config.get("sequence_model"))
+                      sequence_model=config.get("sequence_model"),
+                      boundary_head=config.get("boundary_head"))
 
 
 def sed_model(config: Mapping[str, Any], classes: int,

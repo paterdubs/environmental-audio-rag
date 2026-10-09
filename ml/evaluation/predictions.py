@@ -79,6 +79,13 @@ def _is_binary(array: np.ndarray) -> bool:
     return bool(np.logical_or(array == 0, array == 1).all())
 
 
+def _valid_logits_finite(logits: np.ndarray, mask: np.ndarray, chunk: int = 256) -> bool:
+    """`np.isfinite(logits[mask]).all()` in window chunks: the one-shot boolean index copies
+    every valid logit (776 MB for a 564-recording hop-5 s OOF artifact) and OOM'd CV workers."""
+    return all(bool(np.isfinite(logits[start:start + chunk][mask[start:start + chunk]]).all())
+               for start in range(0, logits.shape[0], chunk))
+
+
 def _normalized(artifact: PredictionArtifact) -> PredictionArtifact:
     if not _is_binary(artifact.targets):
         raise ValueError("targets must be binary")
@@ -135,7 +142,7 @@ def validate_predictions(
         raise ValueError("frame_offsets_s must be finite and non-negative")
     if any(not str(recording_id).strip() for recording_id in artifact.recording_ids):
         raise ValueError("recording_ids cannot contain empty values")
-    if not np.isfinite(artifact.logits[artifact.mask]).all():
+    if not _valid_logits_finite(artifact.logits, artifact.mask):
         raise ValueError("valid logits must be finite")
     if not _is_binary(artifact.targets):
         raise ValueError("targets must be binary")
