@@ -103,21 +103,27 @@ def subprocess_runner(command: list[str], root: Path) -> subprocess.CompletedPro
 
 class OOFQueue:
     def __init__(self, label: str, seed: int, forwarded: list[str], root: Path, runner: Runner,
-                 rewindow: str | None = None):
+                 rewindow: str | None = None, skip_raw_cv: bool = False):
         validate_arguments(label, forwarded)
         self.root, self.runner = root.resolve(), runner
         self.label, self.seed, self.forwarded = label, seed, forwarded
         self.rewindow = parse_rewindow(rewindow)
+        self.skip_raw_cv = skip_raw_cv
+        if skip_raw_cv and self.rewindow is None:
+            raise ValueError('--skip-raw-cv cần --rewindow')
         self.folds_hash = digest(self.root / FOLDS)
         identity = {'label': label, 'seed': seed, 'train_args': forwarded,
                     'cv_folds_sha256': self.folds_hash}
         if self.rewindow is not None:
             identity['rewindow'] = self.rewindow
+        if skip_raw_cv:
+            identity['skip_raw_cv'] = True
         self.path = self.root / 'ml/runs' / f'oof_queue_{label}.json'
         self.state = read(self.path) if self.path.exists() else {
             **identity, 'folds': {}, 'steps': {}}
         if (any(self.state.get(k) != v for k, v in identity.items())
-                or self.state.get('rewindow') != self.rewindow):
+                or self.state.get('rewindow') != self.rewindow
+                or self.state.get('skip_raw_cv', False) != self.skip_raw_cv):
             raise ValueError('resume khác label/seed/tham số/hash fold; cần label mới')
 
     @staticmethod
@@ -157,6 +163,8 @@ class OOFQueue:
                                                            label, *sources)))
             planned.append((oof, suffix))
         for oof, suffix in planned:
+            if self.skip_raw_cv and suffix == '_h10':
+                continue
             for module, _, knobs in self.selector_specs():
                 if module + suffix not in self.state['steps']:
                     print(subprocess.list2cmdline(self.command(module, oof, *knobs,
@@ -304,7 +312,7 @@ class OOFQueue:
 
     @staticmethod
     def selector_specs() -> list[tuple]:
-        return [('select_postproc_cv', 'postproc', ['--modes', 'global', '--workers', '3']),
+        return [('select_postproc_cv', 'postproc', ['--modes', 'global', '--workers', '2']),
                 ('select_sebb_cv', 'sebb', ['--workers', '2'])]
 
     def run(self) -> dict:
@@ -321,6 +329,8 @@ class OOFQueue:
             else:
                 branches = [(self.build_oof(members), '')]
             for oof, suffix in branches:
+                if self.skip_raw_cv and suffix == '_h10':
+                    continue
                 for module, prefix, knobs in self.selector_specs():
                     self.select(oof, module, prefix, knobs, suffix)
             self.state.pop('active', None)
@@ -337,8 +347,8 @@ class OOFQueue:
 
 def execute_queue(label: str, seed: int, forwarded: list[str], *, dry_run: bool = False,
                   root: Path = ROOT, runner: Runner = subprocess_runner,
-                  rewindow: str | None = None) -> dict:
-    queue = OOFQueue(label, seed, forwarded, root, runner, rewindow)
+                  rewindow: str | None = None, skip_raw_cv: bool = False) -> dict:
+    queue = OOFQueue(label, seed, forwarded, root, runner, rewindow, skip_raw_cv)
     return queue.dry_run() if dry_run else queue.run()
 
 
@@ -351,9 +361,12 @@ def main() -> None:
     parser.add_argument('--seed', type=int, required=True)
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--rewindow', help='HOP:WEIGHTING, e.g. 5:triangular:0.3')
+    parser.add_argument('--skip-raw-cv', action='store_true',
+                        help='build both OOF runs, run selectors only on overlapped OOF')
     args = parser.parse_args(raw[:boundary])
     forwarded = raw[boundary+1:]
-    execute_queue(args.label, args.seed, forwarded, dry_run=args.dry_run, rewindow=args.rewindow)
+    execute_queue(args.label, args.seed, forwarded, dry_run=args.dry_run, rewindow=args.rewindow,
+                  skip_raw_cv=args.skip_raw_cv)
 
 
 if __name__ == '__main__':

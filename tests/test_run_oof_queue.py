@@ -111,7 +111,7 @@ def test_full_order_and_resume_without_any_subprocess(fake):
     assert [c[2] for c in calls] == ['scripts.train_sed']*5 + [
         'scripts.build_oof', 'scripts.select_postproc_cv', 'scripts.select_sebb_cv']
     assert [c[-1] for c in calls[:5]] == list('01234')
-    assert calls[6][-6:] == ['--modes', 'global', '--workers', '3', '--eval-set', 'annotated']
+    assert calls[6][-6:] == ['--modes', 'global', '--workers', '2', '--eval-set', 'annotated']
     assert calls[7][-4:] == ['--workers', '2', '--eval-set', 'annotated']
     before = (root/'ml/runs/oof_queue_B0.json').read_bytes()
     calls.clear()
@@ -171,7 +171,7 @@ def test_dry_run_prints_commands_without_writing_or_running(fake, capsys):
     execute(fake, dry_run=True)
     output = capsys.readouterr().out
     assert output.count('scripts.train_sed') == 5
-    assert 'scripts.build_oof' in output and '--workers 3' in output and '--workers 2' in output
+    assert 'scripts.build_oof' in output and output.count('--workers 2') == 2
     assert '<fold-4-run>' in output and not calls and not (root/'ml/runs').exists()
 
 
@@ -336,3 +336,59 @@ def test_existing_non_rewindow_queue_cannot_enable_rewindow_mid_resume(fake):
     with pytest.raises(ValueError, match='resume khác'):
         execute(fake, rewindow='5:triangular:0.3')
     assert not calls
+
+
+def test_skip_raw_cv_builds_both_but_selects_overlap_only_and_resumes(fake):
+    root, calls, _, _ = fake
+    state = execute(fake, rewindow='5:triangular:0.3', skip_raw_cv=True)
+    assert len(calls) == 14 and state['complete'] and state['skip_raw_cv']
+    assert calls[10][4] == 'B0_h10' and calls[11][4] == 'B0_h5'
+    assert all(c[3].endswith('oof_B0_h5') for c in calls[12:])
+    assert calls[12][-6:] == ['--modes', 'global', '--workers', '2', '--eval-set', 'annotated']
+    assert calls[13][-4:] == ['--workers', '2', '--eval-set', 'annotated']
+    assert 'select_postproc_cv_h10' not in state['steps']
+    assert not (root/'ml/runs/oof_B0_h10/postproc_cv_selection_annotated.json').exists()
+    calls.clear()
+    execute(fake, rewindow='5:triangular:0.3', skip_raw_cv=True)
+    assert not calls
+    with pytest.raises(ValueError, match='resume khác'):
+        execute(fake, rewindow='5:triangular:0.3')
+
+
+def test_skip_raw_cv_dry_run_is_fourteen_commands_without_side_effects(fake, capsys):
+    root, calls, _, _ = fake
+    execute(fake, rewindow='5:triangular:0.3', skip_raw_cv=True, dry_run=True)
+    lines = capsys.readouterr().out.splitlines()
+    assert len(lines) == 14
+    assert all('train_sed' in c for c in lines[:5])
+    assert all('dump_predictions' in c for c in lines[5:10])
+    assert 'B0_h10' in lines[10] and 'B0_h5' in lines[11]
+    assert all('<oof_h5-run>' in c and '--workers 2' in c for c in lines[12:])
+    assert not calls and not (root/'ml/runs').exists()
+
+
+def test_skip_raw_cv_requires_rewindow_before_writing_state(fake):
+    root, calls, _, _ = fake
+    with pytest.raises(ValueError, match='cần --rewindow'):
+        execute(fake, skip_raw_cv=True)
+    assert not calls and not (root/'ml/runs').exists()
+
+
+def test_skip_raw_cv_cannot_be_enabled_on_existing_full_cv_state(fake):
+    _, calls, _, _ = fake
+    execute(fake, rewindow='5:triangular:0.3')
+    calls.clear()
+    with pytest.raises(ValueError, match='resume khác'):
+        execute(fake, rewindow='5:triangular:0.3', skip_raw_cv=True)
+    assert not calls
+
+
+def test_skip_raw_cv_resumes_failed_overlap_selector_without_rebuild(fake):
+    _, calls, fail, _ = fake
+    fail['selector_branch'] = ('select_sebb_cv', 'oof_B0_h5')
+    with pytest.raises(RuntimeError):
+        execute(fake, rewindow='5:triangular:0.3', skip_raw_cv=True)
+    calls.clear()
+    fail.clear()
+    execute(fake, rewindow='5:triangular:0.3', skip_raw_cv=True)
+    assert len(calls) == 1 and calls[0][2] == 'scripts.select_sebb_cv'
