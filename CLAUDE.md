@@ -57,7 +57,20 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 08/10/2026 tối (mới nhất) — Giai đoạn O đang chạy (ADR-0041, Accepted).** Claude làm
+**Cập nhật 10/10/2026 02:15 (mới nhất) — Tầng C vòng 1 giữ B0; O-D qua tầng S; máy tắt theo yêu
+cầu người dùng.** Chi tiết PAPER_NOTES S51–S54, ADR-0041 §7–§8.
+- Tầng S (dev): chỉ TF256-KD 0.2779, TF256 0.2559 và **O-D BEATs fine-tune 0.2509** vượt seed T2b
+  0.2330. GRU, DO-4, O-E1 RED không qua. Frame mAP không dự báo event-F1.
+- Tầng C vòng 1 (OOF 564 recording, `oof_selection_20261009`): **B0 0.2342** giữ; ensemble B0 +
+  TF256-KD 0.2305, TF256 0.2136, TF256-KD 0.2076. Chưa sinh logit test.
+- **Việc tiếp theo (cần người dùng duyệt):** tầng C vòng 2 cho O-D trên cùng 5 fold. Run tầng S đạt
+  đỉnh ở epoch 4/30 (`sed_polyphonic_20261009T153325Z`), nên đề xuất 10 epoch/fold (~1–3 giờ/fold
+  tùy nhiệt GPU); thay đổi recipe phải ghi ADR trước khi chạy. Sau vòng 2 mới commit lựa chọn cuối
+  rồi test một lần (O5).
+- GPU laptop hạ xung nhiệt khi chạy liên tục (88–91 °C); không ảnh hưởng kết quả, chỉ làm chậm.
+- Codex: lượt 6 đã giao (XO-20..23); lượt 7 giao được (B0 OOF đã xong) — `docs/notes/codex_prompts_phase_o.md`.
+
+**Trước đó, 08/10/2026 tối — Giai đoạn O đang chạy (ADR-0041, Accepted).** Claude làm
 phần chính, Codex làm việc phụ song song trên `codex/phase-o` (AGENT_SYNC §0.O, §3.O). Tầng S chỉ
 trên dev (PAPER_NOTES S48–S50):
 - O-A suy luận chồng lấn: θ global tăng (0.2107 → 0.2408 ở hop 5 s tam giác), nhưng họ thắng chỉ
