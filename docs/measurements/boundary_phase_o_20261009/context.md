@@ -1,9 +1,7 @@
-# Ngữ cảnh chạy báo cáo biên tầng O
+# Ngữ cảnh báo cáo biên tầng O — sáu run
 
-Artifact gốc: [boundary_errors_20261008.json](boundary_errors_20261008.json), [boundary_errors_20261008.md](boundary_errors_20261008.md).
+Artifact: [boundary_errors_20261009.json](boundary_errors_20261009.json) và [boundary_errors_20261009.md](boundary_errors_20261009.md).
 
-Chạy script có sẵn, không sửa code Claude; chỉ dev, CPU. Cả4run dùng `postproc_cv_annotated.json`. Script xét toàn137dev, gồm134annotated và3khôngGT (posterior được tính âm trên những recording này), raster100Hz đúng prediction. Khác phạm vi134recording của XO-17/19/20/21. Script luôn áp họ θ; DO-4 có họ thắng CV là cSEBB, nên **đây là chẩn đoán họ θ đồng hành**, không thay kết quả họ thắng XO-21.
+Chạy nguyên script Claude trên CPU, tất cả dùng postproc_cv_annotated.json đã lưu; không chạy selector. Toàn bộ 137 dev gồm 134 annotated và 3 recording không có GT; posterior được tính âm trên 3 recording này. Khác phạm vi 134 annotated của XO-21. Script chỉ áp họ θ; DO-4 là họ θ đồng hành, khác cSEBB thắng CV. Đã kiểm raster 100 Hz đúng với cả sáu prediction.
 
-Sai số biên ghép từng reference với dự đoán cùng lớp overlap dương lớn nhất; cho phép dùng lại dự đoán cho nhiều reference, không cần đạt collar. **n overlap không phải TP sed_eval** và không cùng phép ghép của XO-17. Chỉ in-sample; không suy nguyên nhân hoặc đổi luật chọn.
-
-TF256 KD `135047Z` được thêm sau khi postproc annotated xuất hiện trong lượt làm; không tự chạy selector. Hash nguồn và câu lệnh đầy đủ ở context.json; helper cpu.py đặt CUDA_VISIBLE_DEVICES rỗng trước import. Measurement ngày chạy UTC ở tên gốc, thư mục nhãn20261009 theo lượt giao.
+Ghép mỗi GT với dự đoán cùng lớp có overlap dương lớn nhất, có thể dùng lại dự đoán và không cần đạt collar; **n overlap không phải TP sed_eval**. Không dùng số này thay kết quả CV hoặc chọn model. Command và hash trong context.json. Output gốc từ scratch được copy tự động vào thư mục measurement; giữ bản bốn run ngày 08 và bổ sung bản sáu run ngày 09, không sửa số tay.
