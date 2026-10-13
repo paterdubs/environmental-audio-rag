@@ -293,7 +293,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 # Giai đoạn O · 08/10–27/10 · Tối ưu SED ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md), **Proposed**)
 
 Người dùng (08/10): sau báo cáo giữa kỳ, dồn sức vào SED vì caption và RAG bị chặn bởi chất lượng SED.
-**Chưa train run nào cho tới khi người dùng trả lời ADR-0041 Decision §6.**
+**Người dùng duyệt ADR-0041 ngày 08/10; trạng thái từng task cập nhật 14/10 bên dưới.**
 
 Chẩn đoán dẫn đường (ADR-0041 Context):
 
@@ -304,23 +304,23 @@ Chẩn đoán dẫn đường (ADR-0041 Context):
 
 | # | Task | Khối | Phụ thuộc | Trạng thái |
 |---:|---|---|---|---|
-| O0.1 | `scripts.report_data_profile` → measurement hồ sơ dữ liệu (độ dài, độ phủ, đa âm, recording thiếu GT, cặp gán đôi, phân bố cửa sổ) | O0 | — | ○ |
-| O0.2 | `scripts.report_rq1_mechanism` → đường cong học B/C + phân rã nhận dạng/định vị trên dev | O0 | — | ○ |
-| O0.3 | DO-1: tải DataSEC v4, kiểm MD5, so sha256 với inventory v3, quyết cách lọc | O0 | — | ○ |
-| O0.4 | DO-2/DO-3: cờ train bỏ recording thiếu GT; gộp cặp gán đôi thành target mềm (test đơn vị) | O0 | — | ○ |
-| O0.5 | O-A: `dump_predictions --hop` + trộn trọng số tam giác; đo f2/f1/v2 trên dev (CV hậu xử lý) | O0 | — | ○ |
-| O0.6 | File fold 5×(train ∪ dev annotated) theo `leakage_group` + pipeline OOF (dump, ensemble, CV hậu xử lý) | O0 | — | ○ |
-| O1.1 | Tầng S: O-B (T2b + DO-2/3) | O1 | O0.4 | ○ |
-| O1.2 | Tầng S: O-C EfficientSED fmn10 + BiGRU / TF256 | O1 | O0.4 | ○ |
-| O1.3 | Cổng T0 + tầng S: O-D ATST-F / BEATs strong fine-tune | O1 | O0.4 | ○ |
-| O1.4 | Tầng S: DO-4 lấy mẫu cửa sổ cân bằng | O1 | O1.1 | ○ |
-| O2.1 | Tầng S: O-E head onset/offset + focal; target biên mềm | O2 | O1.1 | ○ |
-| O2.2 | O-H hậu xử lý 2 nhóm lớp (ngắn/dài) | O2 | O0.5 | ○ |
-| O3.1 | Tầng S: O-F DataSEC → nhãn mạnh (pseudo-label × tag, trộn event ngắn) | O3 | O0.3, O1 | ○ |
-| O3.2 | Tầng S: O-G KD từ ensemble teacher | O3 | O1 | ○ |
-| O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ○ |
-| O4.2 | Tầng C: B0 + ≤ 3 ứng viên + ensemble liên họ × 5 fold; OOF; chọn theo luật; **commit** | O4 | O4.1 | ○ |
-| O5.1 | Dump test, đánh giá đúng một lần, sổ test, bootstrap so f2 | O5 | O4.2 commit | ○ |
+| O0.1 | `scripts.report_data_profile` → measurement hồ sơ dữ liệu (độ dài, độ phủ, đa âm, recording thiếu GT, cặp gán đôi, phân bố cửa sổ) | O0 | — | ✅ `data_profile_20261008_lf` (Codex XO-1) |
+| O0.2 | `scripts.report_rq1_mechanism` → đường cong học B/C + phân rã nhận dạng/định vị trên dev | O0 | — | ✅ `rq1_mechanism_20261008_lf` (XO-2); PAPER_NOTES S48 |
+| O0.3 | DO-1: tải DataSEC v4, kiểm MD5, so sha256 với inventory v3, quyết cách lọc | O0 | — | ✅ v4 ⊂ v3, chỉ bỏ 756 Music; `datasec_v4_members.csv` (XO-3) |
+| O0.4 | DO-2/DO-3: cờ train bỏ recording thiếu GT; gộp cặp gán đôi thành target mềm (test đơn vị) | O0 | — | ✅ `--train-fixes` (`ml/datasets/train_fixes.py`); tầng S trung tính (S50) |
+| O0.5 | O-A: `dump_predictions --hop` + trộn trọng số tam giác; đo f2/f1/v2 trên dev (CV hậu xử lý) | O0 | — | ✅ 4 biến thể dev; hop 5 s tam giác thành phần B0 (S49, ADR-0041 §7) |
+| O0.6 | File fold 5×(train ∪ dev annotated) theo `leakage_group` + pipeline OOF (dump, ensemble, CV hậu xử lý) | O0 | — | ✅ `datased_trainval_folds`, `build_oof`, prior theo fold `e428e2b` |
+| O1.1 | Tầng S: O-B (T2b + DO-2/3) | O1 | O0.4 | ✅ không qua (0.2327 vs 0.2330) |
+| O1.2 | Tầng S: O-C EfficientSED fmn10 + BiGRU / TF256 | O1 | O0.4 | ✅ GRU không qua; TF256 0.2559 và TF256-KD 0.2779 qua (S51) |
+| O1.3 | Cổng T0 + tầng S: O-D ATST-F / BEATs strong fine-tune | O1 | O0.4 | ✅ BEATs: T0 đạt (batch 8), pilot lr 2e-5, tầng S 0.2509 qua (S54); ATST-F chưa làm |
+| O1.4 | Tầng S: DO-4 lấy mẫu cửa sổ cân bằng | O1 | O1.1 | ✅ không qua (0.2174) |
+| O2.1 | Tầng S: O-E head onset/offset + focal; target biên mềm | O2 | O1.1 | ◐ O-E1 RED không qua (0.2188); EPN (O-E2) chưa làm, theo cut-list |
+| O2.2 | O-H hậu xử lý 2 nhóm lớp (ngắn/dài) | O2 | O0.5 | ○ chưa làm |
+| O3.1 | Tầng S: O-F DataSEC → nhãn mạnh (pseudo-label × tag, trộn event ngắn) | O3 | O0.3, O1 | ◐ chỉ có pool DataSEC v4 + hồ sơ RMS (XO-9) |
+| O3.2 | Tầng S: O-G KD từ ensemble teacher | O3 | O1 | ○ chưa làm |
+| O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ◐ vòng 1 ghi muộn (ADR-0041 §8, sai lệch đã ghi); vòng 2 ghi trước §9 |
+| O4.2 | Tầng C: B0 + ≤ 3 ứng viên + ensemble liên họ × 5 fold; OOF; chọn theo luật; **commit** | O4 | O4.1 | ◐ vòng 1 giữ B0 (`oof_selection_20261009`); vòng 2 O-D đang chạy 14/10 |
+| O5.1 | Dump test, đánh giá đúng một lần, sổ test, bootstrap so f2 | O5 | O4.2 commit | ○ runbook `docs/notes/test_once_phase_o.md` |
 | O6.1 | Phục vụ hệ thống mới (parity CUDA/CPU), S8-lite theo lựa chọn của người dùng | O6 | O5.1 | ○ |
 
 **Nghiệm thu giai đoạn O:** luật chọn commit trước test (có hash); OOF và test của mọi hệ thống
