@@ -245,6 +245,28 @@ chọn không đổi; mục này là bản ghi muộn.
 O-D (BEATs fine-tune) đang ở tầng S; nếu qua, nó là vòng tầng C thứ hai so với cùng B0 trên cùng
 fold, và lựa chọn cuối chỉ commit sau vòng đó.
 
+### 9. Tầng C vòng 2 — ghi trước khi train fold (14/10, người dùng duyệt)
+
+O-D qua tầng S (0.2509 so với 0.2330, `sed_polyphonic_20261009T153325Z`). Người dùng duyệt hai
+thay đổi trước khi chạy fold:
+
+- **Recipe fold rút còn 10 epoch** (`od_beats`, `--epochs 10`, lr encoder 2e-5 theo pilot, batch 8,
+  `--train-fixes`, seed 20260922, hop 5 s tam giác như B0). Lý do đo trên dev trước quyết định:
+  run tầng S 30 epoch đạt frame mAP đỉnh ở **epoch 4** (0.8013) rồi giảm, loss val tăng
+  0.193 → 0.243; pilot 10 epoch đạt 0.8023. Đây là thay đổi sau khi thấy số tầng S; nó chỉ rút lịch
+  train, không chọn theo event-F1, và được ghi trước mọi số tầng C của O-D.
+- **Thêm ứng viên ensemble B0 + O-D** (trung bình xác suất hai OOF hop 5 s, `build_ensemble` giữ
+  task `sed_oof`).
+
+Ứng viên vòng 2: O-D, ensemble B0 + O-D. Mốc và luật như §2: so với B0
+(`sed_oof_B0_h5_20261008T130849Z`) trên cùng 5 fold; chọn ứng viên micro OOF cao nhất trong số
+những ứng viên có CI 95% của Δ (bootstrap ghép cặp 1000 lần, seed 20260922) nằm trên 0; không ai
+đạt thì giữ B0. Ứng viên vòng 1 không được chọn lại ở vòng 2. Lựa chọn cuối commit trước mọi
+logit test.
+
+Lưu trữ: sau khi kiểm manifest từng fold O-D (complete, sạch, đúng fold), xóa `last.pt` của chính
+run đó (không code nào đọc; mỗi file 1.08 GB; ổ D còn 10.2 GB); `best.pt` giữ cho test.
+
 ## Consequences
 
 - Chi phí GPU tầng C: họ fmn khoảng 5 × 45 phút cho mỗi cấu hình; họ transformer khoảng
