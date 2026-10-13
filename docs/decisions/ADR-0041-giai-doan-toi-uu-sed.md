@@ -267,6 +267,24 @@ logit test.
 Lưu trữ: sau khi kiểm manifest từng fold O-D (complete, sạch, đúng fold), xóa `last.pt` của chính
 run đó (không code nào đọc; mỗi file 1.08 GB; ổ D còn 10.2 GB); `best.pt` giữ cho test.
 
+### 10. O-F — DataSEC thành nhãn mạnh giả (RQ1b), ghi trước khi sinh nhãn (14/10)
+
+**Câu hỏi (RQ1b):** DataSEC có giúp *định vị* trên DataSED khi được gán nhãn thời gian không? S48
+cho thấy pretrain DataSEC chỉ giúp nhận dạng vì nhãn cấp clip. O-F biến clip DataSEC thành nhãn
+mạnh bằng một teacher, rồi train student trên DataSED train cộng DataSEC.
+
+| Điểm | Chọn | Lý do |
+|---|---|---|
+| Pool | `data/manifests/datasec_o_f_pool.csv` (XO-9): 2.846 clip, 10,76 giờ, train ∩ v4 − exclusion, 21 lớp polyphonic | Không dùng clip dev/test của split DataSEC; v4 bỏ lỗi Music |
+| Teacher | **O-D (BEATs fine-tune)**, suy luận hop 5 s tam giác, hậu xử lý = họ/cấu hình CV đã chọn của chính run teacher | Frame mAP cao nhất (0.80); nhãn giả cần nhận dạng tốt |
+| Chống rò rỉ | Tầng S: teacher = run tầng S `sed_polyphonic_20261009T153325Z` (chỉ thấy train gốc). Tầng C: student fold k chỉ dùng nhãn giả của **teacher fold k** (`OD_fold<k>`, không thấy fold k) | Teacher ensemble 5 fold đã thấy nhãn mọi fold → điểm OOF bị thổi phồng |
+| Nhãn giả | Chỉ lớp của tag thư mục: event teacher của lớp đó; mọi lớp khác = 0 trên clip | Clip DataSEC là âm cô lập theo lớp; không lan lỗi teacher sang lớp khác |
+| Clip không có event | Bỏ clip (báo số lượng), không gán cả clip | Gán cả clip là tái tạo nhãn cấp clip mà O-F muốn tránh |
+| Student | Recipe B0 (T2b + `--train-fixes`), seed 20260922; DataSEC thêm vào train như recording phụ (cửa sổ 10 s, đệm + mask, random crop); `pos_weight` tính trên DataSED train | Chỉ khác B0 ở dữ liệu phụ, so trực tiếp được với B0 |
+| Đánh giá | Tầng S: so seed T2b tốt nhất (0.2330), như mọi ứng viên. Qua → tầng C vòng 3: ứng viên "B0 + O-F" so B0 trên cùng 5 fold, luật §2 | Không đặc cách |
+
+Báo kèm (không dùng chọn): số event giả theo lớp, tỷ lệ clip bị bỏ, phân bố độ dài event giả.
+
 ## Consequences
 
 - Chi phí GPU tầng C: họ fmn khoảng 5 × 45 phút cho mỗi cấu hình; họ transformer khoảng
