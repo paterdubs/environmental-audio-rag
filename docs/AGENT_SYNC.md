@@ -150,6 +150,10 @@ mình; cần đụng file khác thì ghi §6.
 | XO-17 | O1.2: chẩn đoán cSEBB O-C so seed T2b172924Z, chỉ134dev annotated | Codex | `scripts/report_sebb_diagnosis.py`, `tests/`, `docs/measurements/sebb_diagnosis_*` | — | ✅ (chờ merge) |
 | XO-18 | O1.2: vendor TF256 tối thiểu + rotary0.9.1 MIT, torch thuần, strict-load hai checkpoint + CPU forward | Codex | `ml/models/external/efficientsed_tf/`, `tests/` | XO-16 | ✅ (chờ merge) |
 | XO-19 | O1 tầng S: per-class F1/Nsys/Nref và Δ trên toàn dev cho O-A/O-B/O-C | Codex | `scripts/report_screening_per_class.py`, `tests/`, `docs/measurements/screening_per_class_*` | XO-17 | ✅ (chờ merge) |
+| XO-20 | O1/O2.1 tầng S: mọi run so ba seed T2b; bảng S→C cùng recipe, đủ hai selection annotated | Codex | `scripts/report_tier_s.py`, `tests/`, `docs/measurements/tier_s_*` | CV đã có | ✅ (chờ merge) |
+| XO-21 | O1.2/O1.4/O2.1: frame AP/event-F1 và độ mượt posterior sáu run, chỉ mô tả dev annotated | Codex | `scripts/report_detection_gap.py`, `tests/`, `docs/measurements/detection_gap_*` | XO-20 | ✅ (chờ merge) |
+| XO-22 | O1.2/O1.4/O2.1: báo cáo biên có sẵn sáu run với postproc annotated | Codex | `docs/measurements/` | postproc đã có | ✅ (chờ merge) |
+| XO-23 | O0.6/O4.2: queue OOF rewindow + skip-raw-cv, resume từng bước, workers2, chỉ runner giả | Codex | `scripts/run_oof_queue.py`, `tests/` | — | ✅ (chờ merge) |
 
 | ID | Task | Chủ | Vùng file | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
@@ -357,6 +361,26 @@ mình; cần đụng file khác thì ghi §6.
 
 | 08/10/2026 | Codex | XO-19 (PLAN O1 tầng S): report_screening_per_class+4fixture; chạy CLI CPU thật3lần với --label oa/ob/oc, baseline/candidate tuyệt đối repo chính như đặc tả. Đủ21lớp×134dev annotated,886GT; event của họ thắng/refit lưu sẵn, priorθ kiểm nguồn train+percentile, không quét CV. Artifact screening_per_class_{oa,ob,oc}_20261008.{md,json}. Gate `.agent_logs/cpu.py pytest -q`:766passed,8skipped,24warnings (84.17s); `-m ruff check .`:sạch. AST mọi hàm code mới <50dòng. Không merge/GPU/prediction test/ghi main. |
 
+- **08/10/2026 — Codex, XO-20:** report_tier_s + 4 fixture test; CLI CPU `python .agent_logs/cpu.py scripts.report_tier_s --runs-dir D:/IUH_K18/HK1N5/KLTN2/environmental-audio-rag/ml/runs --stamp 20261009` → tier_s_20261009.{md,json}. pytest -q: **781 passed,12 skipped,26 warnings (118.17s)**; ruff check . sạch. Không đọc test hoặc chạy selector.
+
+- **08/10/2026 — Codex, XO-21:** report_detection_gap +4fixture, CLI thật5 --run T2b/GRU/DO4/TFKD/TFstrong --stamp20261009 (đường dẫn tuyệt đối main/ml/runs); 3run sẵn sàng được đo,2TF đang chờ. pytest -q **785passed,12skipped,28warnings (97.98s)**; ruff check . sạch. Không chạy selector hoặc ghi lại postproc.
+
+- **08/10/2026 — Codex, XO-20 kiểm cuối lượt6:** bổ sung KD vào tier_s_20261009,11run đủCV/1strongđangchờ; autodiscovery nhận ngày mới, fixture ngày09/10; CLI sinh scratch rồi chép measurement, assert mọi10rowcũ giống hoàn toàn; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
+- **08/10/2026 — Codex, XO-21 kiểm cuối lượt6:** bổ sung KD vào detection_gap_20261009,đủ4runbắtbuộc×21lớp×134recording; strongtùychọnchưaCV; assert mọi3rowcũ giống hoàn toàn; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
+- **08/10/2026 — Codex, XO-22 kiểm cuối lượt6:** CLI scripts.report_boundary_errors nhiều--run với postproc_cv_annotated cho đủ4run T2b/GRU/DO4/KD; contexthash/phạm vi ở docs/measurements/boundary_phase_o_20261009; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
+- **08/10/2026 — Codex, XO-23 kiểm cuối lượt6:** mở rộng queue --rewindow,46test runner giả; CLI dry-run thật16lệnh, state không đổi; artifact oof_queue_rewindow_dry_run_20261009.{md,json}; pytest -q **810passed,12skipped,28warnings (107.18s)**; ruff check . sạch. Không GPU/selector mới/test prediction/main write/pip install/push.
+
+[09/10/2026] Codex XO-20 — lượt6 cập nhật: bổ sung prompt mới; artifact measurement sinh lại từ dev/selection đã lưu hoặc dry-run; 827 passed, 12 skipped, 29 warnings, 97.32s, ruff sạch. Chờ merge.
+
+[09/10/2026] Codex XO-21 — lượt6 cập nhật: bổ sung prompt mới; artifact measurement sinh lại từ dev/selection đã lưu hoặc dry-run; 827 passed, 12 skipped, 29 warnings, 98.55s, ruff sạch. Chờ merge.
+
+[09/10/2026] Codex XO-22 — lượt6 cập nhật: bổ sung prompt mới; artifact measurement sinh lại từ dev/selection đã lưu hoặc dry-run; 827 passed, 12 skipped, 29 warnings, 97.33s, ruff sạch. Chờ merge.
+
+[09/10/2026] Codex XO-23 — lượt6 cập nhật: bổ sung prompt mới; artifact measurement sinh lại từ dev/selection đã lưu hoặc dry-run; 827 passed, 12 skipped, 29 warnings, 98.68s, ruff sạch. Chờ merge.
+
 ## 5. Dữ kiện đã đo — append-only
 
 Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi cảm giác.
@@ -511,10 +535,261 @@ Chỉ ghi số **đã có artifact**. Không ghi ước lượng, không ghi c�
 - 08/10/2026 — XO-19 ob:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; ob(theta):micro=0.22546972860125258,macro=0.1797667138778188,Nsys=551,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.06834804539722572, 'voices'),lớn nhất=(0.24, 'thunder_fireworks_gunshot'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_ob_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
 - 08/10/2026 — XO-19 oc:21lớp,134dev annotated, in-sample; t2b(theta):micro=0.2268188302425107,macro=0.16354348786860265,Nsys=516,Nref=886,nullF1=[]; oc(theta):micro=0.22282608695652176,macro=0.1741198214711463,Nsys=586,Nref=886,nullF1=[]; ΔF1 nhỏ nhất=(-0.13783783783783785, 'bells'),lớn nhất=(0.15362731152204834, 'chicken_coop'). Bảng đầy đủ+ΔF1/ΔNsys/ΔNref tại screening_per_class_oc_20261008.{json,md}; không phải CV hoặc CI. Priorθ xác minh đúng percentile thắng và nguồn train.
 
+- **XO-20:** tier_s_20261009.json: 10 run đủ hai selection, 2 đang chờ. Best seed `sed_polyphonic_20260927T172924Z` CVmicro=0.233026052067; mean ba seed=0.226005871832. Mọi số full-dev là in-sample, không dùng chọn.
+- `sed_polyphonic_20260927T172924Z`: frame mAP saved=0.7351536446359367; CV winner theta=0.233026052067; Δ best seed=+0.000000000000; fold>0/5; qua=False; full-dev macro/micro=0.163543487869/0.226818830243.
+- `sed_polyphonic_20260927T180358Z`: frame mAP saved=0.7442710056208708; CV winner csebb=0.220713036799; Δ best seed=-0.012313015268; fold>1/5; qua=False; full-dev macro/micro=0.148303659738/0.214723926380.
+- `sed_polyphonic_20260927T185137Z`: frame mAP saved=0.7495623263537761; CV winner csebb=0.224278526631; Δ best seed=-0.008747525436; fold>1/5; qua=False; full-dev macro/micro=0.182168047146/0.221276595745.
+- `sed_ensemble_f2_h2.5_triangular0.3_20261008T060746Z`: frame mAP saved=None; CV winner theta=0.234164956488; Δ best seed=+0.001138904421; fold>2/5; qua=True; full-dev macro/micro=0.169986008529/0.239886444287.
+- `sed_ensemble_f2_h2.5_uniform_20261008T074349Z`: frame mAP saved=None; CV winner theta=0.232880272756; Δ best seed=-0.000145779311; fold>4/5; qua=False; full-dev macro/micro=0.180275022525/0.244111349036.
+- `sed_ensemble_f2_h5_triangular0.3_20261008T064740Z`: frame mAP saved=None; CV winner theta=0.240811490483; Δ best seed=+0.007785438417; fold>3/5; qua=True; full-dev macro/micro=0.185527657544/0.240816326531.
+- `sed_ensemble_t2b_20260927T200914Z`: frame mAP saved=None; CV winner csebb=0.238278490386; Δ best seed=+0.005252438319; fold>2/5; qua=True; full-dev macro/micro=0.152892817146/0.231250000000.
+- `sed_polyphonic_20261008T062333Z`: frame mAP saved=0.7339902324809666; CV winner theta=0.232664080263; Δ best seed=-0.000361971803; fold>3/5; qua=False; full-dev macro/micro=0.179766713878/0.225469728601.
+- `sed_polyphonic_20261008T083632Z`: frame mAP saved=0.7559966807974785; CV winner theta=0.231814412697; Δ best seed=-0.001211639369; fold>2/5; qua=False; full-dev macro/micro=0.174119821471/0.222826086957.
+- `sed_polyphonic_20261008T131138Z`: frame mAP saved=0.7430186128852598; CV winner csebb=0.217425078154; Δ best seed=-0.015600973913; fold>1/5; qua=False; full-dev macro/micro=0.150751121213/0.221028396009.
+
+- **XO-21:** detection_gap_20261009.{md,json}: 3run×21lớp×134dev annotated; oracle θ per-class chỉ chẩn đoán in-sample, không dùng chọn.
+- `t2b`: frame AP macro annotated=0.751497488456; winner full-dev macro/micro=0.163543487869/0.226818830243; θglobalmicro=0.226818830243; θoraclemicro=0.232024169184; I/D/S=356/726/1; Nsys/Nref=516/886; onset-onlymicro=0.288159771755; offset-onlymicro=0.537803138374.
+- `oc_gru`: frame AP macro annotated=0.772682610513; winner full-dev macro/micro=0.174119821471/0.222826086957; θglobalmicro=0.222826086957; θoraclemicro=0.246851385390; I/D/S=420/720/2; Nsys/Nref=586/886; onset-onlymicro=0.309782608696; offset-onlymicro=0.574728260870.
+- `do4`: frame AP macro annotated=0.767660191020; winner full-dev macro/micro=0.150751121213/0.221028396009; θglobalmicro=0.220419202164; θoraclemicro=0.251655629139; I/D/S=272/741/1; Nsys/Nref=417/886; onset-onlymicro=0.270145817345; offset-onlymicro=0.523407521105.
+
+- **XO-20 cập nhật TF KD:** 11 run đủ hai selection, 1 đang chờ (strong145841Z). KD135047Z winner=theta global|25; CV=0.277893741776±0.086759158776; Δseedbest=+0.044867689709; foldcao=4/5; qua=True; full-dev macro/micro=0.195613772079/0.263661202186.
+
+- **XO-21 bổ sung KD135047Z:** AP macro annotated=0.752806236651; winner full-dev macro/micro=0.195613772079/0.263661202186; θoracle micro=0.297786720322; I/D/S=385/693/0; Nsys/Nref=578/886; onset-only micro=0.330601092896; offset-only micro=0.592896174863.
+
+- **XO-22:** boundary_phase_o_20261009/boundary_errors_20261008.{md,json}: 4run×137dev (134annotated+3khôngGT),θannotated refit; KD đã bổ sung.
+- `t2b` onset: overlap n=539 (không phải TP), median=0.040000000000s; q25/q75=-0.365000000000/0.355000000000s; trong±0.2=0.371057513915.
+- `t2b` offset: overlap n=539 (không phải TP), median=-0.020000000000s; q25/q75=-0.455000000000/0.390000000000s; trong±0.2=0.354359925788.
+- `oc_gru` onset: overlap n=603 (không phải TP), median=-0.010000000000s; q25/q75=-0.505000000000/0.290000000000s; trong±0.2=0.369817578773.
+- `oc_gru` offset: overlap n=603 (không phải TP), median=0.010000000000s; q25/q75=-0.390000000000/0.525000000000s; trong±0.2=0.328358208955.
+- `do4` onset: overlap n=625 (không phải TP), median=-0.080000000000s; q25/q75=-2.870000000000/0.140000000000s; trong±0.2=0.334400000000.
+- `do4` offset: overlap n=625 (không phải TP), median=0.120000000000s; q25/q75=-0.140000000000/2.230000000000s; trong±0.2=0.332800000000.
+- `oc_tf_kd` onset: overlap n=578 (không phải TP), median=0.040000000000s; q25/q75=-0.197500000000/0.320000000000s; trong±0.2=0.413494809689.
+- `oc_tf_kd` offset: overlap n=578 (không phải TP), median=-0.070000000000s; q25/q75=-0.440000000000/0.270000000000s; trong±0.2=0.352941176471.
+
+- **XO-23:** dry-run CLI --rewindow5:triangular:0.3 in16lệnh=5train+5dumpdev+2buildOOF+4selector; stateunchanged=true; 46fixture queuepassed (gồm resume tại dump/build/selector, lỗi, provenance, hash, legacy khôngrewindow). Fullgate810passed/12skipped,ruffclean; không chạy thật.
+
+- **XO-20 lượt6 cập nhật:** 13 run đủ CV, 0 đang chờ; bảng S→C 4 cặp recipe, 3 OOF chờ.
+- `sed_polyphonic_20260927T172924Z`: mAP=0.7351536446359367, CV=0.233026052067±0.039962720983 theta, Δbest=+0.000000000000, qua=False.
+- `sed_polyphonic_20260927T180358Z`: mAP=0.7442710056208708, CV=0.220713036799±0.046403701360 csebb, Δbest=-0.012313015268, qua=False.
+- `sed_polyphonic_20260927T185137Z`: mAP=0.7495623263537761, CV=0.224278526631±0.040871625850 csebb, Δbest=-0.008747525436, qua=False.
+- `sed_ensemble_f2_h2.5_triangular0.3_20261008T060746Z`: mAP=None, CV=0.234164956488±0.042423428814 theta, Δbest=+0.001138904421, qua=True.
+- `sed_ensemble_f2_h2.5_uniform_20261008T074349Z`: mAP=None, CV=0.232880272756±0.034000105200 theta, Δbest=-0.000145779311, qua=False.
+- `sed_ensemble_f2_h5_triangular0.3_20261008T064740Z`: mAP=None, CV=0.240811490483±0.047409503689 theta, Δbest=+0.007785438417, qua=True.
+- `sed_ensemble_t2b_20260927T200914Z`: mAP=None, CV=0.238278490386±0.056150673405 csebb, Δbest=+0.005252438319, qua=True.
+- `sed_polyphonic_20261008T062333Z`: mAP=0.7339902324809666, CV=0.232664080263±0.049901337548 theta, Δbest=-0.000361971803, qua=False.
+- `sed_polyphonic_20261008T083632Z`: mAP=0.7559966807974785, CV=0.231814412697±0.064059228597 theta, Δbest=-0.001211639369, qua=False.
+- `sed_polyphonic_20261008T131138Z`: mAP=0.7430186128852598, CV=0.217425078154±0.055380754831 csebb, Δbest=-0.015600973913, qua=False.
+- `sed_polyphonic_20261008T135047Z`: mAP=0.7386101645078149, CV=0.277893741776±0.086759158776 theta, Δbest=+0.044867689709, qua=True.
+- `sed_polyphonic_20261008T145841Z`: mAP=0.7461796026644167, CV=0.255924867213±0.061603805396 theta, Δbest=+0.022898815147, qua=True.
+- `sed_polyphonic_20261008T162136Z`: mAP=0.7386801876733315, CV=0.218845014324±0.044501034813 theta, Δbest=-0.014181037742, qua=False.
+- S→C `sed_polyphonic_20261008T062333Z` 0.232664080263 → `sed_oof_B0_h10_20261008T130820Z` 0.220101348149; chỉ mô tả.
+- S→C `sed_polyphonic_20261008T062333Z` 0.232664080263 → `sed_oof_B0_h5_20261008T130849Z` 0.233613549481; chỉ mô tả.
+- S→C `sed_polyphonic_20261008T135047Z` 0.277893741776 → `sed_oof_TFKD_h10_20261008T224140Z` 0.204868943379; chỉ mô tả.
+- S→C `sed_polyphonic_20261008T135047Z` 0.277893741776 → `sed_oof_TFKD_h5_20261008T224209Z` 0.207277533022; chỉ mô tả.
+- XO-20: gate 827 passed, 12 skipped, 29 warnings, 97.32s; ruff check . sạch, CPU, không test predictions.
+
+- **XO-21** `t2b`: annotated AP=0.751497488456; event micro=0.226818830243; I/D/S=356/726/1; mean|Δp|=0.000715017989; median đoạn>0.5/rec=27.5.
+- **XO-21** `oc_gru`: annotated AP=0.772682610513; event micro=0.222826086957; I/D/S=420/720/2; mean|Δp|=0.000251416447; median đoạn>0.5/rec=11.0.
+- **XO-21** `do4`: annotated AP=0.767660191020; event micro=0.221028396009; I/D/S=272/741/1; mean|Δp|=0.000795654379; median đoạn>0.5/rec=27.5.
+- **XO-21** `oc_tf_kd`: annotated AP=0.752806236651; event micro=0.263661202186; I/D/S=385/693/0; mean|Δp|=0.000373996714; median đoạn>0.5/rec=12.0.
+- **XO-21** `oc_tf`: annotated AP=0.758365514112; event micro=0.245010323469; I/D/S=384/703/5; mean|Δp|=0.000418545354; median đoạn>0.5/rec=15.5.
+- **XO-21** `oe_red`: annotated AP=0.754739685157; event micro=0.233034571063; I/D/S=491/701/3; mean|Δp|=0.000671402625; median đoạn>0.5/rec=18.0.
+- XO-21: gate 827 passed, 12 skipped, 29 warnings, 98.55s; ruff check . sạch, CPU, không test predictions.
+
+- **XO-22 cập nhật** `t2b`: overlap n=539, onset median=0.040000000000000036, offset median=-0.019999999999999574; không phải TP sed_eval.
+- **XO-22 cập nhật** `oc_gru`: overlap n=603, onset median=-0.00999999999999801, offset median=0.010000000000019327; không phải TP sed_eval.
+- **XO-22 cập nhật** `do4`: overlap n=625, onset median=-0.0800000000000054, offset median=0.11999999999999988; không phải TP sed_eval.
+- **XO-22 cập nhật** `oc_tf_kd`: overlap n=578, onset median=0.03999999999999915, offset median=-0.07000000000000028; không phải TP sed_eval.
+- **XO-22 cập nhật** `oc_tf`: overlap n=545, onset median=0.0600000000000005, offset median=-0.06999999999999318; không phải TP sed_eval.
+- **XO-22 cập nhật** `oe_red`: overlap n=654, onset median=-0.06999999999999673, offset median=0.010000000000019327; không phải TP sed_eval.
+- XO-22: gate 827 passed, 12 skipped, 29 warnings, 97.33s; ruff check . sạch, CPU, không test predictions.
+
+- **XO-23 cập nhật:** --rewindow5:triangular:0.3 --skip-raw-cv in14lệnh (5train+5dumpdev+2build+2selectorh5), khôngskip in16. θ và cSEBB đềuworkers2; runnergiả kiểm resume; không chạy thật.
+- XO-23: gate 827 passed, 12 skipped, 29 warnings, 98.68s; ruff check . sạch, CPU, không test predictions.
+
 ## 6. Chặn, hỏi, phản biện
 
 Ghi ở đây khi: bị chặn · cần sửa file ngoài vùng · **không đồng ý với một task**.
 Agent kia phải trả lời trước khi task liên quan đi tiếp.
+
+### [MỞ] Codex → Claude — XO-23 --skip-raw-cv và workers2
+
+Bỏ hai selector raw h10, vẫn dựng cả raw/overlap OOF. Flag cần --rewindow; resume khóa flag, thay flag cần label mới để không thay nghĩa trạng thái complete. State cũ không có flag tương đương false. Selector θ --modes global --workers2 và cSEBB --workers2. Chỉ fake runner và CLI dry-run CPU; không train/dump/build/selector thật. Giữ giới hạn một process/label và crash sau child trước save có thể orphan run.
+
+Đối chiếu các số tầng S GRU/DO4/TFKD/TFstrong/RED và tầng C hop5 B0/TFKD khớp prompt khi làm tròn 4 chữ số; không chỉnh script để ép số. Snapshot XO-20 còn chờ CV OOF ensemble B0+TFKD và hai OOF TF strong h10/h5; tầng S đã đủ. XO-11 vẫn chặn.
+
+### [MỞ] Codex → Claude — XO-22 cập nhật sáu run
+
+Chạy nguyên report_boundary_errors CPU cho sáu run, tất cả dùng postproc_cv_annotated đã có, không selector. Artifact boundary_errors_20261009 thêm cạnh bản ngày08 trong cùng thư mục; giữ bản bốn run lịch sử; context lưu command/hash. Giữ giới hạn đã báo: toàn137dev gồm3khôngGT, chỉ họθ (DO4 là companion), ghép max-overlap có thể tái dùng pred, n không phảiTP; không so trực tiếp scope với XO-21.
+
+### [MỞ] Codex → Claude — XO-21 đủ sáu run, thêm độ mượt posterior
+
+Đủ T2b/GRU/DO4/TFKD/TFstrong/RED, cùng134annotated dev. Dùng lại posterior_summary XO-17, |Δp| chỉ giữa frame cùng recording, đoạn strict p>0.5 tính theo lớp rồi cộng/recording (không nối qua biên). JSON có quantile và từng recording. θ oracle chỉ chẩn đoán in-sample/A2, không dùng chọn. Họ event thắng giữ nguyên CV; nếu cSEBB thắng, phân tích θ dùng họ θ đồng hành. AP raster annotated khác metrics.json validation-window; hypothesis không chứng minh nguyên nhân.
+
+### [MỞ] Codex → Claude — XO-20 cập nhật đủ TF strong/RED và S→C
+
+- **XO-20 lượt6 cập nhật:** 13 run đủ CV, 0 đang chờ; bảng S→C 4 cặp recipe, 3 OOF chờ.
+
+Ghép recipe qua manifest OOF→rewindow→run fold, không suy recipe từ nhãn. Ghép recipe/window_sampling/boundary_head; train_fixes khác nhau được ghi riêng (TFKD tầng S chưa bật, OOF đã bật); CV S dev134 và C OOF564, suy luận có thể khác (O-B raw10s so B0 h5); không phải Δ ghép cặp, không kết luận chọn. OOF ensemble trộn recipe được liệt kê chưa ghép, không ép vào một recipe. Chỉ đọc selection CV đã lưu, không chạy report_oof/selector. cSEBB không lưu dev_recordings, lấy phạm vi564 từ θ đồng hành và kiểm foldhash; không thêm số vào artifact nguồn.
+
+### [MỞ] Codex → Claude — tiếp nhận lượt 6 cập nhật 09/10/2026
+
+Đã merge master `14e2e5f` vào codex/phase-o, không xung đột. Prompt cập nhật của người dùng ưu tiên hơn docs/notes/codex_prompts_phase_o.md. Tiếp tục các artifact XO-20..23 đã có, không làm XO-24/25 trong lượt này. Chỉ worktree, CPU, đọc main ml/runs, không test/pip/push; XO-11 vẫn chặn. Không sửa file Claude ngoài nội dung merge được yêu cầu.
+
+- XO-20 (PLAN O1.1/O1.2/O2.1): bổ sung mọi run đủ hai selection annotated, gồm TF strong/O-E1; bảng phụ tầng S→C theo cùng recipe/provenance, số CV đã lưu, chỉ mô tả, không chọn.
+- XO-21 (PLAN O1.2/O1.4/O2.1): đủ sáu run T2b/GRU/DO4/TFKD/TFstrong/RED, AP + event họ thắng + θ oracle không chọn + I/D/S/onset/offset như trước, thêm |Δp| và đoạn >0.5/recording dùng lại XO-17, chỉ134dev annotated.
+- XO-22: chạy nguyên report_boundary_errors cho sáu run bằng postproc annotated đã có; output trong worktree; thiếu ghi §6, không selector.
+- XO-23 (PLAN O0.6): thêm --skip-raw-cv (vẫn dựng raw OOF, bỏ hai selector raw), theta --modes global --workers 2 và cSEBB --workers 2; resume/runner giả/dry-run, không chạy queue thật.
+
+Mỗi task pytest -q và ruff check . không pipe, cập nhật §3.O/§4/§5 và commit tiếng Việt có Bối cảnh/Thay đổi/Kiểm chứng/Ảnh hưởng. Các số kỳ vọng của prompt chỉ dùng đối chiếu sau khi đo, lệch ghi §6.
+
+### [MỞ] Codex → Claude — queue OOF chồng lấn XO-23, chỉ test/dry-run
+
+CLI: `python -m scripts.run_oof_queue --label B0 --seed 20260922 --rewindow 5:triangular:0.3 --dry-run -- --encoder frame_mn --recipe t2b --train-fixes`. 16lệnh đúng thứ tự5train→5dump(--splitdev)→2build(B0_h10/B0_h5)→θ/cSEBBh10→θ/cSEBBh5. Mỗi dump nhãn B0_f<k>_h5, --weighting triangular:0.3; parser tách dấu: đầu tiên, hỗ trợ2.5:uniform. **Không chạy thật**, device và GPUvisibility vẫn do operator; probe CPU chỉ in lệnh, state không đổi.
+
+State resume tách từng5rewindow/2build/4selector; nonzero luôn dừng, không coi127 là thành công. Kiểm manifest/config source/hop/window/weighting/data, SHA byte dev của fold/rewindow/OOF mới và theta refit; fixture từ chối artifact đổi. Giữ key/identity legacy khi không bật option; không bật/tắt/đổi hop/weighting giữa resume cùng label (cần label mới). Legacy state chưa có devhash vẫn đọc được; state mới có devhash. Raw labelh10 yêu cầu nguồn window/hop10s, hopchồnglấn hữu hạn trong(0,10)s. Không sửa dump/build/select/train của Claude.
+
+Giữ giới hạn XO-15: chỉ một queueprocess/label; kill sau subprocess thành công trước ghi state có thể để run mồ côi và resume tạo lại; không tự tìm run mồ côi. CSEBB chỉ ghi selection, theta còn kiểm refit. Dry-run bỏ bước đã ghi nhận, không thực thi runner, không ghi state. Test46ca hoàn toàn runner giả. Trước chạy thật Claude cần merge nhánh, tree sạch và nguồn dữ liệu của mình; Codex không chạy train/dump/selector thật trong lượt này.
+
+### [MỞ] Codex → Claude — phạm vi script biên có sẵn XO-22
+
+Đã chạy nguyên scripts.report_boundary_errors qua CLI CPU, nhiều --run tuyệt đối với postproc_cv_annotated.json cho T2b/GRU/DO4/TFKD, output thư mục riêng boundary_phase_o_20261009. TF KD135047Z ban đầu thiếu postproc, đã xuất hiện trong lượt làm và được chạy bổ sung trước commit; không tự chạy selector. context.{md,json} lưu lệnh/hash/scope.
+
+Hai khác biệt phương pháp có sẵn được giữ nguyên và nêu rõ: script xét137dev (134annotated+3khôngGT), posterior âm bao gồm3recordingkhôngGT, không so trực tiếp với phân bố134recording; script chỉ hỗ trợ θ, nên DO4 là **họ θ đồng hành**, không phải họ cSEBB thắng CV. Biên chọn overlap dương lớn nhất mỗiGT, có thể tái dùng pred, không cần collar; n539/603/625không phải TP sed_eval, khácXO-17. Script dùng raster100Hz cố định; đã assert cả4prediction frame_hop_s=.01. Không sửa file Claude để thay các convention ấy, không biến bảng này thành kết quả CV.
+
+### [MỞ] Codex → Claude — cập nhật XO-21: TF256 KD đã đủ CV trong lượt 6
+
+KD135047Z đã có θ selection/refit lúc23:06:53 và cSEBB selection lúc23:10:07 08/10 theo mtime nguồn. Đã chạy lại CLI báo cáo vào scratch **trong worktree**, sau đó chép output sinh tự động vào measurement cùng nhãn20261009 trước merge. Assert mọi row của snapshot trước giống hoàn toàn, chỉ thêmKD; không sửa số bằng tay. Các dòng “thiếu TF KD” trong nhật ký/snapshot ban đầu là lịch sử, đã giải quyết. Strong145841Z vẫn thiếuCV; là pending ởXO-20 và tùy chọn chưa đủ điều kiện ởXO-21. Autodiscovery XO-20 nhận run sed_polyphonic từ08/10 trở đi và loại config.cv_fold, fixture có ngày09/10; --run cho nguồn khác.
+
+- **XO-21 bổ sung KD135047Z:** AP macro annotated=0.752806236651; winner full-dev macro/micro=0.195613772079/0.263661202186; θoracle micro=0.297786720322; I/D/S=385/693/0; Nsys/Nref=578/886; onset-only micro=0.330601092896; offset-only micro=0.592896174863.
+
+KD qua cổng tầngS theo luật đã ghi; chưa là xác nhận OOF hoặc lựa chọn cuối. Không đổi luật S13/ADR, không tự chạy selector. HaiOOF B0 vẫn chưa đủ selection tại lần kiểm này nên chưa kích hoạt lượt7.
+
+### [MỞ] Codex → Claude — cập nhật XO-20: TF256 KD đã đủ CV trong lượt 6
+
+KD135047Z đã có θ selection/refit lúc23:06:53 và cSEBB selection lúc23:10:07 08/10 theo mtime nguồn. Đã chạy lại CLI báo cáo vào scratch **trong worktree**, sau đó chép output sinh tự động vào measurement cùng nhãn20261009 trước merge. Assert mọi row của snapshot trước giống hoàn toàn, chỉ thêmKD; không sửa số bằng tay. Các dòng “thiếu TF KD” trong nhật ký/snapshot ban đầu là lịch sử, đã giải quyết. Strong145841Z vẫn thiếuCV; là pending ởXO-20 và tùy chọn chưa đủ điều kiện ởXO-21. Autodiscovery XO-20 nhận run sed_polyphonic từ08/10 trở đi và loại config.cv_fold, fixture có ngày09/10; --run cho nguồn khác.
+
+- **XO-20 cập nhật TF KD:** 11 run đủ hai selection, 1 đang chờ (strong145841Z). KD135047Z winner=theta global|25; CV=0.277893741776±0.086759158776; Δseedbest=+0.044867689709; foldcao=4/5; qua=True; full-dev macro/micro=0.195613772079/0.263661202186.
+
+KD qua cổng tầngS theo luật đã ghi; chưa là xác nhận OOF hoặc lựa chọn cuối. Không đổi luật S13/ADR, không tự chạy selector. HaiOOF B0 vẫn chưa đủ selection tại lần kiểm này nên chưa kích hoạt lượt7.
+
+### [MỞ] Codex → Claude — khoảng cách frame/event XO-21 và thiếu CV TF256
+
+Script/fixture và measurement3run T2b172924Z/O-C GRU083632Z/DO4 131138Z đã có; TF256 KD135047Z và strong145841Z chưa đủ selection/postproc annotated tại snapshot, liệt kê pending. **XO-21 còn thiếu phần TF KD**, không gọi selector để lấp. Cần chạy lại với --stamp mới khi artifact sẵn sàng; bản20261009 chống ghi đè.
+
+AP annotated là raster floor/ceil hợp nhất GT, sigmoid gộp cửa sổ, gộp frame theo lớp trên134recording; khác best_validation mAP theo validation window/mask trong metrics.json. Không kỳ vọng hai con số này bằng nhau hoặc sửa số để khớp. DO-4 thắng cSEBB: Nsys/Nref/F1/I-D-S dùng cSEBB đã chọn; p>θ/oracle dùng **họ θ global đồng hành**, giữ percentile train của họ θ, không hiểu λ cSEBB là θ posterior. Posterior p>θ là strict và chưa median; pipeline threshold dùng ≥ sau median.
+
+Oracle dùng lưới19ngưỡng đã lưu [0.05..0.95], hòa θ thấp nhất như sweep gốc. NaN mục tiêu→0 để argmax như build_score_functions; F1 thật vẫn null/—, không đổi metric. Cache đúng _median_filter của dự án một lần/lớp rồi process_recordings với median_w=1, d_min/g_max giữ nguyên; fixture so từng điểm lưới và event/score với native pipeline (biên recording, gap, duration). Không dùng scipy khác convention để tăng tốc. Oracle **in-sample, không dùng chọn**, không tạo postproc hoặc đụng run.
+
+I/D/S là error_rate chuẩn sed_eval×Nref, assert Nref=TP+S+D và Nsys=TP+S+I; substitution là sai lớp khớp collar, khác confusion theo overlap. Lỗi biên có thể thành insertion+deletion. Onset-only/offset-only cũng qua adapter sed_eval. Giả thuyết về operating point/biên gắn nhãn rõ, không chứng minh nhân quả hoặc đổi luật S.
+
+### [MỞ] Codex → Claude — bảng tầng S lượt 6 (XO-20)
+
+Đã tổng hợp 3 seed T2b, f2, 3 O-A, O-B, O-C GRU và DO-4; chỉ run đủ hai selection annotated, cùng134recording/5fold/hash. Best seed dùng số đầy đủ 0.233026052067, khớp0.2330 làm tròn4chữ số. O-C mAP/score khớp0.756/0.2318; DO-4 khớp0.743/0.2174 làm tròn như đặc tả. Không đổi script để ép số. Cột frame mAP dùng best_validation của metrics.json; ensemble không có số ấy giữ null/—, không lấy trung bình member. Recipe/cờ và config nguyên vẹn từ manifest được lưu JSON. Thống kê full-dev dùng lại reconstruct XO-19, in-sample; không phải CV.
+
+Đang chờ tại snapshot: sed_polyphonic_20261008T135047Z: postproc_cv_selection_annotated.json, sebb_cv_selection_annotated.json; sed_polyphonic_20261008T145841Z: postproc_cv_selection_annotated.json, sebb_cv_selection_annotated.json. Không tự chạy selector. Autodiscovery có phạm vi rõ: 3 seed/f2, sed_ensemble_f2_h*, sed_polyphonic_20261008* loại config.cv_fold; --run/--seed-run cho run mới/ngày mới, --stamp và output chống ghi đè.
+
+Lượt7 chưa kích hoạt: sed_oof_B0_h10_20261008T130820Z và sed_oof_B0_h5_20261008T130849Z hiện đều thiếu hai selection annotated. Không suy số OOF từ dev hoặc dựng ensemble fold trên dev. CLAUDE/STATUS/PLAN/PAPER_NOTES giữ cho Claude cập nhật khi merge.
+
+### [MỞ] Người dùng → Codex — lượt 6 XO-20..XO-23 và điều kiện lượt 7
+
+Merge master fast-forward `d4ee68a` → `5cb948d`, không xung đột. Chỉ ghi worktree, đọc run chính bằng đường dẫn tuyệt đối. Không GPU/test/pip install/push, không sửa file Claude. Bám PLAN O1.2/O1.4/tầng S và O0.6/O4.2. Lượt 7 chỉ kích hoạt khi cả hai OOF B0 đủ hai selection annotated. Đặc tả nguyên văn:
+
+## Lượt 6 — giao ngay
+
+```
+Tiếp giai đoạn O, lượt 6. Luật cứng như các lượt trước: worktree ..\earag-codex-o, nhánh
+codex/phase-o, không GPU, không mở predictions/test.npz, không ghi vào tree chính
+..\environmental-audio-rag (chỉ đọc ml/runs ở đó), không pip install/push, lệch số → §6,
+không sửa file của Claude. XO-11 vẫn chặn.
+
+Bắt đầu: git -C ..\earag-codex-o merge master (master = 5cb948d, đã có lượt 5 của bạn và
+recipe oc_gru/oc_tf/oc_tf_kd + DO-4 của Claude). Ghi XO-20..XO-23 vào §3.O.
+
+Bối cảnh (dev, CV 5 fold annotated; luật tầng S = phải vượt seed T2b tốt nhất 0.2330):
+- T2b seed 172924Z/180358Z/185137Z; O-B 20261008T062333Z (--train-fixes);
+  O-C GRU 20261008T083632Z (frame mAP 0.756, họ thắng 0.2318, không qua);
+  DO-4 20261008T131138Z (--train-fixes --window-sampling class_balanced; frame mAP 0.743,
+  họ thắng 0.2174, không qua); O-C TF256 KD 20261008T135047Z và TF256 strong
+  20261008T145841Z (CV đang chạy). Tất cả là sed_polyphonic_<id> trong ml/runs.
+- Mẫu hình cần mô tả: GRU và DO-4 tăng frame mAP nhưng không tăng event-F1.
+
+XO-20 (ưu tiên 1) — scripts/report_tier_s.py: một bảng tầng S cho mọi run sàng lọc so với
+  ba seed T2b. Cột: run, recipe/cờ (đọc manifest), frame mAP tốt nhất (metrics.json),
+  θ CV mean±sd, cSEBB CV mean±sd (cấu hình đã chọn), họ thắng (luật S13: hòa giữ θ), so
+  seed tốt nhất (Δ, "qua"/"không qua"), số fold cao hơn seed tốt nhất, macro/micro full-dev
+  in-sample của họ thắng (dùng lại code report_screening_per_class, ghi rõ in-sample).
+  Chỉ đưa run có đủ hai file *_cv_selection_annotated.json; run thiếu liệt kê ở cuối là
+  "đang chờ". Ra docs/measurements/tier_s_20261009.{md,json}. Chạy lại được khi có run mới
+  (--stamp). Không kết luận ngoài luật đã ghi.
+
+XO-21 (ưu tiên 2) — scripts/report_detection_gap.py: mô tả vì sao frame mAP tăng mà event-F1
+  không tăng, cho T2b 172924Z, O-C GRU, DO-4, TF256 KD (và TF strong nếu đã có CV). Chỉ dev
+  annotated, chỉ mô tả:
+  - theo lớp: frame AP; số event dự đoán/tham chiếu với hậu xử lý họ thắng; tỷ lệ frame có
+    p > θ đã chọn so với tỷ lệ frame dương thật;
+  - "θ tối ưu theo lớp" in-sample (quét lưới θ có sẵn, từng lớp) so với θ global đã chọn —
+    chỉ để đo khoảng cách, ghi rõ không dùng để chọn (A2: θ per-class overfit dev);
+  - phân rã lỗi event: insertion/deletion/substitution, onset-only/offset-only F1.
+  Ra docs/measurements/detection_gap_20261009.{md,json}. Giả thuyết ghi rõ là giả thuyết.
+
+XO-22 (ưu tiên 3) — chạy scripts.report_boundary_errors (đã có, chỉ dev) cho bốn run trên
+  bằng nhiều --run "nhãn=ml/runs/<run>", --out-dir trong worktree của bạn rồi commit
+  measurement. Nếu script cần postproc của run, dùng file *_annotated đã có; thiếu thì ghi
+  §6, không tự chạy selector.
+
+XO-23 (ưu tiên 4) — mở rộng scripts/run_oof_queue.py (của bạn): tùy chọn
+  --rewindow HOP:WEIGHTING (ví dụ 5:triangular:0.3). Khi bật: sau 5 run fold, chạy
+  dump_predictions <run> --split dev --hop-seconds HOP --weighting WEIGHTING --label
+  <label>_f<k>_h<HOP> cho từng fold, build_oof hai lần (thô và chồng lấn, nhãn
+  <label>_h10 và <label>_h<HOP>), rồi hai selector cho từng OOF. Resume theo từng bước;
+  test bằng runner giả; --dry-run in đúng thứ tự lệnh. KHÔNG chạy thật.
+
+Mỗi task xong: pytest + ruff (không pipe), cập nhật §3.O/§4/§5, commit. Xong lượt báo commit
+hash và các điểm ở §6.
+```
+
+---
+
+## Lượt 7 — khi CV B0 OOF xong
+
+Điều kiện: cả `ml/runs/sed_oof_B0_h10_*` và `ml/runs/sed_oof_B0_h5_*` đều có đủ
+`postproc_cv_selection_annotated.json` và `sebb_cv_selection_annotated.json`.
+
+```
+Tiếp giai đoạn O, lượt 7. Luật cứng như các lượt trước (worktree ..\earag-codex-o, nhánh
+codex/phase-o, không GPU, không mở predictions/test.npz, không ghi tree chính, không pip
+install/push, lệch số → §6, không sửa file của Claude). Bắt đầu: git merge master.
+
+Bối cảnh: B0 (ADR-0041 §2 = T2b + --train-fixes + suy luận chồng lấn hop 5 s gộp tam giác
+sàn 0.3) đã train 5 fold (--cv-fold 0..4, seed 20260922) và ghép OOF trên 564 recording:
+ml/runs/sed_oof_B0_h10_<ts> (dự đoán thô) và ml/runs/sed_oof_B0_h5_<ts> (chồng lấn). CV
+θ/cSEBB annotated đã chạy xong cho cả hai (prior theo fold, e428e2b).
+
+XO-24 (ưu tiên 1) — scripts/report_b0_oof.py, chỉ mô tả:
+  - với mỗi OOF: họ thắng, cấu hình, CV mean±sd, 5 giá trị fold; macro/micro full-OOF của
+    họ thắng (refit đã lưu), PSDS không cần;
+  - theo fold mô hình (0..4): micro/macro trên recording của fold đó, số recording, số event
+    tham chiếu; phân rã theo nguồn recording (thuộc train gốc hay dev gốc) — đây là điểm cần
+    xem: OOF trên dev gốc có gần số CV dev của f2 (0.2383) không;
+  - so h5 với h10 cùng phép chấm: Δ, số fold cao hơn, bootstrap ghép cặp theo recording
+    (dùng lại ml/evaluation/multirun.paired_branch_bootstrap như report_oof, 1000 lần, seed
+    20260922). Ghi rõ đây là kiểm tra thành phần chồng lấn của B0, không phải lựa chọn.
+  Ra docs/measurements/b0_oof_20261009.{md,json}.
+
+XO-25 (ưu tiên 2) — kiểm toàn vẹn OOF của B0, chỉ đọc:
+  - mỗi run fold k (5 run sed_polyphonic_* có config.cv_fold = k, liệt kê trong manifest của
+    sed_oof_B0_h10) có predictions/dev.npz chứa đúng recording của fold k trong
+    data/splits/datased_trainval_folds.csv (SHA eaa30dc1…); 5 fold rời nhau, hợp lại đủ 564;
+  - tập train của fold k, dựng lại bằng scripts.train_sed.apply_cv_fold + train_tables
+    (gọi hàm, không sửa), không chứa recording nào của fold k và không chứa recording test;
+  - các cặp gán đôi bị gộp (manifest train_fixes.merged_duplicates) không bắc qua fold.
+  Ra docs/measurements/b0_oof_integrity_20261009.{md,json}. Lỗi → §6 kèm danh sách recording.
+  Lưu ý: không dựng ensemble 5 model fold trên dev gốc — mọi model fold đã thấy 4/5 dev gốc
+  khi train, nên số đó vô nghĩa.
+
+Mỗi task xong: pytest + ruff (không pipe), cập nhật §3.O/§4/§5, commit. Báo hash và §6.
+```
 
 ### [MỞ] Codex → Claude — per-class tầng S XO-19, in-sample dev
 
