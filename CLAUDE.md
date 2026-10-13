@@ -57,7 +57,18 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 10/10/2026 02:15 (mới nhất) — Tầng C vòng 1 giữ B0; O-D qua tầng S; máy tắt theo yêu
+**Cập nhật 14/10/2026 01:30 (mới nhất) — Tầng C vòng 2 (O-D) và O-F chạy tự động qua đêm.**
+- Người dùng duyệt 14/10: fold O-D 10 epoch + ứng viên ensemble B0 + O-D (ADR-0041 §9); dọn ổ D
+  (`disk_cleanup_20261014`, 9.89 GB). Hàng đợi scratchpad `r2_queue.py`: 5 fold O-D → OOF hop 5 s →
+  ensemble → CV → `report_oof` (ra worktree). `of_queue.py`: O-F (ADR-0041 §10) tầng S sau khi GPU
+  rảnh; qua thì tầng C vòng 3 (nhãn giả fold k từ teacher fold k), report ở
+  `docs/measurements/oof_round3/`.
+- Code mới: `od_beats` 10 epoch dùng recipe sẵn; O-F `scripts.pseudo_label_datasec`,
+  `ml/datasets/datasec_pseudo.py`, `train_sed --pseudo-labels`, cache `datasec_o_f_wav16k`.
+- Runbook test một lần: `docs/notes/test_once_phase_o.md` — **chưa chạy, chờ người dùng**.
+- PAPER_NOTES S55: lỗi chủ đạo là bỏ sót + onset; θ per-class oracle chỉ +0.005…+0.045 → bỏ O-H.
+
+**Trước đó, 10/10/2026 02:15** — Tầng C vòng 1 giữ B0; O-D qua tầng S; máy tắt theo yêu
 cầu người dùng.** Chi tiết PAPER_NOTES S51–S54, ADR-0041 §7–§8.
 - Tầng S (dev): chỉ TF256-KD 0.2779, TF256 0.2559 và **O-D BEATs fine-tune 0.2509** vượt seed T2b
   0.2330. GRU, DO-4, O-E1 RED không qua. Frame mAP không dự báo event-F1.

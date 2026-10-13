@@ -315,7 +315,7 @@ Chẩn đoán dẫn đường (ADR-0041 Context):
 | O1.3 | Cổng T0 + tầng S: O-D ATST-F / BEATs strong fine-tune | O1 | O0.4 | ✅ BEATs: T0 đạt (batch 8), pilot lr 2e-5, tầng S 0.2509 qua (S54); ATST-F chưa làm |
 | O1.4 | Tầng S: DO-4 lấy mẫu cửa sổ cân bằng | O1 | O1.1 | ✅ không qua (0.2174) |
 | O2.1 | Tầng S: O-E head onset/offset + focal; target biên mềm | O2 | O1.1 | ◐ O-E1 RED không qua (0.2188); EPN (O-E2) chưa làm, theo cut-list |
-| O2.2 | O-H hậu xử lý 2 nhóm lớp (ngắn/dài) | O2 | O0.5 | ○ chưa làm |
+| O2.2 | O-H hậu xử lý 2 nhóm lớp (ngắn/dài) | O2 | O0.5 | ✗ bỏ: cận trên θ per-class oracle chỉ +0.005…+0.045 (S55) |
 | O3.1 | Tầng S: O-F DataSEC → nhãn mạnh (pseudo-label × tag, trộn event ngắn) | O3 | O0.3, O1 | ◐ chỉ có pool DataSEC v4 + hồ sơ RMS (XO-9) |
 | O3.2 | Tầng S: O-G KD từ ensemble teacher | O3 | O1 | ○ chưa làm |
 | O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ◐ vòng 1 ghi muộn (ADR-0041 §8, sai lệch đã ghi); vòng 2 ghi trước §9 |
