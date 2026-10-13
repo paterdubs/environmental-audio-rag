@@ -285,6 +285,13 @@ mạnh bằng một teacher, rồi train student trên DataSED train cộng Data
 
 Báo kèm (không dùng chọn): số event giả theo lớp, tỷ lệ clip bị bỏ, phân bố độ dài event giả.
 
+Cài đặt (`scripts.pseudo_label_datasec`, `ml/datasets/datasec_pseudo.py`, `train_sed --pseudo-labels`):
+hậu xử lý teacher là họ θ. Tầng S dùng `postproc_cv_annotated.json` của run teacher (θ fit trên dev
+134 recording → nhãn giả mang một số vô hướng học từ nhãn dev; chấp nhận vì tầng S chỉ lọc). Tầng C
+dùng cấu hình θ mà bộ chọn θ đã chọn trên OOF O-D, nhưng **fit lại θ trên các fold ≠ k với prior
+của fold k**, nên không nhãn nào của fold k vào student fold k. `train_sed` từ chối nhãn giả có
+`teacher_cv_fold` khác `--cv-fold`.
+
 ## Consequences
 
 - Chi phí GPU tầng C: họ fmn khoảng 5 × 45 phút cho mỗi cấu hình; họ transformer khoảng

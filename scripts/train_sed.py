@@ -56,8 +56,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
-from torch.utils.data import DataLoader, WeightedRandomSampler
+from torch.utils.data import ConcatDataset, DataLoader, WeightedRandomSampler
 
+from ml.datasets.datasec_pseudo import CACHE_DIRNAME, load_pseudo_run
+from ml.datasets.datasec_pseudo import pseudo_dataset as datasec_pseudo_dataset
 from ml.datasets.features import SedFeatureDataset
 from ml.datasets.train_fixes import apply_train_fixes, load_unannotated
 from ml.datasets.waveforms import SedWaveformDataset
@@ -234,6 +236,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-fixes", action="store_true",
                         help="ADR-0041 DO-2 + DO-3: bỏ recording train thiếu GT polyphonic, "
                              "gộp recording trùng byte thành một mẫu nhãn mềm")
+    parser.add_argument("--pseudo-labels", type=Path, default=None,
+                        help="ADR-0041 §10 O-F: run pseudo_datasec_* thêm clip DataSEC nhãn giả "
+                             "vào train; teacher phải cùng --cv-fold")
     parser.add_argument("--window-sampling", choices=WINDOW_SAMPLING, default="uniform",
                         help="ADR-0041 DO-4: class_balanced = rút cửa sổ train theo trọng số "
                              "(1/tần suất lớp)^0.5, cắt rung ±1/4 cửa sổ quanh cửa sổ được rút")
@@ -245,6 +250,22 @@ def parse_args() -> argparse.Namespace:
 CV_FOLDS_PATH = ROOT / "data" / "splits" / "datased_trainval_folds.csv"
 WINDOW_SAMPLING = ("uniform", "class_balanced")
 CROP_JITTER_FRACTION = 4  # DO-4: crop start = sampled window start ± window_frames // 4
+
+
+PSEUDO_CACHE_ROOT = ROOT / "data" / "cache" / CACHE_DIRNAME
+
+
+def load_pseudo(args: argparse.Namespace, *, is_waveform: bool, balanced: bool) -> dict | None:
+    """ADR-0041 §10 O-F: pseudo-labelled DataSEC clips for the train split, or None."""
+    if args.pseudo_labels is None:
+        return None
+    if not is_waveform or balanced:
+        raise SystemExit("--pseudo-labels chỉ cho encoder waveform và không đi cùng DO-4")
+    return load_pseudo_run(args.pseudo_labels, args.cv_fold)
+
+
+def pseudo_dataset(pseudo: dict, **kwargs) -> SedWaveformDataset:
+    return datasec_pseudo_dataset(pseudo, cache_root=PSEUDO_CACHE_ROOT, **kwargs)
 
 
 def train_sampler(dataset: SedFeatureDataset, mode: str, seed: int
@@ -627,6 +648,7 @@ def main() -> None:
     balanced = args.window_sampling == "class_balanced"
     if balanced and not knobs["random_crop"]:
         raise SystemExit("--window-sampling class_balanced cần recipe có random_crop")
+    pseudo = load_pseudo(args, is_waveform=is_waveform, balanced=balanced)
     sampling_info = None
     for split in split_names:
         is_train = split == "train"
@@ -643,6 +665,11 @@ def main() -> None:
         sampler, info = (train_sampler(dataset, args.window_sampling, args.seed) if is_train
                          else (None, None))
         sampling_info = info if is_train else sampling_info
+        if is_train and pseudo is not None:
+            dataset = ConcatDataset([dataset, pseudo_dataset(
+                pseudo, class_ids=class_ids, frame_rate=frame_rate,
+                window_frames=config.window_frames, hop_frames=config.hop_frames,
+                random_crop=bool(knobs["random_crop"]))])
         loaders[split] = make_loader(dataset, batch_size=config.batch_size,
                                      shuffle=is_train and sampler is None, device=device,
                                      encoder=frozen, sampler=sampler)
@@ -696,6 +723,7 @@ def main() -> None:
             **({"cv_fold": args.cv_fold, "cv_folds_sha256": sha256_file(CV_FOLDS_PATH)}
                if args.cv_fold is not None else {}),
             **({"window_sampling": sampling_info} if sampling_info is not None else {}),
+            **({"pseudo_labels": pseudo["info"]} if pseudo is not None else {}),
         },
         "class_ids": class_ids,
         "taxonomy_sha256": taxonomy.checksum,
