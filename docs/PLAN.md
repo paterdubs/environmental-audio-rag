@@ -316,10 +316,10 @@ Chẩn đoán dẫn đường (ADR-0041 Context):
 | O1.4 | Tầng S: DO-4 lấy mẫu cửa sổ cân bằng | O1 | O1.1 | ✅ không qua (0.2174) |
 | O2.1 | Tầng S: O-E head onset/offset + focal; target biên mềm | O2 | O1.1 | ◐ O-E1 RED không qua (0.2188); EPN (O-E2) chưa làm, theo cut-list |
 | O2.2 | O-H hậu xử lý 2 nhóm lớp (ngắn/dài) | O2 | O0.5 | ✗ bỏ: cận trên θ per-class oracle chỉ +0.005…+0.045 (S55) |
-| O3.1 | Tầng S: O-F DataSEC → nhãn mạnh (pseudo-label × tag, trộn event ngắn) | O3 | O0.3, O1 | ◐ chỉ có pool DataSEC v4 + hồ sơ RMS (XO-9) |
+| O3.1 | Tầng S: O-F DataSEC → nhãn mạnh (pseudo-label × tag, trộn event ngắn) | O3 | O0.3, O1 | ✅ tầng S không qua (0.2151); RQ1b âm tính (S57) |
 | O3.2 | Tầng S: O-G KD từ ensemble teacher | O3 | O1 | ○ chưa làm |
-| O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ◐ vòng 1 ghi muộn (ADR-0041 §8, sai lệch đã ghi); vòng 2 ghi trước §9 |
-| O4.2 | Tầng C: B0 + ≤ 3 ứng viên + ensemble liên họ × 5 fold; OOF; chọn theo luật; **commit** | O4 | O4.1 | ◐ vòng 1 giữ B0 (`oof_selection_20261009`); vòng 2 O-D đang chạy 14/10 |
+| O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ✅ vòng 1 ghi muộn (§8, sai lệch đã ghi); vòng 2 ghi trước (§9) |
+| O4.2 | Tầng C: B0 + ≤ 3 ứng viên + ensemble liên họ × 5 fold; OOF; chọn theo luật; **commit** | O4 | O4.1 | ✅ **B0** (ADR-0041 §11, `oof_selection_20261014`) |
 | O5.1 | Dump test, đánh giá đúng một lần, sổ test, bootstrap so f2 | O5 | O4.2 commit | ○ runbook `docs/notes/test_once_phase_o.md` |
 | O6.1 | Phục vụ hệ thống mới (parity CUDA/CPU), S8-lite theo lựa chọn của người dùng | O6 | O5.1 | ○ |
 

@@ -292,6 +292,29 @@ dùng cấu hình θ mà bộ chọn θ đã chọn trên OOF O-D, nhưng **fit 
 của fold k**, nên không nhãn nào của fold k vào student fold k. `train_sed` từ chối nhãn giả có
 `teacher_cv_fold` khác `--cv-fold`.
 
+### 11. Lựa chọn tầng C cuối — **B0** (14/10, trước mọi logit test)
+
+Vòng 2 theo §9, `scripts.report_oof` trên tree sạch `e163150`, 12/12 hash nguồn khớp
+(`docs/measurements/oof_selection_20261014`):
+
+| Hệ thống | Họ | Micro OOF | Macro OOF | Δ micro so B0 [95% CI] |
+|---|---|---:|---:|---|
+| **B0** | cSEBB | **0.2342** | 0.1797 | — |
+| Ensemble B0 + O-D | θ | 0.2303 | **0.1984** | −0.0039 [−0.0310, +0.0243] |
+| O-D (BEATs fine-tune, 10 epoch) | θ | 0.2052 | 0.1735 | −0.0290 [−0.0546, +0.0001] |
+
+O-F (§10) không qua tầng S (họ thắng 0.2151 so với 0.2330), nên không có vòng 3. Qua cả hai vòng
+(§8, §11), **không ứng viên nào có CI của Δ nằm trên 0; theo luật §2 hệ thống cuối là B0** =
+T2b + `--train-fixes` + suy luận hop 5 s tam giác + cSEBB `tau0.32_abs0.3`, ensemble 5 model fold
+(`B0_fold0..4`). Ensemble liên họ có macro OOF cao nhất ở cả hai vòng (+0.014, +0.019) nhưng luật
+chọn bằng micro (ADR-0031); ghi là kết quả phụ, không chọn lại.
+
+Ba ứng viên qua tầng S đều không giữ được lợi thế trên 564 recording: TF256-KD +0.045 → −0.027,
+TF256 +0.023 → −0.021, O-D +0.018 → −0.029 (Δ tầng S so seed T2b tốt nhất → Δ OOF so B0).
+
+Test một lần (O5) chạy theo `docs/notes/test_once_phase_o.md` sau khi người dùng duyệt: B0 (hệ
+thống cuối). Không có ablation ghi trước nào khác được test.
+
 ## Consequences
 
 - Chi phí GPU tầng C: họ fmn khoảng 5 × 45 phút cho mỗi cấu hình; họ transformer khoảng
