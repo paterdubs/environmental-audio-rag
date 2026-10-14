@@ -27,9 +27,10 @@ from ml.evaluation.multirun import micro_f1, paired_branch_bootstrap
 from ml.evaluation.predictions import load_predictions
 from ml.evaluation.sed_metrics import event_counts_per_recording
 from ml.postprocessing import process_recordings, stack_predictions_by_recording
+from ml.postprocessing.sebb import sebb_candidates, select_boxes
 from ml.provenance import git_state
 from ml.taxonomy import load_taxonomy
-from scripts.evaluate_run import load_events_by_recording, priors_from_postproc
+from scripts.evaluate_run import load_events_by_recording, priors_from_postproc, sebb_params
 
 ROOT = Path(__file__).resolve().parents[1]
 TOLERANCE = 1e-12
@@ -51,6 +52,13 @@ def parse_args() -> argparse.Namespace:
         help="đọc đường hậu xử lý riêng đã ghi trong từng evaluation thay vì một tên chung",
     )
     return parser.parse_args()
+
+
+def split_spec(spec: str, default_evaluation: str) -> tuple[Path, str]:
+    """`run_dir` or `run_dir@evaluation_file`: runs evaluated under different tags can share a
+    report (e.g. f2 `evaluation_cv_annotated.json` vs B0 `evaluation_phase_o_annotated.json`)."""
+    run, _, evaluation = spec.partition("@")
+    return Path(run), evaluation or default_evaluation
 
 
 def check_pairing(evaluation: dict, postproc_name: str, run_name: str) -> None:
@@ -84,10 +92,16 @@ def run_counts(run: Path, taxonomy, split: str = "test", postproc_name: str = "p
         raise SystemExit(f"{run.name}: predictions split={artifact.split!r}, cần {split!r}")
     eval_set = official.get("eval_set", "all") if official is not None else "all"
     probabilities = restrict(stack_predictions_by_recording(artifact), eval_set)
-    estimate = process_recordings(
-        probabilities, class_ids=class_ids,
-        thresholds={c: postproc["per_class"][c]["theta"] for c in class_ids},
-        priors=priors_from_postproc(postproc, class_ids), frame_rate=1.0 / artifact.frame_hop_s)
+    frame_rate = 1.0 / artifact.frame_hop_s
+    if postproc.get("family") == "csebb":  # same path as scripts.evaluate_run
+        params, threshold = sebb_params(postproc, eval_set=eval_set)
+        estimate = select_boxes(sebb_candidates(probabilities, class_ids=class_ids,
+                                                frame_rate=frame_rate, params=params), threshold)
+    else:
+        estimate = process_recordings(
+            probabilities, class_ids=class_ids,
+            thresholds={c: postproc["per_class"][c]["theta"] for c in class_ids},
+            priors=priors_from_postproc(postproc, class_ids), frame_rate=frame_rate)
     reference = load_events_by_recording(set(probabilities))
     counts = event_counts_per_recording(reference, estimate, event_label_list=list(class_ids))
     if official is None:
@@ -126,11 +140,13 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     git = git_state(ROOT)
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
-    branches = {group[0]: [Path(p) for p in group[1:]] for group in args.branch}
+    specs = {group[0]: [split_spec(p, args.evaluation_name) for p in group[1:]]
+             for group in args.branch}
+    branches = {name: [run for run, _ in runs] for name, runs in specs.items()}
     counts = {run.name: run_counts(run, taxonomy, postproc_name=args.postproc_name,
-                                   evaluation_name=args.evaluation_name,
+                                   evaluation_name=evaluation,
                                    postproc_from_evaluation=args.postproc_from_evaluation)
-              for runs in branches.values() for run in runs}
+              for runs in specs.values() for run, evaluation in runs}
     per_run = {run: micro_f1(*(sum(c[i] for c in rec.values()) for i in range(3)))
                for run, rec in counts.items()}
     names = {name: [run.name for run in runs] for name, runs in branches.items()}

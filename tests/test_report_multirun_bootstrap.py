@@ -68,3 +68,20 @@ def test_run_counts_uses_recorded_postproc_and_annotated_eval_set(
     )
 
     assert set(counts) == {"keep"}
+
+
+def test_run_spec_takes_an_optional_per_run_evaluation_file() -> None:
+    from scripts.report_multirun_bootstrap import split_spec
+
+    assert split_spec(r"D:\runs\a@evaluation_phase_o_annotated.json", "evaluation.json") == (
+        Path(r"D:\runs\a"), "evaluation_phase_o_annotated.json")
+    assert split_spec("ml/runs/b", "evaluation.json") == (Path("ml/runs/b"), "evaluation.json")
+
+
+def test_csebb_postproc_is_recounted_with_the_evaluate_run_path() -> None:
+    import inspect
+
+    from scripts import report_multirun_bootstrap as module
+
+    source = inspect.getsource(module.run_counts)
+    assert 'postproc.get("family") == "csebb"' in source and "sebb_params" in source
