@@ -315,6 +315,26 @@ TF256 +0.023 → −0.021, O-D +0.018 → −0.029 (Δ tầng S so seed T2b tố
 Test một lần (O5) chạy theo `docs/notes/test_once_phase_o.md` sau khi người dùng duyệt: B0 (hệ
 thống cuối). Không có ablation ghi trước nào khác được test.
 
+### 12. Kết quả test một lần (O5, 14/10, người dùng duyệt)
+
+Chạy theo `docs/notes/test_once_phase_o.md` trên tree sạch `8a4cc38`: 5 model fold B0 dự đoán
+test (hop 5 s tam giác), ensemble, `evaluate_run --eval-set annotated` với cSEBB đã chọn trên OOF,
+đúng một lần. So f2 bằng `report_multirun_bootstrap` (bootstrap ghép cặp 1000 lần theo 139
+recording, seed 20260922, tree sạch `897bae6`):
+
+| Test annotated (139) | B0 | f2 (S13) |
+|---|---:|---:|
+| Macro event-F1 (số chính) | **0.1366** | 0.1206 |
+| Micro event-F1 [95% CI] | **0.1806** [0.1261, 0.2384] | 0.1643 [0.1103, 0.2242] |
+| Δ micro B0 − f2 [95% CI] | +0.0164 [−0.0128, +0.0495] | — |
+| PSDS-1 / PSDS-2 | 0.3131 / **0.7310** | **0.3164** / 0.7253 |
+| Nsys / Nref | 345 / 740 | 295 / 740 |
+
+B0 cao hơn f2 ở macro và micro nhưng CI của Δ micro chứa 0: **không được viết là tốt hơn có ý
+nghĩa thống kê**. Thứ tự trên test khớp OOF (B0 ≥ các ứng viên). Không chạy lại test, không test
+ứng viên khác. Theo §2, B0 là hệ thống cuối của giai đoạn O; thay f2 trong phục vụ ở O6 cần suy
+luận chồng lấn ở tầng phục vụ (XO-11) và parity CUDA/CPU.
+
 ## Consequences
 
 - Chi phí GPU tầng C: họ fmn khoảng 5 × 45 phút cho mỗi cấu hình; họ transformer khoảng

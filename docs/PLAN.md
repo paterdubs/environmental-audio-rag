@@ -320,7 +320,7 @@ Chẩn đoán dẫn đường (ADR-0041 Context):
 | O3.2 | Tầng S: O-G KD từ ensemble teacher | O3 | O1 | ○ chưa làm |
 | O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ✅ vòng 1 ghi muộn (§8, sai lệch đã ghi); vòng 2 ghi trước (§9) |
 | O4.2 | Tầng C: B0 + ≤ 3 ứng viên + ensemble liên họ × 5 fold; OOF; chọn theo luật; **commit** | O4 | O4.1 | ✅ **B0** (ADR-0041 §11, `oof_selection_20261014`) |
-| O5.1 | Dump test, đánh giá đúng một lần, sổ test, bootstrap so f2 | O5 | O4.2 commit | ○ runbook `docs/notes/test_once_phase_o.md` |
+| O5.1 | Dump test, đánh giá đúng một lần, sổ test, bootstrap so f2 | O5 | O4.2 commit | ✅ 14/10: B0 macro 0.1366, micro 0.1806; Δ micro so f2 +0.0164 [−0.0128, +0.0495] (ADR-0041 §12) |
 | O6.1 | Phục vụ hệ thống mới (parity CUDA/CPU), S8-lite theo lựa chọn của người dùng | O6 | O5.1 | ○ |
 
 **Nghiệm thu giai đoạn O:** luật chọn commit trước test (có hash); OOF và test của mọi hệ thống

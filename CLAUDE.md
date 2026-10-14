@@ -57,7 +57,9 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 14/10/2026 15:45 (mới nhất) — Tầng C xong: hệ thống cuối giai đoạn O là B0
+**Cập nhật 14/10/2026 16:30 (mới nhất) — O5 xong: test một lần B0** (ADR-0041 §12, S58): macro 0.1366 / micro 0.1806 so với f2 0.1206 / 0.1643; Δ micro +0.0164 [−0.0128, +0.0495], CI chứa 0 → không gọi là tốt hơn có ý nghĩa. Tiếp: O6 (phục vụ B0: suy luận chồng lấn, parity) và S8-lite.
+
+**Trước đó, 14/10/2026 15:45 — Tầng C xong: hệ thống cuối giai đoạn O là B0
 (ADR-0041 §11).** Vòng 2: B0 0.2342 micro OOF; ensemble B0 + O-D 0.2303 (macro cao nhất 0.1984);
 O-D 0.2052. O-F không qua tầng S (0.2151; RQ1b âm tính, S57). Ba ứng viên qua tầng S đều đảo chiều
 ở tầng C (S56). **Chưa sinh logit test** — bước tiếp theo O5 theo `docs/notes/test_once_phase_o.md`,
