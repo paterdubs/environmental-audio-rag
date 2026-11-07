@@ -16,7 +16,8 @@ from ml.retrieval.embedding import Embedder
 from ml.taxonomy import load_taxonomy
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SERVED_RUN = Path("ml/runs/sed_ensemble_t2b_20260927T200914Z")
+# ADR-0042: B0 (ADR-0041 §11–§12), 5 fold models, hop 5 s triangular merge; f2 = rollback.
+DEFAULT_SERVED_RUN = Path("ml/runs/sed_served_B0_20261107T175659Z")
 DEFAULT_SERVED_POSTPROC = "sebb_cv_selection_annotated.json"
 SERVED_ENSEMBLE = ROOT / DEFAULT_SERVED_RUN
 SERVED_POSTPROC = DEFAULT_SERVED_POSTPROC

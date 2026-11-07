@@ -5,11 +5,13 @@ import pytest
 from ml.inference import engine
 
 
-def test_served_settings_default_to_official_s13_f2(monkeypatch) -> None:
+def test_served_settings_default_to_official_b0(monkeypatch) -> None:
+    """ADR-0042: the default served system is B0 (phase O final), not f2."""
     monkeypatch.delenv("EARAG_SERVED_RUN", raising=False)
     monkeypatch.delenv("EARAG_SERVED_POSTPROC", raising=False)
     run, postproc, official = engine.served_settings()
     assert run == engine.SERVED_ENSEMBLE.resolve()
+    assert run.name.startswith("sed_served_B0_")
     assert postproc == "sebb_cv_selection_annotated.json"
     assert official is True
 

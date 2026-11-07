@@ -35,6 +35,8 @@ REPORT_RUNS = {
     "C-v2 ensemble": "sed_ensemble_cv2_20260926T205405Z",
     "T2a ensemble": "sed_ensemble_t2a_20260927T141952Z",
     "T2b ensemble (served f2 source)": "sed_ensemble_t2b_20260927T200914Z",
+    "Served B0 system (ADR-0042)": "sed_served_B0_20261107T175659Z",
+    "B0 final test ensemble (ADR-0041 §12)": "sed_ensemble_B0_final_test_20261014T085016Z",
     "S11 focal ensemble": "sed_ensemble_s11_focal_t2b_20260928T185207Z",
     "S13 f2 test output": "sed_ensemble_s13_f2_20260929T045053Z",
 }

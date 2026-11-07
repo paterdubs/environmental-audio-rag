@@ -1,7 +1,9 @@
-# Kịch bản demo local f2 (7–10 phút)
+# Kịch bản demo local B0 (7–10 phút)
 
-Demo phục vụ hệ thống SED f2 đã khóa: `sed_ensemble_t2b_20260927T200914Z` +
-`sebb_cv_selection_annotated.json`. Máy demo cần Docker Desktop, checkpoint/BGE-M3/Qwen
+Demo phục vụ hệ thống SED cuối giai đoạn O, **B0** (ADR-0042): `sed_served_B0_20261107T175659Z`
+(5 model fold, cửa sổ chồng lấn hop 5 s gộp tam giác) + `sebb_cv_selection_annotated.json`.
+Rollback về f2: đặt `EARAG_SERVED_RUN=ml/runs/sed_ensemble_t2b_20260927T200914Z` (status báo
+`official=false`). Máy demo cần Docker Desktop, checkpoint/BGE-M3/Qwen
 đã tải sẵn trong repo local và llama.cpp Qwen3.5-9B theo `ml/configs/caption_llm.yaml`.
 
 ## Một lệnh khởi động
