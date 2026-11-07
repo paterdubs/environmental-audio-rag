@@ -26,7 +26,8 @@ event có cấu trúc → truy vấn lịch sử bằng RAG có trích dẫn rec
 - **C3** Đo transfer isolated → continuous **có kiểm soát leakage xuyên dataset**.
 - **C4** RAG trên event timeline có temporal predicate.
 
-**Deadline:** 09/11/2026, buffer 1 tuần tới 16/11/2026 (8 tuần từ 22/09/2026).
+**Deadline:** **28/11/2026** (người dùng xác nhận 08/11; mốc 09/11 cũ đã lỗi thời). Đóng băng
+giai đoạn P 18/11 (ADR-0043).
 
 **Dự án này độc lập với `audio-security-rag`.** Không import artifact, không kế
 thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-datasets.md).
@@ -57,7 +58,19 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 14/10/2026 16:30 (mới nhất) — O5 xong: test một lần B0** (ADR-0041 §12, S58): macro 0.1366 / micro 0.1806 so với f2 0.1206 / 0.1643; Δ micro +0.0164 [−0.0128, +0.0495], CI chứa 0 → không gọi là tốt hơn có ý nghĩa. Tiếp: O6 (phục vụ B0: suy luận chồng lấn, parity) và S8-lite.
+**Cập nhật 08/11/2026 (mới nhất) — Hoàn tất hệ thống trên B0 (O6 + S8-lite) và mở giai đoạn P.**
+- O6 (ADR-0042): phục vụ mặc định `sed_served_B0_20261107T175659Z` (hop 5 s tam giác, 5 model
+  fold); parity CUDA 351/352 event trùng; Compose `official=true`, E2E TRAIN S-0131 1.55 s
+  (request đầu 49.8 s do nạp model). f2 là rollback qua `EARAG_SERVED_RUN`.
+- S8-lite (ADR-0044, lần mở test thứ hai cho W5/W6): corpus validation = OOF B0 lọc dev (134),
+  test = ensemble test B0 (142). Answers unsupported-claim 0, contract 97/97. **RQ3 test thấp
+  hơn f2 ở mọi cấu hình** (hybrid/en 0.383 vs 0.415, CI chồng lấn; PAPER_NOTES S59). Caption
+  template e2e EN/VI: 0 lỗi. Caption LLM vẫn là số trên f2.
+- Freeze `artifact_freeze_20261107` thiếu 0; sổ `test_ledger_20261107`.
+- Giai đoạn P (ADR-0043, tăng phát hiện): P1 B0 × seed 2,3 đang train (`p1_queue.py` trong
+  scratchpad, 10 run ~50 phút). P2 KD, P3 cửa sổ 20 s, P4 augmentation chờ ghi §3 rồi code.
+
+**Trước đó, 14/10/2026 16:30 — O5 xong: test một lần B0** (ADR-0041 §12, S58): macro 0.1366 / micro 0.1806 so với f2 0.1206 / 0.1643; Δ micro +0.0164 [−0.0128, +0.0495], CI chứa 0 → không gọi là tốt hơn có ý nghĩa. Tiếp: O6 (phục vụ B0: suy luận chồng lấn, parity) và S8-lite.
 
 **Trước đó, 14/10/2026 15:45 — Tầng C xong: hệ thống cuối giai đoạn O là B0
 (ADR-0041 §11).** Vòng 2: B0 0.2342 micro OOF; ensemble B0 + O-D 0.2303 (macro cao nhất 0.1984);
@@ -739,6 +752,15 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-08 — Hoàn tất hệ thống trên B0: O6, S8-lite; mở giai đoạn P
+
+Người dùng xác nhận hạn 28/11 và giao hai luồng: hoàn tất hệ thống, và tiếp tục tăng khả năng
+phát hiện. O6: `ServedSed` đọc `config.serving` (hop/gộp), `build_served_system`, mặc định B0
+(ADR-0042). S8-lite (ADR-0044): `filter_predictions` cắt OOF B0 theo split để dev không in-sample;
+`score_template_e2e` chấm template không cần LLM; W6 4 cấu hình validation rồi test một lần. RQ3
+test giảm so f2 — báo nguyên văn (S59). Sửa `freeze_artifacts` đòi nhầm best.pt của run nhãn giả;
+`report_demo_e2e --label`. ADR-0043 ghi trước P1–P4; P1 chạy nền. Không push.
 
 ### 2026-10-08 (chiều–tối) — Giai đoạn O: tầng S cho O-A/O-B, code O-C, merge hai lượt Codex
 

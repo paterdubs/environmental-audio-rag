@@ -1,5 +1,16 @@
 # STATUS.md — Trạng thái có bằng chứng
 
+**Hệ thống cuối B0, 08/11/2026 (O6 + S8-lite):** phục vụ mặc định
+`sed_served_B0_20261107T175659Z` ([ADR-0042](decisions/ADR-0042-phuc-vu-he-thong-sed-b0.md));
+[parity CUDA](measurements/inference_parity_sed_served_b0_20261107t175659z_cuda_20261107.md)
+351/352 event trùng; [E2E Compose](measurements/demo_B0_e2e_20261107.md) official=true. RAG và
+caption template trên B0 ([ADR-0044](decisions/ADR-0044-s8-lite-w5-w6-tren-b0.md)):
+[retrieval test](measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.md) nDCG@10
+thấp hơn f2 ở mọi cấu hình (CI chồng lấn), [answers](measurements/retrieval_answers_test_s8lite_b0_gold_20261108.md)
+unsupported-claim 0; [template](measurements/caption_template_B0_test_annotated_20261107.md) 0 lỗi.
+Caption LLM vẫn đo trên f2. [Freeze](measurements/artifact_freeze_20261107.md) thiếu 0;
+[sổ test](measurements/test_ledger_20261107.md).
+
 **Sửa UI truy vấn, 03/10/2026 (W7 7.3):** Đã chặn gửi bộ lọc rỗng sau xóa chip và xóa
 filter/kết quả cũ khi sửa câu hỏi; rebuild API demo. Frontend test/build, Python test liên quan
 và ruff pass. [Playwright chạy thật](measurements/demo_query_ui_fix_20261003.json) xác nhận
