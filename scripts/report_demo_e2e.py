@@ -25,6 +25,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--recording-id", required=True,
                         help="Recording DataSED thuộc split train, ví dụ S-0016")
     parser.add_argument("--base-url", default="http://localhost:8088")
+    parser.add_argument("--label", default="f2", help="tên hệ thống trong tên file measurement")
     return parser.parse_args(argv)
 
 
@@ -93,7 +94,7 @@ def run(recording_id: str, base_url: str) -> dict[str, Any]:
 
 def render(result: dict[str, Any]) -> str:
     return "\n".join([
-        "# Demo SED f2 đầu-cuối", "",
+        f"# Demo SED {result.get('label', 'f2')} đầu-cuối", "",
         "> Sinh bởi `scripts.report_demo_e2e`; chỉ upload WAV thuộc TRAIN, không chấm metric.", "",
         "| Kiểm tra | Kết quả |", "|---|---|",
         f"| Nguồn | `{result['source_recording_id']}` (`{result['source_split']}`) |",
@@ -112,9 +113,9 @@ def render(result: dict[str, Any]) -> str:
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args()
-    result = run(args.recording_id, args.base_url)
+    result = {**run(args.recording_id, args.base_url), "label": args.label}
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    out = ROOT / "docs/measurements" / f"demo_f2_e2e_{stamp}.md"
+    out = ROOT / "docs/measurements" / f"demo_{args.label}_e2e_{stamp}.md"
     out.with_suffix(".json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     out.write_text(render(result), encoding="utf-8")
     print(render(result))
