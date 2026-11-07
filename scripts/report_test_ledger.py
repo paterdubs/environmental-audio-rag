@@ -23,7 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNS = ROOT / "ml/runs"
 MEASUREMENTS = ROOT / "docs/measurements"
 COMPONENTS = {  # measurement file pattern → component (non-SED test artifacts)
-    "Caption (RQ2)": r"^caption_(grounding|ngram|per_class|vi_template|template|lexicon_audit).*test",
+    "Caption (RQ2)": (r"^caption_(grounding|ngram|per_class|vi_template|template|lexicon_audit)"
+                      r".*test"),
     "Caption: lớp gộp / wiring": r"(grouped_class_wording.*test|caption_wiring_test)",
     "Retrieval (RQ3) / câu trả lời": r"^retrieval_(benchmark|answers)_test",
     "Ablation / chẩn đoán SED trên test": r"(threshold_ablation|median_filter|duration_prior|"
