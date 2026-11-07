@@ -111,8 +111,13 @@ def batch_reproduction(sed: ServedSed, taxonomy) -> dict[str, float]:
     batch, _, _ = next(iter(DataLoader(dataset, batch_size=TRAIN_BATCH, shuffle=False)))
     out = {}
     for model, member in zip(sed.members, sed.member_ids, strict=True):
-        frozen = load_predictions(ROOT / "ml/runs" / member / "predictions/test.npz",
-                                  expected_class_ids=taxonomy.polyphonic_class_ids)
+        member_test = ROOT / "ml/runs" / member / "predictions/test.npz"
+        if not member_test.exists():
+            # O6: fold members of a served system with `serving` overrides were dumped at the
+            # served hop into separate sed_rewindow_* runs; the end-to-end check below covers them.
+            out[member] = None
+            continue
+        frozen = load_predictions(member_test, expected_class_ids=taxonomy.polyphonic_class_ids)
         with torch.inference_mode(), torch.amp.autocast(
                 device_type=sed.device.type, enabled=sed.device.type == "cuda"):
             logits = model(batch.to(sed.device)).float().cpu().numpy()
@@ -189,7 +194,8 @@ def render(result: dict) -> str:
         f"| Event khớp khi lệch biên ≤ 1 frame / ≤ collar {COLLAR_S} s | "
         f"{s['n_within_frame']} / {s['n_within_collar']} trên {s['n_events']} |",
         "| Tái tạo đúng batch dump (batch test đầu, 24 cửa sổ), Δlogit tuyệt đối lớn nhất | "
-        + ", ".join(f"`{m[-7:]}` {v:.3g}" for m, v in result["batch_reproduction"].items())
+        + ", ".join(f"`{m[-7:]}` " + ("không kiểm (member không có test.npz)" if v is None
+                    else f"{v:.3g}") for m, v in result["batch_reproduction"].items())
         + " |",
         "", "Recording lệch event: " + (", ".join(s["event_mismatches"]) or "không có"),
     ]) + "\n"

@@ -5,10 +5,16 @@ Every numeric step reuses the function that produced the reported numbers: windo
 `average_predictions`, windows stitched by `stack_predictions_by_recording`, events from
 `process_recordings` with the frozen `postproc`. Only the input differs: one feature matrix
 instead of a dataset split.
+
+A served system may override the members' training cut with `config.serving` in its manifest
+(ADR-0041 §12 / O6: B0 is measured with overlapping windows, hop 5 s, triangular weights): the
+same `{"hop_seconds", "window_weighting"}` that `dump_predictions --hop-seconds --weighting`
+used for the evaluated artifacts. Without the key every earlier served system runs unchanged.
 """
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -20,7 +26,7 @@ import torch
 from ml.datasets.features import window_starts
 from ml.datasets.waveforms import PCM16_SCALE
 from ml.evaluation.ensemble import average_predictions
-from ml.evaluation.predictions import PredictionArtifact
+from ml.evaluation.predictions import UNIFORM_WEIGHTING, PredictionArtifact, triangular_floor
 from ml.models.sed_factory import frame_mn_model, sed_model
 from ml.postprocessing import (
     priors_from_postproc,
@@ -70,6 +76,19 @@ def load_member(run_dir: Path, class_count: int, device: torch.device) -> torch.
     return model.to(device).eval()
 
 
+def serving_config(config: MemberConfig, serving: dict[str, Any] | None
+                   ) -> tuple[MemberConfig, str]:
+    """(member config with the served hop, window weighting) from a manifest `serving` block."""
+    if serving is None:
+        return config, UNIFORM_WEIGHTING
+    hop_frames = round(float(serving["hop_seconds"]) * config.frame_rate)
+    if not 0 < hop_frames <= config.window_frames:
+        raise ValueError(f"served hop {hop_frames} frames must be in (0, window]")
+    weighting = str(serving.get("window_weighting", UNIFORM_WEIGHTING))
+    triangular_floor(weighting)  # validates the spelling
+    return dataclasses.replace(config, hop_frames=hop_frames), weighting
+
+
 class ServedSed:
     """Ensemble members + frozen postproc, loaded once."""
 
@@ -98,7 +117,8 @@ class ServedSed:
         configs = {member_config(_read_json(d / "manifest.json")) for d in member_dirs}
         if len(configs) != 1:
             raise ValueError("ensemble members disagree on windowing/features")
-        self.config = configs.pop()
+        self.config, self.window_weighting = serving_config(configs.pop(),
+                                                            manifest["config"].get("serving"))
         self.device = device
         self.members = [load_member(d, len(self.class_ids), device) for d in member_dirs]
         self.member_ids = [d.name for d in member_dirs]
@@ -146,7 +166,8 @@ class ServedSed:
                   "frame_offsets_s": np.asarray(starts, np.float64) / self.config.frame_rate,
                   "mask": mask, "class_ids": self.class_ids, "split": "serve",
                   "frame_hop_s": 1.0 / self.config.frame_rate,
-                  "taxonomy_sha256": self.taxonomy_sha256}
+                  "taxonomy_sha256": self.taxonomy_sha256,
+                  "window_weighting": getattr(self, "window_weighting", UNIFORM_WEIGHTING)}
         return [PredictionArtifact(logits=self._member_logits(model, windows),
                                    model_version=member, **shared)
                 for model, member in zip(self.members, self.member_ids, strict=True)]
