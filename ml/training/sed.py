@@ -36,6 +36,7 @@ class SedTrainingConfig:
     select_metric: str = "macro_f1"
     mixup_p: float = 0.0
     filter_augment_p: float = 0.0
+    gain_eq_p: float = 0.0  # ADR-0043 P4, waveform encoders only
     loss: str = "bce"
     focal_gamma: float = 2.0
     asl_gamma_pos: float = 0.0
@@ -45,7 +46,7 @@ class SedTrainingConfig:
     def __post_init__(self) -> None:
         if self.select_metric not in SELECT_METRICS:
             raise ValueError(f"select_metric must be one of {SELECT_METRICS}")
-        if not (0 <= self.mixup_p <= 1 and 0 <= self.filter_augment_p <= 1):
+        if not all(0 <= p <= 1 for p in (self.mixup_p, self.filter_augment_p, self.gain_eq_p)):
             raise ValueError("augmentation probabilities must be in [0, 1]")
         if self.warmup_epochs < 0 or self.warmup_epochs > self.epochs:
             raise ValueError("warmup_epochs must be in [0, epochs]")
@@ -190,7 +191,8 @@ def run_epoch(
             if any(augmentation):
                 features, targets, valid = augment_batch(
                     features, targets, valid, mixup_p=augmentation[0],
-                    filter_augment_p=augmentation[1])
+                    filter_augment_p=augmentation[1],
+                    gain_eq_p=augmentation[2] if len(augmentation) > 2 else 0.0)
         with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
             logits = model(features)
             loss = masked_loss(logits, targets, valid, pos_weight, loss=loss_name,
@@ -324,7 +326,7 @@ def train_sed(
             scaler=scaler,
             threshold=config.threshold,
             scheduler=scheduler,
-            augmentation=(config.mixup_p, config.filter_augment_p),
+            augmentation=(config.mixup_p, config.filter_augment_p, config.gain_eq_p),
             loss_name=config.loss, focal_gamma=config.focal_gamma,
             asl_gamma_pos=config.asl_gamma_pos, asl_gamma_neg=config.asl_gamma_neg,
             asl_clip=config.asl_clip,

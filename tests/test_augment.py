@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from ml.training.augment import (
@@ -6,6 +7,7 @@ from ml.training.augment import (
     filter_augment,
     filter_gains_db,
     mixup,
+    waveform_gain_eq,
 )
 
 
@@ -62,3 +64,20 @@ def test_augment_batch_with_zero_probabilities_is_identity():
     valid = torch.ones(2, 8)
     out = augment_batch(features, targets, valid, mixup_p=0.0, filter_augment_p=0.0)
     assert out[0] is features and out[1] is targets and out[2] is valid
+
+
+def test_waveform_gain_eq_keeps_shape_and_changes_level():
+    torch.manual_seed(0)
+    waveforms = torch.randn(4, 16000) * 0.1
+    out = waveform_gain_eq(waveforms)
+    assert out.shape == waveforms.shape and out.dtype == waveforms.dtype
+    ratio = out.pow(2).mean(dim=1) / waveforms.pow(2).mean(dim=1)
+    assert torch.all(ratio > 10 ** (-12 / 10)) and torch.all(ratio < 10 ** (12 / 10))
+    assert not torch.allclose(out, waveforms)
+
+
+def test_augment_batch_gain_eq_rejects_log_mel():
+    features = torch.rand(2, 1, 64, 100)
+    targets, valid = torch.zeros(2, 100, 21), torch.ones(2, 100)
+    with pytest.raises(ValueError):
+        augment_batch(features, targets, valid, mixup_p=0.0, filter_augment_p=0.0, gain_eq_p=1.0)

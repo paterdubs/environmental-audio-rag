@@ -38,7 +38,18 @@ P2–P4 cần code mới; mỗi thay đổi code ghi vào §3 trước run đầ
 
 ### 3. Chi tiết bổ sung trước khi train (điền dần)
 
-(trống)
+**P3 (ghi 08/11, trước run đầu):** `train_sed --window-seconds 20` (mặc định 10 giữ mọi run cũ);
+cửa sổ train/đánh giá trong lúc train = hop 20 s không chồng lấn như B0 ở 10 s; mọi knob khác là
+recipe `t2b` + `--train-fixes`, lr 3e-4, batch 24, seed 20260922. Tầng S: như ADR-0041 §2 — CV
+θ/cSEBB dev annotated trên prediction dev không chồng lấn của chính run (mốc seed T2b 0.2330 cũng
+chấm như vậy). Qua tầng S thì tầng C 5 fold, OOF dựng từ dump hop 10 s tam giác sàn 0.3 (cùng tỉ
+lệ hop/cửa sổ 1/2 như B0).
+
+**P4 (ghi 08/11, trước run đầu):** recipe `p4_gaineq` = `t2b` + `gain_eq_p 0.5`: với xác suất 0.5
+mỗi batch train (trước mixup), mỗi cửa sổ waveform nhận (a) gain ngẫu nhiên đều trong ±6 dB và
+(b) EQ: đường cong gain theo tần số dựng bằng `filter_gains_db` (±6 dB, dạng step/linear như
+FilterAugment) trên 64 dải tuyến tính, nội suy tuyến tính lên các bin rFFT của cả cửa sổ, nhân
+phổ rồi iFFT. Không clip biên độ. Tầng S như P3; tầng C dùng hop 5 s tam giác như B0.
 
 ## Alternatives considered
 

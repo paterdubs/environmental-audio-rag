@@ -71,11 +71,34 @@ def filter_augment(features: Tensor, *, db_range: float = 6.0) -> Tensor:
     return shifted.clamp_min(0.0)  # below the top_db floor does not exist in real features
 
 
+EQ_BANDS = 64
+
+
+def waveform_gain_eq(waveforms: Tensor, *, db_range: float = 6.0) -> Tensor:
+    """ADR-0043 P4: per-window gain U(±db_range dB) and a random EQ curve on 16 kHz windows.
+
+    The EQ curve is `filter_gains_db` over `EQ_BANDS` linear-frequency bands, interpolated
+    linearly onto the rFFT bins of the whole window and applied as a spectral gain."""
+    batch, samples = waveforms.shape
+    spectrum = torch.fft.rfft(waveforms.float(), dim=-1)
+    curve = filter_gains_db(batch, EQ_BANDS, db_range=db_range).to(waveforms.device)
+    curve = torch.nn.functional.interpolate(curve.unsqueeze(1), size=spectrum.shape[-1],
+                                            mode="linear", align_corners=True).squeeze(1)
+    gain = (torch.rand(batch, 1, device=waveforms.device) * 2 - 1) * db_range
+    scale = torch.pow(10.0, (curve + gain) / 20.0)
+    return torch.fft.irfft(spectrum * scale, n=samples, dim=-1).to(waveforms.dtype)
+
+
 def augment_batch(features: Tensor, targets: Tensor, valid: Tensor, *, mixup_p: float,
-                  filter_augment_p: float) -> tuple[Tensor, Tensor, Tensor]:
+                  filter_augment_p: float, gain_eq_p: float = 0.0
+                  ) -> tuple[Tensor, Tensor, Tensor]:
     """Apply each augmentation to the whole batch with its probability (training only)."""
     if filter_augment_p > 0 and torch.rand(1).item() < filter_augment_p:
         features = filter_augment(features)
+    if gain_eq_p > 0 and torch.rand(1).item() < gain_eq_p:
+        if features.dim() != 2:
+            raise ValueError("gain/EQ augmentation needs waveform windows [batch, samples]")
+        features = waveform_gain_eq(features)
     if mixup_p > 0 and torch.rand(1).item() < mixup_p:
         features, targets, valid = mixup(features, targets, valid)
     return features, targets, valid

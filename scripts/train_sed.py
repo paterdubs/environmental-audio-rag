@@ -139,6 +139,8 @@ RECIPES: dict[str, dict[str, object]] = {
 for _name, _version in (("oc_tf", "sed-oc-tf-v1.0"), ("oc_tf_kd", "sed-oc-tfkd-v1.0")):
     RECIPES[_name] = {**RECIPES["t2b"], "sequence_model": "tf256", "model_version": _version}
 # ADR-0041 O-E1: T2b với head RED (start/end + loss biên onset/offset), cùng checkpoint T2b.
+# ADR-0043 P4: T2b + gain ±6 dB + EQ ngẫu nhiên trên waveform, xác suất 0.5 mỗi batch.
+RECIPES["p4_gaineq"] = {**RECIPES["t2b"], "gain_eq_p": 0.5, "model_version": "sed-p4-gaineq-v1.0"}
 RECIPES["oe_red"] = {**RECIPES["t2b"], "boundary_head": "red", "model_version": "sed-oe-red-v1.0"}
 # ADR-0041 O-D: BEATs strong fine-tune toàn bộ; T0 08/10 → batch 8 (5.5 GB). Encoder học chậm
 # (lr riêng, pilot chọn), head mới lr cao; còn lại như T2b (mixup, random crop, trần 10).
@@ -165,9 +167,9 @@ ENCODER_FRAME_RATE = {"audio": 50.0, "panns": 100.0, "beats": 100.0, "frame_mn":
 WAVEFORM_ENCODERS = ("beats", "frame_mn", "beats_ft")
 WAVEFORM_ROOT = ROOT / "data" / "cache" / "datased_wav16k"
 WAVEFORM_MANIFEST = ROOT / "data" / "manifests" / "datased_wav16k.csv"
-# ADR-0020 §3: cùng cửa sổ/hop THEO GIÂY (10 s / 10 s, không overlap) giữa các nhánh.
+# ADR-0020 §3: cùng cửa sổ/hop THEO GIÂY (10 s / 10 s, không overlap) giữa các nhánh;
+# --window-seconds (ADR-0043 P3) đổi cả hai.
 WINDOW_SECONDS = 10.0
-HOP_SECONDS = 10.0
 PANNS_BATCH_SIZE = 24  # C2: batch đo an toàn thật ở cửa sổ 10 s trên 8 GB VRAM.
 DEFAULT_NORMALIZATION = (
     ROOT / "data" / "manifests" / "datased_logmel_panns_v1_train_normalization.npz"
@@ -242,6 +244,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--window-sampling", choices=WINDOW_SAMPLING, default="uniform",
                         help="ADR-0041 DO-4: class_balanced = rút cửa sổ train theo trọng số "
                              "(1/tần suất lớp)^0.5, cắt rung ±1/4 cửa sổ quanh cửa sổ được rút")
+    parser.add_argument("--window-seconds", type=float, default=WINDOW_SECONDS,
+                        help="ADR-0043 P3: độ dài cửa sổ train/đánh giá (hop = cửa sổ)")
     parser.add_argument("--evaluate-test", action="store_true")
     parser.add_argument("--device", default="cuda")
     return parser.parse_args()
@@ -610,8 +614,13 @@ def main() -> None:
     is_waveform = args.encoder in WAVEFORM_ENCODERS
     feature_set = ENCODER_FEATURE_SET[args.encoder]
     frame_rate = ENCODER_FRAME_RATE[args.encoder]
-    window_frames = round(WINDOW_SECONDS * frame_rate)
-    hop_frames = round(HOP_SECONDS * frame_rate)
+    if args.window_seconds <= 0:
+        raise SystemExit("--window-seconds phải dương")
+    if float(knobs.get("gain_eq_p", 0.0)) > 0 and not is_waveform:
+        raise SystemExit("recipe gain/EQ (P4) chỉ cho encoder waveform")
+    # ADR-0020 §3 giữ cửa sổ = hop; P3 (ADR-0043) chỉ đổi độ dài, vẫn không chồng lấn khi train.
+    window_frames = round(args.window_seconds * frame_rate)
+    hop_frames = round(args.window_seconds * frame_rate)
     # Track 2a keeps the v2 batch (ADR-0032 §2: same head and training loop as v2).
     batch_size = args.batch_size or (PANNS_BATCH_SIZE if args.encoder != "audio" else 8)
     config = SedTrainingConfig(
@@ -627,6 +636,7 @@ def main() -> None:
         select_metric=str(knobs["select_metric"]),
         mixup_p=float(knobs["mixup_p"]),
         filter_augment_p=float(knobs["filter_augment_p"]),
+        gain_eq_p=float(knobs.get("gain_eq_p", 0.0)),
         loss=args.loss,
         focal_gamma=args.focal_gamma,
         asl_gamma_pos=args.asl_gamma_pos,
