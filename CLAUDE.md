@@ -67,8 +67,10 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
   hơn f2 ở mọi cấu hình** (hybrid/en 0.383 vs 0.415, CI chồng lấn; PAPER_NOTES S59). Caption
   template e2e EN/VI: 0 lỗi. Caption LLM vẫn là số trên f2.
 - Freeze `artifact_freeze_20261107` thiếu 0; sổ `test_ledger_20261107`.
-- Giai đoạn P (ADR-0043, tăng phát hiện): P1 B0 × seed 2,3 đang train (`p1_queue.py` trong
-  scratchpad, 10 run ~50 phút). P2 KD, P3 cửa sổ 20 s, P4 augmentation chờ ghi §3 rồi code.
+- Giai đoạn P (ADR-0043, tăng phát hiện), code P2–P4 đã commit, đặc tả ở ADR-0043 §3. Ba hàng
+  đợi scratchpad chạy nối nhau: `p1_queue.py` (B0 × seed 2,3, tầng C) → `p34_queue.py` (P3 cửa sổ
+  20 s, P4 gain/EQ: tầng S, qua thì tầng C) → `p2_queue.py` (KD teacher B0 + O-D). Report OOF ra
+  `docs/measurements/` của worktree. **Không merge code train vào master khi hàng đợi còn chạy.**
 
 **Trước đó, 14/10/2026 16:30 — O5 xong: test một lần B0** (ADR-0041 §12, S58): macro 0.1366 / micro 0.1806 so với f2 0.1206 / 0.1643; Δ micro +0.0164 [−0.0128, +0.0495], CI chứa 0 → không gọi là tốt hơn có ý nghĩa. Tiếp: O6 (phục vụ B0: suy luận chồng lấn, parity) và S8-lite.
 
