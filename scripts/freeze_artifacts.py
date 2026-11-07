@@ -80,6 +80,9 @@ def artifact(path: Path, *, kind: str = "file") -> dict:
             "bytes": path.stat().st_size}
 
 
+NO_CHECKPOINT_TASKS = frozenset({'pseudo_labels'})  # run sinh dữ liệu, không có model
+
+
 def member_runs(run: Path, manifest: dict, *, seen: frozenset[Path] = frozenset()
                 ) -> Iterable[Path]:
     """Resolve OOF/ensemble/rewindow dependencies to checkpoint-owning training runs."""
@@ -93,7 +96,7 @@ def member_runs(run: Path, manifest: dict, *, seen: frozenset[Path] = frozenset(
         path = dependency / 'manifest.json'
         nested = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
         yield from member_runs(dependency, nested, seen=seen | {run.resolve()})
-    if not members:
+    if not members and manifest.get('task') not in NO_CHECKPOINT_TASKS:
         yield run
 
 
