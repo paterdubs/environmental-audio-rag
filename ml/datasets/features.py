@@ -143,6 +143,22 @@ class SedFeatureDataset(Dataset):
     def __len__(self) -> int:
         return len(self.windows)
 
+    def set_soft_targets(self, teacher: dict[str, np.ndarray], hard_weight: float) -> None:
+        """ADR-0043 P2 (KD): target = hard_weight·label + (1 − hard_weight)·teacher probability.
+
+        `teacher` maps every recording of this dataset to `[frames, classes]` probabilities on
+        the same frame grid; frames past the teacher's end keep the hard label."""
+        if not 0 <= hard_weight <= 1:
+            raise ValueError("hard_weight must be in [0, 1]")
+        needed = {window.recording_id for window in self.windows}
+        if missing := sorted(needed.difference(teacher)):
+            raise ValueError(f"teacher lacks {len(missing)} recordings, e.g. {missing[:3]}")
+        classes = len(self.class_index)
+        if any(teacher[r].ndim != 2 or teacher[r].shape[1] != classes for r in needed):
+            raise ValueError("teacher arrays must be [frames, classes]")
+        self.soft_targets = {r: teacher[r].astype(np.float32) for r in needed}
+        self.hard_weight = float(hard_weight)
+
     def window_classes(self) -> list[frozenset[str]]:
         """Classes with an event overlapping each nominal window (before any crop)."""
         present = []
@@ -201,6 +217,12 @@ class SedFeatureDataset(Dataset):
             else:  # DO-3 soft labels: annotations of a merged duplicate add up, capped at 1
                 span = target[onset:offset, column]
                 target[onset:offset, column] = np.minimum(span + float(weight), 1.0)
+        soft = getattr(self, "soft_targets", None)
+        if soft is not None:
+            span = soft[window.recording_id][window.start_frame:
+                                             window.start_frame + window.available_frames]
+            target[: len(span)] = (self.hard_weight * target[: len(span)]
+                                   + (1.0 - self.hard_weight) * span)
         valid = np.zeros(self.window_frames, dtype=np.float32)
         valid[: window.available_frames] = 1.0
         return torch.from_numpy(target), torch.from_numpy(valid)

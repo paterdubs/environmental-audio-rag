@@ -51,6 +51,17 @@ mỗi batch train (trước mixup), mỗi cửa sổ waveform nhận (a) gain ng
 FilterAugment) trên 64 dải tuyến tính, nội suy tuyến tính lên các bin rFFT của cả cửa sổ, nhân
 phổ rồi iFFT. Không clip biên độ. Tầng S như P3; tầng C dùng hop 5 s tam giác như B0.
 
+**P2 (ghi 08/11, trước run đầu):** student = recipe B0 (`t2b` + `--train-fixes`, lr 3e-4,
+batch 24, seed 20260922) với `--soft-teachers`: target frame = 0.5·nhãn cứng + 0.5·trung bình xác
+suất hai teacher (`ml/training/distill.py`). Teacher dự đoán trên split `train` của chính student
+bằng `dump_predictions --split train --hop-seconds 5 --weighting triangular:0.3` (xác suất teacher
+trên dữ liệu nó đã train — KD thông thường). Teacher phải cùng `cv_fold` với student, nên không
+teacher nào thấy fold giữ lại; code từ chối nếu lệch.
+- Tầng S: teacher = O-B `sed_polyphonic_20261008T062333Z` (T2b + sửa dữ liệu, train trên `train`)
+  và O-D tầng S `sed_polyphonic_20261009T153325Z`. Chấm như P3.
+- Tầng C fold k: teacher = B0 fold k và O-D fold k (các run nguồn của
+  `sed_oof_B0_h5_20261008T130849Z` và `sed_oof_OD_h5_20261013T220951Z`); OOF hop 5 s tam giác.
+
 ## Alternatives considered
 
 | Phương án | Lý do không chọn |

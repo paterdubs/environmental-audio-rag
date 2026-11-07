@@ -88,6 +88,7 @@ from ml.training.common import (
     sha256_file,
     write_json,
 )
+from ml.training.distill import load_teacher
 from ml.training.encoded import EncodedLoader
 from ml.training.sampling import DEFAULT_POWER, class_balanced_weights, expected_class_share
 from ml.training.sed import (
@@ -244,6 +245,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--window-sampling", choices=WINDOW_SAMPLING, default="uniform",
                         help="ADR-0041 DO-4: class_balanced = rút cửa sổ train theo trọng số "
                              "(1/tần suất lớp)^0.5, cắt rung ±1/4 cửa sổ quanh cửa sổ được rút")
+    parser.add_argument("--soft-teachers", type=Path, nargs="+", default=None,
+                        help="ADR-0043 P2 KD: run sed_rewindow_* có predictions/train.npz, cùng "
+                             "--cv-fold với student; trung bình xác suất làm target mềm")
+    parser.add_argument("--soft-hard-weight", type=float, default=0.5,
+                        help="KD: target = w·nhãn + (1 − w)·teacher")
     parser.add_argument("--window-seconds", type=float, default=WINDOW_SECONDS,
                         help="ADR-0043 P3: độ dài cửa sổ train/đánh giá (hop = cửa sổ)")
     parser.add_argument("--evaluate-test", action="store_true")
@@ -659,6 +665,15 @@ def main() -> None:
     if balanced and not knobs["random_crop"]:
         raise SystemExit("--window-sampling class_balanced cần recipe có random_crop")
     pseudo = load_pseudo(args, is_waveform=is_waveform, balanced=balanced)
+    teacher, teacher_info = (None, None)
+    if args.soft_teachers:
+        hashes = {"split_sha256": sha256_file(SPLITS_PATH), "taxonomy_sha256": taxonomy.checksum,
+                  "data_manifest_sha256": sha256_file(
+                      ROOT / "data" / "annotations" / "datased_polyphonic_events.csv")}
+        teacher, teacher_info = load_teacher(args.soft_teachers, cv_fold=args.cv_fold,
+                                             class_ids=class_ids, student_manifest=hashes,
+                                             runs_dir=ROOT / "ml" / "runs")
+        teacher_info["hard_weight"] = args.soft_hard_weight
     sampling_info = None
     for split in split_names:
         is_train = split == "train"
@@ -672,6 +687,8 @@ def main() -> None:
             crop_jitter_frames=(config.window_frames // CROP_JITTER_FRACTION
                                 if balanced and is_train else None),
         )
+        if is_train and teacher is not None:
+            dataset.set_soft_targets(teacher, args.soft_hard_weight)
         sampler, info = (train_sampler(dataset, args.window_sampling, args.seed) if is_train
                          else (None, None))
         sampling_info = info if is_train else sampling_info
@@ -734,6 +751,7 @@ def main() -> None:
                if args.cv_fold is not None else {}),
             **({"window_sampling": sampling_info} if sampling_info is not None else {}),
             **({"pseudo_labels": pseudo["info"]} if pseudo is not None else {}),
+            **({"soft_targets": teacher_info} if teacher_info is not None else {}),
         },
         "class_ids": class_ids,
         "taxonomy_sha256": taxonomy.checksum,

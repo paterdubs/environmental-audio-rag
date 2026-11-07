@@ -129,8 +129,8 @@ def validate_predictions(
         raise ValueError("class_ids do not match configured polyphonic_class_ids order")
     if classes != len(artifact.class_ids) or len(set(artifact.class_ids)) != classes:
         raise ValueError("class axis and unique class_ids must have the same length")
-    if artifact.split not in {"dev", "test"}:
-        raise ValueError("split must be 'dev' or 'test'")
+    if artifact.split not in {"dev", "test", "train"}:  # train: KD teacher (ADR-0043 P2)
+        raise ValueError("split must be 'dev', 'test' or 'train'")
     if not _MODEL_VERSION_PATTERN.fullmatch(artifact.model_version):
         raise ValueError("model_version must follow <component>-v<major>.<minor>")
     if not _SHA256_PATTERN.fullmatch(artifact.taxonomy_sha256):

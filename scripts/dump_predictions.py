@@ -67,14 +67,15 @@ from scripts.train_sed import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACT_SPLIT = {"test": "test", "dev": "validation"}  # predictions literal → split CSV
+# predictions literal → split CSV
+CONTRACT_SPLIT = {"test": "test", "dev": "validation", "train": "train"}
 SHARED = ("split_sha256", "data_manifest_sha256", "taxonomy_sha256")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
-    parser.add_argument("--split", choices=("test", "dev"), default="test",
+    parser.add_argument("--split", choices=("test", "dev", "train"), default="test",
                         help="'dev' chỉ hợp lệ cùng --hop-seconds (run dẫn xuất)")
     parser.add_argument("--verify-dev", action="store_true",
                         help="chỉ kiểm: sinh lại logit dev và so SHA-256 với lúc train")
@@ -89,6 +90,8 @@ def parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     if args.hop_seconds is None and (args.split == "dev" and not args.verify_dev):
         parser.error("--split dev chỉ dùng với --hop-seconds; dev gốc đã sinh lúc train")
+    if args.split == "train" and args.hop_seconds is None:
+        parser.error("--split train (teacher KD, ADR-0043 P2) cần --hop-seconds")
     if args.hop_seconds is not None and not (args.label or args.into):
         parser.error("--hop-seconds cần --label (run mới) hoặc --into (run dẫn xuất đã có)")
     triangular_floor(args.weighting)
