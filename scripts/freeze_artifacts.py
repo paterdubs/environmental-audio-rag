@@ -37,6 +37,8 @@ REPORT_RUNS = {
     "T2b ensemble (served f2 source)": "sed_ensemble_t2b_20260927T200914Z",
     "Served B0 system (ADR-0042)": "sed_served_B0_20261107T175659Z",
     "B0 final test ensemble (ADR-0041 §12)": "sed_ensemble_B0_final_test_20261014T085016Z",
+    "B0 OOF h5 (ADR-0041 §11, postproc source)": "sed_oof_B0_h5_20261008T130849Z",
+    "B0 OOF dev corpus (ADR-0044)": "sed_filtered_B0_oof_dev_20261107T181008Z",
     "S11 focal ensemble": "sed_ensemble_s11_focal_t2b_20260928T185207Z",
     "S13 f2 test output": "sed_ensemble_s13_f2_20260929T045053Z",
 }
