@@ -1,0 +1,152 @@
+{
+  "label": "B0",
+  "split": "test",
+  "eval_set": "annotated",
+  "predictions_run": "sed_ensemble_B0_final_test_20261014T085016Z",
+  "predictions_sha256": "9e0a458f94c2f7ec2d17fb1865401527d8ccdb6da413d71026bef2846e8311f0",
+  "postproc": "ml\\runs\\sed_oof_B0_h5_20261008T130849Z\\sebb_cv_selection_annotated.json",
+  "postproc_sha256": "1610d24bc08a836896e60b8d2014225d80be2c77a083d1c5d4e0fb08d218cf10",
+  "lexicon_sha256": {
+    "en": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
+    "vi": "1361a221609a70b2de65ee987c70134b9ef7f34213568bbf5b3db17572035bc6"
+  },
+  "languages": {
+    "en": {
+      "summary": {
+        "n": 139,
+        "hallucination_rate": 0.0,
+        "omission_rate": 0.0,
+        "temporal_order_accuracy": 1.0,
+        "forbidden_term_rate": 0.0,
+        "over_specific_rate": 0.0,
+        "context_term_rate": 0.0,
+        "evidence_coverage": 1.0,
+        "n_mentions": 2.4820143884892087,
+        "temporal_order_eligible": 1.0,
+        "n_temporal_eligible": 64,
+        "hallucination_micro": 0.0
+      },
+      "ci": {
+        "hallucination_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "omission_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "temporal_order_eligible": {
+          "estimate": 1.0,
+          "lower": 1.0,
+          "upper": 1.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "over_specific_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "context_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "forbidden_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        }
+      }
+    },
+    "vi": {
+      "summary": {
+        "n": 139,
+        "hallucination_rate": 0.0,
+        "omission_rate": 0.0,
+        "temporal_order_accuracy": 1.0,
+        "forbidden_term_rate": 0.0,
+        "over_specific_rate": 0.0,
+        "context_term_rate": 0.0,
+        "evidence_coverage": 1.0,
+        "n_mentions": 2.4820143884892087,
+        "temporal_order_eligible": 1.0,
+        "n_temporal_eligible": 64,
+        "hallucination_micro": 0.0
+      },
+      "ci": {
+        "hallucination_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "omission_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "temporal_order_eligible": {
+          "estimate": 1.0,
+          "lower": 1.0,
+          "upper": 1.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "over_specific_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "context_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        },
+        "forbidden_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 139,
+          "n_bootstrap": 1000
+        }
+      }
+    }
+  },
+  "generated_at": "2026-11-07T18:17:46.340519+00:00",
+  "git": {
+    "revision": "39fe676d35f7e5d7db62a1ed7710c8f2f5848af5",
+    "dirty": false
+  }
+}

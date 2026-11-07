@@ -46,6 +46,15 @@ chúng là **in-sample**. Artifact OOF `sed_oof_B0_h5_20261008T130849Z` chấm m
 3. Chỉ khi bước 2 đạt contract/wiring: W6 test (4 cấu hình) → W5 template test.
 4. Sổ test, freeze artifact, STATUS, PAPER_NOTES.
 
+### 4. Kết quả (08/11, chạy một lần)
+
+- Validation: wiring đạt (contract 96/96, unsupported-claim 0.000, evidence thật 100%).
+- Test (97 câu có relevant), nDCG@10 gold B0 so f2 (ADR-0040): structured_only/en 0.392 vs 0.416,
+  hybrid/en 0.383 vs 0.415, vector_only/en 0.458 vs 0.526; CI 95% chồng lấn. Answers: mọi cấu hình
+  unsupported-claim 0.000, contract/evidence 97/97; số câu có trả lời 58/97 (f2 65/97).
+- Caption template e2e EN/VI trên test (139 annotated, 142 all): mọi lỗi grounding bằng 0.
+- Không đổi hệ thống phục vụ hay lựa chọn SED từ các số này (PAPER_NOTES S59).
+
 ## Alternatives considered
 
 | Phương án | Lý do không chọn |

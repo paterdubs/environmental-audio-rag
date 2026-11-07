@@ -1,0 +1,5559 @@
+{
+ "split": "validation",
+ "summary": {
+  "structured_only/en": {
+   "n": 96,
+   "contract_ok": 96,
+   "unsupported_claim_rate": 0.0,
+   "evidence_real": 96,
+   "citations_satisfy_filters": 96,
+   "answered": 62,
+   "cited_relevant_share": 0.9194630872483222
+  },
+  "structured_only/vi": {
+   "n": 96,
+   "contract_ok": 96,
+   "unsupported_claim_rate": 0.0,
+   "evidence_real": 96,
+   "citations_satisfy_filters": 96,
+   "answered": 62,
+   "cited_relevant_share": 0.9261744966442953
+  },
+  "hybrid/en": {
+   "n": 96,
+   "contract_ok": 96,
+   "unsupported_claim_rate": 0.0,
+   "evidence_real": 96,
+   "citations_satisfy_filters": 96,
+   "answered": 62,
+   "cited_relevant_share": 0.8993288590604027
+  },
+  "hybrid/vi": {
+   "n": 96,
+   "contract_ok": 96,
+   "unsupported_claim_rate": 0.0,
+   "evidence_real": 96,
+   "citations_satisfy_filters": 96,
+   "answered": 62,
+   "cited_relevant_share": 0.9060402684563759
+  }
+ },
+ "examples": [
+  {
+   "query_id": "q-001",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    false
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0032, vehicle pass-by at 74.7–88.4 s. In datased:S-0025, vehicle pass-by at 81.8–91.3 s. In datased:S-0228, vehicle pass-by at 1.5–15.0 s."
+  },
+  {
+   "query_id": "q-001",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    false
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0032, tiếng xe chạy qua ở 74,7–88,4 giây. Trong datased:S-0030, tiếng xe chạy qua ở 89,6–141,4 giây. Trong datased:S-0228, tiếng xe chạy qua ở 1,5–15,0 giây."
+  },
+  {
+   "query_id": "q-049",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-049",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  }
+ ],
+ "git": {
+  "revision": "39fe676d35f7e5d7db62a1ed7710c8f2f5848af5",
+  "dirty": false
+ },
+ "rows": [
+  {
+   "query_id": "q-001",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0275, vehicle pass-by at 0.0–21.0 s. In datased:S-0096, vehicle pass-by at 0.1–79.8 s. In datased:S-0039, vehicle pass-by at 0.3–15.0 s."
+  },
+  {
+   "query_id": "q-001",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0275, tiếng xe chạy qua ở 0,0–21,0 giây. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây."
+  },
+  {
+   "query_id": "q-001",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    false
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0032, vehicle pass-by at 74.7–88.4 s. In datased:S-0025, vehicle pass-by at 81.8–91.3 s. In datased:S-0228, vehicle pass-by at 1.5–15.0 s."
+  },
+  {
+   "query_id": "q-001",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    false
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0032, tiếng xe chạy qua ở 74,7–88,4 giây. Trong datased:S-0030, tiếng xe chạy qua ở 89,6–141,4 giây. Trong datased:S-0228, tiếng xe chạy qua ở 1,5–15,0 giây."
+  },
+  {
+   "query_id": "q-002",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0205, voices at 0.0–22.8 s. In datased:S-0626, voices at 0.0–0.7 s. In datased:S-0074, voices at 0.1–0.8 s."
+  },
+  {
+   "query_id": "q-002",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0205, tiếng người nói ở 0,0–22,8 giây. Trong datased:S-0626, tiếng người nói ở 0,0–0,7 giây. Trong datased:S-0074, tiếng người nói ở 0,1–0,8 giây."
+  },
+  {
+   "query_id": "q-002",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0205, voices at 0.0–22.8 s. In datased:S-0027, voices at 40.7–47.5 s. In datased:S-0112, voices at 60.0–149.1 s."
+  },
+  {
+   "query_id": "q-002",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0112, tiếng người nói ở 60,0–149,1 giây. Trong datased:S-0111, tiếng người nói ở 49,1–90,0 giây. Trong datased:S-0027, tiếng người nói ở 40,7–47,5 giây."
+  },
+  {
+   "query_id": "q-003",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0217, train at 0.0–33.1 s. In datased:S-0227, train at 0.0–105.2 s. In datased:S-0302, train at 0.0–21.9 s."
+  },
+  {
+   "query_id": "q-003",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0217, tiếng tàu hỏa ở 0,0–33,1 giây. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây. Trong datased:S-0302, tiếng tàu hỏa ở 0,0–21,9 giây."
+  },
+  {
+   "query_id": "q-003",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0334, train at 1.8–17.8 s. In datased:S-0221, train at 0.1–43.2 s. In datased:S-0343, train at 0.2–19.4 s."
+  },
+  {
+   "query_id": "q-003",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0519, tiếng tàu hỏa ở 0,2–79,8 giây. Trong datased:S-0334, tiếng tàu hỏa ở 1,8–17,8 giây. Trong datased:S-0343, tiếng tàu hỏa ở 0,2–19,4 giây."
+  },
+  {
+   "query_id": "q-004",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0350, workshop at 0.1–171.4 s. In datased:S-0478, workshop at 1.1–8.7 s. In datased:S-0446, workshop at 1.6–20.6 s."
+  },
+  {
+   "query_id": "q-004",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0350, tiếng máy móc của xưởng hoặc công trình ở 0,1–171,4 giây. Trong datased:S-0478, tiếng máy móc của xưởng hoặc công trình ở 1,1–8,7 giây. Trong datased:S-0446, tiếng máy móc của xưởng hoặc công trình ở 1,6–20,6 giây."
+  },
+  {
+   "query_id": "q-004",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0024, workshop at 35.4–40.0 s. In datased:S-0350, workshop at 0.1–171.4 s. In datased:S-0528, workshop at 4.7–14.1 s."
+  },
+  {
+   "query_id": "q-004",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0478, tiếng máy móc của xưởng hoặc công trình ở 1,1–8,7 giây. Trong datased:S-0484, tiếng máy móc của xưởng hoặc công trình ở 1,7–9,6 giây. Trong datased:S-0024, tiếng máy móc của xưởng hoặc công trình ở 35,4–40,0 giây."
+  },
+  {
+   "query_id": "q-005",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0595, propeller aircrafts at 0.0–34.1 s. In datased:S-0597, propeller aircrafts at 0.0–0.1 s. In datased:S-0598, propeller aircrafts at 0.0–44.2 s."
+  },
+  {
+   "query_id": "q-005",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây. Trong datased:S-0597, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–0,1 giây. Trong datased:S-0598, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–44,2 giây."
+  },
+  {
+   "query_id": "q-005",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0614, propeller aircrafts at 0.1–29.7 s. In datased:S-0594, propeller aircrafts at 50.7–84.8 s. In datased:S-0664, propeller aircrafts at 0.0–19.9 s."
+  },
+  {
+   "query_id": "q-005",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0594, tiếng máy bay cánh quạt hoặc trực thăng ở 50,7–84,8 giây. Trong datased:S-0614, tiếng máy bay cánh quạt hoặc trực thăng ở 0,1–29,7 giây. Trong datased:S-0662, tiếng máy bay cánh quạt hoặc trực thăng ở 0,2–36,1 giây."
+  },
+  {
+   "query_id": "q-006",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0237, sirens and alarms at 0.0–30.0 s. In datased:S-0310, sirens and alarms at 0.0–13.0 s. In datased:S-0637, sirens and alarms at 0.0–16.0 s."
+  },
+  {
+   "query_id": "q-006",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0237, âm thanh giống còi hú hoặc chuông báo động ở 0,0–30,0 giây. Trong datased:S-0310, âm thanh giống còi hú hoặc chuông báo động ở 0,0–13,0 giây. Trong datased:S-0637, âm thanh giống còi hú hoặc chuông báo động ở 0,0–16,0 giây."
+  },
+  {
+   "query_id": "q-006",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0309, sirens and alarms at 3.3–7.9 s. In datased:S-0318, sirens and alarms at 15.0–49.0 s. In datased:S-0310, sirens and alarms at 0.0–13.0 s."
+  },
+  {
+   "query_id": "q-006",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0309, âm thanh giống còi hú hoặc chuông báo động ở 3,3–7,9 giây. Trong datased:S-0310, âm thanh giống còi hú hoặc chuông báo động ở 0,0–13,0 giây. Trong datased:S-0318, âm thanh giống còi hú hoặc chuông báo động ở 15,0–49,0 giây."
+  },
+  {
+   "query_id": "q-007",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0009, birds at 0.0–125.5 s. In datased:S-0065, birds at 0.0–148.4 s. In datased:S-0577, birds at 0.0–11.9 s."
+  },
+  {
+   "query_id": "q-007",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0009, tiếng chim ở 0,0–125,5 giây. Trong datased:S-0065, tiếng chim ở 0,0–148,4 giây. Trong datased:S-0577, tiếng chim ở 0,0–11,9 giây."
+  },
+  {
+   "query_id": "q-007",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0076, birds at 44.7–80.0 s. In datased:S-0577, birds at 0.0–11.9 s. In datased:S-0072, birds at 0.2–10.6 s."
+  },
+  {
+   "query_id": "q-007",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0065, tiếng chim ở 0,0–148,4 giây. Trong datased:S-0076, tiếng chim ở 44,7–80,0 giây. Trong datased:S-0577, tiếng chim ở 0,0–11,9 giây."
+  },
+  {
+   "query_id": "q-008",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0411, vehicle idling at 0.0–80.0 s. In datased:S-0409, vehicle idling at 84.6–173.9 s."
+  },
+  {
+   "query_id": "q-008",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0411, tiếng động cơ xe chạy không tải ở 0,0–80,0 giây. Trong datased:S-0409, tiếng động cơ xe chạy không tải ở 84,6–173,9 giây."
+  },
+  {
+   "query_id": "q-008",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0411, vehicle idling at 0.0–80.0 s. In datased:S-0409, vehicle idling at 84.6–173.9 s."
+  },
+  {
+   "query_id": "q-008",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0409, tiếng động cơ xe chạy không tải ở 84,6–173,9 giây. Trong datased:S-0411, tiếng động cơ xe chạy không tải ở 0,0–80,0 giây."
+  },
+  {
+   "query_id": "q-009",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0308, jet aircrafts at 0.0–0.0 s. In datased:S-0584, jet aircrafts at 0.0–25.0 s. In datased:S-0693, jet aircrafts at 0.0–94.1 s."
+  },
+  {
+   "query_id": "q-009",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0308, tiếng máy bay phản lực ở 0,0–0,0 giây. Trong datased:S-0584, tiếng máy bay phản lực ở 0,0–25,0 giây. Trong datased:S-0693, tiếng máy bay phản lực ở 0,0–94,1 giây."
+  },
+  {
+   "query_id": "q-009",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0703, jet aircrafts at 8.7–92.8 s. In datased:S-0693, jet aircrafts at 0.0–94.1 s. In datased:S-0308, jet aircrafts at 0.0–0.0 s."
+  },
+  {
+   "query_id": "q-009",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0584, tiếng máy bay phản lực ở 0,0–25,0 giây. Trong datased:S-0703, tiếng máy bay phản lực ở 8,7–92,8 giây. Trong datased:S-0693, tiếng máy bay phản lực ở 0,0–94,1 giây."
+  },
+  {
+   "query_id": "q-010",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0313, horn at 11.2–14.8 s. In datased:S-0330, horn at 15.9–18.6 s. In datased:S-0342, horn at 17.3–22.2 s."
+  },
+  {
+   "query_id": "q-010",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0313, tiếng còi xe ở 11,2–14,8 giây. Trong datased:S-0330, tiếng còi xe ở 15,9–18,6 giây. Trong datased:S-0342, tiếng còi xe ở 17,3–22,2 giây."
+  },
+  {
+   "query_id": "q-010",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0342, horn at 17.3–22.2 s. In datased:S-0330, horn at 15.9–18.6 s. In datased:S-0347, horn at 85.6–88.4 s."
+  },
+  {
+   "query_id": "q-010",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0342, tiếng còi xe ở 17,3–22,2 giây. Trong datased:S-0313, tiếng còi xe ở 11,2–14,8 giây. Trong datased:S-0330, tiếng còi xe ở 15,9–18,6 giây."
+  },
+  {
+   "query_id": "q-011",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0083, dog barkings and howlings at 0.0–15.9 s. In datased:S-0116, dog barkings and howlings at 0.3–15.1 s. In datased:S-0085, dog barkings and howlings at 4.2–34.8 s."
+  },
+  {
+   "query_id": "q-011",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0083, tiếng chó sủa hoặc tru ở 0,0–15,9 giây. Trong datased:S-0116, tiếng chó sủa hoặc tru ở 0,3–15,1 giây. Trong datased:S-0085, tiếng chó sủa hoặc tru ở 4,2–34,8 giây."
+  },
+  {
+   "query_id": "q-011",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0690, dog barkings and howlings at 12.5–20.1 s. In datased:S-0085, dog barkings and howlings at 4.2–34.8 s. In datased:S-0081, dog barkings and howlings at 10.5–12.9 s."
+  },
+  {
+   "query_id": "q-011",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0083, tiếng chó sủa hoặc tru ở 0,0–15,9 giây. Trong datased:S-0553, tiếng chó sủa hoặc tru ở 26,8–34,8 giây. Trong datased:S-0690, tiếng chó sủa hoặc tru ở 12,5–20,1 giây."
+  },
+  {
+   "query_id": "q-012",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0386, cicadas and crickets at 0.2–3.3 s. In datased:S-0570, cicadas and crickets at 1.9–5.0 s. In datased:S-0571, cicadas and crickets at 1.9–5.0 s."
+  },
+  {
+   "query_id": "q-012",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0386, tiếng côn trùng như ve sầu hoặc dế ở 0,2–3,3 giây. Trong datased:S-0570, tiếng côn trùng như ve sầu hoặc dế ở 1,9–5,0 giây. Trong datased:S-0571, tiếng côn trùng như ve sầu hoặc dế ở 1,9–5,0 giây."
+  },
+  {
+   "query_id": "q-012",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0575, cicadas and crickets at 2.8–12.6 s. In datased:S-0576, cicadas and crickets at 4.4–15.4 s. In datased:S-0386, cicadas and crickets at 0.2–3.3 s."
+  },
+  {
+   "query_id": "q-012",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0576, tiếng côn trùng như ve sầu hoặc dế ở 4,4–15,4 giây. Trong datased:S-0575, tiếng côn trùng như ve sầu hoặc dế ở 2,8–12,6 giây. Trong datased:S-0553, tiếng côn trùng như ve sầu hoặc dế ở 61,0–67,3 giây."
+  },
+  {
+   "query_id": "q-013",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 of the top 3 results satisfy the filters. In datased:S-0650, lawn mower brush cutter and olive shaker at 0.0–36.2 s. In datased:S-0700, lawn mower brush cutter and olive shaker at 14.7–25.8 s. In datased:S-0061, lawn mower brush cutter and olive shaker at 149.2–158.6 s."
+  },
+  {
+   "query_id": "q-013",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 trong 3 kết quả đầu thoả bộ lọc. Trong datased:S-0650, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 0,0–36,2 giây. Trong datased:S-0700, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 14,7–25,8 giây. Trong datased:S-0061, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 149,2–158,6 giây."
+  },
+  {
+   "query_id": "q-013",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 of the top 3 results satisfy the filters. In datased:S-0650, lawn mower brush cutter and olive shaker at 0.0–36.2 s. In datased:S-0700, lawn mower brush cutter and olive shaker at 14.7–25.8 s. In datased:S-0061, lawn mower brush cutter and olive shaker at 149.2–158.6 s."
+  },
+  {
+   "query_id": "q-013",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 trong 3 kết quả đầu thoả bộ lọc. Trong datased:S-0061, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 149,2–158,6 giây. Trong datased:S-0650, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 0,0–36,2 giây. Trong datased:S-0700, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 14,7–25,8 giây."
+  },
+  {
+   "query_id": "q-014",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0293, music at 0.0–0.1 s. In datased:S-0298, music at 3.9–30.0 s. In datased:S-0193, music at 7.1–29.7 s."
+  },
+  {
+   "query_id": "q-014",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0293, tiếng nhạc ở 0,0–0,1 giây. Trong datased:S-0298, tiếng nhạc ở 3,9–30,0 giây. Trong datased:S-0193, tiếng nhạc ở 7,1–29,7 giây."
+  },
+  {
+   "query_id": "q-014",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0193, music at 7.1–29.7 s. In datased:S-0298, music at 3.9–30.0 s. In datased:S-0293, music at 0.0–0.1 s."
+  },
+  {
+   "query_id": "q-014",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0349, tiếng nhạc ở 24,6–86,1 giây. Trong datased:S-0293, tiếng nhạc ở 0,0–0,1 giây. Trong datased:S-0193, tiếng nhạc ở 7,1–29,7 giây."
+  },
+  {
+   "query_id": "q-015",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 of the top 6 results satisfy the filters. In datased:S-0437, vacuum cleaner fan and hairdryer at 0.0–19.8 s. In datased:S-0671, vacuum cleaner fan and hairdryer at 0.0–13.5 s. In datased:S-0457, vacuum cleaner fan and hairdryer at 1.9–15.5 s."
+  },
+  {
+   "query_id": "q-015",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 trong 6 kết quả đầu thoả bộ lọc. Trong datased:S-0437, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–19,8 giây. Trong datased:S-0671, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–13,5 giây. Trong datased:S-0457, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 1,9–15,5 giây."
+  },
+  {
+   "query_id": "q-015",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 of the top 6 results satisfy the filters. In datased:S-0423, vacuum cleaner fan and hairdryer at 8.1–34.1 s. In datased:S-0457, vacuum cleaner fan and hairdryer at 1.9–15.5 s. In datased:S-0437, vacuum cleaner fan and hairdryer at 0.0–19.8 s."
+  },
+  {
+   "query_id": "q-015",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 trong 6 kết quả đầu thoả bộ lọc. Trong datased:S-0423, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 8,1–34,1 giây. Trong datased:S-0671, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–13,5 giây. Trong datased:S-0437, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–19,8 giây."
+  },
+  {
+   "query_id": "q-016",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0510, crows seagulls and magpies at 0.7–2.2 s. In datased:S-0511, crows seagulls and magpies at 3.2–4.4 s."
+  },
+  {
+   "query_id": "q-016",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0510, tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là ở 0,7–2,2 giây. Trong datased:S-0511, tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là ở 3,2–4,4 giây."
+  },
+  {
+   "query_id": "q-016",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0511, crows seagulls and magpies at 3.2–4.4 s. In datased:S-0510, crows seagulls and magpies at 0.7–2.2 s."
+  },
+  {
+   "query_id": "q-016",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0511, tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là ở 3,2–4,4 giây. Trong datased:S-0510, tiếng chim kêu gắt như quạ, mòng biển hoặc chim ác là ở 0,7–2,2 giây."
+  },
+  {
+   "query_id": "q-017",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0375, chicken coop at 0.8–3.0 s. In datased:S-0060, chicken coop at 1.1–3.0 s. In datased:S-0374, chicken coop at 1.8–3.4 s."
+  },
+  {
+   "query_id": "q-017",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0375, tiếng gà trong chuồng ở 0,8–3,0 giây. Trong datased:S-0060, tiếng gà trong chuồng ở 1,1–3,0 giây. Trong datased:S-0374, tiếng gà trong chuồng ở 1,8–3,4 giây."
+  },
+  {
+   "query_id": "q-017",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0136, chicken coop at 5.8–29.5 s. In datased:S-0375, chicken coop at 0.8–3.0 s. In datased:S-0374, chicken coop at 1.8–3.4 s."
+  },
+  {
+   "query_id": "q-017",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0136, tiếng gà trong chuồng ở 5,8–29,5 giây. Trong datased:S-0374, tiếng gà trong chuồng ở 1,8–3,4 giây. Trong datased:S-0375, tiếng gà trong chuồng ở 0,8–3,0 giây."
+  },
+  {
+   "query_id": "q-018",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0156, bells at 0.8–8.3 s. In datased:S-0155, bells at 0.9–2.0 s. In datased:S-0492, bells at 0.9–2.0 s."
+  },
+  {
+   "query_id": "q-018",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0156, tiếng chuông ở 0,8–8,3 giây. Trong datased:S-0155, tiếng chuông ở 0,9–2,0 giây. Trong datased:S-0492, tiếng chuông ở 0,9–2,0 giây."
+  },
+  {
+   "query_id": "q-018",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0155, bells at 0.9–2.0 s. In datased:S-0492, bells at 0.9–2.0 s. In datased:S-0156, bells at 0.8–8.3 s."
+  },
+  {
+   "query_id": "q-018",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0022, tiếng chuông ở 8,5–24,5 giây. Trong datased:S-0156, tiếng chuông ở 0,8–8,3 giây. Trong datased:S-0492, tiếng chuông ở 0,9–2,0 giây."
+  },
+  {
+   "query_id": "q-019",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0054, thunder fireworks and gunshot at 0.0–16.5 s. In datased:S-0012, thunder fireworks and gunshot at 2.0–25.0 s. In datased:S-0010, thunder fireworks and gunshot at 31.5–43.2 s."
+  },
+  {
+   "query_id": "q-019",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0054, âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng ở 0,0–16,5 giây. Trong datased:S-0012, âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng ở 2,0–25,0 giây. Trong datased:S-0010, âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng ở 31,5–43,2 giây."
+  },
+  {
+   "query_id": "q-019",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0054, thunder fireworks and gunshot at 0.0–16.5 s. In datased:S-0010, thunder fireworks and gunshot at 31.5–43.2 s. In datased:S-0009, thunder fireworks and gunshot at 74.7–100.5 s."
+  },
+  {
+   "query_id": "q-019",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0054, âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng ở 0,0–16,5 giây. Trong datased:S-0009, âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng ở 74,7–100,5 giây. Trong datased:S-0010, âm thanh dạng xung giống tiếng sấm, pháo hoa hoặc tiếng súng ở 31,5–43,2 giây."
+  },
+  {
+   "query_id": "q-020",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 of the top 3 results satisfy the filters. In datased:S-0133, cat fight and moans at 0.0–14.0 s. In datased:S-0170, cat fight and moans at 0.1–0.4 s. In datased:S-0516, cat fight and moans at 0.2–2.1 s."
+  },
+  {
+   "query_id": "q-020",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 trong 3 kết quả đầu thoả bộ lọc. Trong datased:S-0133, tiếng mèo kêu hoặc đánh nhau ở 0,0–14,0 giây. Trong datased:S-0170, tiếng mèo kêu hoặc đánh nhau ở 0,1–0,4 giây. Trong datased:S-0516, tiếng mèo kêu hoặc đánh nhau ở 0,2–2,1 giây."
+  },
+  {
+   "query_id": "q-020",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 of the top 3 results satisfy the filters. In datased:S-0170, cat fight and moans at 0.1–0.4 s. In datased:S-0516, cat fight and moans at 0.2–2.1 s. In datased:S-0133, cat fight and moans at 0.0–14.0 s."
+  },
+  {
+   "query_id": "q-020",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 trong 3 kết quả đầu thoả bộ lọc. Trong datased:S-0170, tiếng mèo kêu hoặc đánh nhau ở 0,1–0,4 giây. Trong datased:S-0516, tiếng mèo kêu hoặc đánh nhau ở 0,2–2,1 giây. Trong datased:S-0133, tiếng mèo kêu hoặc đánh nhau ở 0,0–14,0 giây."
+  },
+  {
+   "query_id": "q-021",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0143, glass breaking at 0.8–3.5 s. In datased:S-0406, glass breaking at 15.0–16.4 s."
+  },
+  {
+   "query_id": "q-021",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0143, tiếng kính vỡ ở 0,8–3,5 giây. Trong datased:S-0406, tiếng kính vỡ ở 15,0–16,4 giây."
+  },
+  {
+   "query_id": "q-021",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0143, glass breaking at 0.8–3.5 s. In datased:S-0406, glass breaking at 15.0–16.4 s."
+  },
+  {
+   "query_id": "q-021",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0143, tiếng kính vỡ ở 0,8–3,5 giây. Trong datased:S-0406, tiếng kính vỡ ở 15,0–16,4 giây."
+  },
+  {
+   "query_id": "q-022",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-022",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-022",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-022",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-023",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0595, propeller aircrafts at 0.0–34.1 s, then voices at 0.1–1.2 s. In datased:S-0597, propeller aircrafts at 0.0–0.1 s, then voices at 1.2–1.6 s. In datased:S-0598, propeller aircrafts at 0.0–44.2 s, then voices at 0.7–1.9 s."
+  },
+  {
+   "query_id": "q-023",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây. Trong datased:S-0597, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–0,1 giây, sau đó tiếng người nói ở 1,2–1,6 giây. Trong datased:S-0598, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–44,2 giây, sau đó tiếng người nói ở 0,7–1,9 giây."
+  },
+  {
+   "query_id": "q-023",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0621, propeller aircrafts at 0.0–31.9 s, then voices at 0.9–2.1 s. In datased:S-0623, propeller aircrafts at 0.0–31.9 s, then voices at 0.9–2.1 s. In datased:S-0597, propeller aircrafts at 0.0–0.1 s, then voices at 1.2–1.6 s."
+  },
+  {
+   "query_id": "q-023",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0609, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–15,0 giây, sau đó tiếng người nói ở 1,0–1,4 giây. Trong datased:S-0604, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–11,4 giây, sau đó tiếng người nói ở 11,2–12,6 giây. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây."
+  },
+  {
+   "query_id": "q-024",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0096, vehicle pass-by at 0.1–79.8 s, then voices at 115.7–116.3 s. In datased:S-0406, vehicle pass-by at 88.7–107.0 s, then voices at 120.6–127.2 s."
+  },
+  {
+   "query_id": "q-024",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây, sau đó tiếng người nói ở 115,7–116,3 giây. Trong datased:S-0406, tiếng xe chạy qua ở 88,7–107,0 giây, sau đó tiếng người nói ở 120,6–127,2 giây."
+  },
+  {
+   "query_id": "q-024",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0096, vehicle pass-by at 0.1–79.8 s, then voices at 115.7–116.3 s. In datased:S-0406, vehicle pass-by at 88.7–107.0 s, then voices at 120.6–127.2 s."
+  },
+  {
+   "query_id": "q-024",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây, sau đó tiếng người nói ở 115,7–116,3 giây. Trong datased:S-0406, tiếng xe chạy qua ở 88,7–107,0 giây, sau đó tiếng người nói ở 120,6–127,2 giây."
+  },
+  {
+   "query_id": "q-025",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then jet aircrafts at 134.7–158.9 s."
+  },
+  {
+   "query_id": "q-025",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng máy bay phản lực ở 134,7–158,9 giây."
+  },
+  {
+   "query_id": "q-025",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then jet aircrafts at 134.7–158.9 s."
+  },
+  {
+   "query_id": "q-025",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng máy bay phản lực ở 134,7–158,9 giây."
+  },
+  {
+   "query_id": "q-026",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-026",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-026",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-026",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-027",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-027",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-027",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-027",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-028",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-028",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-028",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-028",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-029",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-029",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-029",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-029",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-030",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-030",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-030",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-030",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-031",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0012, birds at 0.2–29.4 s, then vehicle pass-by at 28.8–44.6 s."
+  },
+  {
+   "query_id": "q-031",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0012, tiếng chim ở 0,2–29,4 giây, sau đó tiếng xe chạy qua ở 28,8–44,6 giây."
+  },
+  {
+   "query_id": "q-031",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0012, birds at 0.2–29.4 s, then vehicle pass-by at 28.8–44.6 s."
+  },
+  {
+   "query_id": "q-031",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0012, tiếng chim ở 0,2–29,4 giây, sau đó tiếng xe chạy qua ở 28,8–44,6 giây."
+  },
+  {
+   "query_id": "q-032",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-032",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-032",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-032",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-033",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-033",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-033",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-033",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-034",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0275, vehicle pass-by at 0.0–21.0 s, then sirens and alarms at 25.0–45.0 s."
+  },
+  {
+   "query_id": "q-034",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0275, tiếng xe chạy qua ở 0,0–21,0 giây, sau đó âm thanh giống còi hú hoặc chuông báo động ở 25,0–45,0 giây."
+  },
+  {
+   "query_id": "q-034",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0275, vehicle pass-by at 0.0–21.0 s, then sirens and alarms at 25.0–45.0 s."
+  },
+  {
+   "query_id": "q-034",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0275, tiếng xe chạy qua ở 0,0–21,0 giây, sau đó âm thanh giống còi hú hoặc chuông báo động ở 25,0–45,0 giây."
+  },
+  {
+   "query_id": "q-035",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-035",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-035",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-035",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-036",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-036",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-036",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-036",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-037",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-037",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-037",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-037",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-038",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0096, vehicle pass-by at 0.1–79.8 s, then propeller aircrafts at 104.8–129.6 s."
+  },
+  {
+   "query_id": "q-038",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây, sau đó tiếng máy bay cánh quạt hoặc trực thăng ở 104,8–129,6 giây."
+  },
+  {
+   "query_id": "q-038",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0096, vehicle pass-by at 0.1–79.8 s, then propeller aircrafts at 104.8–129.6 s."
+  },
+  {
+   "query_id": "q-038",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây, sau đó tiếng máy bay cánh quạt hoặc trực thăng ở 104,8–129,6 giây."
+  },
+  {
+   "query_id": "q-039",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then train at 24.6–102.3 s. In datased:S-0033, train at 9.8–29.8 s, then vehicle pass-by at 105.0–152.8 s."
+  },
+  {
+   "query_id": "q-039",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng tàu hỏa ở 24,6–102,3 giây. Trong datased:S-0033, tiếng tàu hỏa ở 9,8–29,8 giây, sau đó tiếng xe chạy qua ở 105,0–152,8 giây."
+  },
+  {
+   "query_id": "q-039",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0033, train at 9.8–29.8 s, then vehicle pass-by at 105.0–152.8 s. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then train at 24.6–102.3 s."
+  },
+  {
+   "query_id": "q-039",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0033, tiếng tàu hỏa ở 9,8–29,8 giây, sau đó tiếng xe chạy qua ở 105,0–152,8 giây. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng tàu hỏa ở 24,6–102,3 giây."
+  },
+  {
+   "query_id": "q-040",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-040",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-040",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-040",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-041",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-041",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-041",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-041",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-043",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-043",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-043",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-043",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-044",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-044",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-044",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-044",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-045",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-045",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-045",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-045",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-046",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-046",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-046",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-046",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-047",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-047",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-047",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-047",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-048",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-048",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-048",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-048",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-049",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-049",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-049",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-049",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-050",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0096, voices at 115.7–116.3 s, then vehicle pass-by at 129.5–148.7 s."
+  },
+  {
+   "query_id": "q-050",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng người nói ở 115,7–116,3 giây, sau đó tiếng xe chạy qua ở 129,5–148,7 giây."
+  },
+  {
+   "query_id": "q-050",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0096, voices at 115.7–116.3 s, then vehicle pass-by at 129.5–148.7 s."
+  },
+  {
+   "query_id": "q-050",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng người nói ở 115,7–116,3 giây, sau đó tiếng xe chạy qua ở 129,5–148,7 giây."
+  },
+  {
+   "query_id": "q-051",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-051",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-051",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-051",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-052",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-052",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-052",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-052",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-053",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-053",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-053",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-053",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-054",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-054",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-054",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-054",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-055",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-055",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-055",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-055",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-056",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then jet aircrafts at 134.7–158.9 s."
+  },
+  {
+   "query_id": "q-056",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng máy bay phản lực ở 134,7–158,9 giây."
+  },
+  {
+   "query_id": "q-056",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then jet aircrafts at 134.7–158.9 s."
+  },
+  {
+   "query_id": "q-056",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng máy bay phản lực ở 134,7–158,9 giây."
+  },
+  {
+   "query_id": "q-057",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-057",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-057",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-057",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-058",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-058",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-058",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-058",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-059",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-059",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-059",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-059",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-060",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then jet aircrafts at 134.7–158.9 s."
+  },
+  {
+   "query_id": "q-060",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng máy bay phản lực ở 134,7–158,9 giây."
+  },
+  {
+   "query_id": "q-060",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then jet aircrafts at 134.7–158.9 s."
+  },
+  {
+   "query_id": "q-060",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng máy bay phản lực ở 134,7–158,9 giây."
+  },
+  {
+   "query_id": "q-061",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0096, vehicle pass-by at 0.1–79.8 s, then voices at 115.7–116.3 s. In datased:S-0406, vehicle pass-by at 88.7–107.0 s, then voices at 120.6–127.2 s."
+  },
+  {
+   "query_id": "q-061",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây, sau đó tiếng người nói ở 115,7–116,3 giây. Trong datased:S-0406, tiếng xe chạy qua ở 88,7–107,0 giây, sau đó tiếng người nói ở 120,6–127,2 giây."
+  },
+  {
+   "query_id": "q-061",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0096, vehicle pass-by at 0.1–79.8 s, then voices at 115.7–116.3 s. In datased:S-0406, vehicle pass-by at 88.7–107.0 s, then voices at 120.6–127.2 s."
+  },
+  {
+   "query_id": "q-061",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây, sau đó tiếng người nói ở 115,7–116,3 giây. Trong datased:S-0406, tiếng xe chạy qua ở 88,7–107,0 giây, sau đó tiếng người nói ở 120,6–127,2 giây."
+  },
+  {
+   "query_id": "q-062",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-062",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-062",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-062",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-063",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then train at 24.6–102.3 s."
+  },
+  {
+   "query_id": "q-063",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng tàu hỏa ở 24,6–102,3 giây."
+  },
+  {
+   "query_id": "q-063",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0039, vehicle pass-by at 0.3–15.0 s, then train at 24.6–102.3 s."
+  },
+  {
+   "query_id": "q-063",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây, sau đó tiếng tàu hỏa ở 24,6–102,3 giây."
+  },
+  {
+   "query_id": "q-064",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-064",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-064",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-064",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-065",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0595, propeller aircrafts at 0.0–34.1 s, then voices at 0.1–1.2 s. In datased:S-0597, propeller aircrafts at 0.4–40.2 s, then voices at 1.2–1.6 s. In datased:S-0598, propeller aircrafts at 0.0–44.2 s, then voices at 0.7–1.9 s."
+  },
+  {
+   "query_id": "q-065",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây. Trong datased:S-0597, tiếng máy bay cánh quạt hoặc trực thăng ở 0,4–40,2 giây, sau đó tiếng người nói ở 1,2–1,6 giây. Trong datased:S-0598, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–44,2 giây, sau đó tiếng người nói ở 0,7–1,9 giây."
+  },
+  {
+   "query_id": "q-065",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0597, propeller aircrafts at 0.4–40.2 s, then voices at 1.2–1.6 s. In datased:S-0595, propeller aircrafts at 0.0–34.1 s, then voices at 0.1–1.2 s. In datased:S-0621, propeller aircrafts at 0.0–31.9 s, then voices at 0.9–2.1 s."
+  },
+  {
+   "query_id": "q-065",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây. Trong datased:S-0609, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–15,0 giây, sau đó tiếng người nói ở 1,0–1,4 giây. Trong datased:S-0597, tiếng máy bay cánh quạt hoặc trực thăng ở 0,4–40,2 giây, sau đó tiếng người nói ở 1,2–1,6 giây."
+  },
+  {
+   "query_id": "q-066",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0626, propeller aircrafts at 0.0–24.7 s, then voices at 0.0–0.7 s. In datased:S-0595, propeller aircrafts at 0.0–34.1 s, then voices at 0.1–1.2 s. In datased:S-0598, propeller aircrafts at 0.0–44.2 s, then voices at 0.7–1.9 s."
+  },
+  {
+   "query_id": "q-066",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0626, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–24,7 giây, sau đó tiếng người nói ở 0,0–0,7 giây. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây. Trong datased:S-0598, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–44,2 giây, sau đó tiếng người nói ở 0,7–1,9 giây."
+  },
+  {
+   "query_id": "q-066",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0597, propeller aircrafts at 0.4–40.2 s, then voices at 1.2–1.6 s. In datased:S-0595, propeller aircrafts at 0.0–34.1 s, then voices at 0.1–1.2 s. In datased:S-0621, propeller aircrafts at 0.0–31.9 s, then voices at 0.9–2.1 s."
+  },
+  {
+   "query_id": "q-066",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây. Trong datased:S-0597, tiếng máy bay cánh quạt hoặc trực thăng ở 0,4–40,2 giây, sau đó tiếng người nói ở 1,2–1,6 giây. Trong datased:S-0606, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–24,6 giây, sau đó tiếng người nói ở 1,2–2,5 giây."
+  },
+  {
+   "query_id": "q-067",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-067",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-067",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-067",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-068",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-068",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-068",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-068",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-069",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-069",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-069",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-069",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-070",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-070",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-070",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-070",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-071",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-071",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-071",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-071",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-072",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0626, propeller aircrafts at 0.0–24.7 s, then voices at 0.0–0.7 s. In datased:S-0595, propeller aircrafts at 0.0–34.1 s, then voices at 0.1–1.2 s. In datased:S-0598, propeller aircrafts at 0.0–44.2 s, then voices at 0.7–1.9 s."
+  },
+  {
+   "query_id": "q-072",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0626, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–24,7 giây, sau đó tiếng người nói ở 0,0–0,7 giây. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây. Trong datased:S-0598, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–44,2 giây, sau đó tiếng người nói ở 0,7–1,9 giây."
+  },
+  {
+   "query_id": "q-072",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0595, propeller aircrafts at 0.0–34.1 s, then voices at 0.1–1.2 s. In datased:S-0597, propeller aircrafts at 0.4–40.2 s, then voices at 1.2–1.6 s. In datased:S-0621, propeller aircrafts at 0.0–31.9 s, then voices at 0.9–2.1 s."
+  },
+  {
+   "query_id": "q-072",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây, sau đó tiếng người nói ở 0,1–1,2 giây. Trong datased:S-0609, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–15,0 giây, sau đó tiếng người nói ở 1,0–1,4 giây. Trong datased:S-0606, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–24,6 giây, sau đó tiếng người nói ở 1,2–2,5 giây."
+  },
+  {
+   "query_id": "q-073",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-073",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-073",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0227, train at 0.0–105.2 s, then horn at 22.8–25.2 s."
+  },
+  {
+   "query_id": "q-073",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây, sau đó tiếng còi xe ở 22,8–25,2 giây."
+  },
+  {
+   "query_id": "q-074",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-074",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-074",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-074",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-077",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-077",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-077",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "No indexed recording satisfies the applied filters."
+  },
+  {
+   "query_id": "q-077",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": false,
+   "cited_relevant": [],
+   "answer": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng."
+  },
+  {
+   "query_id": "q-079",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0217, train at 0.0–33.1 s. In datased:S-0227, train at 0.0–105.2 s. In datased:S-0302, train at 0.0–21.9 s."
+  },
+  {
+   "query_id": "q-079",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0217, tiếng tàu hỏa ở 0,0–33,1 giây. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây. Trong datased:S-0302, tiếng tàu hỏa ở 0,0–21,9 giây."
+  },
+  {
+   "query_id": "q-079",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0334, train at 1.8–17.8 s. In datased:S-0302, train at 0.0–21.9 s. In datased:S-0221, train at 0.1–43.2 s."
+  },
+  {
+   "query_id": "q-079",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0334, tiếng tàu hỏa ở 1,8–17,8 giây. Trong datased:S-0302, tiếng tàu hỏa ở 0,0–21,9 giây. Trong datased:S-0217, tiếng tàu hỏa ở 0,0–33,1 giây."
+  },
+  {
+   "query_id": "q-080",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0595, propeller aircrafts at 0.0–34.1 s. In datased:S-0597, propeller aircrafts at 0.4–40.2 s. In datased:S-0598, propeller aircrafts at 0.0–44.2 s."
+  },
+  {
+   "query_id": "q-080",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây. Trong datased:S-0597, tiếng máy bay cánh quạt hoặc trực thăng ở 0,4–40,2 giây. Trong datased:S-0598, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–44,2 giây."
+  },
+  {
+   "query_id": "q-080",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0614, propeller aircrafts at 0.1–29.7 s. In datased:S-0664, propeller aircrafts at 0.0–19.9 s. In datased:S-0610, propeller aircrafts at 0.0–22.5 s."
+  },
+  {
+   "query_id": "q-080",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0614, tiếng máy bay cánh quạt hoặc trực thăng ở 0,1–29,7 giây. Trong datased:S-0664, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–19,9 giây. Trong datased:S-0594, tiếng máy bay cánh quạt hoặc trực thăng ở 50,7–84,8 giây."
+  },
+  {
+   "query_id": "q-081",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0237, sirens and alarms at 0.0–30.0 s. In datased:S-0310, sirens and alarms at 0.0–13.0 s. In datased:S-0637, sirens and alarms at 0.0–16.0 s."
+  },
+  {
+   "query_id": "q-081",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0237, âm thanh giống còi hú hoặc chuông báo động ở 0,0–30,0 giây. Trong datased:S-0310, âm thanh giống còi hú hoặc chuông báo động ở 0,0–13,0 giây. Trong datased:S-0637, âm thanh giống còi hú hoặc chuông báo động ở 0,0–16,0 giây."
+  },
+  {
+   "query_id": "q-081",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0309, sirens and alarms at 3.3–7.9 s. In datased:S-0310, sirens and alarms at 0.0–13.0 s. In datased:S-0318, sirens and alarms at 15.0–49.0 s."
+  },
+  {
+   "query_id": "q-081",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    false,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0309, âm thanh giống còi hú hoặc chuông báo động ở 3,3–7,9 giây. Trong datased:S-0310, âm thanh giống còi hú hoặc chuông báo động ở 0,0–13,0 giây. Trong datased:S-0237, âm thanh giống còi hú hoặc chuông báo động ở 0,0–30,0 giây."
+  },
+  {
+   "query_id": "q-082",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0275, vehicle pass-by at 0.0–21.0 s. In datased:S-0096, vehicle pass-by at 0.1–79.8 s. In datased:S-0039, vehicle pass-by at 0.3–15.0 s."
+  },
+  {
+   "query_id": "q-082",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0275, tiếng xe chạy qua ở 0,0–21,0 giây. Trong datased:S-0096, tiếng xe chạy qua ở 0,1–79,8 giây. Trong datased:S-0039, tiếng xe chạy qua ở 0,3–15,0 giây."
+  },
+  {
+   "query_id": "q-082",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    false,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0228, vehicle pass-by at 1.5–15.0 s. In datased:S-0032, vehicle pass-by at 74.7–88.4 s. In datased:S-0275, vehicle pass-by at 0.0–21.0 s."
+  },
+  {
+   "query_id": "q-082",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    false
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0228, tiếng xe chạy qua ở 1,5–15,0 giây. Trong datased:S-0032, tiếng xe chạy qua ở 74,7–88,4 giây. Trong datased:S-0030, tiếng xe chạy qua ở 89,6–141,4 giây."
+  },
+  {
+   "query_id": "q-083",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "7 of the top 7 results satisfy the filters. In datased:S-0595, propeller aircrafts at 0.0–34.1 s. In datased:S-0597, propeller aircrafts at 0.4–40.2 s. In datased:S-0598, propeller aircrafts at 0.0–44.2 s."
+  },
+  {
+   "query_id": "q-083",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "7 trong 7 kết quả đầu thoả bộ lọc. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây. Trong datased:S-0597, tiếng máy bay cánh quạt hoặc trực thăng ở 0,4–40,2 giây. Trong datased:S-0598, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–44,2 giây."
+  },
+  {
+   "query_id": "q-083",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "7 of the top 7 results satisfy the filters. In datased:S-0662, propeller aircrafts at 0.2–36.1 s. In datased:S-0594, propeller aircrafts at 50.7–84.8 s. In datased:S-0595, propeller aircrafts at 0.0–34.1 s."
+  },
+  {
+   "query_id": "q-083",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "7 trong 7 kết quả đầu thoả bộ lọc. Trong datased:S-0662, tiếng máy bay cánh quạt hoặc trực thăng ở 0,2–36,1 giây. Trong datased:S-0594, tiếng máy bay cánh quạt hoặc trực thăng ở 50,7–84,8 giây. Trong datased:S-0595, tiếng máy bay cánh quạt hoặc trực thăng ở 0,0–34,1 giây."
+  },
+  {
+   "query_id": "q-084",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0308, jet aircrafts at 0.2–49.4 s. In datased:S-0584, jet aircrafts at 0.0–25.0 s. In datased:S-0693, jet aircrafts at 0.0–94.1 s."
+  },
+  {
+   "query_id": "q-084",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0308, tiếng máy bay phản lực ở 0,2–49,4 giây. Trong datased:S-0584, tiếng máy bay phản lực ở 0,0–25,0 giây. Trong datased:S-0693, tiếng máy bay phản lực ở 0,0–94,1 giây."
+  },
+  {
+   "query_id": "q-084",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0693, jet aircrafts at 0.0–94.1 s. In datased:S-0703, jet aircrafts at 8.7–92.8 s. In datased:S-0308, jet aircrafts at 0.2–49.4 s."
+  },
+  {
+   "query_id": "q-084",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0584, tiếng máy bay phản lực ở 0,0–25,0 giây. Trong datased:S-0703, tiếng máy bay phản lực ở 8,7–92,8 giây. Trong datased:S-0693, tiếng máy bay phản lực ở 0,0–94,1 giây."
+  },
+  {
+   "query_id": "q-085",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0411, vehicle idling at 0.0–80.0 s. In datased:S-0409, vehicle idling at 84.6–173.9 s."
+  },
+  {
+   "query_id": "q-085",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0411, tiếng động cơ xe chạy không tải ở 0,0–80,0 giây. Trong datased:S-0409, tiếng động cơ xe chạy không tải ở 84,6–173,9 giây."
+  },
+  {
+   "query_id": "q-085",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0411, vehicle idling at 0.0–80.0 s. In datased:S-0409, vehicle idling at 84.6–173.9 s."
+  },
+  {
+   "query_id": "q-085",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0409, tiếng động cơ xe chạy không tải ở 84,6–173,9 giây. Trong datased:S-0411, tiếng động cơ xe chạy không tải ở 0,0–80,0 giây."
+  },
+  {
+   "query_id": "q-086",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0350, workshop at 0.1–171.4 s. In datased:S-0446, workshop at 1.6–20.6 s. In datased:S-0444, workshop at 1.7–15.8 s."
+  },
+  {
+   "query_id": "q-086",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0350, tiếng máy móc của xưởng hoặc công trình ở 0,1–171,4 giây. Trong datased:S-0446, tiếng máy móc của xưởng hoặc công trình ở 1,6–20,6 giây. Trong datased:S-0444, tiếng máy móc của xưởng hoặc công trình ở 1,7–15,8 giây."
+  },
+  {
+   "query_id": "q-086",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0350, workshop at 0.1–171.4 s. In datased:S-0446, workshop at 1.6–20.6 s. In datased:S-0483, workshop at 2.5–14.2 s."
+  },
+  {
+   "query_id": "q-086",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "10 trong 10 kết quả đầu thoả bộ lọc. Trong datased:S-0350, tiếng máy móc của xưởng hoặc công trình ở 0,1–171,4 giây. Trong datased:S-0443, tiếng máy móc của xưởng hoặc công trình ở 2,3–23,9 giây. Trong datased:S-0547, tiếng máy móc của xưởng hoặc công trình ở 4,4–21,6 giây."
+  },
+  {
+   "query_id": "q-087",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true,
+    true
+   ],
+   "answer": "6 of the top 6 results satisfy the filters. In datased:S-0217, train at 0.0–33.1 s. In datased:S-0227, train at 0.0–105.2 s. In datased:S-0221, train at 0.1–43.2 s."
+  },
+  {
+   "query_id": "q-087",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true,
+    true
+   ],
+   "answer": "6 trong 6 kết quả đầu thoả bộ lọc. Trong datased:S-0217, tiếng tàu hỏa ở 0,0–33,1 giây. Trong datased:S-0227, tiếng tàu hỏa ở 0,0–105,2 giây. Trong datased:S-0221, tiếng tàu hỏa ở 0,1–43,2 giây."
+  },
+  {
+   "query_id": "q-087",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true,
+    true
+   ],
+   "answer": "6 of the top 6 results satisfy the filters. In datased:S-0217, train at 0.0–33.1 s. In datased:S-0221, train at 0.1–43.2 s. In datased:S-0519, train at 0.2–79.8 s."
+  },
+  {
+   "query_id": "q-087",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true,
+    true
+   ],
+   "answer": "6 trong 6 kết quả đầu thoả bộ lọc. Trong datased:S-0217, tiếng tàu hỏa ở 0,0–33,1 giây. Trong datased:S-0221, tiếng tàu hỏa ở 0,1–43,2 giây. Trong datased:S-0519, tiếng tàu hỏa ở 0,2–79,8 giây."
+  },
+  {
+   "query_id": "q-088",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0009, birds at 0.0–125.5 s. In datased:S-0065, birds at 0.0–148.4 s. In datased:S-0577, birds at 0.0–11.9 s."
+  },
+  {
+   "query_id": "q-088",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0009, tiếng chim ở 0,0–125,5 giây. Trong datased:S-0065, tiếng chim ở 0,0–148,4 giây. Trong datased:S-0577, tiếng chim ở 0,0–11,9 giây."
+  },
+  {
+   "query_id": "q-088",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0072, birds at 0.2–10.6 s. In datased:S-0076, birds at 44.7–80.0 s. In datased:S-0065, birds at 0.0–148.4 s."
+  },
+  {
+   "query_id": "q-088",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0072, tiếng chim ở 0,2–10,6 giây. Trong datased:S-0076, tiếng chim ở 44,7–80,0 giây. Trong datased:S-0065, tiếng chim ở 0,0–148,4 giây."
+  },
+  {
+   "query_id": "q-089",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 of the top 3 results satisfy the filters. In datased:S-0308, jet aircrafts at 0.2–49.4 s. In datased:S-0693, jet aircrafts at 0.0–94.1 s. In datased:S-0703, jet aircrafts at 8.7–92.8 s."
+  },
+  {
+   "query_id": "q-089",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 trong 3 kết quả đầu thoả bộ lọc. Trong datased:S-0308, tiếng máy bay phản lực ở 0,2–49,4 giây. Trong datased:S-0693, tiếng máy bay phản lực ở 0,0–94,1 giây. Trong datased:S-0703, tiếng máy bay phản lực ở 8,7–92,8 giây."
+  },
+  {
+   "query_id": "q-089",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 of the top 3 results satisfy the filters. In datased:S-0308, jet aircrafts at 0.2–49.4 s. In datased:S-0693, jet aircrafts at 0.0–94.1 s. In datased:S-0703, jet aircrafts at 8.7–92.8 s."
+  },
+  {
+   "query_id": "q-089",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "3 trong 3 kết quả đầu thoả bộ lọc. Trong datased:S-0703, tiếng máy bay phản lực ở 8,7–92,8 giây. Trong datased:S-0693, tiếng máy bay phản lực ở 0,0–94,1 giây. Trong datased:S-0308, tiếng máy bay phản lực ở 0,2–49,4 giây."
+  },
+  {
+   "query_id": "q-090",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0650, lawn mower brush cutter and olive shaker at 0.0–36.2 s. In datased:S-0700, lawn mower brush cutter and olive shaker at 14.7–25.8 s."
+  },
+  {
+   "query_id": "q-090",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0650, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 0,0–36,2 giây. Trong datased:S-0700, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 14,7–25,8 giây."
+  },
+  {
+   "query_id": "q-090",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0650, lawn mower brush cutter and olive shaker at 0.0–36.2 s. In datased:S-0700, lawn mower brush cutter and olive shaker at 14.7–25.8 s."
+  },
+  {
+   "query_id": "q-090",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0650, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 0,0–36,2 giây. Trong datased:S-0700, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 14,7–25,8 giây."
+  },
+  {
+   "query_id": "q-091",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0293, music at 6.3–24.6 s. In datased:S-0298, music at 3.9–30.0 s. In datased:S-0193, music at 7.1–29.7 s."
+  },
+  {
+   "query_id": "q-091",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0293, tiếng nhạc ở 6,3–24,6 giây. Trong datased:S-0298, tiếng nhạc ở 3,9–30,0 giây. Trong datased:S-0193, tiếng nhạc ở 7,1–29,7 giây."
+  },
+  {
+   "query_id": "q-091",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0349, music at 24.6–86.1 s. In datased:S-0293, music at 6.3–24.6 s. In datased:S-0193, music at 7.1–29.7 s."
+  },
+  {
+   "query_id": "q-091",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0349, tiếng nhạc ở 24,6–86,1 giây. Trong datased:S-0293, tiếng nhạc ở 6,3–24,6 giây. Trong datased:S-0193, tiếng nhạc ở 7,1–29,7 giây."
+  },
+  {
+   "query_id": "q-092",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0205, voices at 0.0–22.8 s. In datased:S-0074, voices at 4.8–149.1 s. In datased:S-0544, voices at 19.7–30.9 s."
+  },
+  {
+   "query_id": "q-092",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0205, tiếng người nói ở 0,0–22,8 giây. Trong datased:S-0074, tiếng người nói ở 4,8–149,1 giây. Trong datased:S-0544, tiếng người nói ở 19,7–30,9 giây."
+  },
+  {
+   "query_id": "q-092",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 of the top 5 results satisfy the filters. In datased:S-0111, voices at 49.1–90.0 s. In datased:S-0205, voices at 0.0–22.8 s. In datased:S-0074, voices at 4.8–149.1 s."
+  },
+  {
+   "query_id": "q-092",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0111, tiếng người nói ở 49,1–90,0 giây. Trong datased:S-0074, tiếng người nói ở 4,8–149,1 giây. Trong datased:S-0112, tiếng người nói ở 60,0–149,1 giây."
+  },
+  {
+   "query_id": "q-093",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 of the top 6 results satisfy the filters. In datased:S-0437, vacuum cleaner fan and hairdryer at 0.0–19.8 s. In datased:S-0671, vacuum cleaner fan and hairdryer at 0.0–13.5 s. In datased:S-0457, vacuum cleaner fan and hairdryer at 1.9–15.5 s."
+  },
+  {
+   "query_id": "q-093",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 trong 6 kết quả đầu thoả bộ lọc. Trong datased:S-0437, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–19,8 giây. Trong datased:S-0671, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–13,5 giây. Trong datased:S-0457, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 1,9–15,5 giây."
+  },
+  {
+   "query_id": "q-093",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 of the top 6 results satisfy the filters. In datased:S-0423, vacuum cleaner fan and hairdryer at 8.1–34.1 s. In datased:S-0671, vacuum cleaner fan and hairdryer at 0.0–13.5 s. In datased:S-0437, vacuum cleaner fan and hairdryer at 0.0–19.8 s."
+  },
+  {
+   "query_id": "q-093",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "6 trong 6 kết quả đầu thoả bộ lọc. Trong datased:S-0423, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 8,1–34,1 giây. Trong datased:S-0671, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–13,5 giây. Trong datased:S-0437, tiếng thiết bị gia dụng như máy hút bụi, quạt hoặc máy sấy tóc ở 0,0–19,8 giây."
+  },
+  {
+   "query_id": "q-094",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    false,
+    false
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0237, sirens and alarms at 0.0–30.0 s. In datased:S-0310, sirens and alarms at 0.0–13.0 s. In datased:S-0637, sirens and alarms at 0.0–16.0 s."
+  },
+  {
+   "query_id": "q-094",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    false,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0237, âm thanh giống còi hú hoặc chuông báo động ở 0,0–30,0 giây. Trong datased:S-0233, âm thanh giống còi hú hoặc chuông báo động ở 0,8–35,0 giây. Trong datased:S-0318, âm thanh giống còi hú hoặc chuông báo động ở 15,0–49,0 giây."
+  },
+  {
+   "query_id": "q-094",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    false,
+    false
+   ],
+   "answer": "10 of the top 10 results satisfy the filters. In datased:S-0237, sirens and alarms at 0.0–30.0 s. In datased:S-0309, sirens and alarms at 3.3–7.9 s. In datased:S-0233, sirens and alarms at 0.8–35.0 s."
+  },
+  {
+   "query_id": "q-094",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    false,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0237, âm thanh giống còi hú hoặc chuông báo động ở 0,0–30,0 giây. Trong datased:S-0233, âm thanh giống còi hú hoặc chuông báo động ở 0,8–35,0 giây. Trong datased:S-0318, âm thanh giống còi hú hoặc chuông báo động ở 15,0–49,0 giây."
+  },
+  {
+   "query_id": "q-095",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0022, bells at 8.5–24.5 s."
+  },
+  {
+   "query_id": "q-095",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0022, tiếng chuông ở 8,5–24,5 giây."
+  },
+  {
+   "query_id": "q-095",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0022, bells at 8.5–24.5 s."
+  },
+  {
+   "query_id": "q-095",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0022, tiếng chuông ở 8,5–24,5 giây."
+  },
+  {
+   "query_id": "q-096",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0650, lawn mower brush cutter and olive shaker at 0.0–36.2 s."
+  },
+  {
+   "query_id": "q-096",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0650, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 0,0–36,2 giây."
+  },
+  {
+   "query_id": "q-096",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 of the top 1 results satisfy the filters. In datased:S-0650, lawn mower brush cutter and olive shaker at 0.0–36.2 s."
+  },
+  {
+   "query_id": "q-096",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true
+   ],
+   "answer": "1 trong 1 kết quả đầu thoả bộ lọc. Trong datased:S-0650, tiếng máy làm vườn như máy cắt cỏ hoặc máy phát cỏ ở 0,0–36,2 giây."
+  },
+  {
+   "query_id": "q-097",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    false,
+    false
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0386, cicadas and crickets at 0.2–3.3 s. In datased:S-0570, cicadas and crickets at 1.9–5.0 s. In datased:S-0571, cicadas and crickets at 1.9–5.0 s."
+  },
+  {
+   "query_id": "q-097",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    false,
+    false
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0386, tiếng côn trùng như ve sầu hoặc dế ở 0,2–3,3 giây. Trong datased:S-0570, tiếng côn trùng như ve sầu hoặc dế ở 1,9–5,0 giây. Trong datased:S-0571, tiếng côn trùng như ve sầu hoặc dế ở 1,9–5,0 giây."
+  },
+  {
+   "query_id": "q-097",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    false,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0575, cicadas and crickets at 2.8–12.6 s. In datased:S-0386, cicadas and crickets at 0.2–3.3 s. In datased:S-0576, cicadas and crickets at 4.4–15.4 s."
+  },
+  {
+   "query_id": "q-097",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    false,
+    true
+   ],
+   "answer": "8 trong 8 kết quả đầu thoả bộ lọc. Trong datased:S-0576, tiếng côn trùng như ve sầu hoặc dế ở 4,4–15,4 giây. Trong datased:S-0575, tiếng côn trùng như ve sầu hoặc dế ở 2,8–12,6 giây. Trong datased:S-0553, tiếng côn trùng như ve sầu hoặc dế ở 61,0–67,3 giây."
+  },
+  {
+   "query_id": "q-098",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true,
+    true
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0083, dog barkings and howlings at 0.0–15.9 s. In datased:S-0116, dog barkings and howlings at 0.3–15.1 s. In datased:S-0085, dog barkings and howlings at 4.2–34.8 s."
+  },
+  {
+   "query_id": "q-098",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    false,
+    true,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0083, tiếng chó sủa hoặc tru ở 0,0–15,9 giây. Trong datased:S-0116, tiếng chó sủa hoặc tru ở 0,3–15,1 giây. Trong datased:S-0085, tiếng chó sủa hoặc tru ở 4,2–34,8 giây."
+  },
+  {
+   "query_id": "q-098",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    false,
+    false
+   ],
+   "answer": "8 of the top 8 results satisfy the filters. In datased:S-0690, dog barkings and howlings at 12.5–20.1 s. In datased:S-0081, dog barkings and howlings at 10.5–12.9 s. In datased:S-0083, dog barkings and howlings at 0.0–15.9 s."
+  },
+  {
+   "query_id": "q-098",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    false,
+    true
+   ],
+   "answer": "5 trong 5 kết quả đầu thoả bộ lọc. Trong datased:S-0083, tiếng chó sủa hoặc tru ở 0,0–15,9 giây. Trong datased:S-0081, tiếng chó sủa hoặc tru ở 13,2–54,1 giây. Trong datased:S-0085, tiếng chó sủa hoặc tru ở 4,2–34,8 giây."
+  },
+  {
+   "query_id": "q-099",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0293, music at 29.6–131.7 s. In datased:S-0298, music at 39.7–83.2 s. In datased:S-0193, music at 40.0–70.6 s."
+  },
+  {
+   "query_id": "q-099",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0293, tiếng nhạc ở 29,6–131,7 giây. Trong datased:S-0298, tiếng nhạc ở 39,7–83,2 giây. Trong datased:S-0193, tiếng nhạc ở 40,0–70,6 giây."
+  },
+  {
+   "query_id": "q-099",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 of the top 4 results satisfy the filters. In datased:S-0193, music at 40.0–70.6 s. In datased:S-0349, music at 24.6–86.1 s. In datased:S-0293, music at 29.6–131.7 s."
+  },
+  {
+   "query_id": "q-099",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true,
+    true
+   ],
+   "answer": "4 trong 4 kết quả đầu thoả bộ lọc. Trong datased:S-0349, tiếng nhạc ở 24,6–86,1 giây. Trong datased:S-0293, tiếng nhạc ở 29,6–131,7 giây. Trong datased:S-0193, tiếng nhạc ở 40,0–70,6 giây."
+  },
+  {
+   "query_id": "q-100",
+   "mode": "structured_only",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0411, vehicle idling at 0.0–80.0 s. In datased:S-0409, vehicle idling at 84.6–173.9 s."
+  },
+  {
+   "query_id": "q-100",
+   "mode": "structured_only",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0411, tiếng động cơ xe chạy không tải ở 0,0–80,0 giây. Trong datased:S-0409, tiếng động cơ xe chạy không tải ở 84,6–173,9 giây."
+  },
+  {
+   "query_id": "q-100",
+   "mode": "hybrid",
+   "language": "en",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 of the top 2 results satisfy the filters. In datased:S-0411, vehicle idling at 0.0–80.0 s. In datased:S-0409, vehicle idling at 84.6–173.9 s."
+  },
+  {
+   "query_id": "q-100",
+   "mode": "hybrid",
+   "language": "vi",
+   "contract_ok": true,
+   "unsupported": [],
+   "evidence_real": true,
+   "citations_satisfy_filters": true,
+   "answered": true,
+   "cited_relevant": [
+    true,
+    true
+   ],
+   "answer": "2 trong 2 kết quả đầu thoả bộ lọc. Trong datased:S-0409, tiếng động cơ xe chạy không tải ở 84,6–173,9 giây. Trong datased:S-0411, tiếng động cơ xe chạy không tải ở 0,0–80,0 giây."
+  }
+ ],
+ "parser_measurement": "docs\\measurements\\query_parser_20260928.json",
+ "parser_measurement_sha256": "a732ff35a403ec80ed1ce6fdd2b0dca56377b75f8bd8c02757283db494f8a220"
+}
