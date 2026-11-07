@@ -1,0 +1,30 @@
+{
+ "source_recording_id": "S-0131",
+ "source_split": "train",
+ "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0131.wav",
+ "recording_id": "upload:ae45420a-3afb-4d2a-b283-5e88856dce2d",
+ "served_run": "ml/runs/sed_served_B0_20261107T175659Z",
+ "model_version": [
+  "sed_served_B0_20261107T175659Z"
+ ],
+ "official": true,
+ "postproc": "sebb_cv_selection_annotated.json",
+ "device": "cpu",
+ "upload_elapsed_s": 1.5519515000050887,
+ "events": 1,
+ "caption_languages": [
+  "en",
+  "vi"
+ ],
+ "captions_with_evidence": 2,
+ "rag_mode": "hybrid",
+ "rag_query_class": "vacuum_cleaner_fan_hairdryer",
+ "rag_elapsed_s": 0.36384260000340873,
+ "rag_evidence": 2,
+ "rag_contains_uploaded_recording": true,
+ "git": {
+  "revision": "7b8702756262d41a0938de79960821423899314f",
+  "dirty": false
+ },
+ "label": "B0"
+}
