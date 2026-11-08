@@ -62,6 +62,16 @@ teacher nào thấy fold giữ lại; code từ chối nếu lệch.
 - Tầng C fold k: teacher = B0 fold k và O-D fold k (các run nguồn của
   `sed_oof_B0_h5_20261008T130849Z` và `sed_oof_OD_h5_20261013T220951Z`); OOF hop 5 s tam giác.
 
+**Bảo vệ NaN (ghi 08/11, trước run lại P3/P4):** run P3 tầng S đầu tiên
+`sed_polyphonic_20261108T010008Z` dừng ở epoch 5: dự đoán validation chứa NaN, trong khi trọng số
+epoch 4 hữu hạn. Chẩn đoán (script nháp, không đổi repo): forward fp16 với trọng số epoch 4 có kích
+hoạt lớn nhất ~487, không tràn; replay epoch 5–6 từ trạng thái epoch 4 với RNG khác thì sạch
+(0 bước tràn). Vậy NaN đến từ một batch hiếm trong epoch 5: forward không hữu hạn làm hỏng running
+stats BatchNorm dù GradScaler bỏ bước cập nhật. Sửa: `run_epoch` khi train gặp loss không hữu hạn
+thì khôi phục buffer về trước batch, bỏ batch, đếm `nonfinite_batches_skipped` trong history. Batch
+hữu hạn không đổi hành vi (test so với cập nhật không guard). Áp cho P3, P4, và các run sau; run
+đã có không bị ảnh hưởng. Run hỏng được giữ nguyên, không dùng.
+
 ### 4. Kết quả (điền khi có)
 
 **P1 (08/11, tầng C):** ensemble 3 OOF (B0 × seed {20260922, 2, 3}, 15 model) micro 0.2344, macro

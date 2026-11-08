@@ -182,6 +182,7 @@ def run_epoch(
     losses: list[float] = []
     all_targets: list[np.ndarray] = []
     all_probabilities: list[np.ndarray] = []
+    skipped = 0
     for features, targets, valid in loader:
         features = features.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
@@ -193,6 +194,7 @@ def run_epoch(
                     features, targets, valid, mixup_p=augmentation[0],
                     filter_augment_p=augmentation[1],
                     gain_eq_p=augmentation[2] if len(augmentation) > 2 else 0.0)
+            buffers = _buffer_snapshot(model)
         with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
             logits = model(features)
             loss = masked_loss(logits, targets, valid, pos_weight, loss=loss_name,
@@ -203,6 +205,15 @@ def run_epoch(
                         if hasattr(model, "boundary_loss") else None)
             if boundary is not None:
                 loss = loss + boundary
+        if training and not torch.isfinite(loss.detach()):
+            # ADR-0043 P3: a non-finite forward already poisoned BatchNorm running stats even
+            # though GradScaler would skip the step; restore them and drop the batch.
+            _restore_buffers(model, buffers)
+            optimizer.zero_grad(set_to_none=True)
+            skipped += 1
+            if scheduler is not None:
+                scheduler.step()
+            continue
         if training:
             if scaler is None:
                 loss.backward()
@@ -224,7 +235,19 @@ def run_epoch(
         np.concatenate(all_targets), np.concatenate(all_probabilities), threshold
     )
     metrics["loss"] = float(np.mean(losses))
+    if training:
+        metrics["nonfinite_batches_skipped"] = skipped
     return metrics
+
+
+def _buffer_snapshot(model: nn.Module) -> dict[str, Tensor]:
+    return {name: buffer.detach().clone() for name, buffer in model.named_buffers()}
+
+
+def _restore_buffers(model: nn.Module, snapshot: dict[str, Tensor]) -> None:
+    with torch.no_grad():
+        for name, buffer in model.named_buffers():
+            buffer.copy_(snapshot[name])
 
 
 def collect_predictions(
