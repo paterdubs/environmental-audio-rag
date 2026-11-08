@@ -156,6 +156,7 @@ FRAME_MN_RECIPES = {
     "oc_tf_kd": (EFFICIENTSED_FMN10_TF256_KD_SHA256,
                  "efficientsed:fmn10+tf-256_advanced-kd-weak-strong"),
     "oe_red": (FRAME_MN10_STRONG_1_SHA256, "pretrainedsed:frame_mn10_strong_1"),
+    "p4_gaineq": (FRAME_MN10_STRONG_1_SHA256, "pretrainedsed:frame_mn10_strong_1"),
 }
 
 # ADR-0020 §2: feature set đi theo encoder, không tách cờ riêng. Với `beats`, feature set chỉ

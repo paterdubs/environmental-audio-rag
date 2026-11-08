@@ -86,6 +86,9 @@ tăng event-F1 (`oof_selection_20261108`). Không sinh logit test.
 trọng số nhãn cứng 0.5) đạt CV dev annotated **0.1999** so với mốc seed T2b 0.2330 → không qua tầng
 S, không chạy tầng C.
 
+**P3 (08/11, tầng S):** `sed_polyphonic_20261108T022408Z` (cửa sổ 20 s; validation có 1 batch tính
+lại fp32) đạt CV dev annotated **0.2225** so với mốc 0.2330 → không qua tầng S, không chạy tầng C.
+
 ## Alternatives considered
 
 | Phương án | Lý do không chọn |
