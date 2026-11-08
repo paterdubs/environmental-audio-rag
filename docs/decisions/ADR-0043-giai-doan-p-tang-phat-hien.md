@@ -79,6 +79,10 @@ hữu hạn không đổi hành vi (test so với cập nhật không guard). Á
 Nsys 1902 so 1761, recall 0.1849 so 0.1797: thêm seed chỉ làm hệ thống dự đoán thêm event, không
 tăng event-F1 (`oof_selection_20261108`). Không sinh logit test.
 
+**P2 (08/11, tầng S):** student KD `sed_polyphonic_20261108T010931Z` (teacher O-B + O-D tầng S,
+trọng số nhãn cứng 0.5) đạt CV dev annotated **0.1999** so với mốc seed T2b 0.2330 → không qua tầng
+S, không chạy tầng C.
+
 ## Alternatives considered
 
 | Phương án | Lý do không chọn |
