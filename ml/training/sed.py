@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader, SequentialSampler
 
 from ml.evaluation.predictions import PredictionArtifact
 from ml.models import SoundEventDetector
+from ml.training.amp import amp_forward
 from ml.training.augment import augment_batch
 
 SELECT_METRICS = ("macro_f1", "macro_average_precision")
@@ -183,6 +184,7 @@ def run_epoch(
     all_targets: list[np.ndarray] = []
     all_probabilities: list[np.ndarray] = []
     skipped = 0
+    fp32_retries = 0
     for features, targets, valid in loader:
         features = features.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
@@ -195,8 +197,13 @@ def run_epoch(
                     filter_augment_p=augmentation[1],
                     gain_eq_p=augmentation[2] if len(augmentation) > 2 else 0.0)
             buffers = _buffer_snapshot(model)
+        if training:
+            with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
+                logits = model(features)
+        else:
+            logits, retried = amp_forward(model, features)
+            fp32_retries += int(retried)
         with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
-            logits = model(features)
             loss = masked_loss(logits, targets, valid, pos_weight, loss=loss_name,
                                focal_gamma=focal_gamma, asl_gamma_pos=asl_gamma_pos,
                                asl_gamma_neg=asl_gamma_neg, asl_clip=asl_clip)
@@ -237,6 +244,8 @@ def run_epoch(
     metrics["loss"] = float(np.mean(losses))
     if training:
         metrics["nonfinite_batches_skipped"] = skipped
+    else:
+        metrics["fp32_retry_batches"] = fp32_retries
     return metrics
 
 
@@ -294,8 +303,7 @@ def collect_predictions(
     with torch.inference_mode():
         for features, targets, valid in loader:
             features = features.to(device, non_blocking=True)
-            with torch.amp.autocast(device_type=device.type, enabled=device.type == "cuda"):
-                logits = model(features)
+            logits, _ = amp_forward(model, features)
             logit_chunks.append(logits.float().cpu().numpy())
             target_chunks.append(targets.numpy())
             mask_chunks.append(valid.numpy())

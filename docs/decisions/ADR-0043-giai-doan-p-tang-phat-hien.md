@@ -62,15 +62,18 @@ teacher nào thấy fold giữ lại; code từ chối nếu lệch.
 - Tầng C fold k: teacher = B0 fold k và O-D fold k (các run nguồn của
   `sed_oof_B0_h5_20261008T130849Z` và `sed_oof_OD_h5_20261013T220951Z`); OOF hop 5 s tam giác.
 
-**Bảo vệ NaN (ghi 08/11, trước run lại P3/P4):** run P3 tầng S đầu tiên
-`sed_polyphonic_20261108T010008Z` dừng ở epoch 5: dự đoán validation chứa NaN, trong khi trọng số
-epoch 4 hữu hạn. Chẩn đoán (script nháp, không đổi repo): forward fp16 với trọng số epoch 4 có kích
-hoạt lớn nhất ~487, không tràn; replay epoch 5–6 từ trạng thái epoch 4 với RNG khác thì sạch
-(0 bước tràn). Vậy NaN đến từ một batch hiếm trong epoch 5: forward không hữu hạn làm hỏng running
-stats BatchNorm dù GradScaler bỏ bước cập nhật. Sửa: `run_epoch` khi train gặp loss không hữu hạn
-thì khôi phục buffer về trước batch, bỏ batch, đếm `nonfinite_batches_skipped` trong history. Batch
-hữu hạn không đổi hành vi (test so với cập nhật không guard). Áp cho P3, P4, và các run sau; run
-đã có không bị ảnh hưởng. Run hỏng được giữ nguyên, không dùng.
+**Bảo vệ NaN (ghi 08/11, trước run lại P3/P4):** run P3 tầng S `sed_polyphonic_20261108T010008Z`
+dừng ở epoch 5 vì dự đoán validation chứa NaN; run lại `…T021058Z` lặp đúng loss từng epoch và
+dừng cùng chỗ (lỗi tất định). Replay tất định tới epoch 5 (script nháp) cho thấy: trọng số và buffer
+BatchNorm đều hữu hạn; đúng **một** batch validation tràn fp16 ở conv cuối encoder
+`encoder.features.16.0` (đầu vào lớn nhất ~5124, đầu ra inf → NaN); cùng batch chạy fp32 thì sạch.
+Giả thuyết ban đầu (BatchNorm bị hỏng khi train) sai — bản vá đầu (`6c4deaf`, bỏ batch train có loss
+không hữu hạn và khôi phục buffer) được giữ vì vô hại nhưng không chữa lỗi này.
+Sửa: `ml/training/amp.py::amp_forward` — forward suy luận dưới autocast như trước; nếu logit không
+hữu hạn thì tính lại batch đó bằng fp32. Dùng ở validation trong `run_epoch`, `collect_predictions`
+(dump) và `ServedSed`. Batch hữu hạn trả đúng giá trị cũ, nên mọi artifact trước đây không đổi
+(artifact có batch NaN đã không thể tồn tại). Đếm `fp32_retry_batches` trong history validation.
+Run hỏng được giữ nguyên, không dùng.
 
 ### 4. Kết quả (điền khi có)
 

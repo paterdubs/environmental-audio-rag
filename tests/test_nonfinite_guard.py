@@ -61,3 +61,38 @@ def test_finite_epoch_matches_unguarded_update() -> None:
     assert metrics["nonfinite_batches_skipped"] == 0
     for a, b in zip(model.state_dict().values(), reference.state_dict().values(), strict=True):
         assert torch.allclose(a.float(), b.float(), atol=1e-6)
+
+
+class _Overflowing(nn.Module):
+    """Returns inf under fp16 autocast for large inputs, finite in fp32."""
+
+    def forward(self, features: torch.Tensor) -> torch.Tensor:
+        return (features * 1e3) * 1e3
+
+
+def test_amp_forward_cpu_never_retries() -> None:
+    from ml.training.amp import amp_forward
+
+    logits, retried = amp_forward(_Overflowing(), torch.ones(2, 3))
+    assert not retried
+    assert torch.isfinite(logits).all()
+
+
+def test_amp_forward_retries_overflow_in_fp32_on_cuda() -> None:
+    import pytest
+
+    from ml.training.amp import amp_forward
+
+    if not torch.cuda.is_available():
+        pytest.skip("cần CUDA để có fp16 autocast")
+    model = nn.Linear(4, 2, bias=False).cuda()
+    with torch.no_grad():
+        model.weight.fill_(100.0)
+    features = torch.full((3, 4), 300.0, device="cuda")  # 4·300·100 = 1.2e5 > fp16 max
+    logits, retried = amp_forward(model, features)
+    assert retried
+    assert torch.isfinite(logits).all()
+    assert torch.allclose(logits, torch.full_like(logits, 1.2e5))
+    small, small_retried = amp_forward(model, torch.ones(3, 4, device="cuda"))
+    assert not small_retried
+    assert small.dtype == torch.float16

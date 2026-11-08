@@ -36,6 +36,7 @@ from ml.postprocessing import (
 from ml.postprocessing.calibration import validate_postproc_artifact
 from ml.postprocessing.sebb import SebbParams, sebb_candidates, select_boxes
 from ml.taxonomy import Taxonomy
+from ml.training.amp import amp_forward
 
 BATCH_SIZE = 8
 SERVED_ID = "served"
@@ -131,9 +132,7 @@ class ServedSed:
                 if self.config.input_kind == "logmel":
                     batch = batch.unsqueeze(1)
                 batch = batch.to(self.device)
-                with torch.amp.autocast(device_type=self.device.type,
-                                        enabled=self.device.type == "cuda"):
-                    logits = model(batch)
+                logits, _ = amp_forward(model, batch)
                 chunks.append(logits.float().cpu().numpy())
         return np.concatenate(chunks, axis=0)
 
