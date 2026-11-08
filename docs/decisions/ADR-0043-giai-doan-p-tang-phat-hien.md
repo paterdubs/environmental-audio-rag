@@ -89,6 +89,15 @@ S, không chạy tầng C.
 **P3 (08/11, tầng S):** `sed_polyphonic_20261108T022408Z` (cửa sổ 20 s; validation có 1 batch tính
 lại fp32) đạt CV dev annotated **0.2225** so với mốc 0.2330 → không qua tầng S, không chạy tầng C.
 
+**P4 (08/11, tầng S rồi tầng C):** tầng S `sed_polyphonic_20261108T032306Z` đạt **0.2402** so với
+mốc 0.2330 → qua. Tầng C (5 fold, OOF hop 5 s tam giác `sed_oof_P4_h5_20261108T064630Z`): micro
+**0.2260**, macro 0.1661 so với B0 0.2342 / 0.1797; Δ micro −0.0082 [−0.0258, +0.0088] → không đạt
+luật, **giữ B0** (`oof_selection_20261108_P4`). Nsys 1626 so 1761, recall 0.1688 so 0.1797. Không
+sinh logit test.
+
+**Tổng kết giai đoạn P:** cả bốn ứng viên ghi trước không vượt B0; B0 giữ nguyên là hệ thống cuối.
+Không mở test lần nào trong giai đoạn P.
+
 ## Alternatives considered
 
 | Phương án | Lý do không chọn |

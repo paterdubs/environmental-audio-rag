@@ -58,7 +58,16 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 08/11/2026 (mới nhất) — Hoàn tất hệ thống trên B0 (O6 + S8-lite) và mở giai đoạn P.**
+**Cập nhật 08/11/2026 16:30 (mới nhất) — Giai đoạn P xong: cả bốn ứng viên không vượt B0.**
+B0 giữ nguyên là hệ thống cuối; không mở test trong giai đoạn P (ADR-0043 §4, PAPER_NOTES S60–S63).
+- P1 (B0 × 3 seed) tầng C Δ micro +0.0002 [−0.0142, +0.0141]; P2 (KD) tầng S 0.1999; P3 (cửa sổ
+  20 s) tầng S 0.2225; P4 (gain/EQ) qua tầng S 0.2402 nhưng tầng C Δ −0.0082 [−0.0258, +0.0088].
+- Sửa trong lúc chạy: tràn fp16 khi suy luận → tính lại fp32 (`ml/training/amp.py`); bỏ batch train
+  có loss không hữu hạn; `report_oof --tag`.
+- Tiếp theo: viết báo cáo/slide cuối trên B0; còn thời gian đến mốc 18/11 thì chỉ thêm ứng viên
+  khi ghi trước vào ADR.
+
+**Trước đó, 08/11/2026 — Hoàn tất hệ thống trên B0 (O6 + S8-lite) và mở giai đoạn P.**
 - O6 (ADR-0042): phục vụ mặc định `sed_served_B0_20261107T175659Z` (hop 5 s tam giác, 5 model
   fold); parity CUDA 351/352 event trùng; Compose `official=true`, E2E TRAIN S-0131 1.55 s
   (request đầu 49.8 s do nạp model). f2 là rollback qua `EARAG_SERVED_RUN`.
@@ -754,6 +763,15 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-08 (chiều) — Giai đoạn P: P1–P4 đều âm tính, giữ B0
+
+Ba hàng đợi scratchpad chạy nối nhau. P1 (tầng C) và P2, P3 (tầng S) không đạt. P3 dừng hai lần ở
+epoch 5: chẩn đoán đầu (BatchNorm nhiễm NaN khi train) sai; phát lại tất định cho thấy một batch
+validation tràn fp16 ở `encoder.features.16.0` → `amp_forward` tính lại fp32 (batch hữu hạn trùng
+bit, artifact cũ không đổi). P4 bị guard recipe chặn (sửa `9785ed8`), rồi qua tầng S 0.2402 nhưng
+đảo chiều ở tầng C (S63) — lần thứ tư sau S56. `report_oof` trùng tên báo cáo cùng ngày → `--tag`.
+Gate 860 pass, 9 skip. Không mở test, không push.
 
 ### 2026-11-08 — Hoàn tất hệ thống trên B0: O6, S8-lite; mở giai đoạn P
 
