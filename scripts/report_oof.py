@@ -158,12 +158,19 @@ def render(result: dict) -> str:
     return '\n'.join([*lines, '', f"Lựa chọn theo luật: **{result['selected']}**.", ''])
 
 
+def output_name(now: datetime, tag: str | None) -> str:
+    suffix = f'_{tag}' if tag else ''
+    return f'oof_selection_{now:%Y%m%d}{suffix}.json'
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--baseline', type=Path, required=True)
     parser.add_argument('--candidate', action='append', required=True)
     parser.add_argument('--out-dir', type=Path, default=ROOT / 'docs/measurements')
+    parser.add_argument('--tag', default=None,
+                        help='hậu tố tên file khi đã có báo cáo cùng ngày (vd. P4)')
     args = parser.parse_args()
     git = git_state(ROOT)
     systems = {'B0': load_system(args.baseline)}
@@ -174,7 +181,7 @@ def main() -> None:
         systems[label] = load_system(Path(path))
     result = {**compare(systems, 'B0'), 'git': git}
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    out = args.out_dir / f'oof_selection_{datetime.now(UTC):%Y%m%d}.json'
+    out = args.out_dir / output_name(datetime.now(UTC), args.tag)
     if out.exists() or out.with_suffix('.md').exists():
         raise FileExistsError(out)
     out.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')

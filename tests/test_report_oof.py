@@ -97,3 +97,11 @@ def test_reject_non_oof_manifest(tmp_path):
     (tmp_path / 'manifest.json').write_text('{"task": "sed_rewindow", "complete": true}')
     with pytest.raises(ValueError, match='sed_oof'):
         report.load_system(tmp_path)
+
+
+def test_output_name_appends_tag_only_when_given():
+    from datetime import UTC, datetime
+
+    now = datetime(2026, 11, 8, tzinfo=UTC)
+    assert report.output_name(now, None) == "oof_selection_20261108.json"
+    assert report.output_name(now, "P4") == "oof_selection_20261108_P4.json"
