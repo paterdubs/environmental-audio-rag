@@ -62,6 +62,13 @@ teacher nào thấy fold giữ lại; code từ chối nếu lệch.
 - Tầng C fold k: teacher = B0 fold k và O-D fold k (các run nguồn của
   `sed_oof_B0_h5_20261008T130849Z` và `sed_oof_OD_h5_20261013T220951Z`); OOF hop 5 s tam giác.
 
+### 4. Kết quả (điền khi có)
+
+**P1 (08/11, tầng C):** ensemble 3 OOF (B0 × seed {20260922, 2, 3}, 15 model) micro 0.2344, macro
+0.1794 so với B0 0.2342 / 0.1797; Δ micro +0.0002 [−0.0142, +0.0141] → không đạt luật, **giữ B0**.
+Nsys 1902 so 1761, recall 0.1849 so 0.1797: thêm seed chỉ làm hệ thống dự đoán thêm event, không
+tăng event-F1 (`oof_selection_20261108`). Không sinh logit test.
+
 ## Alternatives considered
 
 | Phương án | Lý do không chọn |
