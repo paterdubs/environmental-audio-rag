@@ -466,6 +466,17 @@ không sửa ADR thuộc Claude. Các hàng Scaper/pseudo-label theo tag dùng n
   the text."* Lịch sử qua Zenodo API: 15340689 (05/05/2025), 15393250 (13/05/2025), **17033970**
   (02/09/2025, bản repo đang dùng), 23097290 (v4). DataSED 15346092 chỉ có một phiên bản. — §1,
   ADR-0041 DO-1
+- **(24) Chen Y., Xiao Y., Yin H., Liu X., Huang J., Dang T.** *PolyBench: A Benchmark for
+  Compositional Reasoning in Polyphonic Audio.* [arXiv:2603.05128v4](https://arxiv.org/abs/2603.05128)
+  (17/06/2026), chấp nhận Interspeech 2026. Lấy **169 clip** có event chồng nhau (3–89 s) từ DataSED
+  làm nguồn audio cho benchmark hỏi đáp trắc nghiệm của LALM; **không** có số SED trên DataSED,
+  task Detection không đòi timestamp (§2.2). Đọc HTML qua tác tử web-fetch (tóm tắt, chưa tự đọc).
+  Không so được với đề tài. — **V2**
+- **(25) Schmid F., Parekh S., Tang C. I., Azcarreta J., Qian Y., Jasonas A., Francl A. F., Bilen Ç.**
+  *COSED: Setting the Bar for Open-Vocabulary Sound Event Detection.*
+  [arXiv:2609.30083v1](https://arxiv.org/abs/2609.30083) (24/09/2026), gửi ICASSP 2027. Không dùng
+  DataSED (đánh giá DESED, RealDESED, MAESTRO, UrbanSED). ATST-F 25 fps + BiGRU 2 lớp; bỏ BiGRU
+  −16.4% (Bảng 2). Đọc HTML qua tác tử web-fetch. — **V2**
 
 ---
 
@@ -645,4 +656,5 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 08/10 (Codex XO-4) | Đọc PDF/arXiv, README/config; GitHub API releases/repos; WebSearch theo tiêu đề và ID | github.com/fschmid56/RealDESED @d42edf73; api.github.com/repos/fschmid56/RealDESED/releases; github.com/fschmid56; sanjeelparekh.github.io/publications/; `site:github.com "2601.04178"` | RealDESED có code MIT, chưa có release/checkpoint fine-tune được liên kết; khởi tạo từ PretrainedSED. Chưa tìm được code Boundary-Aware trong phạm vi nguồn đã tra | §2.3 (15), (17) |
 | 08/10 | WebFetch | zenodo.org/records/{17033970, 15346092, 23097290}; zenodo.org/api/records/{17033970,15346092}/versions | **DataSEC v4** (02/10/2026) sửa lỗi số file Music; repo dùng 17033970 (5,048 file); DataSED một phiên bản | §2.3 (23), ADR-0041 |
 | 08/10 | WebSearch + WebFetch + đọc trực tiếp PDF trang 1–3 | `Fredianelli Artuso … DataSED …`; arxiv.org/html/2607.13571; dael.euracoustics.org/confs/fa2025/data/articles/000340.pdf | Bài ngoài đầu tiên dùng DataSED (frame mAP, chia ngẫu nhiên đoạn — không so được); bài FA2025 là phân loại CLAP | §2.3 (21), (22) |
+| 09/11 | WebSearch (extended ×2, standard ×1) + tác tử web-fetch đọc HTML arXiv | `Fredianelli Artuso Pompei Licitra sound event detection DataSED 2026`; `"DataSED" sound event detection environmental noise results`; `sound event detection onset offset boundary refinement post-processing learned regression 2025 2026`; arxiv.org/html/{2609.30083v1, 2603.05128v4} | Vẫn **chưa có** bài nào báo số SED event-based trên DataSED; nhóm tác giả chưa công bố SED sau bài dataset. PolyBench dùng 169 clip DataSED cho hỏi đáp LALM; COSED không dùng DataSED. Kết quả tìm 'learned boundary refinement' chỉ ra nguồn cũ (Phan và cs. 2014–2015 regression forest onset/offset; YOHO 2022) — chưa đọc, V1 | §2.3 (24), (25) |
 | 03/10 (rà soát L3) | Web, đọc trực tiếp FAQ chính thức, mục adaptation/ShareAlike/AI | https://creativecommons.org/faq/ | FAQ không thiết lập quy tắc mọi checkpoint học từ dữ liệu CC đều tự động cùng license; đánh dấu cần xác minh riêng thay cho kết luận pháp lý tuyệt đối. Nguồn hướng dẫn, không phải paper và không thêm vào bibliography | report/danh_gia_bao_cao_20261003.md K02 |

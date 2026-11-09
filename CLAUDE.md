@@ -58,7 +58,14 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 08/11/2026 16:30 (mới nhất) — Giai đoạn P xong: cả bốn ứng viên không vượt B0.**
+**Cập nhật 09/11/2026 (mới nhất) — Chẩn đoán lỗi OOF B0: nút thắt là biên box hậu xử lý; thăm dò LBR.**
+Script nháp (chưa vào repo, chưa ghi ADR, không mở test): 789/1477 event bỏ sót có posterior ≥ 0.9 nhưng box cSEBB bị
+loại; sửa biên ±1 s (oracle) → 0.464. Tinh chỉnh biên + chấm lại box học trên OOF (GBM, cross-fit lồng nhau): micro
+OOF 0.2342 → 0.3408; chỉ refine 0.3070 (Δ +0.073 [+0.053, +0.091]). Chi tiết PAPER_NOTES §5 (LBR). Văn liệu: vẫn chưa có
+số SED nào trên DataSED (RELATED_WORK §2.3 (24)–(25)). **Tiếp theo (chờ người dùng duyệt):** ADR-0045 ghi trước →
+viết lại trong repo có test → tầng C → test một lần trước mốc 18/11.
+
+**Cập nhật 08/11/2026 16:30 — Giai đoạn P xong: cả bốn ứng viên không vượt B0.**
 B0 giữ nguyên là hệ thống cuối; không mở test trong giai đoạn P (ADR-0043 §4, PAPER_NOTES S60–S63).
 - P1 (B0 × 3 seed) tầng C Δ micro +0.0002 [−0.0142, +0.0141]; P2 (KD) tầng S 0.1999; P3 (cửa sổ
   20 s) tầng S 0.2225; P4 (gain/EQ) qua tầng S 0.2402 nhưng tầng C Δ −0.0082 [−0.0258, +0.0088].
@@ -763,6 +770,15 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-09 — Rà soát lịch sử kết quả, chẩn đoán lỗi OOF, thăm dò LBR, tra văn liệu
+
+Người dùng bất lực vì các cải thiện bổ sung không ăn, yêu cầu rà lịch sử và tìm hướng cải thiện rõ rệt. Phân rã 2702 FN
+của B0 trên OOF (script nháp): 55% không có box cùng lớp, nhưng hơn nửa số đó posterior ≥ 0.9; 32% lệch biên 1-1, onset
+dự đoán sớm (lớp dài −1…−1.5 s). λ theo lớp, dịch onset toàn cục không đủ. Bộ tinh chỉnh biên + chấm lại box học
+trên OOF nâng micro 0.2342 → 0.3408 (cross-fit lồng nhau), giữ được khi chuyển sang posterior ensemble 3 seed (0.3484).
+Tra văn liệu: chưa ai báo SED trên DataSED; nhóm tác giả chỉ có bài phân loại CLAP. Ghi PAPER_NOTES §5, RELATED_WORK
+§2.3/§10. Không train, không mở test, không push.
 
 ### 2026-11-08 (chiều) — Giai đoạn P: P1–P4 đều âm tính, giữ B0
 
