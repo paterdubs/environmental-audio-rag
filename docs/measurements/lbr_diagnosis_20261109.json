@@ -1,0 +1,245 @@
+{
+  "run": "sed_oof_B0_h5_20261008T130849Z",
+  "micro_f1": 0.23422354104846688,
+  "nref": 3294,
+  "nsys": 1761,
+  "breakdown": {
+    "tp": 592,
+    "fn_kinds": {
+      "bnd_onset": 656,
+      "fragmented": 44,
+      "merged": 309,
+      "miss_other_class_overlap": 482,
+      "miss_nothing": 995,
+      "bnd_offset": 116,
+      "bnd_both": 100
+    },
+    "fn_kinds_per_class": {
+      "bells": {
+        "bnd_onset": 16,
+        "fragmented": 2,
+        "merged": 12,
+        "miss_other_class_overlap": 4,
+        "miss_nothing": 13,
+        "bnd_offset": 12,
+        "bnd_both": 4
+      },
+      "birds": {
+        "miss_nothing": 146,
+        "miss_other_class_overlap": 64,
+        "merged": 14,
+        "bnd_both": 1,
+        "bnd_onset": 7,
+        "fragmented": 1
+      },
+      "lawn_mower_brush_cutter_olive_shaker": {
+        "miss_nothing": 35,
+        "miss_other_class_overlap": 11,
+        "merged": 17,
+        "bnd_onset": 34,
+        "bnd_both": 1
+      },
+      "dog_barkings_and_howlings": {
+        "miss_nothing": 81,
+        "miss_other_class_overlap": 46,
+        "merged": 42,
+        "fragmented": 9,
+        "bnd_both": 9,
+        "bnd_offset": 7,
+        "bnd_onset": 22
+      },
+      "sirens_and_alarms": {
+        "miss_nothing": 32,
+        "miss_other_class_overlap": 12,
+        "bnd_both": 2,
+        "bnd_onset": 29,
+        "bnd_offset": 4,
+        "fragmented": 1,
+        "merged": 1
+      },
+      "train": {
+        "miss_nothing": 32,
+        "miss_other_class_overlap": 15,
+        "bnd_onset": 43,
+        "merged": 4,
+        "bnd_both": 6,
+        "bnd_offset": 2
+      },
+      "voices": {
+        "miss_nothing": 63,
+        "miss_other_class_overlap": 78,
+        "bnd_onset": 35,
+        "bnd_both": 18,
+        "merged": 35,
+        "fragmented": 9,
+        "bnd_offset": 26
+      },
+      "jet_aircrafts": {
+        "miss_nothing": 35,
+        "miss_other_class_overlap": 21,
+        "bnd_both": 5,
+        "bnd_onset": 9
+      },
+      "crows_seagulls_magpies": {
+        "miss_nothing": 43,
+        "miss_other_class_overlap": 20,
+        "merged": 30,
+        "bnd_both": 1,
+        "fragmented": 3,
+        "bnd_onset": 18,
+        "bnd_offset": 8
+      },
+      "horn": {
+        "miss_nothing": 38,
+        "merged": 11,
+        "bnd_offset": 4,
+        "miss_other_class_overlap": 30,
+        "bnd_both": 5,
+        "bnd_onset": 10
+      },
+      "vehicle_pass_by": {
+        "miss_nothing": 118,
+        "miss_other_class_overlap": 54,
+        "bnd_both": 4,
+        "merged": 19,
+        "bnd_onset": 19,
+        "bnd_offset": 2
+      },
+      "thunder_fireworks_gunshot": {
+        "miss_other_class_overlap": 8,
+        "bnd_both": 6,
+        "bnd_onset": 8,
+        "miss_nothing": 24,
+        "merged": 39,
+        "bnd_offset": 6,
+        "fragmented": 2
+      },
+      "propeller_aircrafts": {
+        "miss_other_class_overlap": 11,
+        "bnd_both": 4,
+        "miss_nothing": 42,
+        "merged": 4,
+        "bnd_onset": 31
+      },
+      "workshop": {
+        "miss_other_class_overlap": 11,
+        "miss_nothing": 61,
+        "bnd_onset": 123,
+        "bnd_both": 3,
+        "bnd_offset": 3,
+        "merged": 4
+      },
+      "vehicle_idling": {
+        "miss_other_class_overlap": 48,
+        "miss_nothing": 50,
+        "bnd_both": 3,
+        "bnd_onset": 3,
+        "merged": 13,
+        "bnd_offset": 1
+      },
+      "music": {
+        "miss_nothing": 30,
+        "miss_other_class_overlap": 7,
+        "bnd_onset": 34,
+        "merged": 4,
+        "bnd_both": 2,
+        "fragmented": 3,
+        "bnd_offset": 1
+      },
+      "chicken_coop": {
+        "miss_other_class_overlap": 20,
+        "miss_nothing": 40,
+        "merged": 10,
+        "bnd_onset": 22,
+        "bnd_both": 8,
+        "bnd_offset": 14,
+        "fragmented": 1
+      },
+      "vacuum_cleaner_fan_hairdryer": {
+        "miss_nothing": 5,
+        "miss_other_class_overlap": 4,
+        "bnd_onset": 62,
+        "bnd_offset": 1,
+        "fragmented": 1,
+        "bnd_both": 1
+      },
+      "glass_breaking": {
+        "miss_nothing": 26,
+        "bnd_offset": 14,
+        "merged": 19,
+        "bnd_both": 3,
+        "bnd_onset": 7,
+        "miss_other_class_overlap": 4
+      },
+      "cat_fights_and_moans": {
+        "fragmented": 8,
+        "bnd_both": 6,
+        "merged": 15,
+        "bnd_onset": 34,
+        "bnd_offset": 6,
+        "miss_nothing": 24
+      },
+      "cicadas_and_crickets": {
+        "bnd_onset": 90,
+        "fragmented": 4,
+        "miss_nothing": 57,
+        "miss_other_class_overlap": 14,
+        "merged": 16,
+        "bnd_offset": 5,
+        "bnd_both": 8
+      }
+    },
+    "missed_pmax_histogram": {
+      "bins": [
+        0.0,
+        0.1,
+        0.3,
+        0.5,
+        0.7,
+        0.9,
+        1.0001
+      ],
+      "counts": [
+        138,
+        108,
+        100,
+        130,
+        212,
+        789
+      ]
+    },
+    "missed_pmax_median": 0.9209096616146868,
+    "onset_error_median_per_class": {
+      "bells": -0.08000000000000007,
+      "birds": -0.46999999999999886,
+      "horn": -0.06499999999999995,
+      "thunder_fireworks_gunshot": -0.049999999999998934,
+      "vehicle_pass_by": -1.0599999999999987,
+      "crows_seagulls_magpies": -0.07500000000000107,
+      "voices": -0.07000000000000028,
+      "workshop": -0.14000000000000057,
+      "train": -1.4749999999999992,
+      "propeller_aircrafts": -0.615,
+      "vehicle_idling": -0.025000000000001705,
+      "sirens_and_alarms": -0.18000000000000005,
+      "jet_aircrafts": -1.47,
+      "dog_barkings_and_howlings": -0.08500000000000174,
+      "chicken_coop": -0.14999999999999858,
+      "glass_breaking": -0.015000000000000568,
+      "cat_fights_and_moans": -0.029999999999997584,
+      "vacuum_cleaner_fan_hairdryer": -0.2400000000000002,
+      "lawn_mower_brush_cutter_olive_shaker": -0.6300000000000026,
+      "cicadas_and_crickets": -0.12000000000000455,
+      "music": -0.21999999999999886
+    }
+  },
+  "oracle": {
+    "0.5": 0.37032640949554896,
+    "1": 0.46409495548961427,
+    "2": 0.5230464886251236
+  },
+  "git": {
+    "revision": "fda3b585ec7ecd35296ee5651c855cf258fc2aa9",
+    "dirty": false
+  }
+}
