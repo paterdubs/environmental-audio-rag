@@ -29,8 +29,10 @@ from ml.postprocessing import (
     stack_predictions_by_recording,
 )
 from ml.postprocessing.calibration import DEFAULT_THRESHOLD_GRID, validate_postproc_artifact
+from ml.postprocessing.lbr_apply import is_lbr_run
 from ml.postprocessing.sebb import SebbParams, sebb_candidates, select_boxes
 from ml.taxonomy import load_taxonomy
+from scripts import lbr_test_section
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -57,6 +59,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--eval-set", choices=EVAL_SETS, default="all",
                         help="annotated: chỉ chấm recording có GT polyphonic (ADR-0034); "
                              "file ra có hậu tố _annotated")
+    parser.add_argument("--baseline-postproc", type=Path, default=None,
+                        help="chỉ với --postproc là run sed_lbr: selection cSEBB của B0 để so "
+                             "ghép cặp trong cùng lượt mở test (ADR-0045 §8)")
     return parser.parse_args()
 
 
@@ -231,8 +236,10 @@ def main() -> None:
     postproc = json.loads(postproc_path.read_text(encoding="utf-8"))
     taxonomy = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
     class_ids = taxonomy.polyphonic_class_ids
-    family = str(postproc.get("family", "theta"))
-    if family == "csebb":
+    family = "lbr" if is_lbr_run(postproc) else str(postproc.get("family", "theta"))
+    if family == "lbr":
+        selected_sebb = None
+    elif family == "csebb":
         selected_sebb = sebb_params(postproc, eval_set=args.eval_set)
     else:
         validate_postproc_artifact(postproc, taxonomy=taxonomy)
@@ -249,7 +256,14 @@ def main() -> None:
     probabilities = restrict(stack_predictions_by_recording(test_artifact), args.eval_set)
     reference = load_events_by_recording(set(probabilities))
     frame_rate = 1.0 / test_artifact.frame_hop_s
-    if selected_sebb is not None:
+    if family == "lbr":
+        lbr = lbr_test_section.estimate(postproc_path.parent, probabilities,
+                                        class_ids=class_ids, frame_rate=frame_rate)
+        estimate = lbr["estimate"]
+        operating_points = [(to_detection_frame(events).drop(columns=["confidence"]),)
+                            for events in lbr["psds_events"]
+                            if any(events.values())]
+    elif selected_sebb is not None:
         params, threshold = selected_sebb
         candidates = sebb_candidates(
             probabilities, class_ids=class_ids, frame_rate=frame_rate, params=params
@@ -321,6 +335,12 @@ def main() -> None:
         "application_metrics": application_metrics(
             reference, estimate, class_ids, recall_micro=event_f1["f_measure"]["recall"]),
     }
+    if family == "lbr":
+        baseline = (sebb_params(json.loads(args.baseline_postproc.read_text(encoding="utf-8")),
+                                eval_set=args.eval_set) if args.baseline_postproc else None)
+        result["lbr"] = lbr_test_section.section(lbr, reference, probabilities,
+                                                 class_ids=class_ids, frame_rate=frame_rate,
+                                                 baseline=baseline)
     output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     report_path.write_text(_render_report(result), encoding="utf-8")
     print(json.dumps({"evaluation": str(output_path), "report": str(report_path)}, indent=2))
@@ -376,6 +396,8 @@ def _render_report(result: dict) -> str:
     ]
     if "application_metrics" in result:
         lines += _render_application_metrics(result["application_metrics"])
+    if "lbr" in result:
+        lines += lbr_test_section.render(result["lbr"])
     return "\n".join(lines)
 
 
