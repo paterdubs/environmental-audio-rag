@@ -89,7 +89,8 @@ def intersection_counts(reference: EventRows, estimate: EventRows, class_ids: Se
     """(TP, FP, số nhãn) mỗi lớp theo DTC/GTC/CTTC của `psds_eval` (ADR-0046 §2).
 
     TP là số nhãn được phủ (GTC), FP là số dự đoán không đạt DTC, kể cả cross-trigger — đúng
-    định nghĩa mà `PSDSEval.compute_macro_f_score` dùng. Chỉ xét recording có trong `durations`.
+    định nghĩa mà `PSDSEval.compute_macro_f_score` dùng. Dự đoán thuộc lớp không có nhãn nào
+    trong tập được đếm là FP. Chỉ xét recording có trong `durations`.
     """
     try:
         from psds_eval import PSDSEval
@@ -101,20 +102,23 @@ def intersection_counts(reference: EventRows, estimate: EventRows, class_ids: Se
     keep = set(class_ids)
     gt = _psds_frame(reference, recordings, keep)
     det = _psds_frame(estimate, recordings, keep)
-    unknown = set(det["event_label"]) - set(gt["event_label"])
-    if unknown:
-        raise ValueError(f"dự đoán có lớp không có trong nhãn của tập này: {sorted(unknown)}")
     n_gt = gt["event_label"].value_counts()
-    result = {c: (0, 0, int(n_gt.get(c, 0))) for c in class_ids}
+    # Lớp không có nhãn nào trong tập: psds_eval không biết lớp đó, nhưng mọi dự đoán của nó
+    # không thể đạt DTC → đếm thẳng là FP thay vì để thư viện bỏ qua.
+    unseen = ~det["event_label"].isin(set(gt["event_label"]))
+    n_unseen = det.loc[unseen, "event_label"].value_counts()
+    result = {c: (0, int(n_unseen.get(c, 0)), int(n_gt.get(c, 0))) for c in class_ids}
+    det = det.loc[~unseen]
     if det.empty or gt.empty:
-        return {c: (0, int((det["event_label"] == c).sum()), n) for c, (_, _, n) in result.items()}
+        return {c: (0, int((det["event_label"] == c).sum()) + fp, n)
+                for c, (_, fp, n) in result.items()}
     metadata = pd.DataFrame({"filename": recordings,
                              "duration": [float(durations[r]) for r in recordings]})
     evaluator = PSDSEval(ground_truth=gt, metadata=metadata, **INTERSECTION_CRITERIA)
     counts, _, _, _ = evaluator._evaluate_detections(evaluator._init_det_table(det))
     names = sorted(set(evaluator.class_names) - {WORLD})
     for name, tp, fp in zip(names, np.diag(counts)[:-1], counts[:-1, -1], strict=True):
-        result[name] = (int(tp), int(fp), int(n_gt.get(name, 0)))
+        result[name] = (int(tp), int(fp) + result[name][1], int(n_gt.get(name, 0)))
     return result
 
 

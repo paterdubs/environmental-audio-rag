@@ -196,10 +196,14 @@ def test_intersection_macro_matches_library():
     assert ours["macro_f1"] == pytest.approx(0.5)
 
 
-def test_intersection_counts_reject_label_absent_from_reference():
-    est = {"r1": [{"class_id": "c", "onset": 1.0, "offset": 2.0}], "r2": []}
-    with pytest.raises(ValueError):
-        intersection_counts(REF, est, ("a", "b", "c"), DUR)
+def test_detection_of_class_absent_from_reference_counts_as_false_positive():
+    est = {"r1": [{"class_id": "c", "onset": 1.0, "offset": 2.0},
+                  {"class_id": "a", "onset": 1.0, "offset": 5.0}], "r2": []}
+    counts = intersection_counts(REF, est, ("a", "b", "c"), DUR)
+    assert counts["c"] == (0, 1, 0)
+    assert counts["a"] == (1, 0, 2)
+    only_unseen = intersection_counts(REF, {"r1": [est["r1"][0]], "r2": []}, ("a", "b", "c"), DUR)
+    assert only_unseen == {"a": (0, 0, 2), "b": (0, 0, 1), "c": (0, 1, 0)}
 
 
 def test_vn_subset_drops_exactly_two_classes_from_both_sides():

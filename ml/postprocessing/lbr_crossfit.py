@@ -103,8 +103,8 @@ def micro_f1_objective(reference: EventRows, class_ids: tuple[str, ...]) -> Obje
     return score
 
 
-def _select(boxes: list[Box], scores: np.ndarray, grid: tuple[float, ...],
-            objective: Objective, recordings: list[str]) -> float:
+def select_threshold(boxes: list[Box], scores: np.ndarray, grid: tuple[float, ...],
+                     objective: Objective, recordings: list[str]) -> float:
     values = [objective(boxes_to_events(boxes, scores >= t, recordings=recordings), recordings)
               for t in grid]
     return float(grid[int(np.argmax(values))])  # hòa → ngưỡng đầu tiên (thấp nhất) của lưới
@@ -160,7 +160,7 @@ def fit_lbr(data: LbrData, *, fit_folds: set[int], variant: str,
     else:
         scores = np.array([data.boxes[i].score for i in fit])
         grid = LAMBDA_GRID
-    thresholds = {name: _select(refined, scores, grid, objective, recordings)
+    thresholds = {name: select_threshold(refined, scores, grid, objective, recordings)
                   for name, objective in objectives.items()}
     on_model, off_model = _fit_refiners(data, fit, config)
     return LbrModel(variant, on_model, off_model, rescorer, thresholds, data.n_classes, config)
@@ -182,25 +182,33 @@ def apply_lbr(model: LbrModel, boxes: list[Box], x_on: np.ndarray, x_off: np.nda
 
 def crossfit_lbr(data: LbrData, *, variant: str, objectives: Mapping[str, Objective],
                  config: LbrConfig, target: LbrData | None = None) -> CrossfitResult:
-    """Hold out each fold; fit on the others; apply to the held-out fold of ``target``.
-
-    ``target`` (default ``data``) shares the fold assignment but may come from other
-    posteriors — the transfer check of ADR-0045 §6.
-    """
+    """Hold out each fold; fit on the others; apply to the held-out fold of ``target``."""
     target = data if target is None else target
+    return crossfit_lbr_multi(data, variant=variant, objectives=objectives, config=config,
+                              targets={"target": target})["target"]
+
+
+def crossfit_lbr_multi(data: LbrData, *, variant: str, objectives: Mapping[str, Objective],
+                       config: LbrConfig, targets: Mapping[str, LbrData]
+                       ) -> dict[str, CrossfitResult]:
+    """Như `crossfit_lbr`, nhưng mỗi model fold được áp lên nhiều đích cùng phép gán fold.
+
+    Đích khác nguồn (vd. OOF ensemble P1×3) là phép kiểm chuyển của ADR-0045 §6.
+    """
     folds = sorted(data.recordings_by_fold)
-    if sorted(target.recordings_by_fold) != folds:
-        raise ValueError("target phải dùng cùng phép gán fold")
-    events: dict[str, Events] = {name: {} for name in objectives}
+    if any(sorted(t.recordings_by_fold) != folds for t in targets.values()):
+        raise ValueError("mọi đích phải dùng cùng phép gán fold")
+    events = {name: {obj: {} for obj in objectives} for name in targets}
     thresholds: dict[int, Mapping[str, float]] = {}
     for k in folds:
         model = fit_lbr(data, fit_folds=set(folds) - {k}, variant=variant,
                         objectives=objectives, config=config)
-        rows = target.rows({k})
-        refined, scores = apply_lbr(model, [target.boxes[i] for i in rows],
-                                    target.x_on[rows], target.x_off[rows])
-        for name, threshold in model.thresholds.items():
-            events[name].update(boxes_to_events(refined, scores >= threshold,
-                                                recordings=target.recordings_by_fold[k]))
         thresholds[k] = dict(model.thresholds)
-    return CrossfitResult(events, thresholds)
+        for name, target in targets.items():
+            rows = target.rows({k})
+            refined, scores = apply_lbr(model, [target.boxes[i] for i in rows],
+                                        target.x_on[rows], target.x_off[rows])
+            for obj, threshold in model.thresholds.items():
+                events[name][obj].update(boxes_to_events(
+                    refined, scores >= threshold, recordings=target.recordings_by_fold[k]))
+    return {name: CrossfitResult(events[name], thresholds) for name in targets}
