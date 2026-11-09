@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import dataclasses
 import json
+import platform
 import shutil
 import sys
 from datetime import UTC, datetime
@@ -34,6 +35,21 @@ SHARED = ("split_sha256", "data_manifest_sha256", "taxonomy_sha256")
 
 def keep_windows(recording_ids: np.ndarray, keep: set[str]) -> np.ndarray:
     return np.asarray([str(r) in keep for r in recording_ids], dtype=bool)
+
+
+def build_manifest(*, run_id: str, argv: list[str], class_ids: tuple[str, ...] | list[str],
+                   source: dict, source_name: str, split: str, recordings: int,
+                   copies: dict[str, str]) -> dict:
+    """Manifest theo contracts/run_manifest.schema.json (có `environment`, như build_oof)."""
+    return {
+        "run_id": run_id, "task": "sed_filtered", "complete": True,
+        "command": ["python", "-m", "scripts.filter_predictions", *argv],
+        "class_ids": list(class_ids), **{k: source[k] for k in SHARED},
+        "config": {"source_run": source_name, "source_task": source.get("task"),
+                   "split": split, "recordings": recordings, "copied_sha256": copies},
+        "environment": {"python": platform.python_version(), "numpy": np.__version__},
+        "git": git_state(ROOT),
+    }
 
 
 def main() -> None:
@@ -65,14 +81,9 @@ def main() -> None:
         shutil.copyfile(args.run / name, out / name)
         copies[name] = sha256_file(out / name)
     kept = sorted({str(r) for r in filtered.recording_ids})
-    manifest = {
-        "run_id": out.name, "task": "sed_filtered", "complete": True,
-        "command": ["python", "-m", "scripts.filter_predictions", *sys.argv[1:]],
-        "class_ids": list(class_ids), **{k: source[k] for k in SHARED},
-        "config": {"source_run": args.run.name, "source_task": source.get("task"),
-                   "split": args.split, "recordings": len(kept), "copied_sha256": copies},
-        "git": git_state(ROOT),
-    }
+    manifest = build_manifest(run_id=out.name, argv=sys.argv[1:], class_ids=class_ids,
+                              source=source, source_name=args.run.name, split=args.split,
+                              recordings=len(kept), copies=copies)
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     (out / "metrics.json").write_text(json.dumps({"dev_predictions_sha256": digest}, indent=2),
                                       encoding="utf-8")
