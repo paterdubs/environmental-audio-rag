@@ -110,6 +110,12 @@ Segment-based F1 (1 s) **chỉ báo làm bối cảnh**, không thay primary. DC
 (ghi âm thật) dùng nó làm metric chính, nên nó giúp định cỡ khi đặt cạnh văn liệu
 (RELATED_WORK §2.1 (4)). Đổi primary sau khi đã thấy số là đổi thước đo.
 
+**Thước ứng dụng (ADR-0046, 09/11/2026).** Primary không đổi. Báo kèm, không dùng để chọn:
+event-F1 collar 1 s, segment-F1 1 s, và phát hiện theo giao nhau (`psds_eval`, DTC/GTC 0.1, CTTC
+0.3), mỗi thước kèm trần người cùng tiêu chí. Mọi thước báo ở hai điểm vận hành: điểm F1 và điểm
+"ưu tiên phát hiện" (recall giao nhau cao nhất với precision ≥ 0.6). Thêm góc nhìn 19 lớp ứng dụng
+Việt Nam (bỏ `propeller_aircrafts`, `crows_seagulls_magpies`), luôn đặt cạnh 21 lớp.
+
 ### 3.2 Cấu hình event-based F1
 
 Dùng `sed_eval`, **không tự viết lại**.
