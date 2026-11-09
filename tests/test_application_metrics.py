@@ -6,6 +6,7 @@ import json
 from types import SimpleNamespace
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from ml.evaluation.application_metrics import application_metrics, event_f1_collar, segment_f1
@@ -142,3 +143,82 @@ def test_render_only_accepts_legacy_json_without_loading_predictions(evaluator, 
     script.main()
     assert json.loads((run / "dev_evaluation_legacy.json").read_text()) == original
     assert "Chỉ số ứng dụng" not in script._render_report(old)
+
+
+# --- ADR-0046: phát hiện theo giao nhau, tập lớp Việt Nam, điểm ưu tiên phát hiện ---------
+
+from ml.evaluation.application_metrics import (  # noqa: E402
+    INTERSECTION_CRITERIA,
+    VN_EXCLUDED_CLASSES,
+    intersection_counts,
+    intersection_metrics,
+    recall_first_objective,
+    restrict_classes,
+    vn_class_ids,
+)
+
+DUR = {"r1": 20.0, "r2": 20.0}
+REF = {"r1": [{"class_id": "a", "onset": 1.0, "offset": 5.0},
+              {"class_id": "b", "onset": 10.0, "offset": 12.0}],
+       "r2": [{"class_id": "a", "onset": 2.0, "offset": 4.0}]}
+
+
+def test_intersection_counts_credit_overlap_without_exact_boundaries():
+    est = {"r1": [{"class_id": "a", "onset": 2.5, "offset": 6.0},   # lệch biên nhưng chồng lấn
+                  {"class_id": "b", "onset": 15.0, "offset": 16.0}],  # không chồng nhãn → FP
+           "r2": []}
+    counts = intersection_counts(REF, est, ("a", "b"), DUR)
+    assert counts["a"] == (1, 0, 2)
+    assert counts["b"] == (0, 1, 1)
+    summary = intersection_metrics(counts)
+    assert summary["micro"]["recall"] == pytest.approx(1 / 3)
+    assert summary["micro"]["precision"] == pytest.approx(1 / 2)
+
+
+def test_intersection_macro_matches_library():
+    from psds_eval import PSDSEval
+
+    est = {"r1": [{"class_id": "a", "onset": 2.5, "offset": 6.0}],
+           "r2": [{"class_id": "a", "onset": 2.0, "offset": 3.5}]}
+    counts = intersection_counts(REF, est, ("a", "b"), DUR)
+    gt = pd.DataFrame([{"filename": r, "onset": e["onset"], "offset": e["offset"],
+                        "event_label": e["class_id"]} for r, rows in REF.items() for e in rows])
+    meta = pd.DataFrame({"filename": list(DUR), "duration": list(DUR.values())})
+    det = pd.DataFrame([{"filename": r, "onset": e["onset"], "offset": e["offset"],
+                         "event_label": e["class_id"]} for r, rows in est.items() for e in rows])
+    library = PSDSEval(ground_truth=gt, metadata=meta, **INTERSECTION_CRITERIA)
+    macro, per_class = library.compute_macro_f_score(det)
+    ours = intersection_metrics(counts)
+    assert ours["per_class"]["a"]["f1"] == pytest.approx(per_class["a"])
+    # Thư viện bỏ lớp 0 TP (b) khỏi macro; số chính của mình tính b = 0.
+    assert np.isnan(per_class["b"])
+    assert ours["macro_f1_psds_eval"] == pytest.approx(macro) == pytest.approx(1.0)
+    assert ours["macro_f1"] == pytest.approx(0.5)
+
+
+def test_intersection_counts_reject_label_absent_from_reference():
+    est = {"r1": [{"class_id": "c", "onset": 1.0, "offset": 2.0}], "r2": []}
+    with pytest.raises(ValueError):
+        intersection_counts(REF, est, ("a", "b", "c"), DUR)
+
+
+def test_vn_subset_drops_exactly_two_classes_from_both_sides():
+    assert VN_EXCLUDED_CLASSES == ("propeller_aircrafts", "crows_seagulls_magpies")
+    ids = ("birds", "crows_seagulls_magpies", "propeller_aircrafts", "train")
+    assert vn_class_ids(ids) == ("birds", "train")
+    rows = {"r": [{"class_id": "birds", "onset": 0, "offset": 1},
+                  {"class_id": "propeller_aircrafts", "onset": 0, "offset": 1}]}
+    assert restrict_classes(rows, ("birds", "train")) == {"r": [rows["r"][0]]}
+
+
+def test_recall_first_prefers_recall_above_floor_then_precision():
+    objective = recall_first_objective(REF, ("a", "b"), DUR, floor=0.6)
+    precise = {"r1": [{"class_id": "a", "onset": 1.0, "offset": 5.0}], "r2": []}  # P 1, R 1/3
+    broad = {"r1": [{"class_id": "a", "onset": 1.0, "offset": 5.0},
+                    {"class_id": "b", "onset": 10.0, "offset": 12.0}],
+             "r2": [{"class_id": "a", "onset": 2.0, "offset": 4.0},
+                    {"class_id": "b", "onset": 15.0, "offset": 16.0}]}  # P 3/4, R 1
+    noisy = {"r1": [{"class_id": "b", "onset": 15.0, "offset": 16.0},
+                    {"class_id": "b", "onset": 17.0, "offset": 18.0}], "r2": []}  # P 0
+    assert objective(broad, ["r1", "r2"]) > objective(precise, ["r1", "r2"])
+    assert objective(noisy, ["r1", "r2"]) < 0  # dưới sàn → luôn thua điểm đạt sàn

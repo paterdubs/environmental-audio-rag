@@ -79,5 +79,9 @@ không ảnh hưởng số đánh giá.
 ## Evidence cần kiểm lại
 
 - Số thước giao nhau từ `psds_eval` sẽ khác số thăm dò (thăm dò dùng điều kiện có chồng lấn > 0).
+- **Tật của `psds_eval` phát hiện khi viết test (09/11):** `compute_macro_f_score` suy số nhãn bằng
+  tp / tp_ratio, lớp không có TP thành NaN và bị bỏ khỏi trung bình → macro bị thổi phồng. Số macro
+  chính tính số nhãn từ ground truth (lớp bỏ sót hết = 0); số theo ngữ nghĩa thư viện báo kèm
+  (`macro_f1_psds_eval`). Micro dùng nguyên bảng đếm của thư viện.
 - Trần người chỉ từ 8 cặp; tín hiệu, không phải nghiên cứu agreement.
 - Tiêu chí "hiếm ở Việt Nam" là nhận định miền ứng dụng của người dùng, không có số đo tần suất.
