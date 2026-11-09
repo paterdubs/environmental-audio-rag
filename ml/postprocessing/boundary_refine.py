@@ -191,13 +191,31 @@ def rescore_features(x_on: np.ndarray, x_off: np.ndarray, delta_on: np.ndarray,
     return np.c_[x_on, x_off[:, META_FEATURES + n_classes:], delta_on, delta_off]
 
 
+def _merge_same_class(boxes: list[Box]) -> list[Box]:
+    """Gộp box cùng lớp giao hoặc chạm nhau (onset min, offset max, score max).
+
+    Đầu ra hệ thống không chứa hai event cùng lớp chồng nhau — `psds_eval` từ chối bảng như vậy
+    và timeline của caption (G1–G3) cũng giả định điều này (ADR-0045 §3, sửa 10/11).
+    """
+    merged: list[Box] = []
+    for box in sorted(boxes, key=lambda b: (b.recording_id, b.class_id, b.onset_s, b.offset_s)):
+        last = merged[-1] if merged else None
+        if (last is not None and last.recording_id == box.recording_id
+                and last.class_id == box.class_id and box.onset_s <= last.offset_s):
+            merged[-1] = replace(last, offset_s=max(last.offset_s, box.offset_s),
+                                 score=max(last.score, box.score))
+        else:
+            merged.append(box)
+    return sorted(merged, key=lambda b: (b.recording_id, b.onset_s, b.offset_s, b.class_id))
+
+
 def boxes_to_events(boxes: Sequence[Box], keep: np.ndarray | None, *,
                     recordings: Iterable[str] = ()) -> dict[str, list[dict[str, Any]]]:
-    """sed_eval-ready rows; every id in ``recordings`` is present even without events."""
+    """sed_eval-ready rows of the kept boxes, same-class overlaps merged; every id in
+    ``recordings`` is present even without events."""
+    kept = [box for i, box in enumerate(boxes) if keep is None or keep[i]]
     events: dict[str, list[dict[str, Any]]] = {rid: [] for rid in recordings}
-    for i, box in enumerate(boxes):
-        if keep is not None and not keep[i]:
-            continue
+    for box in _merge_same_class(kept):
         events.setdefault(box.recording_id, []).append({
             "recording_id": box.recording_id, "class_id": box.class_id,
             "event_label": box.class_id, "onset": box.onset_s, "offset": box.offset_s,

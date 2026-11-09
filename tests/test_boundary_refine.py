@@ -168,3 +168,15 @@ def test_fit_lbr_requires_two_fit_folds():
     with pytest.raises(ValueError):
         fit_lbr(data, fit_folds={0}, variant="v1",
                 objectives={"f1": micro_f1_objective(reference, CLASSES)}, config=FAST)
+
+
+def test_kept_boxes_of_same_class_that_overlap_are_merged():
+    boxes = [Box("r", "a", 1.0, 3.0, 0.9), Box("r", "a", 2.5, 5.0, 0.8),
+             Box("r", "a", 5.0, 6.0, 0.7),   # chạm biên → vẫn gộp (psds_eval coi là giao)
+             Box("r", "b", 2.0, 4.0, 0.9),   # lớp khác → giữ riêng
+             Box("r", "a", 5.5, 9.0, 0.95)]  # bị loại bởi keep → không kéo dài event
+    keep = np.array([True, True, True, True, False])
+    events = boxes_to_events(boxes, keep)["r"]
+    a = [e for e in events if e["class_id"] == "a"]
+    assert [(e["onset"], e["offset"], e["score"]) for e in a] == [(1.0, 6.0, 0.9)]
+    assert [(e["onset"], e["offset"]) for e in events if e["class_id"] == "b"] == [(2.0, 4.0)]

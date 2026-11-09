@@ -54,6 +54,10 @@ hình hóa biên chứ không từ encoder. Chưa ai báo số SED trên DataSED
   event nhãn cùng lớp theo tiêu chí chính (onset ±0.2 s, offset ±max(0.2 s, 0.2·L)), xét từng box
   độc lập.
 - Không tune siêu tham số. Mọi giá trị trên là giá trị của lượt thăm dò.
+- **Bổ sung 10/11 (trước khi có số tầng C):** sau khi lọc ngưỡng, các box giữ lại **cùng lớp giao
+  hoặc chạm nhau được gộp** (onset nhỏ nhất, offset lớn nhất, điểm lớn nhất). Lượt tầng C đầu tiên
+  dừng ở bước chọn ngưỡng đầu tiên của V1 vì `psds_eval` từ chối bảng có event cùng lớp chồng nhau —
+  box tinh chỉnh có thể giãn vào nhau. Chưa có số nào được sinh; bản thăm dò không gộp.
 
 ### 4. Ứng viên và điểm vận hành
 
