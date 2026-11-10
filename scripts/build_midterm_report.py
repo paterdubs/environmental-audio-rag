@@ -54,6 +54,12 @@ def body_inner(docx: Path) -> str:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument(
+        "--source", type=Path, default=SOURCE, help="thư mục nguồn (mặc định report/src)"
+    )
+    parser.add_argument(
+        "--build-dir", type=Path, default=BUILD, help="thư mục dựng trung gian"
+    )
     return parser.parse_args()
 
 
@@ -61,14 +67,16 @@ def main() -> None:
     args = parse_args()
     entries = biblio.load(BIBLIOGRAPHY)
     numbers = biblio.numbering(entries)
-    files = sorted(SOURCE.glob("[0-9][0-9]_*.md"))
+    source = args.source.resolve()
+    files = sorted(source.glob("[0-9][0-9]_*.md"))
     text, registry = prepare(files, ROOT, numbers)
     cited = {key for key in numbers if f"[{numbers[key]}" in text or f", {numbers[key]}" in text}
     unused = sorted(set(numbers) - cited)
-    BUILD.mkdir(parents=True, exist_ok=True)
-    merged = BUILD / "report_body.md"
+    build = args.build_dir.resolve()
+    build.mkdir(parents=True, exist_ok=True)
+    merged = build / "report_body.md"
     merged.write_text(text, encoding="utf-8", newline="\n")
-    body_docx = BUILD / "report_body.docx"
+    body_docx = build / "report_body.docx"
     subprocess.run(
         [
             find_pandoc(),
@@ -81,10 +89,10 @@ def main() -> None:
         check=True,
     )
     body = transform_body(body_inner(body_docx), registry, marker_handlers(entries))
-    info = FrontInfo(**yaml.safe_load((SOURCE / "front_info.yaml").read_text(encoding="utf-8")))
+    info = FrontInfo(**yaml.safe_load((source / "front_info.yaml").read_text(encoding="utf-8")))
     assemble(TEMPLATE, body_docx, body, info, args.output)
     print(
-        f"Đã ghi {args.output.relative_to(ROOT)}: {len(files)} tệp nguồn, "
+        f"Đã ghi {args.output}: {len(files)} tệp nguồn, "
         f"{len(registry.numbers)} đối tượng đánh số, {len(entries)} tài liệu tham khảo."
     )
     if unused:

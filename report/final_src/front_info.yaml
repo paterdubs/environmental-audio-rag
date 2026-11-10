@@ -1,0 +1,17 @@
+# Thông tin trang bìa, header, footer. Sửa rồi dựng lại báo cáo:
+#   .venv/Scripts/python.exe -m scripts.build_midterm_report --source report/final_src --output <đường dẫn DOCX>
+#   powershell -File scripts/update_docx_fields.ps1
+title_vi: "Xây dựng hệ thống phát hiện, sinh mô tả và truy vấn sự kiện âm thanh môi trường dựa trên RAG"
+title_en: "Grounded Environmental Sound Event Detection, Captioning, and RAG-based Retrieval"
+student_1: "Phạm Hoàng Phát – 22703861"
+student_2: "Thân Trọng Tính – 22665711"
+student_1_en: "Pham Hoang Phat – 22703861"
+student_2_en: "Than Trong Tinh – 22665711"
+supervisor: "Giảng viên hướng dẫn: TS. Huỳnh Công Bằng"
+supervisor_en: "Supervisor: Dr. Huynh Cong Bang"
+city_date: "THÀNH PHỐ HỒ CHÍ MINH, THÁNG 11 NĂM 2026"
+city_date_en: "HO CHI MINH CITY – NOVEMBER 2026"
+header: "Khóa luận tốt nghiệp năm 2026 – Ngành Khoa học dữ liệu"
+footer: "Phạm Hoàng Phát – Thân Trọng Tính – KHDL18A"
+cover_label: "KHÓA LUẬN TỐT NGHIỆP"
+cover_label_en: "GRADUATION THESIS"

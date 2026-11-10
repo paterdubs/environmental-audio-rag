@@ -40,6 +40,8 @@ class FrontInfo:
     city_date_en: str
     header: str
     footer: str
+    cover_label: str = "BÁO CÁO GIỮA KỲ KHÓA LUẬN TỐT NGHIỆP"
+    cover_label_en: str = "MID-TERM GRADUATION THESIS REPORT"
 
 
 # ---------------------------------------------------------------- styles
