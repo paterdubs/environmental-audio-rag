@@ -1,0 +1,153 @@
+{
+  "label": "lbrv3",
+  "split": "dev",
+  "eval_set": "annotated",
+  "predictions_run": "sed_filtered_B0_oof_dev_20261107T181008Z",
+  "predictions_sha256": "3ba7fc3776f14c4b60436503354e6196576678167cae7583620b3a3485872b45",
+  "postproc": "ml\\runs\\sed_lbr_oofevents_sed_lbr_B0v3_20261110T042337Z_recall_first_20261110T063606Z\\manifest.json",
+  "postproc_sha256": "86d28d33344f8b2b9832659dde3b6ef2b093176e2d8240c19b52e35e5e7bd725",
+  "lbr_point": "recall_first",
+  "lexicon_sha256": {
+    "en": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
+    "vi": "1361a221609a70b2de65ee987c70134b9ef7f34213568bbf5b3db17572035bc6"
+  },
+  "languages": {
+    "en": {
+      "summary": {
+        "n": 134,
+        "hallucination_rate": 0.0,
+        "omission_rate": 0.0,
+        "temporal_order_accuracy": 1.0,
+        "forbidden_term_rate": 0.0,
+        "over_specific_rate": 0.0,
+        "context_term_rate": 0.0,
+        "evidence_coverage": 1.0,
+        "n_mentions": 7.052238805970149,
+        "temporal_order_eligible": 1.0,
+        "n_temporal_eligible": 121,
+        "hallucination_micro": 0.0
+      },
+      "ci": {
+        "hallucination_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "omission_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "temporal_order_eligible": {
+          "estimate": 1.0,
+          "lower": 1.0,
+          "upper": 1.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "over_specific_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "context_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "forbidden_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        }
+      }
+    },
+    "vi": {
+      "summary": {
+        "n": 134,
+        "hallucination_rate": 0.0,
+        "omission_rate": 0.0,
+        "temporal_order_accuracy": 1.0,
+        "forbidden_term_rate": 0.0,
+        "over_specific_rate": 0.0,
+        "context_term_rate": 0.0,
+        "evidence_coverage": 1.0,
+        "n_mentions": 7.052238805970149,
+        "temporal_order_eligible": 1.0,
+        "n_temporal_eligible": 121,
+        "hallucination_micro": 0.0
+      },
+      "ci": {
+        "hallucination_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "omission_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "temporal_order_eligible": {
+          "estimate": 1.0,
+          "lower": 1.0,
+          "upper": 1.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "over_specific_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "context_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        },
+        "forbidden_term_rate": {
+          "estimate": 0.0,
+          "lower": 0.0,
+          "upper": 0.0,
+          "confidence": 0.95,
+          "n_recordings": 134,
+          "n_bootstrap": 1000
+        }
+      }
+    }
+  },
+  "generated_at": "2026-11-10T06:55:03.714866+00:00",
+  "git": {
+    "revision": "513e1f074d1125e6b3db4e485a6ece4a75833304",
+    "dirty": false
+  }
+}
