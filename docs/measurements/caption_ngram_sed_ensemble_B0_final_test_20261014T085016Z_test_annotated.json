@@ -1,0 +1,27 @@
+{
+  "run": "sed_ensemble_B0_final_test_20261014T085016Z",
+  "split": "test",
+  "eval_set": "annotated",
+  "reference": "template",
+  "tokenizer": "[a-z0-9]+(?:[.'-][a-z0-9]+)*",
+  "scores": {
+    "constrained/e2e": {
+      "bleu_1": 0.5684210526314429,
+      "bleu_4": 0.3678953959423997,
+      "cider": 3.6923856377444393,
+      "n": 139
+    },
+    "constrained_cover/e2e": {
+      "bleu_1": 0.569992989015992,
+      "bleu_4": 0.3679105404524177,
+      "cider": 3.7774372355962864,
+      "n": 139
+    },
+    "unconstrained/e2e": {
+      "bleu_1": 0.13586878173486153,
+      "bleu_4": 0.022814068240153758,
+      "cider": 0.1537608925270887,
+      "n": 139
+    }
+  }
+}

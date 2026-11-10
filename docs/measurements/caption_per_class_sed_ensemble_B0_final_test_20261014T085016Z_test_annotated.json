@@ -1,0 +1,132 @@
+{
+  "run": "sed_ensemble_B0_final_test_20261014T085016Z",
+  "split": "test",
+  "eval_set": "annotated",
+  "lexicon_sha256": "6f5634bb7837817c94dd16fe0c0b07a6eae15996fe93064c325599d3321edc73",
+  "classes": {
+    "unconstrained/e2e": {
+      "present": {
+        "voices": 14,
+        "vehicle_pass_by": 10,
+        "horn": 5,
+        "crows_seagulls_magpies": 3,
+        "sirens_and_alarms": 14,
+        "dog_barkings_and_howlings": 7,
+        "thunder_fireworks_gunshot": 4,
+        "birds": 3,
+        "glass_breaking": 3,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "propeller_aircrafts": 11,
+        "lawn_mower_brush_cutter_olive_shaker": 7,
+        "bells": 6,
+        "music": 7,
+        "chicken_coop": 5,
+        "train": 10,
+        "jet_aircrafts": 2,
+        "cicadas_and_crickets": 10,
+        "vehicle_idling": 1,
+        "workshop": 12
+      },
+      "omitted": {},
+      "unsupported": {
+        "thunder_fireworks_gunshot": 1,
+        "music": 1
+      },
+      "specific": {
+        "crows_seagulls_magpies": 3,
+        "thunder_fireworks_gunshot": 5,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "lawn_mower_brush_cutter_olive_shaker": 7
+      },
+      "out_of_taxonomy": {}
+    },
+    "constrained/e2e": {
+      "present": {
+        "voices": 14,
+        "vehicle_pass_by": 10,
+        "horn": 5,
+        "crows_seagulls_magpies": 3,
+        "sirens_and_alarms": 14,
+        "dog_barkings_and_howlings": 7,
+        "thunder_fireworks_gunshot": 4,
+        "birds": 3,
+        "glass_breaking": 3,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "propeller_aircrafts": 11,
+        "lawn_mower_brush_cutter_olive_shaker": 7,
+        "bells": 6,
+        "music": 7,
+        "chicken_coop": 5,
+        "train": 10,
+        "jet_aircrafts": 2,
+        "cicadas_and_crickets": 10,
+        "vehicle_idling": 1,
+        "workshop": 12
+      },
+      "omitted": {
+        "dog_barkings_and_howlings": 2,
+        "propeller_aircrafts": 1,
+        "vehicle_pass_by": 1
+      },
+      "unsupported": {},
+      "specific": {},
+      "out_of_taxonomy": {}
+    },
+    "constrained_cover/e2e": {
+      "present": {
+        "voices": 14,
+        "vehicle_pass_by": 10,
+        "horn": 5,
+        "crows_seagulls_magpies": 3,
+        "sirens_and_alarms": 14,
+        "dog_barkings_and_howlings": 7,
+        "thunder_fireworks_gunshot": 4,
+        "birds": 3,
+        "glass_breaking": 3,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "propeller_aircrafts": 11,
+        "lawn_mower_brush_cutter_olive_shaker": 7,
+        "bells": 6,
+        "music": 7,
+        "chicken_coop": 5,
+        "train": 10,
+        "jet_aircrafts": 2,
+        "cicadas_and_crickets": 10,
+        "vehicle_idling": 1,
+        "workshop": 12
+      },
+      "omitted": {},
+      "unsupported": {},
+      "specific": {},
+      "out_of_taxonomy": {}
+    },
+    "template/e2e": {
+      "present": {
+        "voices": 14,
+        "vehicle_pass_by": 10,
+        "horn": 5,
+        "crows_seagulls_magpies": 3,
+        "sirens_and_alarms": 14,
+        "dog_barkings_and_howlings": 7,
+        "thunder_fireworks_gunshot": 4,
+        "birds": 3,
+        "glass_breaking": 3,
+        "vacuum_cleaner_fan_hairdryer": 7,
+        "propeller_aircrafts": 11,
+        "lawn_mower_brush_cutter_olive_shaker": 7,
+        "bells": 6,
+        "music": 7,
+        "chicken_coop": 5,
+        "train": 10,
+        "jet_aircrafts": 2,
+        "cicadas_and_crickets": 10,
+        "vehicle_idling": 1,
+        "workshop": 12
+      },
+      "omitted": {},
+      "unsupported": {},
+      "specific": {},
+      "out_of_taxonomy": {}
+    }
+  }
+}
