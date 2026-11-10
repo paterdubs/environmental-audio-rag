@@ -1,5 +1,13 @@
 # STATUS.md — Trạng thái có bằng chứng
 
+**LBR tầng C, 09–10/11/2026 (ADR-0045, ADR-0046) — chưa mở test:** run
+`sed_lbr_B0_20261109T172809Z` (tree sạch `71b5a55`) chọn **V2**: OOF micro 0.2342 → 0.3332
+(Δ +0.0990 [+0.0761, +0.1200]), macro 0.1797 → 0.2454; kiểm chuyển P1×3 0.3505. V2 giảm segment-F1
+và recall giao nhau (xem [báo cáo](measurements/oof_selection_20261109_LBR.md));
+[chẩn đoán](measurements/lbr_diagnosis_20261109.md). Thay đổi chưa commit — người dùng commit tay.
+
+**LBR V3, 10/11 (ADR-0045 §11) — cấu hình ứng dụng, ghi trước test:** rescorer nhãn giao nhau; OOF micro chính 0.3058, segment-F1 1 s 0.7693, điểm ưu tiên phát hiện recall giao nhau 0.8336 (P 0.6744). Bản xem trước ở scratchpad (tree bẩn); run chính thức sinh lại trên tree sạch rồi mới mở test cùng V2 (`docs/notes/test_once_lbr.md`).
+
 **Hệ thống cuối B0, 08/11/2026 (O6 + S8-lite):** phục vụ mặc định
 `sed_served_B0_20261107T175659Z` ([ADR-0042](decisions/ADR-0042-phuc-vu-he-thong-sed-b0.md));
 [parity CUDA](measurements/inference_parity_sed_served_b0_20261107t175659z_cuda_20261107.md)

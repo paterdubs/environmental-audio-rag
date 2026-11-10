@@ -59,6 +59,15 @@ Chế độ mặc định của demo là **ưu tiên phát hiện**, có công t
 tập Việt Nam trên giao diện là tùy chọn cấu hình, mặc định tắt. Thuộc pha tùy chọn của ADR-0045;
 không ảnh hưởng số đánh giá.
 
+### 6. Kết quả tầng C (09/11, OOF — xem ADR-0045 §10)
+
+Nguồn: [oof_selection_20261109_LBR.md](../measurements/oof_selection_20261109_LBR.md). Thước chính 19 lớp
+Việt Nam: B0 0.2425 → V2 0.3433 (21 lớp 0.2342 → 0.3332). Trần người cùng tiêu chí (8 cặp): collar 1 s
+0.7603, segment 1 s 0.7425, giao nhau F1 0.9173. **Điểm ưu tiên phát hiện không đạt ý đồ với V2:**
+ngưỡng chạm đáy lưới 0.005 ở 5/5 fold, recall giao nhau 0.5468 (P 0.9312) — thấp hơn B0 ở cùng điểm
+(0.7799, P 0.6275) vì rescorer của V2 học nhãn collar 0.2 s. V1 ở điểm này đạt recall giao nhau 0.8339
+(P 0.6402). Không đổi luật đã ghi; ghi nhận để người dùng quyết định chế độ demo.
+
 ## Alternatives considered
 
 1. Đổi thước chính sang collar 1 s hoặc chồng lấn: loại, giữ ADR-0041 (đổi thước sau khi thấy số).

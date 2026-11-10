@@ -1,0 +1,3784 @@
+{
+  "run": "sed_lbr_B0_20261109T172809Z",
+  "selected": "v2",
+  "deltas": {
+    "LBR_v1": {
+      "estimate": 0.07009048926634076,
+      "lower": 0.04963004261215221,
+      "upper": 0.08957194660318725,
+      "baseline": "B0"
+    },
+    "LBR_v2": {
+      "estimate": 0.09897384883734062,
+      "lower": 0.07610689264847173,
+      "upper": 0.11999089800267752,
+      "baseline": "B0"
+    },
+    "LBR_v1_on_P1x3": {
+      "estimate": 0.08466452776676284,
+      "lower": 0.062224170124773506,
+      "upper": 0.1045678037768693,
+      "baseline": "P1x3"
+    },
+    "LBR_v2_on_P1x3": {
+      "estimate": 0.11603955382863071,
+      "lower": 0.09332815571817525,
+      "upper": 0.13727484961925362,
+      "baseline": "P1x3"
+    }
+  },
+  "results": {
+    "B0": {
+      "f1": {
+        "all": {
+          "micro_f1": 0.23422354104846688,
+          "macro_f1": 0.17967467487565753,
+          "nref": 3294,
+          "nsys": 1761,
+          "ntp": 592,
+          "recall": 0.17972070431086826,
+          "event_f1_collar_1s": {
+            "micro": 0.46449060336300696,
+            "macro": 0.39030793146838344
+          },
+          "segment_f1_1s": {
+            "micro": 0.7007293127629733,
+            "macro": 0.6822783191460888
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9476439790575916,
+              "recall": 0.5494839101396478,
+              "f1": 0.6956187548039969
+            },
+            "macro_f1": 0.6620880668771209,
+            "macro_f1_psds_eval": 0.6620880668771209,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 0,
+                "n_reference": 88,
+                "f1": 0.8930817610062893
+              },
+              "birds": {
+                "tp": 27,
+                "fp": 8,
+                "n_reference": 238,
+                "f1": 0.1978021978021978
+              },
+              "cat_fights_and_moans": {
+                "tp": 105,
+                "fp": 3,
+                "n_reference": 129,
+                "f1": 0.8860759493670886
+              },
+              "chicken_coop": {
+                "tp": 72,
+                "fp": 2,
+                "n_reference": 132,
+                "f1": 0.6990291262135923
+              },
+              "cicadas_and_crickets": {
+                "tp": 278,
+                "fp": 20,
+                "n_reference": 349,
+                "f1": 0.8593508500772797
+              },
+              "crows_seagulls_magpies": {
+                "tp": 71,
+                "fp": 2,
+                "n_reference": 136,
+                "f1": 0.6794258373205742
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 105,
+                "fp": 6,
+                "n_reference": 232,
+                "f1": 0.6122448979591837
+              },
+              "glass_breaking": {
+                "tp": 59,
+                "fp": 2,
+                "n_reference": 89,
+                "f1": 0.7866666666666666
+              },
+              "horn": {
+                "tp": 40,
+                "fp": 7,
+                "n_reference": 109,
+                "f1": 0.5128205128205128
+              },
+              "jet_aircrafts": {
+                "tp": 16,
+                "fp": 2,
+                "n_reference": 72,
+                "f1": 0.35555555555555557
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 54,
+                "fp": 2,
+                "n_reference": 100,
+                "f1": 0.6923076923076923
+              },
+              "music": {
+                "tp": 69,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7666666666666667
+              },
+              "propeller_aircrafts": {
+                "tp": 45,
+                "fp": 2,
+                "n_reference": 99,
+                "f1": 0.6164383561643836
+              },
+              "sirens_and_alarms": {
+                "tp": 60,
+                "fp": 2,
+                "n_reference": 104,
+                "f1": 0.7228915662650602
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 65,
+                "fp": 1,
+                "n_reference": 97,
+                "f1": 0.7975460122699386
+              },
+              "train": {
+                "tp": 58,
+                "fp": 3,
+                "n_reference": 105,
+                "f1": 0.6987951807228916
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 107,
+                "fp": 1,
+                "n_reference": 116,
+                "f1": 0.9553571428571429
+              },
+              "vehicle_idling": {
+                "tp": 21,
+                "fp": 2,
+                "n_reference": 119,
+                "f1": 0.29577464788732394
+              },
+              "vehicle_pass_by": {
+                "tp": 45,
+                "fp": 10,
+                "n_reference": 217,
+                "f1": 0.33088235294117646
+              },
+              "voices": {
+                "tp": 156,
+                "fp": 16,
+                "n_reference": 299,
+                "f1": 0.6624203821656051
+              },
+              "workshop": {
+                "tp": 286,
+                "fp": 4,
+                "n_reference": 358,
+                "f1": 0.8827160493827161
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.24252702989188044,
+          "macro_f1": 0.18641586433390217,
+          "nref": 3059,
+          "nsys": 1658,
+          "ntp": 572,
+          "recall": 0.1869892121608369,
+          "event_f1_collar_1s": {
+            "micro": 0.4765740937036252,
+            "macro": 0.3999701281795641
+          },
+          "segment_f1_1s": {
+            "micro": 0.710285669316125,
+            "macro": 0.6828352729299413
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9463687150837988,
+              "recall": 0.5537757437070938,
+              "f1": 0.6987007630439266
+            },
+            "macro_f1": 0.6635781689965569,
+            "macro_f1_psds_eval": 0.6635781689965569,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 0,
+                "n_reference": 88,
+                "f1": 0.8930817610062893
+              },
+              "birds": {
+                "tp": 27,
+                "fp": 8,
+                "n_reference": 238,
+                "f1": 0.1978021978021978
+              },
+              "cat_fights_and_moans": {
+                "tp": 105,
+                "fp": 3,
+                "n_reference": 129,
+                "f1": 0.8860759493670886
+              },
+              "chicken_coop": {
+                "tp": 72,
+                "fp": 2,
+                "n_reference": 132,
+                "f1": 0.6990291262135923
+              },
+              "cicadas_and_crickets": {
+                "tp": 278,
+                "fp": 20,
+                "n_reference": 349,
+                "f1": 0.8593508500772797
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 105,
+                "fp": 6,
+                "n_reference": 232,
+                "f1": 0.6122448979591837
+              },
+              "glass_breaking": {
+                "tp": 59,
+                "fp": 2,
+                "n_reference": 89,
+                "f1": 0.7866666666666666
+              },
+              "horn": {
+                "tp": 40,
+                "fp": 7,
+                "n_reference": 109,
+                "f1": 0.5128205128205128
+              },
+              "jet_aircrafts": {
+                "tp": 16,
+                "fp": 2,
+                "n_reference": 72,
+                "f1": 0.35555555555555557
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 54,
+                "fp": 2,
+                "n_reference": 100,
+                "f1": 0.6923076923076923
+              },
+              "music": {
+                "tp": 69,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7666666666666667
+              },
+              "sirens_and_alarms": {
+                "tp": 60,
+                "fp": 2,
+                "n_reference": 104,
+                "f1": 0.7228915662650602
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 65,
+                "fp": 1,
+                "n_reference": 97,
+                "f1": 0.7975460122699386
+              },
+              "train": {
+                "tp": 58,
+                "fp": 3,
+                "n_reference": 105,
+                "f1": 0.6987951807228916
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 107,
+                "fp": 1,
+                "n_reference": 116,
+                "f1": 0.9553571428571429
+              },
+              "vehicle_idling": {
+                "tp": 21,
+                "fp": 2,
+                "n_reference": 119,
+                "f1": 0.29577464788732394
+              },
+              "vehicle_pass_by": {
+                "tp": 45,
+                "fp": 10,
+                "n_reference": 217,
+                "f1": 0.33088235294117646
+              },
+              "voices": {
+                "tp": 156,
+                "fp": 16,
+                "n_reference": 299,
+                "f1": 0.6624203821656051
+              },
+              "workshop": {
+                "tp": 286,
+                "fp": 4,
+                "n_reference": 358,
+                "f1": 0.8827160493827161
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      },
+      "recall_first": {
+        "all": {
+          "micro_f1": 0.18108326596604687,
+          "macro_f1": 0.15202899837587372,
+          "nref": 3294,
+          "nsys": 4128,
+          "ntp": 672,
+          "recall": 0.2040072859744991,
+          "event_f1_collar_1s": {
+            "micro": 0.3945028294260307,
+            "macro": 0.3554973352081431
+          },
+          "segment_f1_1s": {
+            "micro": 0.7776401749701755,
+            "macro": 0.7704289030587955
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.6275036638983879,
+              "recall": 0.7799028536733454,
+              "f1": 0.6954520844612886
+            },
+            "macro_f1": 0.6830242008085541,
+            "macro_f1_psds_eval": 0.6830242008085541,
+            "per_class": {
+              "bells": {
+                "tp": 76,
+                "fp": 27,
+                "n_reference": 88,
+                "f1": 0.7958115183246073
+              },
+              "birds": {
+                "tp": 128,
+                "fp": 168,
+                "n_reference": 238,
+                "f1": 0.4794007490636704
+              },
+              "cat_fights_and_moans": {
+                "tp": 126,
+                "fp": 44,
+                "n_reference": 129,
+                "f1": 0.842809364548495
+              },
+              "chicken_coop": {
+                "tp": 99,
+                "fp": 53,
+                "n_reference": 132,
+                "f1": 0.6971830985915493
+              },
+              "cicadas_and_crickets": {
+                "tp": 327,
+                "fp": 117,
+                "n_reference": 349,
+                "f1": 0.8247162673392182
+              },
+              "crows_seagulls_magpies": {
+                "tp": 96,
+                "fp": 67,
+                "n_reference": 136,
+                "f1": 0.6421404682274248
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 192,
+                "fp": 111,
+                "n_reference": 232,
+                "f1": 0.7177570093457943
+              },
+              "glass_breaking": {
+                "tp": 81,
+                "fp": 38,
+                "n_reference": 89,
+                "f1": 0.7788461538461539
+              },
+              "horn": {
+                "tp": 66,
+                "fp": 57,
+                "n_reference": 109,
+                "f1": 0.5689655172413793
+              },
+              "jet_aircrafts": {
+                "tp": 35,
+                "fp": 27,
+                "n_reference": 72,
+                "f1": 0.5223880597014925
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 73,
+                "fp": 57,
+                "n_reference": 100,
+                "f1": 0.6347826086956522
+              },
+              "music": {
+                "tp": 93,
+                "fp": 65,
+                "n_reference": 106,
+                "f1": 0.7045454545454546
+              },
+              "propeller_aircrafts": {
+                "tp": 78,
+                "fp": 25,
+                "n_reference": 99,
+                "f1": 0.7722772277227723
+              },
+              "sirens_and_alarms": {
+                "tp": 72,
+                "fp": 44,
+                "n_reference": 104,
+                "f1": 0.6545454545454545
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 87,
+                "fp": 46,
+                "n_reference": 97,
+                "f1": 0.7565217391304347
+              },
+              "train": {
+                "tp": 89,
+                "fp": 55,
+                "n_reference": 105,
+                "f1": 0.714859437751004
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 108,
+                "fp": 42,
+                "n_reference": 116,
+                "f1": 0.8120300751879699
+              },
+              "vehicle_idling": {
+                "tp": 41,
+                "fp": 44,
+                "n_reference": 119,
+                "f1": 0.4019607843137255
+              },
+              "vehicle_pass_by": {
+                "tp": 125,
+                "fp": 133,
+                "n_reference": 217,
+                "f1": 0.5263157894736842
+              },
+              "voices": {
+                "tp": 242,
+                "fp": 214,
+                "n_reference": 299,
+                "f1": 0.6410596026490066
+              },
+              "workshop": {
+                "tp": 335,
+                "fp": 91,
+                "n_reference": 358,
+                "f1": 0.8545918367346939
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.1868592057761733,
+          "macro_f1": 0.15736093201696089,
+          "nref": 3059,
+          "nsys": 3866,
+          "ntp": 647,
+          "recall": 0.21150702844066688,
+          "event_f1_collar_1s": {
+            "micro": 0.4020216606498195,
+            "macro": 0.3623509801445849
+          },
+          "segment_f1_1s": {
+            "micro": 0.7741564710990779,
+            "macro": 0.7681181219483223
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.6256530825496343,
+              "recall": 0.7829355998692383,
+              "f1": 0.6955132859009728
+            },
+            "macro_f1": 0.6804784484752338,
+            "macro_f1_psds_eval": 0.6804784484752338,
+            "per_class": {
+              "bells": {
+                "tp": 76,
+                "fp": 27,
+                "n_reference": 88,
+                "f1": 0.7958115183246073
+              },
+              "birds": {
+                "tp": 128,
+                "fp": 168,
+                "n_reference": 238,
+                "f1": 0.4794007490636704
+              },
+              "cat_fights_and_moans": {
+                "tp": 126,
+                "fp": 44,
+                "n_reference": 129,
+                "f1": 0.842809364548495
+              },
+              "chicken_coop": {
+                "tp": 99,
+                "fp": 53,
+                "n_reference": 132,
+                "f1": 0.6971830985915493
+              },
+              "cicadas_and_crickets": {
+                "tp": 327,
+                "fp": 117,
+                "n_reference": 349,
+                "f1": 0.8247162673392182
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 192,
+                "fp": 111,
+                "n_reference": 232,
+                "f1": 0.7177570093457943
+              },
+              "glass_breaking": {
+                "tp": 81,
+                "fp": 38,
+                "n_reference": 89,
+                "f1": 0.7788461538461539
+              },
+              "horn": {
+                "tp": 66,
+                "fp": 57,
+                "n_reference": 109,
+                "f1": 0.5689655172413793
+              },
+              "jet_aircrafts": {
+                "tp": 35,
+                "fp": 27,
+                "n_reference": 72,
+                "f1": 0.5223880597014925
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 73,
+                "fp": 57,
+                "n_reference": 100,
+                "f1": 0.6347826086956522
+              },
+              "music": {
+                "tp": 93,
+                "fp": 65,
+                "n_reference": 106,
+                "f1": 0.7045454545454546
+              },
+              "sirens_and_alarms": {
+                "tp": 72,
+                "fp": 44,
+                "n_reference": 104,
+                "f1": 0.6545454545454545
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 87,
+                "fp": 46,
+                "n_reference": 97,
+                "f1": 0.7565217391304347
+              },
+              "train": {
+                "tp": 89,
+                "fp": 55,
+                "n_reference": 105,
+                "f1": 0.714859437751004
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 108,
+                "fp": 42,
+                "n_reference": 116,
+                "f1": 0.8120300751879699
+              },
+              "vehicle_idling": {
+                "tp": 41,
+                "fp": 44,
+                "n_reference": 119,
+                "f1": 0.4019607843137255
+              },
+              "vehicle_pass_by": {
+                "tp": 125,
+                "fp": 133,
+                "n_reference": 217,
+                "f1": 0.5263157894736842
+              },
+              "voices": {
+                "tp": 242,
+                "fp": 214,
+                "n_reference": 299,
+                "f1": 0.6410596026490066
+              },
+              "workshop": {
+                "tp": 335,
+                "fp": 91,
+                "n_reference": 358,
+                "f1": 0.8545918367346939
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      }
+    },
+    "P1x3": {
+      "f1": {
+        "all": {
+          "micro_f1": 0.23441108545034642,
+          "macro_f1": 0.17936497957049044,
+          "nref": 3294,
+          "nsys": 1902,
+          "ntp": 609,
+          "recall": 0.1848816029143898,
+          "event_f1_collar_1s": {
+            "micro": 0.4857582755966128,
+            "macro": 0.4070744447944725
+          },
+          "segment_f1_1s": {
+            "micro": 0.7187611152151906,
+            "macro": 0.6982787708331004
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.934720908230842,
+              "recall": 0.5998785670916819,
+              "f1": 0.7307692307692307
+            },
+            "macro_f1": 0.68534036445393,
+            "macro_f1_psds_eval": 0.68534036445393,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8819875776397516
+              },
+              "birds": {
+                "tp": 72,
+                "fp": 10,
+                "n_reference": 238,
+                "f1": 0.45
+              },
+              "cat_fights_and_moans": {
+                "tp": 115,
+                "fp": 6,
+                "n_reference": 129,
+                "f1": 0.92
+              },
+              "chicken_coop": {
+                "tp": 81,
+                "fp": 3,
+                "n_reference": 132,
+                "f1": 0.75
+              },
+              "cicadas_and_crickets": {
+                "tp": 299,
+                "fp": 8,
+                "n_reference": 349,
+                "f1": 0.9115853658536586
+              },
+              "crows_seagulls_magpies": {
+                "tp": 79,
+                "fp": 8,
+                "n_reference": 136,
+                "f1": 0.7085201793721974
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 128,
+                "fp": 7,
+                "n_reference": 232,
+                "f1": 0.6975476839237057
+              },
+              "glass_breaking": {
+                "tp": 71,
+                "fp": 6,
+                "n_reference": 89,
+                "f1": 0.8554216867469879
+              },
+              "horn": {
+                "tp": 39,
+                "fp": 10,
+                "n_reference": 109,
+                "f1": 0.4936708860759494
+              },
+              "jet_aircrafts": {
+                "tp": 10,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.24390243902439024
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 55,
+                "fp": 4,
+                "n_reference": 100,
+                "f1": 0.6918238993710691
+              },
+              "music": {
+                "tp": 68,
+                "fp": 9,
+                "n_reference": 106,
+                "f1": 0.7431693989071039
+              },
+              "propeller_aircrafts": {
+                "tp": 50,
+                "fp": 3,
+                "n_reference": 99,
+                "f1": 0.6578947368421053
+              },
+              "sirens_and_alarms": {
+                "tp": 58,
+                "fp": 10,
+                "n_reference": 104,
+                "f1": 0.6744186046511628
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 73,
+                "fp": 2,
+                "n_reference": 97,
+                "f1": 0.8488372093023255
+              },
+              "train": {
+                "tp": 62,
+                "fp": 5,
+                "n_reference": 105,
+                "f1": 0.7209302325581395
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 108,
+                "fp": 5,
+                "n_reference": 116,
+                "f1": 0.9432314410480349
+              },
+              "vehicle_idling": {
+                "tp": 17,
+                "fp": 5,
+                "n_reference": 119,
+                "f1": 0.24113475177304963
+              },
+              "vehicle_pass_by": {
+                "tp": 48,
+                "fp": 13,
+                "n_reference": 217,
+                "f1": 0.34532374100719426
+              },
+              "voices": {
+                "tp": 175,
+                "fp": 18,
+                "n_reference": 299,
+                "f1": 0.7113821138211383
+              },
+              "workshop": {
+                "tp": 297,
+                "fp": 4,
+                "n_reference": 358,
+                "f1": 0.9013657056145675
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.24049586776859505,
+          "macro_f1": 0.1827350540148292,
+          "nref": 3059,
+          "nsys": 1781,
+          "ntp": 582,
+          "recall": 0.19025825433148089,
+          "event_f1_collar_1s": {
+            "micro": 0.49421487603305786,
+            "macro": 0.41118929498511503
+          },
+          "segment_f1_1s": {
+            "micro": 0.7227709042725298,
+            "macro": 0.6965579057218128
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9356636271529889,
+              "recall": 0.603792088917947,
+              "f1": 0.7339558911186171
+            },
+            "macro_f1": 0.6855648809114857,
+            "macro_f1_psds_eval": 0.6855648809114857,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8819875776397516
+              },
+              "birds": {
+                "tp": 72,
+                "fp": 10,
+                "n_reference": 238,
+                "f1": 0.45
+              },
+              "cat_fights_and_moans": {
+                "tp": 115,
+                "fp": 6,
+                "n_reference": 129,
+                "f1": 0.92
+              },
+              "chicken_coop": {
+                "tp": 81,
+                "fp": 3,
+                "n_reference": 132,
+                "f1": 0.75
+              },
+              "cicadas_and_crickets": {
+                "tp": 299,
+                "fp": 8,
+                "n_reference": 349,
+                "f1": 0.9115853658536586
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 128,
+                "fp": 7,
+                "n_reference": 232,
+                "f1": 0.6975476839237057
+              },
+              "glass_breaking": {
+                "tp": 71,
+                "fp": 6,
+                "n_reference": 89,
+                "f1": 0.8554216867469879
+              },
+              "horn": {
+                "tp": 39,
+                "fp": 10,
+                "n_reference": 109,
+                "f1": 0.4936708860759494
+              },
+              "jet_aircrafts": {
+                "tp": 10,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.24390243902439024
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 55,
+                "fp": 4,
+                "n_reference": 100,
+                "f1": 0.6918238993710691
+              },
+              "music": {
+                "tp": 68,
+                "fp": 9,
+                "n_reference": 106,
+                "f1": 0.7431693989071039
+              },
+              "sirens_and_alarms": {
+                "tp": 58,
+                "fp": 10,
+                "n_reference": 104,
+                "f1": 0.6744186046511628
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 73,
+                "fp": 2,
+                "n_reference": 97,
+                "f1": 0.8488372093023255
+              },
+              "train": {
+                "tp": 62,
+                "fp": 5,
+                "n_reference": 105,
+                "f1": 0.7209302325581395
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 108,
+                "fp": 5,
+                "n_reference": 116,
+                "f1": 0.9432314410480349
+              },
+              "vehicle_idling": {
+                "tp": 17,
+                "fp": 5,
+                "n_reference": 119,
+                "f1": 0.24113475177304963
+              },
+              "vehicle_pass_by": {
+                "tp": 48,
+                "fp": 13,
+                "n_reference": 217,
+                "f1": 0.34532374100719426
+              },
+              "voices": {
+                "tp": 175,
+                "fp": 18,
+                "n_reference": 299,
+                "f1": 0.7113821138211383
+              },
+              "workshop": {
+                "tp": 297,
+                "fp": 4,
+                "n_reference": 358,
+                "f1": 0.9013657056145675
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      },
+      "recall_first": {
+        "all": {
+          "micro_f1": 0.17885521885521885,
+          "macro_f1": 0.149772822888957,
+          "nref": 3294,
+          "nsys": 4131,
+          "ntp": 664,
+          "recall": 0.201578627808136,
+          "event_f1_collar_1s": {
+            "micro": 0.4037710437710438,
+            "macro": 0.35693112883883477
+          },
+          "segment_f1_1s": {
+            "micro": 0.7773371851624029,
+            "macro": 0.7717447626175014
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.6272118603538976,
+              "recall": 0.7962962962962963,
+              "f1": 0.7017121455323703
+            },
+            "macro_f1": 0.6879431214714431,
+            "macro_f1_psds_eval": 0.6879431214714431,
+            "per_class": {
+              "bells": {
+                "tp": 77,
+                "fp": 32,
+                "n_reference": 88,
+                "f1": 0.7817258883248731
+              },
+              "birds": {
+                "tp": 135,
+                "fp": 163,
+                "n_reference": 238,
+                "f1": 0.503731343283582
+              },
+              "cat_fights_and_moans": {
+                "tp": 128,
+                "fp": 60,
+                "n_reference": 129,
+                "f1": 0.807570977917981
+              },
+              "chicken_coop": {
+                "tp": 106,
+                "fp": 55,
+                "n_reference": 132,
+                "f1": 0.7235494880546075
+              },
+              "cicadas_and_crickets": {
+                "tp": 324,
+                "fp": 90,
+                "n_reference": 349,
+                "f1": 0.8492791612057667
+              },
+              "crows_seagulls_magpies": {
+                "tp": 97,
+                "fp": 82,
+                "n_reference": 136,
+                "f1": 0.6158730158730159
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 195,
+                "fp": 105,
+                "n_reference": 232,
+                "f1": 0.7330827067669173
+              },
+              "glass_breaking": {
+                "tp": 81,
+                "fp": 42,
+                "n_reference": 89,
+                "f1": 0.7641509433962265
+              },
+              "horn": {
+                "tp": 72,
+                "fp": 71,
+                "n_reference": 109,
+                "f1": 0.5714285714285714
+              },
+              "jet_aircrafts": {
+                "tp": 32,
+                "fp": 25,
+                "n_reference": 72,
+                "f1": 0.49612403100775193
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 82,
+                "fp": 64,
+                "n_reference": 100,
+                "f1": 0.6666666666666666
+              },
+              "music": {
+                "tp": 90,
+                "fp": 61,
+                "n_reference": 106,
+                "f1": 0.7003891050583657
+              },
+              "propeller_aircrafts": {
+                "tp": 83,
+                "fp": 27,
+                "n_reference": 99,
+                "f1": 0.7942583732057417
+              },
+              "sirens_and_alarms": {
+                "tp": 74,
+                "fp": 34,
+                "n_reference": 104,
+                "f1": 0.6981132075471698
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 85,
+                "fp": 42,
+                "n_reference": 97,
+                "f1": 0.7589285714285714
+              },
+              "train": {
+                "tp": 94,
+                "fp": 46,
+                "n_reference": 105,
+                "f1": 0.7673469387755102
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 109,
+                "fp": 59,
+                "n_reference": 116,
+                "f1": 0.7676056338028169
+              },
+              "vehicle_idling": {
+                "tp": 41,
+                "fp": 39,
+                "n_reference": 119,
+                "f1": 0.4120603015075377
+              },
+              "vehicle_pass_by": {
+                "tp": 129,
+                "fp": 128,
+                "n_reference": 217,
+                "f1": 0.5443037974683544
+              },
+              "voices": {
+                "tp": 253,
+                "fp": 236,
+                "n_reference": 299,
+                "f1": 0.6421319796954315
+              },
+              "workshop": {
+                "tp": 336,
+                "fp": 98,
+                "n_reference": 358,
+                "f1": 0.8484848484848485
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.1824226655102631,
+          "macro_f1": 0.15175858605025508,
+          "nref": 3059,
+          "nsys": 3859,
+          "ntp": 631,
+          "recall": 0.20627656096763647,
+          "event_f1_collar_1s": {
+            "micro": 0.40994507082971965,
+            "macro": 0.3608672241504303
+          },
+          "segment_f1_1s": {
+            "micro": 0.7690384543980593,
+            "macro": 0.7675746776314999
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.6275366041613152,
+              "recall": 0.7986270022883295,
+              "f1": 0.702819332566168
+            },
+            "macro_f1": 0.6861407453590289,
+            "macro_f1_psds_eval": 0.6861407453590289,
+            "per_class": {
+              "bells": {
+                "tp": 77,
+                "fp": 32,
+                "n_reference": 88,
+                "f1": 0.7817258883248731
+              },
+              "birds": {
+                "tp": 135,
+                "fp": 163,
+                "n_reference": 238,
+                "f1": 0.503731343283582
+              },
+              "cat_fights_and_moans": {
+                "tp": 128,
+                "fp": 60,
+                "n_reference": 129,
+                "f1": 0.807570977917981
+              },
+              "chicken_coop": {
+                "tp": 106,
+                "fp": 55,
+                "n_reference": 132,
+                "f1": 0.7235494880546075
+              },
+              "cicadas_and_crickets": {
+                "tp": 324,
+                "fp": 90,
+                "n_reference": 349,
+                "f1": 0.8492791612057667
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 195,
+                "fp": 105,
+                "n_reference": 232,
+                "f1": 0.7330827067669173
+              },
+              "glass_breaking": {
+                "tp": 81,
+                "fp": 42,
+                "n_reference": 89,
+                "f1": 0.7641509433962265
+              },
+              "horn": {
+                "tp": 72,
+                "fp": 71,
+                "n_reference": 109,
+                "f1": 0.5714285714285714
+              },
+              "jet_aircrafts": {
+                "tp": 32,
+                "fp": 25,
+                "n_reference": 72,
+                "f1": 0.49612403100775193
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 82,
+                "fp": 64,
+                "n_reference": 100,
+                "f1": 0.6666666666666666
+              },
+              "music": {
+                "tp": 90,
+                "fp": 61,
+                "n_reference": 106,
+                "f1": 0.7003891050583657
+              },
+              "sirens_and_alarms": {
+                "tp": 74,
+                "fp": 34,
+                "n_reference": 104,
+                "f1": 0.6981132075471698
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 85,
+                "fp": 42,
+                "n_reference": 97,
+                "f1": 0.7589285714285714
+              },
+              "train": {
+                "tp": 94,
+                "fp": 46,
+                "n_reference": 105,
+                "f1": 0.7673469387755102
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 109,
+                "fp": 59,
+                "n_reference": 116,
+                "f1": 0.7676056338028169
+              },
+              "vehicle_idling": {
+                "tp": 41,
+                "fp": 39,
+                "n_reference": 119,
+                "f1": 0.4120603015075377
+              },
+              "vehicle_pass_by": {
+                "tp": 129,
+                "fp": 128,
+                "n_reference": 217,
+                "f1": 0.5443037974683544
+              },
+              "voices": {
+                "tp": 253,
+                "fp": 236,
+                "n_reference": 299,
+                "f1": 0.6421319796954315
+              },
+              "workshop": {
+                "tp": 336,
+                "fp": 98,
+                "n_reference": 358,
+                "f1": 0.8484848484848485
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      }
+    },
+    "LBR_v1": {
+      "f1": {
+        "all": {
+          "micro_f1": 0.30431403031480764,
+          "macro_f1": 0.2343186922984229,
+          "nref": 3294,
+          "nsys": 1852,
+          "ntp": 783,
+          "recall": 0.23770491803278687,
+          "event_f1_collar_1s": {
+            "micro": 0.5110765643218034,
+            "macro": 0.4490626060744599
+          },
+          "segment_f1_1s": {
+            "micro": 0.7225884090473976,
+            "macro": 0.7068263077989828
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9363992172211351,
+              "recall": 0.581056466302368,
+              "f1": 0.7171225177969277
+            },
+            "macro_f1": 0.6885905981213485,
+            "macro_f1_psds_eval": 0.6885905981213485,
+            "per_class": {
+              "bells": {
+                "tp": 73,
+                "fp": 0,
+                "n_reference": 88,
+                "f1": 0.906832298136646
+              },
+              "birds": {
+                "tp": 34,
+                "fp": 17,
+                "n_reference": 238,
+                "f1": 0.23529411764705882
+              },
+              "cat_fights_and_moans": {
+                "tp": 105,
+                "fp": 3,
+                "n_reference": 129,
+                "f1": 0.8860759493670886
+              },
+              "chicken_coop": {
+                "tp": 76,
+                "fp": 3,
+                "n_reference": 132,
+                "f1": 0.7203791469194313
+              },
+              "cicadas_and_crickets": {
+                "tp": 289,
+                "fp": 17,
+                "n_reference": 349,
+                "f1": 0.8824427480916031
+              },
+              "crows_seagulls_magpies": {
+                "tp": 75,
+                "fp": 2,
+                "n_reference": 136,
+                "f1": 0.704225352112676
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 113,
+                "fp": 6,
+                "n_reference": 232,
+                "f1": 0.6438746438746439
+              },
+              "glass_breaking": {
+                "tp": 67,
+                "fp": 2,
+                "n_reference": 89,
+                "f1": 0.8481012658227848
+              },
+              "horn": {
+                "tp": 44,
+                "fp": 7,
+                "n_reference": 109,
+                "f1": 0.55
+              },
+              "jet_aircrafts": {
+                "tp": 20,
+                "fp": 2,
+                "n_reference": 72,
+                "f1": 0.425531914893617
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 54,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.6967741935483871
+              },
+              "music": {
+                "tp": 73,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7934782608695652
+              },
+              "propeller_aircrafts": {
+                "tp": 51,
+                "fp": 4,
+                "n_reference": 99,
+                "f1": 0.6623376623376623
+              },
+              "sirens_and_alarms": {
+                "tp": 62,
+                "fp": 2,
+                "n_reference": 104,
+                "f1": 0.7380952380952381
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 67,
+                "fp": 2,
+                "n_reference": 97,
+                "f1": 0.8072289156626506
+              },
+              "train": {
+                "tp": 65,
+                "fp": 4,
+                "n_reference": 105,
+                "f1": 0.7471264367816092
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 107,
+                "fp": 2,
+                "n_reference": 116,
+                "f1": 0.9511111111111111
+              },
+              "vehicle_idling": {
+                "tp": 22,
+                "fp": 6,
+                "n_reference": 119,
+                "f1": 0.29931972789115646
+              },
+              "vehicle_pass_by": {
+                "tp": 54,
+                "fp": 15,
+                "n_reference": 217,
+                "f1": 0.3776223776223776
+              },
+              "voices": {
+                "tp": 173,
+                "fp": 22,
+                "n_reference": 299,
+                "f1": 0.7004048582995951
+              },
+              "workshop": {
+                "tp": 290,
+                "fp": 8,
+                "n_reference": 358,
+                "f1": 0.8841463414634146
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.3147377185678601,
+          "macro_f1": 0.24264729195992685,
+          "nref": 3059,
+          "nsys": 1745,
+          "ntp": 756,
+          "recall": 0.2471395881006865,
+          "event_f1_collar_1s": {
+            "micro": 0.5183180682764363,
+            "macro": 0.4531611719627956
+          },
+          "segment_f1_1s": {
+            "micro": 0.7301094441711756,
+            "macro": 0.7067896560854264
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9351464435146444,
+              "recall": 0.5845047401111474,
+              "f1": 0.7193723596861799
+            },
+            "macro_f1": 0.6891494497946307,
+            "macro_f1_psds_eval": 0.6891494497946307,
+            "per_class": {
+              "bells": {
+                "tp": 73,
+                "fp": 0,
+                "n_reference": 88,
+                "f1": 0.906832298136646
+              },
+              "birds": {
+                "tp": 34,
+                "fp": 17,
+                "n_reference": 238,
+                "f1": 0.23529411764705882
+              },
+              "cat_fights_and_moans": {
+                "tp": 105,
+                "fp": 3,
+                "n_reference": 129,
+                "f1": 0.8860759493670886
+              },
+              "chicken_coop": {
+                "tp": 76,
+                "fp": 3,
+                "n_reference": 132,
+                "f1": 0.7203791469194313
+              },
+              "cicadas_and_crickets": {
+                "tp": 289,
+                "fp": 17,
+                "n_reference": 349,
+                "f1": 0.8824427480916031
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 113,
+                "fp": 6,
+                "n_reference": 232,
+                "f1": 0.6438746438746439
+              },
+              "glass_breaking": {
+                "tp": 67,
+                "fp": 2,
+                "n_reference": 89,
+                "f1": 0.8481012658227848
+              },
+              "horn": {
+                "tp": 44,
+                "fp": 7,
+                "n_reference": 109,
+                "f1": 0.55
+              },
+              "jet_aircrafts": {
+                "tp": 20,
+                "fp": 2,
+                "n_reference": 72,
+                "f1": 0.425531914893617
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 54,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.6967741935483871
+              },
+              "music": {
+                "tp": 73,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7934782608695652
+              },
+              "sirens_and_alarms": {
+                "tp": 62,
+                "fp": 2,
+                "n_reference": 104,
+                "f1": 0.7380952380952381
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 67,
+                "fp": 2,
+                "n_reference": 97,
+                "f1": 0.8072289156626506
+              },
+              "train": {
+                "tp": 65,
+                "fp": 4,
+                "n_reference": 105,
+                "f1": 0.7471264367816092
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 107,
+                "fp": 2,
+                "n_reference": 116,
+                "f1": 0.9511111111111111
+              },
+              "vehicle_idling": {
+                "tp": 22,
+                "fp": 6,
+                "n_reference": 119,
+                "f1": 0.29931972789115646
+              },
+              "vehicle_pass_by": {
+                "tp": 54,
+                "fp": 15,
+                "n_reference": 217,
+                "f1": 0.3776223776223776
+              },
+              "voices": {
+                "tp": 173,
+                "fp": 22,
+                "n_reference": 299,
+                "f1": 0.7004048582995951
+              },
+              "workshop": {
+                "tp": 290,
+                "fp": 8,
+                "n_reference": 358,
+                "f1": 0.8841463414634146
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      },
+      "recall_first": {
+        "all": {
+          "micro_f1": 0.2226775956284153,
+          "macro_f1": 0.1825688403865237,
+          "nref": 3294,
+          "nsys": 4026,
+          "ntp": 815,
+          "recall": 0.24741955069823923,
+          "event_f1_collar_1s": {
+            "micro": 0.39999999999999997,
+            "macro": 0.36979411710460314
+          },
+          "segment_f1_1s": {
+            "micro": 0.7571287495370942,
+            "macro": 0.7557583354812549
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.6401771148916336,
+              "recall": 0.8339404978749241,
+              "f1": 0.7243243243243244
+            },
+            "macro_f1": 0.725112596601847,
+            "macro_f1_psds_eval": 0.725112596601847,
+            "per_class": {
+              "bells": {
+                "tp": 77,
+                "fp": 18,
+                "n_reference": 88,
+                "f1": 0.8415300546448088
+              },
+              "birds": {
+                "tp": 145,
+                "fp": 197,
+                "n_reference": 238,
+                "f1": 0.5
+              },
+              "cat_fights_and_moans": {
+                "tp": 128,
+                "fp": 18,
+                "n_reference": 129,
+                "f1": 0.9309090909090909
+              },
+              "chicken_coop": {
+                "tp": 106,
+                "fp": 34,
+                "n_reference": 132,
+                "f1": 0.7794117647058824
+              },
+              "cicadas_and_crickets": {
+                "tp": 331,
+                "fp": 101,
+                "n_reference": 349,
+                "f1": 0.8476312419974392
+              },
+              "crows_seagulls_magpies": {
+                "tp": 98,
+                "fp": 65,
+                "n_reference": 136,
+                "f1": 0.6555183946488294
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 203,
+                "fp": 77,
+                "n_reference": 232,
+                "f1": 0.79296875
+              },
+              "glass_breaking": {
+                "tp": 82,
+                "fp": 23,
+                "n_reference": 89,
+                "f1": 0.845360824742268
+              },
+              "horn": {
+                "tp": 78,
+                "fp": 53,
+                "n_reference": 109,
+                "f1": 0.65
+              },
+              "jet_aircrafts": {
+                "tp": 42,
+                "fp": 57,
+                "n_reference": 72,
+                "f1": 0.49122807017543857
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 87,
+                "fp": 49,
+                "n_reference": 100,
+                "f1": 0.7372881355932204
+              },
+              "music": {
+                "tp": 100,
+                "fp": 53,
+                "n_reference": 106,
+                "f1": 0.7722007722007722
+              },
+              "propeller_aircrafts": {
+                "tp": 85,
+                "fp": 30,
+                "n_reference": 99,
+                "f1": 0.794392523364486
+              },
+              "sirens_and_alarms": {
+                "tp": 79,
+                "fp": 33,
+                "n_reference": 104,
+                "f1": 0.7314814814814815
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 89,
+                "fp": 31,
+                "n_reference": 97,
+                "f1": 0.8202764976958525
+              },
+              "train": {
+                "tp": 97,
+                "fp": 54,
+                "n_reference": 105,
+                "f1": 0.7578125
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 109,
+                "fp": 44,
+                "n_reference": 116,
+                "f1": 0.8104089219330854
+              },
+              "vehicle_idling": {
+                "tp": 51,
+                "fp": 79,
+                "n_reference": 119,
+                "f1": 0.40963855421686746
+              },
+              "vehicle_pass_by": {
+                "tp": 154,
+                "fp": 193,
+                "n_reference": 217,
+                "f1": 0.5460992907801419
+              },
+              "voices": {
+                "tp": 266,
+                "fp": 214,
+                "n_reference": 299,
+                "f1": 0.6829268292682927
+              },
+              "workshop": {
+                "tp": 340,
+                "fp": 121,
+                "n_reference": 358,
+                "f1": 0.8302808302808303
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.2284212063677523,
+          "macro_f1": 0.18724835169657156,
+          "nref": 3059,
+          "nsys": 3788,
+          "ntp": 782,
+          "recall": 0.2556390977443609,
+          "event_f1_collar_1s": {
+            "micro": 0.4036804439900687,
+            "macro": 0.3718613840430283
+          },
+          "segment_f1_1s": {
+            "micro": 0.7481337040925821,
+            "macro": 0.7530749265010239
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.6389234986294543,
+              "recall": 0.838182412553122,
+              "f1": 0.7251131221719457
+            },
+            "macro_f1": 0.7251291374013407,
+            "macro_f1_psds_eval": 0.7251291374013407,
+            "per_class": {
+              "bells": {
+                "tp": 77,
+                "fp": 18,
+                "n_reference": 88,
+                "f1": 0.8415300546448088
+              },
+              "birds": {
+                "tp": 145,
+                "fp": 197,
+                "n_reference": 238,
+                "f1": 0.5
+              },
+              "cat_fights_and_moans": {
+                "tp": 128,
+                "fp": 18,
+                "n_reference": 129,
+                "f1": 0.9309090909090909
+              },
+              "chicken_coop": {
+                "tp": 106,
+                "fp": 34,
+                "n_reference": 132,
+                "f1": 0.7794117647058824
+              },
+              "cicadas_and_crickets": {
+                "tp": 331,
+                "fp": 101,
+                "n_reference": 349,
+                "f1": 0.8476312419974392
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 203,
+                "fp": 77,
+                "n_reference": 232,
+                "f1": 0.79296875
+              },
+              "glass_breaking": {
+                "tp": 82,
+                "fp": 23,
+                "n_reference": 89,
+                "f1": 0.845360824742268
+              },
+              "horn": {
+                "tp": 78,
+                "fp": 53,
+                "n_reference": 109,
+                "f1": 0.65
+              },
+              "jet_aircrafts": {
+                "tp": 42,
+                "fp": 57,
+                "n_reference": 72,
+                "f1": 0.49122807017543857
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 87,
+                "fp": 49,
+                "n_reference": 100,
+                "f1": 0.7372881355932204
+              },
+              "music": {
+                "tp": 100,
+                "fp": 53,
+                "n_reference": 106,
+                "f1": 0.7722007722007722
+              },
+              "sirens_and_alarms": {
+                "tp": 79,
+                "fp": 33,
+                "n_reference": 104,
+                "f1": 0.7314814814814815
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 89,
+                "fp": 31,
+                "n_reference": 97,
+                "f1": 0.8202764976958525
+              },
+              "train": {
+                "tp": 97,
+                "fp": 54,
+                "n_reference": 105,
+                "f1": 0.7578125
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 109,
+                "fp": 44,
+                "n_reference": 116,
+                "f1": 0.8104089219330854
+              },
+              "vehicle_idling": {
+                "tp": 51,
+                "fp": 79,
+                "n_reference": 119,
+                "f1": 0.40963855421686746
+              },
+              "vehicle_pass_by": {
+                "tp": 154,
+                "fp": 193,
+                "n_reference": 217,
+                "f1": 0.5460992907801419
+              },
+              "voices": {
+                "tp": 266,
+                "fp": 214,
+                "n_reference": 299,
+                "f1": 0.6829268292682927
+              },
+              "workshop": {
+                "tp": 340,
+                "fp": 121,
+                "n_reference": 358,
+                "f1": 0.8302808302808303
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      }
+    },
+    "LBR_v1_on_P1x3": {
+      "f1": {
+        "all": {
+          "micro_f1": 0.31907561321710926,
+          "macro_f1": 0.24349883238254688,
+          "nref": 3294,
+          "nsys": 1639,
+          "ntp": 787,
+          "recall": 0.23891924711596843,
+          "event_f1_collar_1s": {
+            "micro": 0.5108453273869856,
+            "macro": 0.44035112658783443
+          },
+          "segment_f1_1s": {
+            "micro": 0.6877122590814645,
+            "macro": 0.6644784203542207
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9664138678223185,
+              "recall": 0.5415907710989678,
+              "f1": 0.6941634241245136
+            },
+            "macro_f1": 0.6449289297437362,
+            "macro_f1_psds_eval": 0.6449289297437362,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 0,
+                "n_reference": 88,
+                "f1": 0.8930817610062893
+              },
+              "birds": {
+                "tp": 41,
+                "fp": 8,
+                "n_reference": 238,
+                "f1": 0.2857142857142857
+              },
+              "cat_fights_and_moans": {
+                "tp": 99,
+                "fp": 1,
+                "n_reference": 129,
+                "f1": 0.8646288209606987
+              },
+              "chicken_coop": {
+                "tp": 73,
+                "fp": 1,
+                "n_reference": 132,
+                "f1": 0.7087378640776699
+              },
+              "cicadas_and_crickets": {
+                "tp": 286,
+                "fp": 0,
+                "n_reference": 349,
+                "f1": 0.9007874015748032
+              },
+              "crows_seagulls_magpies": {
+                "tp": 72,
+                "fp": 1,
+                "n_reference": 136,
+                "f1": 0.6889952153110048
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 108,
+                "fp": 4,
+                "n_reference": 232,
+                "f1": 0.627906976744186
+              },
+              "glass_breaking": {
+                "tp": 67,
+                "fp": 3,
+                "n_reference": 89,
+                "f1": 0.8427672955974843
+              },
+              "horn": {
+                "tp": 33,
+                "fp": 5,
+                "n_reference": 109,
+                "f1": 0.4489795918367347
+              },
+              "jet_aircrafts": {
+                "tp": 7,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.17721518987341772
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 53,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.6883116883116883
+              },
+              "music": {
+                "tp": 60,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7017543859649122
+              },
+              "propeller_aircrafts": {
+                "tp": 46,
+                "fp": 2,
+                "n_reference": 99,
+                "f1": 0.6258503401360545
+              },
+              "sirens_and_alarms": {
+                "tp": 55,
+                "fp": 3,
+                "n_reference": 104,
+                "f1": 0.6790123456790124
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 62,
+                "fp": 1,
+                "n_reference": 97,
+                "f1": 0.775
+              },
+              "train": {
+                "tp": 54,
+                "fp": 2,
+                "n_reference": 105,
+                "f1": 0.6708074534161491
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 106,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.954954954954955
+              },
+              "vehicle_idling": {
+                "tp": 13,
+                "fp": 4,
+                "n_reference": 119,
+                "f1": 0.19117647058823528
+              },
+              "vehicle_pass_by": {
+                "tp": 33,
+                "fp": 7,
+                "n_reference": 217,
+                "f1": 0.25680933852140075
+              },
+              "voices": {
+                "tp": 158,
+                "fp": 11,
+                "n_reference": 299,
+                "f1": 0.6752136752136753
+              },
+              "workshop": {
+                "tp": 287,
+                "fp": 3,
+                "n_reference": 358,
+                "f1": 0.8858024691358025
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.32724107919930373,
+          "macro_f1": 0.24781404444499475,
+          "nref": 3059,
+          "nsys": 1537,
+          "ntp": 752,
+          "recall": 0.2458319712324289,
+          "event_f1_collar_1s": {
+            "micro": 0.515230635335074,
+            "macro": 0.43912865632046905
+          },
+          "segment_f1_1s": {
+            "micro": 0.6949242754149128,
+            "macro": 0.6626739246519642
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9657971014492753,
+              "recall": 0.5446224256292906,
+              "f1": 0.6964882943143813
+            },
+            "macro_f1": 0.6436137878511264,
+            "macro_f1_psds_eval": 0.6436137878511264,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 0,
+                "n_reference": 88,
+                "f1": 0.8930817610062893
+              },
+              "birds": {
+                "tp": 41,
+                "fp": 8,
+                "n_reference": 238,
+                "f1": 0.2857142857142857
+              },
+              "cat_fights_and_moans": {
+                "tp": 99,
+                "fp": 1,
+                "n_reference": 129,
+                "f1": 0.8646288209606987
+              },
+              "chicken_coop": {
+                "tp": 73,
+                "fp": 1,
+                "n_reference": 132,
+                "f1": 0.7087378640776699
+              },
+              "cicadas_and_crickets": {
+                "tp": 286,
+                "fp": 0,
+                "n_reference": 349,
+                "f1": 0.9007874015748032
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 108,
+                "fp": 4,
+                "n_reference": 232,
+                "f1": 0.627906976744186
+              },
+              "glass_breaking": {
+                "tp": 67,
+                "fp": 3,
+                "n_reference": 89,
+                "f1": 0.8427672955974843
+              },
+              "horn": {
+                "tp": 33,
+                "fp": 5,
+                "n_reference": 109,
+                "f1": 0.4489795918367347
+              },
+              "jet_aircrafts": {
+                "tp": 7,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.17721518987341772
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 53,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.6883116883116883
+              },
+              "music": {
+                "tp": 60,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7017543859649122
+              },
+              "sirens_and_alarms": {
+                "tp": 55,
+                "fp": 3,
+                "n_reference": 104,
+                "f1": 0.6790123456790124
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 62,
+                "fp": 1,
+                "n_reference": 97,
+                "f1": 0.775
+              },
+              "train": {
+                "tp": 54,
+                "fp": 2,
+                "n_reference": 105,
+                "f1": 0.6708074534161491
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 106,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.954954954954955
+              },
+              "vehicle_idling": {
+                "tp": 13,
+                "fp": 4,
+                "n_reference": 119,
+                "f1": 0.19117647058823528
+              },
+              "vehicle_pass_by": {
+                "tp": 33,
+                "fp": 7,
+                "n_reference": 217,
+                "f1": 0.25680933852140075
+              },
+              "voices": {
+                "tp": 158,
+                "fp": 11,
+                "n_reference": 299,
+                "f1": 0.6752136752136753
+              },
+              "workshop": {
+                "tp": 287,
+                "fp": 3,
+                "n_reference": 358,
+                "f1": 0.8858024691358025
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      },
+      "recall_first": {
+        "all": {
+          "micro_f1": 0.2506795530051344,
+          "macro_f1": 0.1999997925243313,
+          "nref": 3294,
+          "nsys": 3328,
+          "ntp": 830,
+          "recall": 0.25197328476017,
+          "event_f1_collar_1s": {
+            "micro": 0.4388402295379039,
+            "macro": 0.3943072123459398
+          },
+          "segment_f1_1s": {
+            "micro": 0.7719584916070709,
+            "macro": 0.7709600044940352
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.734860883797054,
+              "recall": 0.8178506375227687,
+              "f1": 0.7741379310344828
+            },
+            "macro_f1": 0.7667241948692407,
+            "macro_f1_psds_eval": 0.7667241948692407,
+            "per_class": {
+              "bells": {
+                "tp": 77,
+                "fp": 18,
+                "n_reference": 88,
+                "f1": 0.8415300546448088
+              },
+              "birds": {
+                "tp": 143,
+                "fp": 124,
+                "n_reference": 238,
+                "f1": 0.5663366336633663
+              },
+              "cat_fights_and_moans": {
+                "tp": 128,
+                "fp": 15,
+                "n_reference": 129,
+                "f1": 0.9411764705882353
+              },
+              "chicken_coop": {
+                "tp": 106,
+                "fp": 16,
+                "n_reference": 132,
+                "f1": 0.8346456692913385
+              },
+              "cicadas_and_crickets": {
+                "tp": 325,
+                "fp": 55,
+                "n_reference": 349,
+                "f1": 0.8916323731138546
+              },
+              "crows_seagulls_magpies": {
+                "tp": 99,
+                "fp": 45,
+                "n_reference": 136,
+                "f1": 0.7071428571428572
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 201,
+                "fp": 44,
+                "n_reference": 232,
+                "f1": 0.8427672955974843
+              },
+              "glass_breaking": {
+                "tp": 82,
+                "fp": 19,
+                "n_reference": 89,
+                "f1": 0.8631578947368421
+              },
+              "horn": {
+                "tp": 82,
+                "fp": 35,
+                "n_reference": 109,
+                "f1": 0.7256637168141593
+              },
+              "jet_aircrafts": {
+                "tp": 37,
+                "fp": 26,
+                "n_reference": 72,
+                "f1": 0.5481481481481482
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 87,
+                "fp": 33,
+                "n_reference": 100,
+                "f1": 0.7909090909090909
+              },
+              "music": {
+                "tp": 94,
+                "fp": 31,
+                "n_reference": 106,
+                "f1": 0.8138528138528138
+              },
+              "propeller_aircrafts": {
+                "tp": 83,
+                "fp": 25,
+                "n_reference": 99,
+                "f1": 0.8019323671497585
+              },
+              "sirens_and_alarms": {
+                "tp": 77,
+                "fp": 23,
+                "n_reference": 104,
+                "f1": 0.7549019607843137
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 85,
+                "fp": 22,
+                "n_reference": 97,
+                "f1": 0.8333333333333334
+              },
+              "train": {
+                "tp": 99,
+                "fp": 34,
+                "n_reference": 105,
+                "f1": 0.8319327731092437
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 109,
+                "fp": 25,
+                "n_reference": 116,
+                "f1": 0.872
+              },
+              "vehicle_idling": {
+                "tp": 47,
+                "fp": 39,
+                "n_reference": 119,
+                "f1": 0.4585365853658537
+              },
+              "vehicle_pass_by": {
+                "tp": 132,
+                "fp": 112,
+                "n_reference": 217,
+                "f1": 0.5726681127982647
+              },
+              "voices": {
+                "tp": 264,
+                "fp": 148,
+                "n_reference": 299,
+                "f1": 0.7426160337552743
+              },
+              "workshop": {
+                "tp": 337,
+                "fp": 83,
+                "n_reference": 358,
+                "f1": 0.8663239074550129
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.25733268514017177,
+          "macro_f1": 0.20457633815388013,
+          "nref": 3059,
+          "nsys": 3112,
+          "ntp": 794,
+          "recall": 0.2595619483491337,
+          "event_f1_collar_1s": {
+            "micro": 0.4430400259277264,
+            "macro": 0.39546656971636185
+          },
+          "segment_f1_1s": {
+            "micro": 0.7639223162158942,
+            "macro": 0.7675024246942509
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.7357937902753369,
+              "recall": 0.8211833932657732,
+              "f1": 0.7761470724548123
+            },
+            "macro_f1": 0.768006993050602,
+            "macro_f1_psds_eval": 0.768006993050602,
+            "per_class": {
+              "bells": {
+                "tp": 77,
+                "fp": 18,
+                "n_reference": 88,
+                "f1": 0.8415300546448088
+              },
+              "birds": {
+                "tp": 143,
+                "fp": 124,
+                "n_reference": 238,
+                "f1": 0.5663366336633663
+              },
+              "cat_fights_and_moans": {
+                "tp": 128,
+                "fp": 15,
+                "n_reference": 129,
+                "f1": 0.9411764705882353
+              },
+              "chicken_coop": {
+                "tp": 106,
+                "fp": 16,
+                "n_reference": 132,
+                "f1": 0.8346456692913385
+              },
+              "cicadas_and_crickets": {
+                "tp": 325,
+                "fp": 55,
+                "n_reference": 349,
+                "f1": 0.8916323731138546
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 201,
+                "fp": 44,
+                "n_reference": 232,
+                "f1": 0.8427672955974843
+              },
+              "glass_breaking": {
+                "tp": 82,
+                "fp": 19,
+                "n_reference": 89,
+                "f1": 0.8631578947368421
+              },
+              "horn": {
+                "tp": 82,
+                "fp": 35,
+                "n_reference": 109,
+                "f1": 0.7256637168141593
+              },
+              "jet_aircrafts": {
+                "tp": 37,
+                "fp": 26,
+                "n_reference": 72,
+                "f1": 0.5481481481481482
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 87,
+                "fp": 33,
+                "n_reference": 100,
+                "f1": 0.7909090909090909
+              },
+              "music": {
+                "tp": 94,
+                "fp": 31,
+                "n_reference": 106,
+                "f1": 0.8138528138528138
+              },
+              "sirens_and_alarms": {
+                "tp": 77,
+                "fp": 23,
+                "n_reference": 104,
+                "f1": 0.7549019607843137
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 85,
+                "fp": 22,
+                "n_reference": 97,
+                "f1": 0.8333333333333334
+              },
+              "train": {
+                "tp": 99,
+                "fp": 34,
+                "n_reference": 105,
+                "f1": 0.8319327731092437
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 109,
+                "fp": 25,
+                "n_reference": 116,
+                "f1": 0.872
+              },
+              "vehicle_idling": {
+                "tp": 47,
+                "fp": 39,
+                "n_reference": 119,
+                "f1": 0.4585365853658537
+              },
+              "vehicle_pass_by": {
+                "tp": 132,
+                "fp": 112,
+                "n_reference": 217,
+                "f1": 0.5726681127982647
+              },
+              "voices": {
+                "tp": 264,
+                "fp": 148,
+                "n_reference": 299,
+                "f1": 0.7426160337552743
+              },
+              "workshop": {
+                "tp": 337,
+                "fp": 83,
+                "n_reference": 358,
+                "f1": 0.8663239074550129
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      }
+    },
+    "LBR_v2": {
+      "f1": {
+        "all": {
+          "micro_f1": 0.3331973898858075,
+          "macro_f1": 0.24541790504236582,
+          "nref": 3294,
+          "nsys": 1610,
+          "ntp": 817,
+          "recall": 0.24802671523983,
+          "event_f1_collar_1s": {
+            "micro": 0.5346655791190864,
+            "macro": 0.4418934669029305
+          },
+          "segment_f1_1s": {
+            "micro": 0.5683583225029321,
+            "macro": 0.5421643936341819
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9490822972172883,
+              "recall": 0.48664238008500305,
+              "f1": 0.643387517559703
+            },
+            "macro_f1": 0.5734301960972984,
+            "macro_f1_psds_eval": 0.5734301960972984,
+            "per_class": {
+              "bells": {
+                "tp": 68,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8607594936708861
+              },
+              "birds": {
+                "tp": 11,
+                "fp": 10,
+                "n_reference": 238,
+                "f1": 0.08494208494208494
+              },
+              "cat_fights_and_moans": {
+                "tp": 100,
+                "fp": 0,
+                "n_reference": 129,
+                "f1": 0.8733624454148472
+              },
+              "chicken_coop": {
+                "tp": 67,
+                "fp": 1,
+                "n_reference": 132,
+                "f1": 0.67
+              },
+              "cicadas_and_crickets": {
+                "tp": 285,
+                "fp": 11,
+                "n_reference": 349,
+                "f1": 0.8837209302325582
+              },
+              "crows_seagulls_magpies": {
+                "tp": 58,
+                "fp": 4,
+                "n_reference": 136,
+                "f1": 0.5858585858585859
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 56,
+                "fp": 4,
+                "n_reference": 232,
+                "f1": 0.3835616438356164
+              },
+              "glass_breaking": {
+                "tp": 62,
+                "fp": 1,
+                "n_reference": 89,
+                "f1": 0.8157894736842105
+              },
+              "horn": {
+                "tp": 42,
+                "fp": 9,
+                "n_reference": 109,
+                "f1": 0.525
+              },
+              "jet_aircrafts": {
+                "tp": 5,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.12987012987012986
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 44,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.6068965517241379
+              },
+              "music": {
+                "tp": 58,
+                "fp": 1,
+                "n_reference": 106,
+                "f1": 0.703030303030303
+              },
+              "propeller_aircrafts": {
+                "tp": 33,
+                "fp": 2,
+                "n_reference": 99,
+                "f1": 0.4925373134328358
+              },
+              "sirens_and_alarms": {
+                "tp": 53,
+                "fp": 2,
+                "n_reference": 104,
+                "f1": 0.6666666666666666
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 34,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.5190839694656488
+              },
+              "train": {
+                "tp": 32,
+                "fp": 1,
+                "n_reference": 105,
+                "f1": 0.463768115942029
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 105,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.9502262443438914
+              },
+              "vehicle_idling": {
+                "tp": 6,
+                "fp": 6,
+                "n_reference": 119,
+                "f1": 0.0916030534351145
+              },
+              "vehicle_pass_by": {
+                "tp": 21,
+                "fp": 12,
+                "n_reference": 217,
+                "f1": 0.168
+              },
+              "voices": {
+                "tp": 145,
+                "fp": 8,
+                "n_reference": 299,
+                "f1": 0.6415929203539823
+              },
+              "workshop": {
+                "tp": 318,
+                "fp": 11,
+                "n_reference": 358,
+                "f1": 0.925764192139738
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.34330639877702557,
+          "macro_f1": 0.2518224729783307,
+          "nref": 3059,
+          "nsys": 1520,
+          "ntp": 786,
+          "recall": 0.2569467146126185,
+          "event_f1_collar_1s": {
+            "micro": 0.5420397466695784,
+            "macro": 0.4432664095412693
+          },
+          "segment_f1_1s": {
+            "micro": 0.5870103238580116,
+            "macro": 0.5515971205308995
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.949748743718593,
+              "recall": 0.494279176201373,
+              "f1": 0.6501827563964738
+            },
+            "macro_f1": 0.5770335904606233,
+            "macro_f1_psds_eval": 0.5770335904606233,
+            "per_class": {
+              "bells": {
+                "tp": 68,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8607594936708861
+              },
+              "birds": {
+                "tp": 11,
+                "fp": 10,
+                "n_reference": 238,
+                "f1": 0.08494208494208494
+              },
+              "cat_fights_and_moans": {
+                "tp": 100,
+                "fp": 0,
+                "n_reference": 129,
+                "f1": 0.8733624454148472
+              },
+              "chicken_coop": {
+                "tp": 67,
+                "fp": 1,
+                "n_reference": 132,
+                "f1": 0.67
+              },
+              "cicadas_and_crickets": {
+                "tp": 285,
+                "fp": 11,
+                "n_reference": 349,
+                "f1": 0.8837209302325582
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 56,
+                "fp": 4,
+                "n_reference": 232,
+                "f1": 0.3835616438356164
+              },
+              "glass_breaking": {
+                "tp": 62,
+                "fp": 1,
+                "n_reference": 89,
+                "f1": 0.8157894736842105
+              },
+              "horn": {
+                "tp": 42,
+                "fp": 9,
+                "n_reference": 109,
+                "f1": 0.525
+              },
+              "jet_aircrafts": {
+                "tp": 5,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.12987012987012986
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 44,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.6068965517241379
+              },
+              "music": {
+                "tp": 58,
+                "fp": 1,
+                "n_reference": 106,
+                "f1": 0.703030303030303
+              },
+              "sirens_and_alarms": {
+                "tp": 53,
+                "fp": 2,
+                "n_reference": 104,
+                "f1": 0.6666666666666666
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 34,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.5190839694656488
+              },
+              "train": {
+                "tp": 32,
+                "fp": 1,
+                "n_reference": 105,
+                "f1": 0.463768115942029
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 105,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.9502262443438914
+              },
+              "vehicle_idling": {
+                "tp": 6,
+                "fp": 6,
+                "n_reference": 119,
+                "f1": 0.0916030534351145
+              },
+              "vehicle_pass_by": {
+                "tp": 21,
+                "fp": 12,
+                "n_reference": 217,
+                "f1": 0.168
+              },
+              "voices": {
+                "tp": 145,
+                "fp": 8,
+                "n_reference": 299,
+                "f1": 0.6415929203539823
+              },
+              "workshop": {
+                "tp": 318,
+                "fp": 11,
+                "n_reference": 358,
+                "f1": 0.925764192139738
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      },
+      "recall_first": {
+        "all": {
+          "micro_f1": 0.32948993550908734,
+          "macro_f1": 0.24738645876609225,
+          "nref": 3294,
+          "nsys": 1823,
+          "ntp": 843,
+          "recall": 0.25591985428051,
+          "event_f1_collar_1s": {
+            "micro": 0.5471956224350205,
+            "macro": 0.4673323294542571
+          },
+          "segment_f1_1s": {
+            "micro": 0.629387962313171,
+            "macro": 0.6078943799226115
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9312306101344364,
+              "recall": 0.5467516697024893,
+              "f1": 0.688982402448355
+            },
+            "macro_f1": 0.6366593607972101,
+            "macro_f1_psds_eval": 0.6366593607972101,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8819875776397516
+              },
+              "birds": {
+                "tp": 15,
+                "fp": 14,
+                "n_reference": 238,
+                "f1": 0.11235955056179775
+              },
+              "cat_fights_and_moans": {
+                "tp": 109,
+                "fp": 1,
+                "n_reference": 129,
+                "f1": 0.9121338912133892
+              },
+              "chicken_coop": {
+                "tp": 77,
+                "fp": 3,
+                "n_reference": 132,
+                "f1": 0.7264150943396226
+              },
+              "cicadas_and_crickets": {
+                "tp": 294,
+                "fp": 15,
+                "n_reference": 349,
+                "f1": 0.8936170212765957
+              },
+              "crows_seagulls_magpies": {
+                "tp": 74,
+                "fp": 5,
+                "n_reference": 136,
+                "f1": 0.6883720930232559
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 72,
+                "fp": 6,
+                "n_reference": 232,
+                "f1": 0.4645161290322581
+              },
+              "glass_breaking": {
+                "tp": 72,
+                "fp": 2,
+                "n_reference": 89,
+                "f1": 0.8834355828220859
+              },
+              "horn": {
+                "tp": 47,
+                "fp": 10,
+                "n_reference": 109,
+                "f1": 0.5662650602409639
+              },
+              "jet_aircrafts": {
+                "tp": 9,
+                "fp": 1,
+                "n_reference": 72,
+                "f1": 0.21951219512195122
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 55,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.7051282051282052
+              },
+              "music": {
+                "tp": 69,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7666666666666667
+              },
+              "propeller_aircrafts": {
+                "tp": 39,
+                "fp": 3,
+                "n_reference": 99,
+                "f1": 0.5531914893617021
+              },
+              "sirens_and_alarms": {
+                "tp": 58,
+                "fp": 4,
+                "n_reference": 104,
+                "f1": 0.6987951807228916
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 56,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.7320261437908496
+              },
+              "train": {
+                "tp": 48,
+                "fp": 4,
+                "n_reference": 105,
+                "f1": 0.6114649681528662
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 106,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.954954954954955
+              },
+              "vehicle_idling": {
+                "tp": 11,
+                "fp": 12,
+                "n_reference": 119,
+                "f1": 0.15492957746478872
+              },
+              "vehicle_pass_by": {
+                "tp": 29,
+                "fp": 16,
+                "n_reference": 217,
+                "f1": 0.22137404580152673
+              },
+              "voices": {
+                "tp": 166,
+                "fp": 15,
+                "n_reference": 299,
+                "f1": 0.6916666666666667
+              },
+              "workshop": {
+                "tp": 324,
+                "fp": 14,
+                "n_reference": 358,
+                "f1": 0.9310344827586207
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.3387772194304858,
+          "macro_f1": 0.25310985606808467,
+          "nref": 3059,
+          "nsys": 1717,
+          "ntp": 809,
+          "recall": 0.2644655116050997,
+          "event_f1_collar_1s": {
+            "micro": 0.5523450586264658,
+            "macro": 0.46640575868385786
+          },
+          "segment_f1_1s": {
+            "micro": 0.6472975220355897,
+            "macro": 0.6142639939931471
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9310535024820739,
+              "recall": 0.5518143184047074,
+              "f1": 0.6929392446633826
+            },
+            "macro_f1": 0.6383306839134976,
+            "macro_f1_psds_eval": 0.6383306839134976,
+            "per_class": {
+              "bells": {
+                "tp": 71,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8819875776397516
+              },
+              "birds": {
+                "tp": 15,
+                "fp": 14,
+                "n_reference": 238,
+                "f1": 0.11235955056179775
+              },
+              "cat_fights_and_moans": {
+                "tp": 109,
+                "fp": 1,
+                "n_reference": 129,
+                "f1": 0.9121338912133892
+              },
+              "chicken_coop": {
+                "tp": 77,
+                "fp": 3,
+                "n_reference": 132,
+                "f1": 0.7264150943396226
+              },
+              "cicadas_and_crickets": {
+                "tp": 294,
+                "fp": 15,
+                "n_reference": 349,
+                "f1": 0.8936170212765957
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 72,
+                "fp": 6,
+                "n_reference": 232,
+                "f1": 0.4645161290322581
+              },
+              "glass_breaking": {
+                "tp": 72,
+                "fp": 2,
+                "n_reference": 89,
+                "f1": 0.8834355828220859
+              },
+              "horn": {
+                "tp": 47,
+                "fp": 10,
+                "n_reference": 109,
+                "f1": 0.5662650602409639
+              },
+              "jet_aircrafts": {
+                "tp": 9,
+                "fp": 1,
+                "n_reference": 72,
+                "f1": 0.21951219512195122
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 55,
+                "fp": 1,
+                "n_reference": 100,
+                "f1": 0.7051282051282052
+              },
+              "music": {
+                "tp": 69,
+                "fp": 5,
+                "n_reference": 106,
+                "f1": 0.7666666666666667
+              },
+              "sirens_and_alarms": {
+                "tp": 58,
+                "fp": 4,
+                "n_reference": 104,
+                "f1": 0.6987951807228916
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 56,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.7320261437908496
+              },
+              "train": {
+                "tp": 48,
+                "fp": 4,
+                "n_reference": 105,
+                "f1": 0.6114649681528662
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 106,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.954954954954955
+              },
+              "vehicle_idling": {
+                "tp": 11,
+                "fp": 12,
+                "n_reference": 119,
+                "f1": 0.15492957746478872
+              },
+              "vehicle_pass_by": {
+                "tp": 29,
+                "fp": 16,
+                "n_reference": 217,
+                "f1": 0.22137404580152673
+              },
+              "voices": {
+                "tp": 166,
+                "fp": 15,
+                "n_reference": 299,
+                "f1": 0.6916666666666667
+              },
+              "workshop": {
+                "tp": 324,
+                "fp": 14,
+                "n_reference": 358,
+                "f1": 0.9310344827586207
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      }
+    },
+    "LBR_v2_on_P1x3": {
+      "f1": {
+        "all": {
+          "micro_f1": 0.3504506392789771,
+          "macro_f1": 0.26223633211116204,
+          "nref": 3294,
+          "nsys": 1477,
+          "ntp": 836,
+          "recall": 0.2537947783849423,
+          "event_f1_collar_1s": {
+            "micro": 0.5403479354433033,
+            "macro": 0.44700768677987945
+          },
+          "segment_f1_1s": {
+            "micro": 0.5430310526658421,
+            "macro": 0.5127332706366521
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.973901973265436,
+              "recall": 0.4644808743169399,
+              "f1": 0.6289825282631039
+            },
+            "macro_f1": 0.5509421323953931,
+            "macro_f1_psds_eval": 0.5509421323953931,
+            "per_class": {
+              "bells": {
+                "tp": 60,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8
+              },
+              "birds": {
+                "tp": 16,
+                "fp": 3,
+                "n_reference": 238,
+                "f1": 0.1245136186770428
+              },
+              "cat_fights_and_moans": {
+                "tp": 100,
+                "fp": 0,
+                "n_reference": 129,
+                "f1": 0.8733624454148472
+              },
+              "chicken_coop": {
+                "tp": 67,
+                "fp": 0,
+                "n_reference": 132,
+                "f1": 0.6733668341708543
+              },
+              "cicadas_and_crickets": {
+                "tp": 281,
+                "fp": 1,
+                "n_reference": 349,
+                "f1": 0.8906497622820919
+              },
+              "crows_seagulls_magpies": {
+                "tp": 57,
+                "fp": 2,
+                "n_reference": 136,
+                "f1": 0.5846153846153846
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 44,
+                "fp": 1,
+                "n_reference": 232,
+                "f1": 0.3176895306859206
+              },
+              "glass_breaking": {
+                "tp": 56,
+                "fp": 0,
+                "n_reference": 89,
+                "f1": 0.7724137931034483
+              },
+              "horn": {
+                "tp": 37,
+                "fp": 6,
+                "n_reference": 109,
+                "f1": 0.4868421052631579
+              },
+              "jet_aircrafts": {
+                "tp": 5,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.12987012987012986
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 46,
+                "fp": 2,
+                "n_reference": 100,
+                "f1": 0.6216216216216216
+              },
+              "music": {
+                "tp": 49,
+                "fp": 2,
+                "n_reference": 106,
+                "f1": 0.6242038216560509
+              },
+              "propeller_aircrafts": {
+                "tp": 33,
+                "fp": 0,
+                "n_reference": 99,
+                "f1": 0.5
+              },
+              "sirens_and_alarms": {
+                "tp": 47,
+                "fp": 1,
+                "n_reference": 104,
+                "f1": 0.618421052631579
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 32,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.49612403100775193
+              },
+              "train": {
+                "tp": 21,
+                "fp": 0,
+                "n_reference": 105,
+                "f1": 0.3333333333333333
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 103,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.9406392694063926
+              },
+              "vehicle_idling": {
+                "tp": 5,
+                "fp": 6,
+                "n_reference": 119,
+                "f1": 0.07692307692307693
+              },
+              "vehicle_pass_by": {
+                "tp": 18,
+                "fp": 3,
+                "n_reference": 217,
+                "f1": 0.15126050420168066
+              },
+              "voices": {
+                "tp": 140,
+                "fp": 5,
+                "n_reference": 299,
+                "f1": 0.6306306306306306
+              },
+              "workshop": {
+                "tp": 313,
+                "fp": 7,
+                "n_reference": 358,
+                "f1": 0.9233038348082596
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.36036845652662325,
+          "macro_f1": 0.2681902871896793,
+          "nref": 3059,
+          "nsys": 1392,
+          "ntp": 802,
+          "recall": 0.2621771820856489,
+          "event_f1_collar_1s": {
+            "micro": 0.5468434059761852,
+            "macro": 0.44685898286699444
+          },
+          "segment_f1_1s": {
+            "micro": 0.5606019301019574,
+            "macro": 0.5196686422559466
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.973630831643002,
+              "recall": 0.4707420725727362,
+              "f1": 0.6346408109299251
+            },
+            "macro_f1": 0.5518510208256773,
+            "macro_f1_psds_eval": 0.5518510208256773,
+            "per_class": {
+              "bells": {
+                "tp": 60,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8
+              },
+              "birds": {
+                "tp": 16,
+                "fp": 3,
+                "n_reference": 238,
+                "f1": 0.1245136186770428
+              },
+              "cat_fights_and_moans": {
+                "tp": 100,
+                "fp": 0,
+                "n_reference": 129,
+                "f1": 0.8733624454148472
+              },
+              "chicken_coop": {
+                "tp": 67,
+                "fp": 0,
+                "n_reference": 132,
+                "f1": 0.6733668341708543
+              },
+              "cicadas_and_crickets": {
+                "tp": 281,
+                "fp": 1,
+                "n_reference": 349,
+                "f1": 0.8906497622820919
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 44,
+                "fp": 1,
+                "n_reference": 232,
+                "f1": 0.3176895306859206
+              },
+              "glass_breaking": {
+                "tp": 56,
+                "fp": 0,
+                "n_reference": 89,
+                "f1": 0.7724137931034483
+              },
+              "horn": {
+                "tp": 37,
+                "fp": 6,
+                "n_reference": 109,
+                "f1": 0.4868421052631579
+              },
+              "jet_aircrafts": {
+                "tp": 5,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.12987012987012986
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 46,
+                "fp": 2,
+                "n_reference": 100,
+                "f1": 0.6216216216216216
+              },
+              "music": {
+                "tp": 49,
+                "fp": 2,
+                "n_reference": 106,
+                "f1": 0.6242038216560509
+              },
+              "sirens_and_alarms": {
+                "tp": 47,
+                "fp": 1,
+                "n_reference": 104,
+                "f1": 0.618421052631579
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 32,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.49612403100775193
+              },
+              "train": {
+                "tp": 21,
+                "fp": 0,
+                "n_reference": 105,
+                "f1": 0.3333333333333333
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 103,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.9406392694063926
+              },
+              "vehicle_idling": {
+                "tp": 5,
+                "fp": 6,
+                "n_reference": 119,
+                "f1": 0.07692307692307693
+              },
+              "vehicle_pass_by": {
+                "tp": 18,
+                "fp": 3,
+                "n_reference": 217,
+                "f1": 0.15126050420168066
+              },
+              "voices": {
+                "tp": 140,
+                "fp": 5,
+                "n_reference": 299,
+                "f1": 0.6306306306306306
+              },
+              "workshop": {
+                "tp": 313,
+                "fp": 7,
+                "n_reference": 358,
+                "f1": 0.9233038348082596
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      },
+      "recall_first": {
+        "all": {
+          "micro_f1": 0.3460918614020951,
+          "macro_f1": 0.2619796355072176,
+          "nref": 3294,
+          "nsys": 1670,
+          "ntp": 859,
+          "recall": 0.2607771706132362,
+          "event_f1_collar_1s": {
+            "micro": 0.549153908138598,
+            "macro": 0.46185372907012934
+          },
+          "segment_f1_1s": {
+            "micro": 0.6016212460433876,
+            "macro": 0.5824096061486242
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.963948973932335,
+              "recall": 0.5276259866423801,
+              "f1": 0.681969786148715
+            },
+            "macro_f1": 0.6202781955226903,
+            "macro_f1_psds_eval": 0.6202781955226903,
+            "per_class": {
+              "bells": {
+                "tp": 68,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8607594936708861
+              },
+              "birds": {
+                "tp": 31,
+                "fp": 5,
+                "n_reference": 238,
+                "f1": 0.22627737226277372
+              },
+              "cat_fights_and_moans": {
+                "tp": 112,
+                "fp": 0,
+                "n_reference": 129,
+                "f1": 0.9294605809128631
+              },
+              "chicken_coop": {
+                "tp": 77,
+                "fp": 0,
+                "n_reference": 132,
+                "f1": 0.7368421052631579
+              },
+              "cicadas_and_crickets": {
+                "tp": 290,
+                "fp": 8,
+                "n_reference": 349,
+                "f1": 0.8964451313755796
+              },
+              "crows_seagulls_magpies": {
+                "tp": 69,
+                "fp": 5,
+                "n_reference": 136,
+                "f1": 0.6571428571428571
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 69,
+                "fp": 1,
+                "n_reference": 232,
+                "f1": 0.45695364238410596
+              },
+              "glass_breaking": {
+                "tp": 68,
+                "fp": 0,
+                "n_reference": 89,
+                "f1": 0.8662420382165605
+              },
+              "horn": {
+                "tp": 48,
+                "fp": 7,
+                "n_reference": 109,
+                "f1": 0.5853658536585366
+              },
+              "jet_aircrafts": {
+                "tp": 7,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.17721518987341772
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 53,
+                "fp": 3,
+                "n_reference": 100,
+                "f1": 0.6794871794871795
+              },
+              "music": {
+                "tp": 60,
+                "fp": 3,
+                "n_reference": 106,
+                "f1": 0.7100591715976331
+              },
+              "propeller_aircrafts": {
+                "tp": 38,
+                "fp": 0,
+                "n_reference": 99,
+                "f1": 0.5547445255474452
+              },
+              "sirens_and_alarms": {
+                "tp": 54,
+                "fp": 1,
+                "n_reference": 104,
+                "f1": 0.6792452830188679
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 41,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.5942028985507246
+              },
+              "train": {
+                "tp": 32,
+                "fp": 0,
+                "n_reference": 105,
+                "f1": 0.46715328467153283
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 108,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.9642857142857143
+              },
+              "vehicle_idling": {
+                "tp": 10,
+                "fp": 8,
+                "n_reference": 119,
+                "f1": 0.145985401459854
+              },
+              "vehicle_pass_by": {
+                "tp": 30,
+                "fp": 6,
+                "n_reference": 217,
+                "f1": 0.23715415019762845
+              },
+              "voices": {
+                "tp": 155,
+                "fp": 8,
+                "n_reference": 299,
+                "f1": 0.670995670995671
+              },
+              "workshop": {
+                "tp": 318,
+                "fp": 8,
+                "n_reference": 358,
+                "f1": 0.9298245614035088
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        },
+        "vn": {
+          "micro_f1": 0.3556611927398444,
+          "macro_f1": 0.2678846126194325,
+          "nref": 3059,
+          "nsys": 1569,
+          "ntp": 823,
+          "recall": 0.2690421706440013,
+          "event_f1_collar_1s": {
+            "micro": 0.5557476231633536,
+            "macro": 0.4622655767121863
+          },
+          "segment_f1_1s": {
+            "micro": 0.611635192910183,
+            "macro": 0.5839023416767619
+          },
+          "intersection": {
+            "micro": {
+              "precision": 0.9645180366646955,
+              "recall": 0.5331807780320366,
+              "f1": 0.6867368421052632
+            },
+            "macro_f1": 0.6217870906992734,
+            "macro_f1_psds_eval": 0.6217870906992734,
+            "per_class": {
+              "bells": {
+                "tp": 68,
+                "fp": 2,
+                "n_reference": 88,
+                "f1": 0.8607594936708861
+              },
+              "birds": {
+                "tp": 31,
+                "fp": 5,
+                "n_reference": 238,
+                "f1": 0.22627737226277372
+              },
+              "cat_fights_and_moans": {
+                "tp": 112,
+                "fp": 0,
+                "n_reference": 129,
+                "f1": 0.9294605809128631
+              },
+              "chicken_coop": {
+                "tp": 77,
+                "fp": 0,
+                "n_reference": 132,
+                "f1": 0.7368421052631579
+              },
+              "cicadas_and_crickets": {
+                "tp": 290,
+                "fp": 8,
+                "n_reference": 349,
+                "f1": 0.8964451313755796
+              },
+              "dog_barkings_and_howlings": {
+                "tp": 69,
+                "fp": 1,
+                "n_reference": 232,
+                "f1": 0.45695364238410596
+              },
+              "glass_breaking": {
+                "tp": 68,
+                "fp": 0,
+                "n_reference": 89,
+                "f1": 0.8662420382165605
+              },
+              "horn": {
+                "tp": 48,
+                "fp": 7,
+                "n_reference": 109,
+                "f1": 0.5853658536585366
+              },
+              "jet_aircrafts": {
+                "tp": 7,
+                "fp": 0,
+                "n_reference": 72,
+                "f1": 0.17721518987341772
+              },
+              "lawn_mower_brush_cutter_olive_shaker": {
+                "tp": 53,
+                "fp": 3,
+                "n_reference": 100,
+                "f1": 0.6794871794871795
+              },
+              "music": {
+                "tp": 60,
+                "fp": 3,
+                "n_reference": 106,
+                "f1": 0.7100591715976331
+              },
+              "sirens_and_alarms": {
+                "tp": 54,
+                "fp": 1,
+                "n_reference": 104,
+                "f1": 0.6792452830188679
+              },
+              "thunder_fireworks_gunshot": {
+                "tp": 41,
+                "fp": 0,
+                "n_reference": 97,
+                "f1": 0.5942028985507246
+              },
+              "train": {
+                "tp": 32,
+                "fp": 0,
+                "n_reference": 105,
+                "f1": 0.46715328467153283
+              },
+              "vacuum_cleaner_fan_hairdryer": {
+                "tp": 108,
+                "fp": 0,
+                "n_reference": 116,
+                "f1": 0.9642857142857143
+              },
+              "vehicle_idling": {
+                "tp": 10,
+                "fp": 8,
+                "n_reference": 119,
+                "f1": 0.145985401459854
+              },
+              "vehicle_pass_by": {
+                "tp": 30,
+                "fp": 6,
+                "n_reference": 217,
+                "f1": 0.23715415019762845
+              },
+              "voices": {
+                "tp": 155,
+                "fp": 8,
+                "n_reference": 299,
+                "f1": 0.670995670995671
+              },
+              "workshop": {
+                "tp": 318,
+                "fp": 8,
+                "n_reference": 358,
+                "f1": 0.9298245614035088
+              }
+            },
+            "criteria": {
+              "dtc_threshold": 0.1,
+              "gtc_threshold": 0.1,
+              "cttc_threshold": 0.3
+            }
+          }
+        }
+      }
+    }
+  },
+  "git": {
+    "revision": "71b5a55b27eedc730491b6e50804bd09ea776159",
+    "dirty": false
+  },
+  "human_ceiling": {
+    "all": {
+      "pairs": 8,
+      "micro_f1": 0.5785123966942148,
+      "macro_f1": 0.23700879765395894,
+      "event_f1_collar_1s": 0.7603305785123967,
+      "segment_f1_1s": 0.7424657534246576,
+      "intersection_f1": 0.9173045379989064
+    },
+    "vn": {
+      "pairs": 8,
+      "micro_f1": 0.6,
+      "macro_f1": 0.2229390681003584,
+      "event_f1_collar_1s": 0.7999999999999999,
+      "segment_f1_1s": 0.7540106951871658,
+      "intersection_f1": 0.9363162682987346
+    }
+  },
+  "fold_thresholds": {
+    "LBR_v1": {
+      "0": {
+        "f1": 0.85,
+        "recall_first": 0.5
+      },
+      "1": {
+        "f1": 0.9,
+        "recall_first": 0.5
+      },
+      "2": {
+        "f1": 0.85,
+        "recall_first": 0.5
+      },
+      "3": {
+        "f1": 0.9,
+        "recall_first": 0.5
+      },
+      "4": {
+        "f1": 0.9,
+        "recall_first": 0.5
+      }
+    },
+    "LBR_v2": {
+      "0": {
+        "f1": 0.03,
+        "recall_first": 0.005
+      },
+      "1": {
+        "f1": 0.01,
+        "recall_first": 0.005
+      },
+      "2": {
+        "f1": 0.01,
+        "recall_first": 0.005
+      },
+      "3": {
+        "f1": 0.02,
+        "recall_first": 0.005
+      },
+      "4": {
+        "f1": 0.005,
+        "recall_first": 0.005
+      }
+    }
+  }
+}

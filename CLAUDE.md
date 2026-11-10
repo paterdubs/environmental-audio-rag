@@ -58,7 +58,16 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
-**Cập nhật 09/11/2026 (mới nhất) — Chẩn đoán lỗi OOF B0: nút thắt là biên box hậu xử lý; thăm dò LBR.**
+**Cập nhật 10/11/2026 (sáng) — V3 ghi trước test (ADR-0045 §11).** Người dùng duyệt: V3 = rescorer nhãn giao nhau, cấu hình ứng dụng cho demo, không thay V2. OOF: chính 0.3058, ưu tiên phát hiện recall giao nhau 0.834 (P 0.674); ngưỡng ở mép lưới. `evaluate_run --extra-lbr` chấm V2 + V3 một lượt; manifest cũ thiếu `environment` thành xfail strict. **Tiếp theo:** người dùng commit → chạy bước 1 runbook (V3 trên tree sạch) → duyệt mở test.
+
+**Cập nhật 10/11/2026 — LBR qua tầng C, chưa mở test (ADR-0045, ADR-0046).**
+V2 (refiner + rescorer) OOF micro 0.2342 → **0.3332** [Δ CI +0.076, +0.120], macro 0.180 → 0.245; kiểm chuyển
+P1×3 0.3505. Đánh đổi: segment-F1 và recall giao nhau giảm; điểm "ưu tiên phát hiện" chạm đáy lưới. Code:
+`ml/postprocessing/{boundary_refine,lbr_crossfit,lbr_apply}.py`, `scripts/{fit_lbr_oof,lbr_test_section,
+report_lbr_diagnosis}.py`, `evaluate_run` nhận run `sed_lbr`. **Tiếp theo (chờ người dùng):** duyệt mở test
+theo `docs/notes/test_once_lbr.md`. Người dùng yêu cầu 10/11: **không tự commit**, để người dùng commit tay.
+
+**Cập nhật 09/11/2026 — Chẩn đoán lỗi OOF B0: nút thắt là biên box hậu xử lý; thăm dò LBR.**
 Script nháp (chưa vào repo, chưa ghi ADR, không mở test): 789/1477 event bỏ sót có posterior ≥ 0.9 nhưng box cSEBB bị
 loại; sửa biên ±1 s (oracle) → 0.464. Tinh chỉnh biên + chấm lại box học trên OOF (GBM, cross-fit lồng nhau): micro
 OOF 0.2342 → 0.3408; chỉ refine 0.3070 (Δ +0.073 [+0.053, +0.091]). Chi tiết PAPER_NOTES §5 (LBR). Văn liệu: vẫn chưa có
@@ -770,6 +779,18 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-10 — Ghi trước V3 và gộp vào lượt mở test
+
+Người dùng duyệt gợi ý: ghi V3 (rescorer nhãn giao nhau) thành cấu hình ứng dụng trước khi mở test, xfail strict cho manifest cũ thiếu `environment`. Thêm `matches_intersection`, biến thể v3, `scripts/fit_lbr_application.py`, `evaluate_run --extra-lbr`; chạy thử lệnh test trên dev (in-sample, đã dọn). Bản xem trước V3 trùng số thăm dò; ngưỡng ở mép lưới, ghi nguyên văn. Gate 1114 pass. Không commit, không mở test.
+
+### 2026-11-09/10 — Triển khai LBR theo kế hoạch đã duyệt; tầng C chọn V2
+
+Người dùng duyệt kế hoạch (LBR + thước ứng dụng + tập 19 lớp Việt Nam, sàn precision 0.6, demo ưu tiên phát
+hiện). Ghi trước ADR-0045/0046, viết code test trước. Đột biến cho thấy bản đầu của test chống rò nhãn vô hiệu
+— đã sửa. Phát hiện `psds_eval` bỏ lớp 0 TP khỏi macro. Lượt tầng C đầu dừng trước khi có số vì event cùng lớp
+chồng nhau → gộp box (ADR-0045 §3). Lượt sạch: V2 chọn (S64). Commit tới `71b5a55`; từ đó người dùng commit tay.
+Không mở test, không push.
 
 ### 2026-11-09 — Rà soát lịch sử kết quả, chẩn đoán lỗi OOF, thăm dò LBR, tra văn liệu
 

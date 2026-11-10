@@ -104,3 +104,22 @@ node scripts/capture_demo_screenshots.mjs
 - [ ] Nếu cần làm sạch dữ liệu demo: `.\scripts\demo_up.ps1 -ResetHistory`.
 - [ ] Nếu live lỗi: dùng ảnh trong `docs/demo_screenshots/`, hoặc tắt llama.cpp và chuyển
       bộ lọc thủ công.
+
+## Bật LBR cho demo (ADR-0045, ADR-0046 §5) — tùy chọn, chưa qua test
+
+LBR dựng event từ posterior B0 bằng model tinh chỉnh biên + chấm lại box. Cho demo dùng **V3**
+(`ml/runs/sed_lbr_B0v3_<ts>`, sinh theo `docs/notes/test_once_lbr.md` bước 1; ADR-0045 §11) ở chế độ
+`recall_first`; V2 (`ml/runs/sed_lbr_B0_20261109T172809Z`) là hệ thống của số chính. Khi bật, `/api/v1/models/status` báo `official=false`
+cho tới khi LBR qua lượt test một lần (`docs/notes/test_once_lbr.md`).
+
+```powershell
+$env:EARAG_SERVED_LBR = "ml/runs/sed_lbr_B0v3_<ts>"   # V2: ml/runs/sed_lbr_B0_20261109T172809Z
+$env:EARAG_SERVED_MODE = "recall_first"   # mặc định: ưu tiên phát hiện; "f1" = điểm vận hành chính
+& .venv\Scripts\python.exe -m scripts.serve_demo
+```
+
+Container inference cần **rebuild** (`requirements-inference.txt` đã thêm `scikit-learn`) và truyền hai
+biến trên qua Compose trước khi bật trong Docker. Không đặt `EARAG_SERVED_LBR` thì hành vi cũ giữ nguyên;
+`ml.inference` chỉ import scikit-learn khi bật LBR (có test). Event lưu DB mang `model_version`
+`<run phục vụ>+<run LBR>:<chế độ>` để truy nguồn. Chuyển chế độ hiện là khởi động lại với biến
+môi trường khác; công tắc trên giao diện chưa làm.
