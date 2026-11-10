@@ -11,7 +11,9 @@ của V3, "trích đúng GT" giảm 0.915 → 0.712, không đọc như retrieva
 ([V3](measurements/retrieval_benchmark_test_lbrv3_gold_20261110.md)). Corpus validation của LBR là event
 cross-fit nên không so trực tiếp với B0. [Sổ test](measurements/test_ledger_20261110.md) 42 lượt SED,
 [freeze](measurements/artifact_freeze_20261110.md) thiếu 0. Caption LLM vẫn đo trên f2. Demo phục vụ
-chưa chuyển sang LBR (xem mục demo bên dưới khi cập nhật).
+đã chuyển sang LBR V3 `recall_first` (Compose, `official=false`): [parity CUDA](measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.md)
+573/692 event trùng khít, 665 trong 1 frame, 691 trong collar 0.2 s (bộ tinh chỉnh biên khuếch đại sai lệch fp16);
+[E2E](measurements/demo_lbrv3_e2e_20261110.md) upload TRAIN 3.7 s, `demo_check.ps1` pass.
 
 **LBR tầng C, 09–10/11/2026 (ADR-0045, ADR-0046):** run
 `sed_lbr_B0_20261109T172809Z` (tree sạch `71b5a55`) chọn **V2**: OOF micro 0.2342 → 0.3332

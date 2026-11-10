@@ -65,9 +65,9 @@ precision 0.7812. PSDS đo lại với lưới `geomspace(1e-5, 0.99, 48)` ghi t
 0.3489), PSDS-2 0.6116 (B0 0.6987, vẫn thấp hơn); V3 0.3369 / 0.6167. RQ2 template 0 lỗi; RQ3
 hybrid/en nDCG@10 B0 0.383, V2 0.404 (CI chồng), V3 0.670 (hiệu ứng độ phủ, trích đúng GT 0.915 →
 0.712). Sửa lỗi kẹp biên event LBR ở nơi tiêu thụ (`clip_events_to_duration`, `513e1f0`) — số event-F1
-không đổi. Sổ test 42 lượt SED, freeze thiếu 0. **Tiếp theo:** tài liệu (xong), rồi demo: bật
-`EARAG_SERVED_LBR` (V3 `recall_first`), build lại Docker, parity + E2E; sau đó viết báo cáo/slide trên
-số đã khóa, đóng băng 18/11. Quy định commit mới 10/11: agent được commit nhưng dưới danh `paterdubs`,
+không đổi. Sổ test 42 lượt SED, freeze thiếu 0. Demo đã chuyển
+sang LBR V3 `recall_first` (`demo_up.ps1` mặc định, `-NoLbr` để chạy B0; parity CUDA 665/692 trong 1 frame;
+E2E `demo_lbrv3_e2e_20261110`). **Tiếp theo:** viết báo cáo/slide trên số đã khóa, đóng băng 18/11. Quy định commit mới 10/11: agent được commit nhưng dưới danh `paterdubs`,
 không có Co-Authored-By; không tự push.
 
 **Cập nhật 10/11/2026 (sáng) — V3 ghi trước test (ADR-0045 §11).** Người dùng duyệt: V3 = rescorer nhãn giao nhau, cấu hình ứng dụng cho demo, không thay V2. OOF: chính 0.3058, ưu tiên phát hiện recall giao nhau 0.834 (P 0.674); ngưỡng ở mép lưới. `evaluate_run --extra-lbr` chấm V2 + V3 một lượt; manifest cũ thiếu `environment` thành xfail strict. **Tiếp theo:** người dùng commit → chạy bước 1 runbook (V3 trên tree sạch) → duyệt mở test.
