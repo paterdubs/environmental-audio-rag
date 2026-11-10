@@ -1,0 +1,30 @@
+{
+ "source_recording_id": "S-0016",
+ "source_split": "train",
+ "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0016.wav",
+ "recording_id": "upload:6e088852-f815-46f7-8d99-6b1576099d6b",
+ "served_run": "ml/runs/sed_served_B0_20261107T175659Z",
+ "model_version": [
+  "sed_served_B0_20261107T175659Z+sed_lbr_B0v3_20261110T042337Z:recall_first"
+ ],
+ "official": false,
+ "postproc": "sebb_cv_selection_annotated.json",
+ "device": "cpu",
+ "upload_elapsed_s": 3.7210066000116058,
+ "events": 3,
+ "caption_languages": [
+  "en",
+  "vi"
+ ],
+ "captions_with_evidence": 2,
+ "rag_mode": "hybrid",
+ "rag_query_class": "voices",
+ "rag_elapsed_s": 0.27275689999805763,
+ "rag_evidence": 3,
+ "rag_contains_uploaded_recording": false,
+ "git": {
+  "revision": "24aacbf1e6ec00f5fadd462134dc7b0818a7a256",
+  "dirty": true
+ },
+ "label": "lbrv3"
+}
