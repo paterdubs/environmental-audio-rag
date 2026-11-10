@@ -29,6 +29,7 @@ COMPONENTS = {  # measurement file pattern → component (non-SED test artifacts
     "Retrieval (RQ3) / câu trả lời": r"^retrieval_(benchmark|answers)_test",
     "Ablation / chẩn đoán SED trên test": r"(threshold_ablation|median_filter|duration_prior|"
                                            r"collar_sensitivity|duration_polyphony|branch_per_class)",
+    "LBR (ADR-0045/0047): PSDS, chẩn đoán": r"^lbr_(psds_grid|diagnosis)",
     "Classifier DataSEC": r"^(d4_consistency_selected_test|per_class_metrics_datasec)",
     "Parity phục vụ (so với output đóng băng)": r"^inference_parity",
 }

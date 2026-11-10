@@ -39,6 +39,12 @@ REPORT_RUNS = {
     "B0 final test ensemble (ADR-0041 §12)": "sed_ensemble_B0_final_test_20261014T085016Z",
     "B0 OOF h5 (ADR-0041 §11, postproc source)": "sed_oof_B0_h5_20261008T130849Z",
     "B0 OOF dev corpus (ADR-0044)": "sed_filtered_B0_oof_dev_20261107T181008Z",
+    "LBR V2 (ADR-0045, điểm f1)": "sed_lbr_B0_20261109T172809Z",
+    "LBR V3 (ADR-0045 §11, điểm recall_first)": "sed_lbr_B0v3_20261110T042337Z",
+    "LBR event cross-fit V2 (ADR-0047, dev)":
+        "sed_lbr_oofevents_sed_lbr_B0_20261109T172809Z_f1_20261110T062901Z",
+    "LBR event cross-fit V3 (ADR-0047, dev)":
+        "sed_lbr_oofevents_sed_lbr_B0v3_20261110T042337Z_recall_first_20261110T063606Z",
     "S11 focal ensemble": "sed_ensemble_s11_focal_t2b_20260928T185207Z",
     "S13 f2 test output": "sed_ensemble_s13_f2_20260929T045053Z",
 }
@@ -146,6 +152,11 @@ def run_entry(label: str, run_id: str, *, skip_test_predictions: bool = False) -
             entry["artifacts"].append(artifact(prediction, kind="prediction"))
     for path in sorted([*run.glob("postproc*.json"), *run.glob("sebb*.json")]):
         entry["artifacts"].append(artifact(path, kind="postproc_or_sebb"))
+    for name in ("lbr_model.pkl", "events.json"):  # LBR: model cuối và event cross-fit
+        if (run / name).exists():
+            entry["artifacts"].append(artifact(run / name, kind="lbr_" + name.split(".")[0]))
+    for path in sorted(run.glob("lbr_*.json")):
+        entry["artifacts"].append(artifact(path, kind="lbr_evaluation"))
     for path in sorted(set(dependency_manifests(run, manifest))):
         entry['artifacts'].append(artifact(path, kind='dependency_manifest'))
     for member in sorted(set(member_runs(run, manifest))):
