@@ -57,6 +57,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--reference-run", type=Path, default=None,
                         help="Run chứa predictions/test.npz đóng băng (mặc định bằng --run)")
     parser.add_argument("--postproc", default=DEFAULT_SERVED_POSTPROC)
+    parser.add_argument("--lbr-run", type=Path, default=None,
+                        help="Run LBR tương đối ROOT (ADR-0047): bật LBR cho cả phía phục vụ lẫn "
+                             "phía đóng băng, đúng như Engine khi đặt EARAG_SERVED_LBR")
+    parser.add_argument("--lbr-point", default="recall_first", choices=("f1", "recall_first"))
     return parser.parse_args(argv)
 
 
@@ -71,8 +75,11 @@ def resolve_run(path: Path) -> Path:
     return resolved
 
 
-def output_stem(run_dir: Path, device: str) -> str:
+def output_stem(run_dir: Path, device: str, lbr: tuple[Path, str] | None = None) -> str:
     """Keep legacy v1 names; custom runs include their manifest label and device."""
+    if lbr is not None:
+        label = re.sub(r"[^a-zA-Z0-9_-]+", "_", lbr[0].name).strip("_").lower()
+        return f"inference_parity_{label}_{lbr[1]}_{device}"
     if run_dir == ENSEMBLE.resolve():
         suffix = "" if device == "cuda" else f"_{device}"
         return f"inference_parity{suffix}"
@@ -180,6 +187,9 @@ def render(result: dict) -> str:
         "> Sinh bởi `scripts.check_inference_parity` (ADR-0029 §2). So với output đã đóng băng "
         "trên test; không đánh giá lại, không chọn gì.", "",
         f"Nguồn output đóng băng: `{result['reference_run']}`.", "",
+        *([f"Event dựng bằng LBR `{result['lbr_run']}` ở điểm `{result['lbr_point']}`; phía "
+           "phục vụ và phía đóng băng dùng cùng bộ LBR, xác suất khác nhau do fp16.", ""]
+          if result.get("lbr_run") else []),
         f"| Tầng | Kết quả (n = {len(rows)} recording test, thiết bị `{result['device']}`, "
         f"torch `{result.get('torch', '?')}`) |",
         "|---|---|",
@@ -220,6 +230,14 @@ def main() -> None:
     reference = resolve_run(args.reference_run) if args.reference_run else ensemble
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     sed = ServedSed(ensemble, args.postproc, taxonomy, torch.device(args.device))
+    lbr = None
+    if args.lbr_run is not None:
+        from ml.postprocessing.lbr_apply import load_lbr
+
+        lbr_dir = resolve_run(args.lbr_run)
+        sed.enable_lbr(load_lbr(lbr_dir, class_ids=taxonomy.polyphonic_class_ids),
+                       mode=args.lbr_point)
+        lbr = (lbr_dir, args.lbr_point)
     artifact = load_predictions(reference / "predictions/test.npz",
                                 expected_class_ids=taxonomy.polyphonic_class_ids)
     frozen = stack_predictions_by_recording(artifact)
@@ -239,11 +257,12 @@ def main() -> None:
                "event_mismatches": [r["recording_id"] for r in rows if not r["events_equal"]]}
     result = {"ensemble": ensemble.name, "reference_run": reference.name,
               "postproc": args.postproc, "device": args.device,
+              "lbr_run": lbr[0].name if lbr else None, "lbr_point": lbr[1] if lbr else None,
               "torch": torch.__version__,
               "git": git, "summary": summary, "rows": rows,
               "batch_reproduction": batch_reproduction(sed, taxonomy)}
     stamp = datetime.now(UTC).strftime("%Y%m%d")
-    out = ROOT / "docs/measurements" / f"{output_stem(ensemble, args.device)}_{stamp}.md"
+    out = ROOT / "docs/measurements" / f"{output_stem(ensemble, args.device, lbr)}_{stamp}.md"
     out.with_suffix(".json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     out.write_text(render(result), encoding="utf-8")
     print(render(result))

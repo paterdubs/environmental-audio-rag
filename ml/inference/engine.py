@@ -80,7 +80,7 @@ class Engine:
             self.sed.enable_lbr(load_lbr(lbr_run, class_ids=self.taxonomy.polyphonic_class_ids),
                                 mode=self.lbr_mode)
             self.lbr_run = lbr_run.relative_to(ROOT).as_posix()
-            official = False  # LBR chưa qua test một lần (ADR-0045 §8)
+            official = False  # LBR: cấu hình ứng dụng, không phải số chính (ADR-0045 §11-12)
         self.analyzer = Analyzer(self.sed, self.taxonomy)
         self.embedder = Embedder(device=name)
         self.device = name

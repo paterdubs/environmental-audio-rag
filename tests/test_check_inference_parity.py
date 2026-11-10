@@ -36,3 +36,14 @@ def test_custom_v2_output_name_comes_from_manifest(tmp_path) -> None:
     (run / "manifest.json").write_text(
         '{"config": {"ensemble_label": "v2"}}', encoding="utf-8")
     assert parity.output_stem(run, "cuda") == "inference_parity_v2_cuda"
+
+
+def test_lbr_output_name_carries_run_point_and_device(tmp_path) -> None:
+    lbr = tmp_path / "sed_lbr_B0v3_20261110T042337Z"
+    assert (parity.output_stem(tmp_path, "cuda", (lbr, "recall_first"))
+            == "inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda")
+
+
+def test_cli_accepts_lbr_run_and_point() -> None:
+    args = parity.parse_args(["--lbr-run", "ml/runs/sed_lbr_x", "--lbr-point", "f1"])
+    assert args.lbr_run == Path("ml/runs/sed_lbr_x") and args.lbr_point == "f1"
