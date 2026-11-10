@@ -98,3 +98,24 @@ vẫn tính trên box chưa kẹp, còn caption/RAG và demo dùng event đã k�
 mười giây ở cuối recording. Export cross-fit không sinh lại (SHA-256 đã khóa); kẹp áp lúc đọc.
 `lbrv2` validation đã chạy trước bản sửa (0 event vượt trên dev nên kết quả không đổi); sinh lại cùng
 `lbrv3` trên tree sạch sau commit bản sửa để mọi bản ghi cùng một revision.
+
+## Bổ sung 10/11 — ghi trước lưới PSDS của LBR, đo lại một lần trên test (người dùng duyệt)
+
+**Vấn đề.** PSDS-1/2 của V2 ở lượt test `98315fd` (0.2146 / 0.2960) thấp hơn B0 (0.3489 / 0.6987)
+trong khi event-F1 cao hơn nhiều. Chẩn đoán chỉ trên dev OOF (564 recording, không đọc test):
+điểm rescorer rất lệch (phân vị 50% = 3.7e-4, 75% = 0.021, 90% = 0.76) còn `T_GRID` bắt đầu ở 0.005,
+nên ~55% box không bao giờ vào đường PSD-ROC. Đường cong bị cắt ở phía eFPR cao. Trên dev, lưới phủ
+mọi phân vị cho PSDS-1 0.3676 (B0 0.3512) và PSDS-2 0.6535 (B0 0.7504).
+
+**Ghi trước.**
+
+1. Lưới PSDS mới của cả hai run LBR: `numpy.geomspace(1e-5, 0.99, 48)` (cố định, chọn theo hình dạng
+   phân phối điểm trên dev, **không tinh chỉnh** theo bất kỳ số PSDS nào; không thử lưới khác).
+2. Model, ngưỡng đóng băng, điểm vận hành, cách dựng event: giữ nguyên. Chỉ đổi tập operating point
+   đưa vào `psds_score`. Event-F1, thước ứng dụng không đổi.
+3. Đo một lần trên test annotated (`sed_ensemble_B0_final_test_20261014T085016Z/predictions/test.npz`)
+   cho `sed_lbr_B0_20261109T172809Z` và `sed_lbr_B0v3_20261110T042337Z`, bằng
+   `scripts.report_lbr_psds_grid`. Báo **cả số cũ (T_GRID) lẫn số mới**, kèm số điểm và số event ở
+   điểm thấp nhất. Số cũ không bị thay thế.
+4. Không chọn lại hệ thống, điểm vận hành hay lưới từ số test. Nếu PSDS-2 vẫn thấp hơn B0, báo
+   nguyên văn (trên dev, một phần do tinh chỉnh biên: chỉ-tinh-chỉnh 0.6602 so với B0 0.7504).
