@@ -1,0 +1,4239 @@
+{
+  "sed": {
+    "rows": {
+      "f2": {
+        "macro": {
+          "value": 0.12060188619454669,
+          "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+          "key": [
+            "event_based_f1_macro",
+            "f_measure"
+          ]
+        },
+        "micro": {
+          "value": 0.1642512077294686,
+          "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+          "key": [
+            "event_based_f1",
+            "f_measure"
+          ]
+        },
+        "micro_ci": {
+          "lower": {
+            "value": 0.1102698530945499,
+            "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+            "key": [
+              "event_based_f1_bootstrap",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.22424874611266796,
+            "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+            "key": [
+              "event_based_f1_bootstrap",
+              "upper"
+            ]
+          }
+        },
+        "nsys": {
+          "value": 295,
+          "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+          "key": [
+            "n_events_estimate"
+          ]
+        },
+        "nref": {
+          "value": 740,
+          "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+          "key": [
+            "n_events_reference"
+          ]
+        },
+        "psds_linear": {
+          "psds_1": {
+            "value": 0.3163911571585601,
+            "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+            "key": [
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.7252608509998574,
+            "source": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json",
+            "key": [
+              "psds",
+              "psds_2"
+            ]
+          }
+        }
+      },
+      "B0": {
+        "macro": {
+          "value": 0.13659283156040392,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "baseline",
+            "all",
+            "macro_f1"
+          ]
+        },
+        "micro": {
+          "value": 0.18064516129032257,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "baseline",
+            "all",
+            "micro_f1"
+          ]
+        },
+        "nsys": {
+          "value": 345,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "baseline",
+            "all",
+            "nsys"
+          ]
+        },
+        "nref": {
+          "value": 740,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "baseline",
+            "all",
+            "nref"
+          ]
+        },
+        "intersection_recall": {
+          "value": 0.5351351351351351,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "baseline",
+            "all",
+            "intersection",
+            "micro",
+            "recall"
+          ]
+        },
+        "intersection_precision": {
+          "value": 0.9705882352941176,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "baseline",
+            "all",
+            "intersection",
+            "micro",
+            "precision"
+          ]
+        },
+        "segment_f1_1s": {
+          "value": 0.7260196587956164,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "baseline",
+            "all",
+            "segment_f1_1s",
+            "micro"
+          ]
+        },
+        "micro_ci": {
+          "lower": {
+            "value": 0.1261071231619777,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_o_annotated.json",
+            "key": [
+              "event_based_f1_bootstrap",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.23843247398297066,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_o_annotated.json",
+            "key": [
+              "event_based_f1_bootstrap",
+              "upper"
+            ]
+          }
+        },
+        "psds_linear": {
+          "psds_1": {
+            "value": 0.31311781918088527,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_o_annotated.json",
+            "key": [
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.7309525475585873,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_o_annotated.json",
+            "key": [
+              "psds",
+              "psds_2"
+            ]
+          }
+        },
+        "psds_log": {
+          "psds_1": {
+            "value": 0.3060771575180626,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated_b0.json",
+            "key": [
+              "results",
+              {
+                "system": "B0 (cSEBB)"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.745205560252284,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated_b0.json",
+            "key": [
+              "results",
+              {
+                "system": "B0 (cSEBB)"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_2"
+            ]
+          }
+        }
+      },
+      "lbrv2_f1": {
+        "macro": {
+          "value": 0.2356214895797802,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "points",
+            "f1",
+            "all",
+            "macro_f1"
+          ]
+        },
+        "micro": {
+          "value": 0.29649595687331537,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "points",
+            "f1",
+            "all",
+            "micro_f1"
+          ]
+        },
+        "nsys": {
+          "value": 373,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "points",
+            "f1",
+            "all",
+            "nsys"
+          ]
+        },
+        "nref": {
+          "value": 740,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "points",
+            "f1",
+            "all",
+            "nref"
+          ]
+        },
+        "intersection_recall": {
+          "value": 0.5108108108108108,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "points",
+            "f1",
+            "all",
+            "intersection",
+            "micro",
+            "recall"
+          ]
+        },
+        "intersection_precision": {
+          "value": 0.9545454545454546,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "points",
+            "f1",
+            "all",
+            "intersection",
+            "micro",
+            "precision"
+          ]
+        },
+        "segment_f1_1s": {
+          "value": 0.5964755459072915,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr",
+            "points",
+            "f1",
+            "all",
+            "segment_f1_1s",
+            "micro"
+          ]
+        },
+        "micro_ci": {
+          "lower": {
+            "value": 0.22927525227784853,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "event_based_f1_bootstrap",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.36025632053188694,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "event_based_f1_bootstrap",
+              "upper"
+            ]
+          }
+        },
+        "delta_micro_vs_b0": {
+          "estimate": {
+            "value": 0.1158507955829928,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "lbr",
+              "delta_micro_vs_baseline",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.07411201281954044,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "lbr",
+              "delta_micro_vs_baseline",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.15927602700887208,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "lbr",
+              "delta_micro_vs_baseline",
+              "upper"
+            ]
+          }
+        },
+        "psds_old_grid": {
+          "psds_1": {
+            "value": 0.21462716614174243,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0_20261109T172809Z"
+              },
+              "curves",
+              "T_GRID (cũ)",
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.29600230227563723,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0_20261109T172809Z"
+              },
+              "curves",
+              "T_GRID (cũ)",
+              "psds",
+              "psds_2"
+            ]
+          }
+        },
+        "psds_log": {
+          "psds_1": {
+            "value": 0.3512224151325482,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0_20261109T172809Z"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.611637282805213,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0_20261109T172809Z"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_2"
+            ]
+          }
+        }
+      },
+      "lbrv3_f1": {
+        "macro": {
+          "value": 0.1954603951940625,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "f1",
+            "all",
+            "macro_f1"
+          ]
+        },
+        "micro": {
+          "value": 0.27312775330396477,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "f1",
+            "all",
+            "micro_f1"
+          ]
+        },
+        "nsys": {
+          "value": 395,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "f1",
+            "all",
+            "nsys"
+          ]
+        },
+        "nref": {
+          "value": 740,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "f1",
+            "all",
+            "nref"
+          ]
+        },
+        "intersection_recall": {
+          "value": 0.6486486486486487,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "f1",
+            "all",
+            "intersection",
+            "micro",
+            "recall"
+          ]
+        },
+        "intersection_precision": {
+          "value": 0.9836065573770492,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "f1",
+            "all",
+            "intersection",
+            "micro",
+            "precision"
+          ]
+        },
+        "segment_f1_1s": {
+          "value": 0.7752162876236854,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "f1",
+            "all",
+            "segment_f1_1s",
+            "micro"
+          ]
+        },
+        "delta_micro_vs_b0": {
+          "estimate": {
+            "value": 0.0924825920136422,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "lbr_extra",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "delta_micro_vs_baseline",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.0548890702514643,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "lbr_extra",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "delta_micro_vs_baseline",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.1331400789435032,
+            "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+            "key": [
+              "lbr_extra",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "delta_micro_vs_baseline",
+              "upper"
+            ]
+          }
+        },
+        "psds_old_grid": {
+          "psds_1": {
+            "value": 0.33543347826397957,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "T_GRID (cũ)",
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.6157974478801199,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "T_GRID (cũ)",
+              "psds",
+              "psds_2"
+            ]
+          }
+        },
+        "psds_log": {
+          "psds_1": {
+            "value": 0.336946982275446,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.6166509033970977,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_2"
+            ]
+          }
+        }
+      },
+      "lbrv3_recall_first": {
+        "macro": {
+          "value": 0.17535171631071217,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "recall_first",
+            "all",
+            "macro_f1"
+          ]
+        },
+        "micro": {
+          "value": 0.22869318181818182,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "recall_first",
+            "all",
+            "micro_f1"
+          ]
+        },
+        "nsys": {
+          "value": 668,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "recall_first",
+            "all",
+            "nsys"
+          ]
+        },
+        "nref": {
+          "value": 740,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "recall_first",
+            "all",
+            "nref"
+          ]
+        },
+        "intersection_recall": {
+          "value": 0.8202702702702702,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "recall_first",
+            "all",
+            "intersection",
+            "micro",
+            "recall"
+          ]
+        },
+        "intersection_precision": {
+          "value": 0.7812097812097812,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "recall_first",
+            "all",
+            "intersection",
+            "micro",
+            "precision"
+          ]
+        },
+        "segment_f1_1s": {
+          "value": 0.7820512820512819,
+          "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+          "key": [
+            "lbr_extra",
+            {
+              "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+            },
+            "points",
+            "recall_first",
+            "all",
+            "segment_f1_1s",
+            "micro"
+          ]
+        },
+        "psds_old_grid": {
+          "psds_1": {
+            "value": 0.33543347826397957,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "T_GRID (cũ)",
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.6157974478801199,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "T_GRID (cũ)",
+              "psds",
+              "psds_2"
+            ]
+          }
+        },
+        "psds_log": {
+          "psds_1": {
+            "value": 0.336946982275446,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_1"
+            ]
+          },
+          "psds_2": {
+            "value": 0.6166509033970977,
+            "source": "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+            "key": [
+              "results",
+              {
+                "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+              },
+              "curves",
+              "log 1e-5..0.99 (mới)",
+              "psds",
+              "psds_2"
+            ]
+          }
+        }
+      }
+    },
+    "b0_minus_f2": {
+      "estimate": {
+        "value": 0.016393953560853963,
+        "source": "docs/measurements/rq1_multirun_bootstrap_phase_o_b0_vs_f2_20261014.json",
+        "key": [
+          "differences",
+          "B0-f2",
+          "estimate"
+        ]
+      },
+      "lower": {
+        "value": -0.012802992883333131,
+        "source": "docs/measurements/rq1_multirun_bootstrap_phase_o_b0_vs_f2_20261014.json",
+        "key": [
+          "differences",
+          "B0-f2",
+          "lower"
+        ]
+      },
+      "upper": {
+        "value": 0.04951568430480647,
+        "source": "docs/measurements/rq1_multirun_bootstrap_phase_o_b0_vs_f2_20261014.json",
+        "key": [
+          "differences",
+          "B0-f2",
+          "upper"
+        ]
+      }
+    },
+    "lbrv3_recall_first_vn": {
+      "recall": {
+        "value": 0.8318840579710145,
+        "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+        "key": [
+          "lbr_extra",
+          {
+            "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+          },
+          "points",
+          "recall_first",
+          "vn",
+          "intersection",
+          "micro",
+          "recall"
+        ]
+      },
+      "precision": {
+        "value": 0.780952380952381,
+        "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+        "key": [
+          "lbr_extra",
+          {
+            "lbr_run": "sed_lbr_B0v3_20261110T042337Z"
+          },
+          "points",
+          "recall_first",
+          "vn",
+          "intersection",
+          "micro",
+          "precision"
+        ]
+      }
+    },
+    "n_recordings": {
+      "value": 139,
+      "source": "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+      "key": [
+        "n_recordings"
+      ]
+    }
+  },
+  "rq1": {
+    "v1": {
+      "branches": {
+        "B": {
+          "mean": {
+            "value": 0.060984449416528703,
+            "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+            "key": [
+              "branches",
+              "B",
+              "event_f1",
+              "mean"
+            ]
+          },
+          "sd": {
+            "value": 0.004821181010802876,
+            "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+            "key": [
+              "branches",
+              "B",
+              "event_f1",
+              "sd"
+            ]
+          },
+          "n": {
+            "value": 3,
+            "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+            "key": [
+              "branches",
+              "B",
+              "event_f1",
+              "n"
+            ]
+          }
+        },
+        "C": {
+          "mean": {
+            "value": 0.05390574019940511,
+            "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+            "key": [
+              "branches",
+              "C",
+              "event_f1",
+              "mean"
+            ]
+          },
+          "sd": {
+            "value": 0.008758306858433967,
+            "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+            "key": [
+              "branches",
+              "C",
+              "event_f1",
+              "sd"
+            ]
+          },
+          "n": {
+            "value": 4,
+            "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+            "key": [
+              "branches",
+              "C",
+              "event_f1",
+              "n"
+            ]
+          }
+        }
+      },
+      "welch_p": {
+        "event_f1": {
+          "value": 0.2335746865624983,
+          "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+          "key": [
+            "welch",
+            "event_f1",
+            "p"
+          ]
+        },
+        "psds_1": {
+          "value": 0.9125821460981,
+          "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+          "key": [
+            "welch",
+            "psds_1",
+            "p"
+          ]
+        },
+        "psds_2": {
+          "value": 0.18095480585556553,
+          "source": "docs/measurements/rq1_multiseed_clean_20260924.json",
+          "key": [
+            "welch",
+            "psds_2",
+            "p"
+          ]
+        }
+      },
+      "bootstrap_c_minus_b": {
+        "estimate": {
+          "value": -0.007078709217123606,
+          "source": "docs/measurements/rq1_multirun_bootstrap_clean_20260925.json",
+          "key": [
+            "differences",
+            "C-B",
+            "estimate"
+          ]
+        },
+        "lower": {
+          "value": -0.01635332526539383,
+          "source": "docs/measurements/rq1_multirun_bootstrap_clean_20260925.json",
+          "key": [
+            "differences",
+            "C-B",
+            "lower"
+          ]
+        },
+        "upper": {
+          "value": 0.0021171931444093784,
+          "source": "docs/measurements/rq1_multirun_bootstrap_clean_20260925.json",
+          "key": [
+            "differences",
+            "C-B",
+            "upper"
+          ]
+        }
+      }
+    },
+    "v2": {
+      "branches": {
+        "B": {
+          "mean": {
+            "value": 0.13235498948794644,
+            "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+            "key": [
+              "branches",
+              "B",
+              "event_f1",
+              "mean"
+            ]
+          },
+          "sd": {
+            "value": 0.006795545575622111,
+            "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+            "key": [
+              "branches",
+              "B",
+              "event_f1",
+              "sd"
+            ]
+          },
+          "n": {
+            "value": 3,
+            "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+            "key": [
+              "branches",
+              "B",
+              "event_f1",
+              "n"
+            ]
+          }
+        },
+        "C": {
+          "mean": {
+            "value": 0.1294275483870925,
+            "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+            "key": [
+              "branches",
+              "C",
+              "event_f1",
+              "mean"
+            ]
+          },
+          "sd": {
+            "value": 0.009866249358794812,
+            "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+            "key": [
+              "branches",
+              "C",
+              "event_f1",
+              "sd"
+            ]
+          },
+          "n": {
+            "value": 3,
+            "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+            "key": [
+              "branches",
+              "C",
+              "event_f1",
+              "n"
+            ]
+          }
+        }
+      },
+      "welch_p": {
+        "event_f1": {
+          "value": 0.6964868389099133,
+          "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+          "key": [
+            "welch",
+            "event_f1",
+            "p"
+          ]
+        },
+        "psds_1": {
+          "value": 0.43886161656462896,
+          "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+          "key": [
+            "welch",
+            "psds_1",
+            "p"
+          ]
+        },
+        "psds_2": {
+          "value": 0.019333700065034588,
+          "source": "docs/measurements/rq1_v2_multiseed_20260929.json",
+          "key": [
+            "welch",
+            "psds_2",
+            "p"
+          ]
+        }
+      },
+      "bootstrap_c_minus_b": {
+        "estimate": {
+          "value": -0.002927441100853967,
+          "source": "docs/measurements/rq1_multirun_bootstrap_rq1_v2_annotated_20260929.json",
+          "key": [
+            "differences",
+            "C-B",
+            "estimate"
+          ]
+        },
+        "lower": {
+          "value": -0.025351090668621186,
+          "source": "docs/measurements/rq1_multirun_bootstrap_rq1_v2_annotated_20260929.json",
+          "key": [
+            "differences",
+            "C-B",
+            "lower"
+          ]
+        },
+        "upper": {
+          "value": 0.0199348493176414,
+          "source": "docs/measurements/rq1_multirun_bootstrap_rq1_v2_annotated_20260929.json",
+          "key": [
+            "differences",
+            "C-B",
+            "upper"
+          ]
+        }
+      }
+    }
+  },
+  "rq2": {
+    "template": {
+      "B0": {
+        "en": {
+          "hallucination_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "omission_rate"
+            ]
+          },
+          "forbidden_term_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "forbidden_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "over_specific_rate"
+            ]
+          }
+        },
+        "vi": {
+          "hallucination_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "omission_rate"
+            ]
+          },
+          "forbidden_term_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "forbidden_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "over_specific_rate"
+            ]
+          }
+        }
+      },
+      "lbrv2": {
+        "en": {
+          "hallucination_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "omission_rate"
+            ]
+          },
+          "forbidden_term_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "forbidden_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "over_specific_rate"
+            ]
+          }
+        },
+        "vi": {
+          "hallucination_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "omission_rate"
+            ]
+          },
+          "forbidden_term_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "forbidden_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "over_specific_rate"
+            ]
+          }
+        }
+      },
+      "lbrv3": {
+        "en": {
+          "hallucination_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "omission_rate"
+            ]
+          },
+          "forbidden_term_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "forbidden_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "en",
+              "summary",
+              "over_specific_rate"
+            ]
+          }
+        },
+        "vi": {
+          "hallucination_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "omission_rate"
+            ]
+          },
+          "forbidden_term_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "forbidden_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": 0.0,
+            "source": "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+            "key": [
+              "languages",
+              "vi",
+              "summary",
+              "over_specific_rate"
+            ]
+          }
+        }
+      }
+    },
+    "llm_e2e": {
+      "template": {
+        "f2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "f2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "f2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "f2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "f2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "f2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "f2",
+              "n_truncated"
+            ]
+          }
+        },
+        "B0": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "B0",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "B0",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "B0",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "B0",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "B0",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "B0",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv2",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv3": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv3",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv3",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv3",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv3",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv3",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "template",
+              "lbrv3",
+              "n_truncated"
+            ]
+          }
+        }
+      },
+      "unconstrained": {
+        "f2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.011390887290167866,
+              "lower": 0.0023980815347721825,
+              "upper": 0.022781774580335732,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "f2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.004796163069544365,
+              "lower": 0.0,
+              "upper": 0.011990407673860913,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "f2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.38848920863309355,
+              "lower": 0.31654676258992803,
+              "upper": 0.4748201438848921,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "f2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.14028776978417265,
+              "lower": 0.08633093525179857,
+              "upper": 0.19784172661870503,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "f2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 0.8558558558558559,
+              "lower": 0.7280502392344498,
+              "upper": 0.9595959595959596,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "f2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "f2",
+              "n_truncated"
+            ]
+          }
+        },
+        "B0": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.004796163069544365,
+              "lower": 0.0,
+              "upper": 0.011990407673860913,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "B0",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "B0",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.3597122302158273,
+              "lower": 0.2805755395683453,
+              "upper": 0.43884892086330934,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "B0",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.13309352517985612,
+              "lower": 0.08273381294964029,
+              "upper": 0.1906474820143885,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "B0",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 0.9142857142857143,
+              "lower": 0.8064516129032258,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "B0",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "B0",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.01618705035971223,
+              "lower": 0.004796163069544365,
+              "upper": 0.028806954436450812,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0035971223021582736,
+              "lower": 0.0,
+              "upper": 0.014388489208633094,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.4028776978417266,
+              "lower": 0.3307553956834534,
+              "upper": 0.48219424460431637,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.12589928057553956,
+              "lower": 0.08153477218225419,
+              "upper": 0.18105515587529977,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 0.8444444444444444,
+              "lower": 0.7407004830917875,
+              "upper": 0.9388061224489797,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv2",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv3": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.022422062350119905,
+              "lower": 0.009709232613908875,
+              "upper": 0.03705335731414868,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv3",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.023038711887632752,
+              "lower": 0.00959232613908873,
+              "upper": 0.0389816718054128,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv3",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.2589928057553957,
+              "lower": 0.18687050359712246,
+              "upper": 0.33093525179856115,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv3",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.13357314148681054,
+              "lower": 0.09040167865707434,
+              "upper": 0.18129496402877698,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv3",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 0.8308943089430895,
+              "lower": 0.7599917695473252,
+              "upper": 0.895055750194639,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv3",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "unconstrained",
+              "lbrv3",
+              "n_truncated"
+            ]
+          }
+        }
+      },
+      "constrained": {
+        "f2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "f2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.011990407673860911,
+              "lower": 0.0023980815347721825,
+              "upper": 0.023980815347721823,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "f2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "f2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "f2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "f2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "f2",
+              "n_truncated"
+            ]
+          }
+        },
+        "B0": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "B0",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.013189448441247002,
+              "lower": 0.0023980815347721825,
+              "upper": 0.02877697841726619,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "B0",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "B0",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "B0",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "B0",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "B0",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.007194244604316547,
+              "lower": 0.0,
+              "upper": 0.017985611510791366,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv2",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv3": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv3",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.08115793079821858,
+              "lower": 0.05106714628297364,
+              "upper": 0.11175316889345667,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv3",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv3",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv3",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv3",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained",
+              "lbrv3",
+              "n_truncated"
+            ]
+          }
+        }
+      },
+      "constrained_cover": {
+        "f2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "f2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "f2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "f2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "f2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "f2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "f2",
+              "n_truncated"
+            ]
+          }
+        },
+        "B0": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "B0",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "B0",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "B0",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "B0",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "B0",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "B0",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv2": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv2",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv2",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv2",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv2",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv2",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv2",
+              "n_truncated"
+            ]
+          }
+        },
+        "lbrv3": {
+          "hallucination_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv3",
+              "ci",
+              "hallucination_rate"
+            ]
+          },
+          "omission_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv3",
+              "ci",
+              "omission_rate"
+            ]
+          },
+          "context_term_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv3",
+              "ci",
+              "context_term_rate"
+            ]
+          },
+          "over_specific_rate": {
+            "value": {
+              "estimate": 0.0,
+              "lower": 0.0,
+              "upper": 0.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv3",
+              "ci",
+              "over_specific_rate"
+            ]
+          },
+          "temporal_order_eligible": {
+            "value": {
+              "estimate": 1.0,
+              "lower": 1.0,
+              "upper": 1.0,
+              "confidence": 0.95,
+              "n_recordings": 139,
+              "n_bootstrap": 1000
+            },
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv3",
+              "ci",
+              "temporal_order_eligible"
+            ]
+          },
+          "n_truncated": {
+            "value": 0,
+            "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+            "key": [
+              "e2e",
+              "constrained_cover",
+              "lbrv3",
+              "n_truncated"
+            ]
+          }
+        }
+      }
+    },
+    "llm_oracle": {
+      "template": {
+        "hallucination_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "template",
+            "ci",
+            "hallucination_rate"
+          ]
+        },
+        "omission_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "template",
+            "ci",
+            "omission_rate"
+          ]
+        },
+        "context_term_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "template",
+            "ci",
+            "context_term_rate"
+          ]
+        },
+        "over_specific_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "template",
+            "ci",
+            "over_specific_rate"
+          ]
+        },
+        "temporal_order_eligible": {
+          "value": {
+            "estimate": 1.0,
+            "lower": 1.0,
+            "upper": 1.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "template",
+            "ci",
+            "temporal_order_eligible"
+          ]
+        }
+      },
+      "unconstrained": {
+        "hallucination_rate": {
+          "value": {
+            "estimate": 0.006594724220623502,
+            "lower": 0.0,
+            "upper": 0.015587529976019187,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "unconstrained",
+            "ci",
+            "hallucination_rate"
+          ]
+        },
+        "omission_rate": {
+          "value": {
+            "estimate": 0.01882494004796163,
+            "lower": 0.0079136690647482,
+            "upper": 0.030941247002398073,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "unconstrained",
+            "ci",
+            "omission_rate"
+          ]
+        },
+        "context_term_rate": {
+          "value": {
+            "estimate": 0.2733812949640288,
+            "lower": 0.19424460431654678,
+            "upper": 0.34532374100719426,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "unconstrained",
+            "ci",
+            "context_term_rate"
+          ]
+        },
+        "over_specific_rate": {
+          "value": {
+            "estimate": 0.1418465227817746,
+            "lower": 0.09795863309352518,
+            "upper": 0.1893525179856115,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "unconstrained",
+            "ci",
+            "over_specific_rate"
+          ]
+        },
+        "temporal_order_eligible": {
+          "value": {
+            "estimate": 0.8474885844748858,
+            "lower": 0.7684650900900901,
+            "upper": 0.9134259456390604,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "unconstrained",
+            "ci",
+            "temporal_order_eligible"
+          ]
+        }
+      },
+      "constrained": {
+        "hallucination_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained",
+            "ci",
+            "hallucination_rate"
+          ]
+        },
+        "omission_rate": {
+          "value": {
+            "estimate": 0.09448441247002398,
+            "lower": 0.06282973621103118,
+            "upper": 0.1278267386091127,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained",
+            "ci",
+            "omission_rate"
+          ]
+        },
+        "context_term_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained",
+            "ci",
+            "context_term_rate"
+          ]
+        },
+        "over_specific_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained",
+            "ci",
+            "over_specific_rate"
+          ]
+        },
+        "temporal_order_eligible": {
+          "value": {
+            "estimate": 1.0,
+            "lower": 1.0,
+            "upper": 1.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained",
+            "ci",
+            "temporal_order_eligible"
+          ]
+        }
+      },
+      "constrained_cover": {
+        "hallucination_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained_cover",
+            "ci",
+            "hallucination_rate"
+          ]
+        },
+        "omission_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained_cover",
+            "ci",
+            "omission_rate"
+          ]
+        },
+        "context_term_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained_cover",
+            "ci",
+            "context_term_rate"
+          ]
+        },
+        "over_specific_rate": {
+          "value": {
+            "estimate": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained_cover",
+            "ci",
+            "over_specific_rate"
+          ]
+        },
+        "temporal_order_eligible": {
+          "value": {
+            "estimate": 1.0,
+            "lower": 1.0,
+            "upper": 1.0,
+            "confidence": 0.95,
+            "n_recordings": 139,
+            "n_bootstrap": 1000
+          },
+          "source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+          "key": [
+            "oracle",
+            "constrained_cover",
+            "ci",
+            "temporal_order_eligible"
+          ]
+        }
+      }
+    },
+    "oracle_check": {
+      "n": 139,
+      "identical": 139,
+      "mismatched": [],
+      "ok": true
+    },
+    "llm_source": "docs/measurements/rq2_llm_systems_20261110_test_annotated.json"
+  },
+  "rq3": {
+    "f2": {
+      "ndcg10_gold": {
+        "structured_only/en": {
+          "estimate": {
+            "value": 0.4161104060683703,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3463173034904356,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.48727182587768253,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "vector_only/en": {
+          "estimate": {
+            "value": 0.5260751292993451,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.46689772114422756,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.5824436777583777,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/en": {
+          "estimate": {
+            "value": 0.4147342398669633,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3437702923995442,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.48518169169606706,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/vi": {
+          "estimate": {
+            "value": 0.41969427704404755,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3501046062568218,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.4907976570967462,
+            "source": "docs/measurements/retrieval_benchmark_test_20261002.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        }
+      },
+      "ndcg10_parsed_hybrid_en": {
+        "value": 0.40888238997534254,
+        "source": "docs/measurements/retrieval_benchmark_test_parsed_20261002.json",
+        "key": [
+          "summary",
+          "hybrid/en",
+          "ndcg@10"
+        ]
+      },
+      "answers_hybrid_en": {
+        "n": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_20261002.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "n"
+          ]
+        },
+        "unsupported_claim_rate": {
+          "value": 0.0,
+          "source": "docs/measurements/retrieval_answers_test_20261002.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "unsupported_claim_rate"
+          ]
+        },
+        "contract_ok": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_20261002.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "contract_ok"
+          ]
+        },
+        "answered": {
+          "value": 65,
+          "source": "docs/measurements/retrieval_answers_test_20261002.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "answered"
+          ]
+        },
+        "cited_relevant_share": {
+          "value": 0.9166666666666666,
+          "source": "docs/measurements/retrieval_answers_test_20261002.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "cited_relevant_share"
+          ]
+        }
+      }
+    },
+    "B0": {
+      "ndcg10_gold": {
+        "structured_only/en": {
+          "estimate": {
+            "value": 0.3916992890032281,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.31467672876286973,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.4691037971697071,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "vector_only/en": {
+          "estimate": {
+            "value": 0.45801023845140865,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3910228554073128,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.5223359713433687,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/en": {
+          "estimate": {
+            "value": 0.3833842501494071,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3073476158216034,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.46112237266336426,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/vi": {
+          "estimate": {
+            "value": 0.38627841644661565,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3113043125450236,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.4652674532118401,
+            "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        }
+      },
+      "ndcg10_parsed_hybrid_en": {
+        "value": 0.3771852616687025,
+        "source": "docs/measurements/retrieval_benchmark_test_s8lite_b0_parsed_20261108.json",
+        "key": [
+          "summary",
+          "hybrid/en",
+          "ndcg@10"
+        ]
+      },
+      "answers_hybrid_en": {
+        "n": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_s8lite_b0_gold_20261108.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "n"
+          ]
+        },
+        "unsupported_claim_rate": {
+          "value": 0.0,
+          "source": "docs/measurements/retrieval_answers_test_s8lite_b0_gold_20261108.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "unsupported_claim_rate"
+          ]
+        },
+        "contract_ok": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_s8lite_b0_gold_20261108.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "contract_ok"
+          ]
+        },
+        "answered": {
+          "value": 58,
+          "source": "docs/measurements/retrieval_answers_test_s8lite_b0_gold_20261108.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "answered"
+          ]
+        },
+        "cited_relevant_share": {
+          "value": 0.9148936170212766,
+          "source": "docs/measurements/retrieval_answers_test_s8lite_b0_gold_20261108.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "cited_relevant_share"
+          ]
+        }
+      }
+    },
+    "lbrv2": {
+      "ndcg10_gold": {
+        "structured_only/en": {
+          "estimate": {
+            "value": 0.4111644552310661,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3371643410171061,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.48595090343936165,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "vector_only/en": {
+          "estimate": {
+            "value": 0.4906918588174123,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.43172751637155876,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.5529939584489568,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/en": {
+          "estimate": {
+            "value": 0.40360291953342864,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.3321166112695098,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.477579266773306,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/vi": {
+          "estimate": {
+            "value": 0.4053102475843449,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.331888376796704,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.4792220290468472,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        }
+      },
+      "ndcg10_parsed_hybrid_en": {
+        "value": 0.3978254634175106,
+        "source": "docs/measurements/retrieval_benchmark_test_lbrv2_parsed_20261110.json",
+        "key": [
+          "summary",
+          "hybrid/en",
+          "ndcg@10"
+        ]
+      },
+      "answers_hybrid_en": {
+        "n": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_lbrv2_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "n"
+          ]
+        },
+        "unsupported_claim_rate": {
+          "value": 0.0,
+          "source": "docs/measurements/retrieval_answers_test_lbrv2_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "unsupported_claim_rate"
+          ]
+        },
+        "contract_ok": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_lbrv2_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "contract_ok"
+          ]
+        },
+        "answered": {
+          "value": 62,
+          "source": "docs/measurements/retrieval_answers_test_lbrv2_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "answered"
+          ]
+        },
+        "cited_relevant_share": {
+          "value": 0.8986486486486487,
+          "source": "docs/measurements/retrieval_answers_test_lbrv2_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "cited_relevant_share"
+          ]
+        }
+      }
+    },
+    "lbrv3": {
+      "ndcg10_gold": {
+        "structured_only/en": {
+          "estimate": {
+            "value": 0.6825555467930985,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.6242238666618946,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.7397282491649457,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "structured_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "vector_only/en": {
+          "estimate": {
+            "value": 0.6300839498612317,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.5792758440314314,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.6789638500686633,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "vector_only/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/en": {
+          "estimate": {
+            "value": 0.6700280857556261,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.6100117123056287,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.7290836575311206,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/en",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        },
+        "hybrid/vi": {
+          "estimate": {
+            "value": 0.6813228857600833,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "estimate"
+            ]
+          },
+          "lower": {
+            "value": 0.6196280848265696,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "lower"
+            ]
+          },
+          "upper": {
+            "value": 0.73990351227461,
+            "source": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+            "key": [
+              "summary",
+              "hybrid/vi",
+              "ci_ndcg@10",
+              "upper"
+            ]
+          }
+        }
+      },
+      "ndcg10_parsed_hybrid_en": {
+        "value": 0.6549809422398161,
+        "source": "docs/measurements/retrieval_benchmark_test_lbrv3_parsed_20261110.json",
+        "key": [
+          "summary",
+          "hybrid/en",
+          "ndcg@10"
+        ]
+      },
+      "answers_hybrid_en": {
+        "n": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_lbrv3_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "n"
+          ]
+        },
+        "unsupported_claim_rate": {
+          "value": 0.0,
+          "source": "docs/measurements/retrieval_answers_test_lbrv3_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "unsupported_claim_rate"
+          ]
+        },
+        "contract_ok": {
+          "value": 97,
+          "source": "docs/measurements/retrieval_answers_test_lbrv3_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "contract_ok"
+          ]
+        },
+        "answered": {
+          "value": 95,
+          "source": "docs/measurements/retrieval_answers_test_lbrv3_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "answered"
+          ]
+        },
+        "cited_relevant_share": {
+          "value": 0.7115384615384616,
+          "source": "docs/measurements/retrieval_answers_test_lbrv3_gold_20261110.json",
+          "key": [
+            "summary",
+            "hybrid/en",
+            "cited_relevant_share"
+          ]
+        }
+      }
+    }
+  },
+  "psds_diagnosis": {
+    "source": "docs/measurements/psds_diagnosis_20261110_annotated.json",
+    "reproduced": true,
+    "explained": true,
+    "delta_psds_linear": {
+      "psds_1": 0.011441853977984362,
+      "psds_2": -0.007776465855018122
+    },
+    "delta_event_f1_micro": 0.05341437964787915,
+    "supported": {
+      "H1": {
+        "psds_2": true
+      },
+      "H2": {
+        "psds_2": false
+      },
+      "H3": {
+        "psds_2": true
+      }
+    }
+  },
+  "demo": {
+    "parity": {
+      "n_events": {
+        "value": 692,
+        "source": "docs/measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.json",
+        "key": [
+          "summary",
+          "n_events"
+        ]
+      },
+      "n_shared_events": {
+        "value": 573,
+        "source": "docs/measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.json",
+        "key": [
+          "summary",
+          "n_shared_events"
+        ]
+      },
+      "n_within_frame": {
+        "value": 665,
+        "source": "docs/measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.json",
+        "key": [
+          "summary",
+          "n_within_frame"
+        ]
+      },
+      "n_within_collar": {
+        "value": 691,
+        "source": "docs/measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.json",
+        "key": [
+          "summary",
+          "n_within_collar"
+        ]
+      },
+      "prob_max_abs": {
+        "value": 0.0020308261927903803,
+        "source": "docs/measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.json",
+        "key": [
+          "summary",
+          "prob_max_abs"
+        ]
+      }
+    },
+    "e2e": {
+      "upload_elapsed_s": {
+        "value": 3.7210066000116058,
+        "source": "docs/measurements/demo_lbrv3_e2e_20261110.json",
+        "key": [
+          "upload_elapsed_s"
+        ]
+      },
+      "rag_elapsed_s": {
+        "value": 0.27275689999805763,
+        "source": "docs/measurements/demo_lbrv3_e2e_20261110.json",
+        "key": [
+          "rag_elapsed_s"
+        ]
+      },
+      "events": {
+        "value": 3,
+        "source": "docs/measurements/demo_lbrv3_e2e_20261110.json",
+        "key": [
+          "events"
+        ]
+      }
+    }
+  },
+  "sources": [
+    "docs/measurements/caption_template_B0_test_annotated_20261107.json",
+    "docs/measurements/caption_template_lbrv2_test_annotated_20261110.json",
+    "docs/measurements/caption_template_lbrv3_test_annotated_20261110.json",
+    "docs/measurements/demo_lbrv3_e2e_20261110.json",
+    "docs/measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.json",
+    "docs/measurements/lbr_psds_grid_20261110_annotated.json",
+    "docs/measurements/lbr_psds_grid_20261110_annotated_b0.json",
+    "docs/measurements/psds_diagnosis_20261110_annotated.json",
+    "docs/measurements/retrieval_answers_test_20261002.json",
+    "docs/measurements/retrieval_answers_test_lbrv2_gold_20261110.json",
+    "docs/measurements/retrieval_answers_test_lbrv3_gold_20261110.json",
+    "docs/measurements/retrieval_answers_test_s8lite_b0_gold_20261108.json",
+    "docs/measurements/retrieval_benchmark_test_20261002.json",
+    "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+    "docs/measurements/retrieval_benchmark_test_lbrv2_parsed_20261110.json",
+    "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+    "docs/measurements/retrieval_benchmark_test_lbrv3_parsed_20261110.json",
+    "docs/measurements/retrieval_benchmark_test_parsed_20261002.json",
+    "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+    "docs/measurements/retrieval_benchmark_test_s8lite_b0_parsed_20261108.json",
+    "docs/measurements/rq1_multirun_bootstrap_clean_20260925.json",
+    "docs/measurements/rq1_multirun_bootstrap_phase_o_b0_vs_f2_20261014.json",
+    "docs/measurements/rq1_multirun_bootstrap_rq1_v2_annotated_20260929.json",
+    "docs/measurements/rq1_multiseed_clean_20260924.json",
+    "docs/measurements/rq1_v2_multiseed_20260929.json",
+    "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+    "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+    "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_o_annotated.json",
+    "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json"
+  ],
+  "git": {
+    "revision": "089ef00a0a440200816a106248d021dee05ab4a7",
+    "dirty": false
+  },
+  "created_at": "2026-11-10T18:03:03.373052+00:00"
+}
