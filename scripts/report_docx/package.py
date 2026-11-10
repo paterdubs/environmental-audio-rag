@@ -226,7 +226,7 @@ def cover_elements(template_body: str, info: FrontInfo) -> list[str]:
         "HỌ VÀ TÊN SINH VIÊN 1": (info.student_1, None),
         "HỌ VÀ TÊN SINH VIÊN 2": (info.student_2, None),
         "HƯỚNG DẪN VÀ MẪU BÁO CÁO KHÓA LUẬN TỐT NGHIỆP NĂM 2026": (
-            "BÁO CÁO GIỮA KỲ KHÓA LUẬN TỐT NGHIỆP\n\n" + info.title_vi.upper(),
+            info.cover_label + "\n\n" + info.title_vi.upper(),
             None,
         ),
         "Giảng viên hướng dẫn: TS. Họ và Tên GVHD": (info.supervisor, None),
@@ -234,7 +234,7 @@ def cover_elements(template_body: str, info: FrontInfo) -> list[str]:
         "FULLNAME OF THE FIRST STUDENT": (info.student_1_en, None),
         "FULLNAME OF THE SECOND STUDENT": (info.student_2_en, None),
         "GUIDANCE AND SAMPLE OF THE GRADUATION REPORT IN 2026": (
-            "MID-TERM GRADUATION THESIS REPORT\n\n" + info.title_en,
+            info.cover_label_en + "\n\n" + info.title_en,
             None,
         ),
         "Supervisor: Dr. Full name of supervisor": (info.supervisor_en, None),

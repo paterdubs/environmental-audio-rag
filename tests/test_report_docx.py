@@ -185,3 +185,24 @@ def test_include_filters_rows_and_columns_and_marks_used_rows(tmp_path: Path):
 def test_include_rejects_filter_that_matches_nothing(tmp_path: Path):
     with pytest.raises(ValueError, match="không khớp"):
         _include(tmp_path, "|keep=1:^zzz$")
+
+
+def test_front_info_cover_label_defaults_to_midterm_and_can_be_overridden():
+    from scripts.report_docx.package import FrontInfo
+
+    base = {name: "x" for name in (
+        "title_vi", "title_en", "student_1", "student_2", "student_1_en", "student_2_en",
+        "supervisor", "supervisor_en", "city_date", "city_date_en", "header", "footer")}
+    assert FrontInfo(**base).cover_label == "BÁO CÁO GIỮA KỲ KHÓA LUẬN TỐT NGHIỆP"
+    labels = {"cover_label": "KHÓA LUẬN TỐT NGHIỆP", "cover_label_en": "GRADUATION THESIS"}
+    final = FrontInfo(**base, **labels)
+    assert (final.cover_label, final.cover_label_en) == tuple(labels.values())
+
+
+def test_cover_elements_use_front_info_labels_in_source():
+    import inspect
+
+    from scripts.report_docx import package
+
+    source = inspect.getsource(package.cover_elements)
+    assert "info.cover_label" in source and "GIỮA KỲ" not in source
