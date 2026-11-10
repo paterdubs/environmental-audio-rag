@@ -157,6 +157,16 @@ def run_entry(label: str, run_id: str, *, skip_test_predictions: bool = False) -
             entry["artifacts"].append(artifact(run / name, kind="lbr_" + name.split(".")[0]))
     for path in sorted(run.glob("lbr_*.json")):
         entry["artifacts"].append(artifact(path, kind="lbr_evaluation"))
+    # Evaluation JSON là nguồn của final_numbers; caption LLM (ADR-0040, ADR-0048) — bỏ *.smoke.*.
+    for path in sorted([*run.glob("evaluation*.json"), *run.glob("dev_evaluation*.json")]):
+        entry["artifacts"].append(artifact(path, kind="evaluation"))
+    for path in sorted((run / "captions").glob("*.jsonl")):
+        if ".smoke" in path.name:
+            continue
+        entry["artifacts"].append(artifact(path, kind="caption_llm"))
+        meta = path.with_suffix(".meta.json")
+        if meta.exists():
+            entry["artifacts"].append(artifact(meta, kind="caption_llm_meta"))
     for path in sorted(set(dependency_manifests(run, manifest))):
         entry['artifacts'].append(artifact(path, kind='dependency_manifest'))
     for member in sorted(set(member_runs(run, manifest))):

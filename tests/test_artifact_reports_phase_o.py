@@ -135,3 +135,34 @@ def test_dependency_dag_does_not_duplicate_checkpoint(tmp_path, monkeypatch):
     checkpoints = [a for a in entry['artifacts'] if a['kind'] == 'best_checkpoint']
     assert len(checkpoints) == 1
     assert Path(checkpoints[0]['path']).parent.parent.name == 'source'
+
+
+def test_run_entry_hashes_evaluations_and_llm_captions(tmp_path, monkeypatch):
+    """ADR-0048: caption LLM và evaluation JSON (nguồn của final_numbers) phải vào freeze."""
+    monkeypatch.setattr(freeze, 'RUNS', tmp_path)
+    run = write_run(tmp_path, 'sed_lbr_x', task='sed_lbr')
+    evaluate(run, filename='evaluation_phase_lbr_annotated.json')
+    evaluate(run, split='dev', filename='dev_evaluation_cv.json')
+    (run / 'captions').mkdir()
+    for name in ('constrained_test.jsonl', 'constrained_test.meta.json',
+                 'constrained_test.smoke.jsonl'):
+        (run / 'captions' / name).write_text('{}', encoding='utf-8')
+    entry = freeze.run_entry('LBR', 'sed_lbr_x')
+    kinds = {Path(a['path']).name: a['kind'] for a in entry['artifacts']}
+    assert kinds['evaluation_phase_lbr_annotated.json'] == 'evaluation'
+    assert kinds['dev_evaluation_cv.json'] == 'evaluation'
+    assert kinds['constrained_test.jsonl'] == 'caption_llm'
+    assert kinds['constrained_test.meta.json'] == 'caption_llm_meta'
+    assert 'constrained_test.smoke.jsonl' not in kinds  # smoke không phải artifact chính thức
+
+
+def test_ledger_lists_llm_caption_systems_and_b0_psds_grid(tmp_path, monkeypatch):
+    monkeypatch.setattr(ledger, 'MEASUREMENTS', tmp_path)
+    for name in ('rq2_llm_systems_20261111_test_annotated.md',
+                 'rq2_llm_systems_20261110_dev_annotated.md',
+                 'lbr_psds_grid_20261110_annotated_b0.md'):
+        (tmp_path / name).write_text('x', encoding='utf-8')
+    other = ledger.other_artifacts()
+    assert other['Caption (RQ2)'] == ['rq2_llm_systems_20261111_test_annotated.md']
+    assert other['LBR (ADR-0045/0047): PSDS, chẩn đoán'] == [
+        'lbr_psds_grid_20261110_annotated_b0.md']
