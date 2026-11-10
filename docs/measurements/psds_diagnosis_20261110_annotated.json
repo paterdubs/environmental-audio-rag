@@ -1,0 +1,1197 @@
+{
+  "split": "dev",
+  "eval_set": "annotated",
+  "inputs": {
+    "v1": {
+      "predictions": "sed_ensemble_C_clean_20260925T045631Z",
+      "postproc": "sed_ensemble_C_clean_20260925T045631Z/postproc_cv.json",
+      "family": "theta",
+      "n_recordings": 134
+    },
+    "v2": {
+      "predictions": "sed_ensemble_v2_20260926T155630Z",
+      "postproc": "sed_ensemble_v2_20260926T150934Z/postproc_cv.json",
+      "family": "theta",
+      "n_recordings": 134
+    },
+    "f2": {
+      "predictions": "sed_ensemble_t2b_20260927T200914Z",
+      "postproc": "sed_ensemble_t2b_20260927T200914Z/sebb_cv_selection_annotated.json",
+      "family": "csebb",
+      "n_recordings": 134
+    },
+    "B0": {
+      "predictions": "sed_filtered_B0_oof_dev_20261107T181008Z",
+      "postproc": "sed_filtered_B0_oof_dev_20261107T181008Z/sebb_cv_selection_annotated.json",
+      "family": "csebb",
+      "n_recordings": 134
+    }
+  },
+  "grids": {
+    "linear": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "log": [
+      1e-05,
+      1.2772917601095653e-05,
+      1.6314742404437944e-05,
+      2.08386860414987e-05,
+      2.6617081972316504e-05,
+      3.39977794814008e-05,
+      4.3425083593615284e-05,
+      5.546650145619387e-05,
+      7.084690527210178e-05,
+      9.049216833331852e-05,
+      0.00011558490096659558,
+      0.0001476356415977128,
+      0.00018857378851124752,
+      0.00024086374623806075,
+      0.0003076532783789963,
+      0.0003929629974441866,
+      0.0005019283986634162,
+      0.0006411090077777705,
+      0.0008188832529665662,
+      0.0010459528315059127,
+      0.0013359869331457707,
+      0.0017064451013211433,
+      0.0021796282669968308,
+      0.002784021225536946,
+      0.003556007371348475,
+      0.004542058914312286,
+      0.005801534425183287,
+      0.007410252117278595,
+      0.009465053969734419,
+      0.012089635444534116,
+      0.015441991736031982,
+      0.01972392880411365,
+      0.025193211738482102,
+      0.03217908176425879,
+      0.04110207598537973,
+      0.05249934297952282,
+      0.06705697819891052,
+      0.08565132571131524,
+      0.10940173257352362,
+      0.13973793155787195,
+      0.1784861085536242,
+      0.22797883574956607,
+      0.2911954883822927,
+      0.3719415978917831,
+      0.4750779382291607,
+      0.606813135909948,
+      0.7750774184240239,
+      0.99
+    ]
+  },
+  "scenarios": {
+    "psds_1": {
+      "dtc_threshold": 0.7,
+      "gtc_threshold": 0.7,
+      "alpha_ct": 0.0,
+      "alpha_st": 1.0,
+      "max_efpr": 100.0
+    },
+    "psds_2": {
+      "dtc_threshold": 0.1,
+      "gtc_threshold": 0.1,
+      "cttc_threshold": 0.3,
+      "alpha_ct": 0.5,
+      "alpha_st": 1.0,
+      "max_efpr": 100.0
+    },
+    "psds_1_dtc05": {
+      "dtc_threshold": 0.5,
+      "gtc_threshold": 0.5,
+      "alpha_ct": 0.0,
+      "alpha_st": 1.0,
+      "max_efpr": 100.0
+    }
+  },
+  "efpr_points": [
+    5.0,
+    10.0,
+    30.0,
+    60.0,
+    100.0
+  ],
+  "results": {
+    "v1": {
+      "event_f1_micro": 0.16045845272206305,
+      "n_events_estimate": 510,
+      "selected": {
+        "psds_1": {
+          "mean_tpr": 0.380106833840324,
+          "mean_efpr": 0.9880047758138263
+        },
+        "psds_2": {
+          "mean_tpr": 0.5519223339470527,
+          "mean_efpr": 0.6752172355925176
+        }
+      },
+      "grids": {
+        "linear": {
+          "n_grid": 19,
+          "n_points": 19,
+          "n_skipped_over_cap": 0,
+          "events_at_lowest_threshold": 3172,
+          "events_at_highest_threshold": 510,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.2803020175902149,
+              "psds_alpha_st0": 0.5064441815413144,
+              "mean_tpr_at": {
+                "5.0": 0.48435442155409253,
+                "10.0": 0.4950520004347532,
+                "30.0": 0.5164802519279874,
+                "60.0": 0.5164802519279874,
+                "100.0": 0.5164802519279874
+              },
+              "per_class_auc": {
+                "birds": 0.3059189657870009,
+                "cat_fights_and_moans": 0.26579340151636205,
+                "chicken_coop": 0.6959656471654269,
+                "cicadas_and_crickets": 0.499759859950323,
+                "crows_seagulls_magpies": 0.627554973546811,
+                "dog_barkings_and_howlings": 0.10683410565041532,
+                "glass_breaking": 0.4621439041430781,
+                "horn": 0.4068488978066125,
+                "injected_psds_world_label": 0.14121046823078648,
+                "jet_aircrafts": 0.40447574908039313,
+                "lawn_mower_brush_cutter_olive_shaker": 0.6049815966957643,
+                "music": 0.6133917916313409,
+                "propeller_aircrafts": 0.8932351823774102,
+                "sirens_and_alarms": 0.5887744689224494,
+                "thunder_fireworks_gunshot": 0.4955173857393632,
+                "train": 0.6601828853253884,
+                "vacuum_cleaner_fan_hairdryer": 0.8295871485583726,
+                "vehicle_idling": 0.33336899222483696,
+                "vehicle_pass_by": 0.2883772215956346,
+                "voices": 0.45383512859504854,
+                "workshop": 0.9575700378247828
+              },
+              "efpr_max": 81.83972892991193,
+              "max_mean_tpr": 0.5164802519279874
+            },
+            "psds_2": {
+              "psds": 0.6355637688336307,
+              "psds_alpha_st0": 0.810517259860339,
+              "mean_tpr_at": {
+                "5.0": 0.6895628982319421,
+                "10.0": 0.7348924651944548,
+                "30.0": 0.8066662839666178,
+                "60.0": 0.8459257529672817,
+                "100.0": 0.8528183950815988
+              },
+              "per_class_auc": {
+                "birds": 0.9550018393880548,
+                "cat_fights_and_moans": 0.6934187972430154,
+                "chicken_coop": 0.9912333371100326,
+                "cicadas_and_crickets": 0.7871288416355067,
+                "crows_seagulls_magpies": 0.7684182140674842,
+                "dog_barkings_and_howlings": 0.3719014182027031,
+                "glass_breaking": 0.902721150351746,
+                "horn": 0.9995777477248697,
+                "injected_psds_world_label": 0.47738562190700035,
+                "jet_aircrafts": 0.7990312437685154,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8778047363917676,
+                "music": 0.8730333463336103,
+                "propeller_aircrafts": 0.9222085978731855,
+                "sirens_and_alarms": 0.7417807569556182,
+                "thunder_fireworks_gunshot": 0.5535615864785518,
+                "train": 0.9870505400817925,
+                "vacuum_cleaner_fan_hairdryer": 0.8266331939598163,
+                "vehicle_idling": 0.809293595873039,
+                "vehicle_pass_by": 0.7990739205734149,
+                "voices": 0.9171082858601121,
+                "workshop": 0.9674956852872789
+              },
+              "efpr_max": 142.1947476709396,
+              "max_mean_tpr": 0.8636968844083638
+            },
+            "psds_1_dtc05": {
+              "psds": 0.5080030460657845,
+              "psds_alpha_st0": 0.6927174927090175,
+              "mean_tpr_at": {
+                "5.0": 0.6315137722882375,
+                "10.0": 0.6669265575120014,
+                "30.0": 0.7039551323563189,
+                "60.0": 0.7090571731726454,
+                "100.0": 0.7090571731726454
+              },
+              "per_class_auc": {
+                "birds": 0.8845045507463029,
+                "cat_fights_and_moans": 0.5435772441338363,
+                "chicken_coop": 0.875,
+                "cicadas_and_crickets": 0.7065322829607561,
+                "crows_seagulls_magpies": 0.6972477064220183,
+                "dog_barkings_and_howlings": 0.23888494627209444,
+                "glass_breaking": 0.6983563905378709,
+                "horn": 0.760807138017009,
+                "injected_psds_world_label": 0.3384132864381745,
+                "jet_aircrafts": 0.6255309743701349,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8354293652629643,
+                "music": 0.8020419662593378,
+                "propeller_aircrafts": 0.895979640088004,
+                "sirens_and_alarms": 0.6322527297920147,
+                "thunder_fireworks_gunshot": 0.5539546218910425,
+                "train": 0.8659947481371135,
+                "vacuum_cleaner_fan_hairdryer": 0.8295871485583726,
+                "vehicle_idling": 0.5646380683500332,
+                "vehicle_pass_by": 0.5482239108514753,
+                "voices": 0.6903333452641008,
+                "workshop": 0.9597772825367075
+              },
+              "efpr_max": 80.97522475107483,
+              "max_mean_tpr": 0.7090571731726454
+            }
+          }
+        },
+        "log": {
+          "n_grid": 48,
+          "n_points": 48,
+          "n_skipped_over_cap": 0,
+          "events_at_lowest_threshold": 2805,
+          "events_at_highest_threshold": 395,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.25590764778625735,
+              "psds_alpha_st0": 0.49455511775295563,
+              "mean_tpr_at": {
+                "5.0": 0.4303711280176204,
+                "10.0": 0.47985993280666267,
+                "30.0": 0.5050238068857449,
+                "60.0": 0.5095008113627494,
+                "100.0": 0.5095008113627494
+              },
+              "per_class_auc": {
+                "birds": 0.2665707563728089,
+                "cat_fights_and_moans": 0.27043124193707935,
+                "chicken_coop": 0.6972624034336825,
+                "cicadas_and_crickets": 0.45437102251366324,
+                "crows_seagulls_magpies": 0.6129075908262359,
+                "dog_barkings_and_howlings": 0.10714285714285714,
+                "glass_breaking": 0.390817788570658,
+                "horn": 0.29411764705882354,
+                "injected_psds_world_label": 0.13668211300830643,
+                "jet_aircrafts": 0.40176357910757077,
+                "lawn_mower_brush_cutter_olive_shaker": 0.6046728452033225,
+                "music": 0.6858836996813464,
+                "propeller_aircrafts": 0.892823513720821,
+                "sirens_and_alarms": 0.5899020830687587,
+                "thunder_fireworks_gunshot": 0.526258469494965,
+                "train": 0.6609033054744193,
+                "vacuum_cleaner_fan_hairdryer": 0.8301634846775973,
+                "vehicle_idling": 0.3204014295422805,
+                "vehicle_pass_by": 0.24515011821561003,
+                "voices": 0.44047460946756617,
+                "workshop": 0.9569569142936927
+              },
+              "efpr_max": 216.12604470927445,
+              "max_mean_tpr": 0.52008282194476
+            },
+            "psds_2": {
+              "psds": 0.6717298093734678,
+              "psds_alpha_st0": 0.8325846170996266,
+              "mean_tpr_at": {
+                "5.0": 0.6181975712555974,
+                "10.0": 0.7280546588335377,
+                "30.0": 0.8074713518142128,
+                "60.0": 0.8669102534847722,
+                "100.0": 0.9272923232377462
+              },
+              "per_class_auc": {
+                "birds": 0.9588269801113236,
+                "cat_fights_and_moans": 0.7569650758291323,
+                "chicken_coop": 0.9903558580427437,
+                "cicadas_and_crickets": 0.7837905210944415,
+                "crows_seagulls_magpies": 0.8795521470774716,
+                "dog_barkings_and_howlings": 0.4878605276032464,
+                "glass_breaking": 0.9198069709002807,
+                "horn": 0.9985703748747972,
+                "injected_psds_world_label": 0.46250415350424867,
+                "jet_aircrafts": 0.8085792133653894,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8706127403766547,
+                "music": 0.8882529774117559,
+                "propeller_aircrafts": 0.9239494531356687,
+                "sirens_and_alarms": 0.7383995356875704,
+                "thunder_fireworks_gunshot": 0.7029126902273535,
+                "train": 0.9862268858828752,
+                "vacuum_cleaner_fan_hairdryer": 0.9010389570533772,
+                "vehicle_idling": 0.7873562164070556,
+                "vehicle_pass_by": 0.7785259757876578,
+                "voices": 0.8950548265109023,
+                "workshop": 0.9651348782082113
+              },
+              "efpr_max": 351.07431448192614,
+              "max_mean_tpr": 0.9454996311484167
+            },
+            "psds_1_dtc05": {
+              "psds": 0.493480095913144,
+              "psds_alpha_st0": 0.6897605880398021,
+              "mean_tpr_at": {
+                "5.0": 0.5599898093330212,
+                "10.0": 0.639377483012151,
+                "30.0": 0.6922895401488546,
+                "60.0": 0.7148111983847987,
+                "100.0": 0.7181922077490549
+              },
+              "per_class_auc": {
+                "birds": 0.8461538461538461,
+                "cat_fights_and_moans": 0.5243322641396646,
+                "chicken_coop": 0.8938764287332372,
+                "cicadas_and_crickets": 0.6634247759960274,
+                "crows_seagulls_magpies": 0.7022459461660793,
+                "dog_barkings_and_howlings": 0.23950244925697808,
+                "glass_breaking": 0.6788382621108267,
+                "horn": 0.70266165109845,
+                "injected_psds_world_label": 0.3054770875708046,
+                "jet_aircrafts": 0.6643522502323356,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8342972764573443,
+                "music": 0.8528082500791386,
+                "propeller_aircrafts": 0.8943329654616476,
+                "sirens_and_alarms": 0.6417772758116013,
+                "thunder_fireworks_gunshot": 0.6916475466269708,
+                "train": 0.8649141179135671,
+                "vacuum_cleaner_fan_hairdryer": 0.8973123258817876,
+                "vehicle_idling": 0.5253216818905928,
+                "vehicle_pass_by": 0.47185558617785894,
+                "voices": 0.6310134200135649,
+                "workshop": 0.9588269410635176
+              },
+              "efpr_max": 215.54970859004973,
+              "max_mean_tpr": 0.7287742183310654
+            }
+          }
+        }
+      }
+    },
+    "v2": {
+      "event_f1_micro": 0.2138728323699422,
+      "n_events_estimate": 498,
+      "selected": {
+        "psds_1": {
+          "mean_tpr": 0.3705161736026353,
+          "mean_efpr": 1.001727064366796
+        },
+        "psds_2": {
+          "mean_tpr": 0.5515022673850951,
+          "mean_efpr": 1.2194581117843843
+        }
+      },
+      "grids": {
+        "linear": {
+          "n_grid": 19,
+          "n_points": 19,
+          "n_skipped_over_cap": 0,
+          "events_at_lowest_threshold": 1832,
+          "events_at_highest_threshold": 462,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.29174387156819925,
+              "psds_alpha_st0": 0.5197331869914856,
+              "mean_tpr_at": {
+                "5.0": 0.4985754720450038,
+                "10.0": 0.511552381371414,
+                "30.0": 0.5265199068431412,
+                "60.0": 0.5276145975930044,
+                "100.0": 0.5276145975930044
+              },
+              "per_class_auc": {
+                "birds": 0.5380182029852117,
+                "cat_fights_and_moans": 0.18092765033901106,
+                "chicken_coop": 0.797694655523101,
+                "cicadas_and_crickets": 0.5413064565921512,
+                "crows_seagulls_magpies": 0.5564076602502103,
+                "dog_barkings_and_howlings": 0.10683410565041532,
+                "glass_breaking": 0.42729918270153333,
+                "horn": 0.4082049827930237,
+                "injected_psds_world_label": 0.1866339496813589,
+                "jet_aircrafts": 0.4539761942105812,
+                "lawn_mower_brush_cutter_olive_shaker": 0.49732415373217087,
+                "music": 0.5628471755497036,
+                "propeller_aircrafts": 0.898312429142009,
+                "sirens_and_alarms": 0.5480525981883069,
+                "thunder_fireworks_gunshot": 0.5,
+                "train": 0.74207537836066,
+                "vacuum_cleaner_fan_hairdryer": 0.8307398207968221,
+                "vehicle_idling": 0.3545719577943571,
+                "vehicle_pass_by": 0.27483237557476853,
+                "voices": 0.5492351503032933,
+                "workshop": 0.9591028466525082
+              },
+              "efpr_max": 47.54772983604038,
+              "max_mean_tpr": 0.5276145975930044
+            },
+            "psds_2": {
+              "psds": 0.6277873029786126,
+              "psds_alpha_st0": 0.8095665867938007,
+              "mean_tpr_at": {
+                "5.0": 0.7088545245796569,
+                "10.0": 0.7579040232300505,
+                "30.0": 0.8195603483589182,
+                "60.0": 0.8421943365661988,
+                "100.0": 0.8421943365661988
+              },
+              "per_class_auc": {
+                "birds": 0.9611603718991464,
+                "cat_fights_and_moans": 0.7136281095532575,
+                "chicken_coop": 0.9734509456643208,
+                "cicadas_and_crickets": 0.7602766883449784,
+                "crows_seagulls_magpies": 0.7472872596647231,
+                "dog_barkings_and_howlings": 0.34811609355205164,
+                "glass_breaking": 0.9026164319139705,
+                "horn": 0.9958049367170669,
+                "injected_psds_world_label": 0.47286104603014983,
+                "jet_aircrafts": 0.7882763841895426,
+                "lawn_mower_brush_cutter_olive_shaker": 0.9246317684668378,
+                "music": 0.8819653521947396,
+                "propeller_aircrafts": 0.8956722755354778,
+                "sirens_and_alarms": 0.715547449401441,
+                "thunder_fireworks_gunshot": 0.5555555555555556,
+                "train": 0.9935548784677447,
+                "vacuum_cleaner_fan_hairdryer": 0.9741478645538015,
+                "vehicle_idling": 0.7358912448295214,
+                "vehicle_pass_by": 0.8379699463794371,
+                "voices": 0.8851903123299725,
+                "workshop": 0.9372934074260754
+              },
+              "efpr_max": 68.45876816856983,
+              "max_mean_tpr": 0.8421943365661988
+            },
+            "psds_1_dtc05": {
+              "psds": 0.4796025036047294,
+              "psds_alpha_st0": 0.6918305557607718,
+              "mean_tpr_at": {
+                "5.0": 0.6531943327452024,
+                "10.0": 0.6898035333241905,
+                "30.0": 0.7005195084852541,
+                "60.0": 0.7005195084852541,
+                "100.0": 0.7005195084852541
+              },
+              "per_class_auc": {
+                "birds": 0.9223010859933516,
+                "cat_fights_and_moans": 0.4939891979485195,
+                "chicken_coop": 0.9249279579850971,
+                "cicadas_and_crickets": 0.6228387395529073,
+                "crows_seagulls_magpies": 0.7063691434753003,
+                "dog_barkings_and_howlings": 0.24999999999999997,
+                "glass_breaking": 0.7199375403007761,
+                "horn": 0.7613156698869133,
+                "injected_psds_world_label": 0.2337041057582878,
+                "jet_aircrafts": 0.6246834212536281,
+                "lawn_mower_brush_cutter_olive_shaker": 0.9214701442452667,
+                "music": 0.7507215130941287,
+                "propeller_aircrafts": 0.8995474351117763,
+                "sirens_and_alarms": 0.6301227919600971,
+                "thunder_fireworks_gunshot": 0.5555555555555556,
+                "train": 0.9105430953999039,
+                "vacuum_cleaner_fan_hairdryer": 0.9241119554257377,
+                "vehicle_idling": 0.47849031269321984,
+                "vehicle_pass_by": 0.5705098546805831,
+                "voices": 0.6662679648797153,
+                "workshop": 0.9610341857754423
+              },
+              "efpr_max": 45.24238535914145,
+              "max_mean_tpr": 0.7005195084852541
+            }
+          }
+        },
+        "log": {
+          "n_grid": 48,
+          "n_points": 48,
+          "n_skipped_over_cap": 0,
+          "events_at_lowest_threshold": 2807,
+          "events_at_highest_threshold": 352,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.2804695938587415,
+              "psds_alpha_st0": 0.5155751083170967,
+              "mean_tpr_at": {
+                "5.0": 0.4642082706133978,
+                "10.0": 0.5000540639888164,
+                "30.0": 0.5221237465627008,
+                "60.0": 0.5268814409755675,
+                "100.0": 0.5268814409755675
+              },
+              "per_class_auc": {
+                "birds": 0.46043012284764484,
+                "cat_fights_and_moans": 0.17648919976567115,
+                "chicken_coop": 0.7488473277615505,
+                "cicadas_and_crickets": 0.5403458963934433,
+                "crows_seagulls_magpies": 0.6312033398061235,
+                "dog_barkings_and_howlings": 0.10652535415797348,
+                "glass_breaking": 0.38577484752744157,
+                "horn": 0.35294117647058826,
+                "injected_psds_world_label": 0.1853989437115916,
+                "jet_aircrafts": 0.45194206673096454,
+                "lawn_mower_brush_cutter_olive_shaker": 0.49670665074728726,
+                "music": 0.6765714687882897,
+                "propeller_aircrafts": 0.8974890918288306,
+                "sirens_and_alarms": 0.5491802123346161,
+                "thunder_fireworks_gunshot": 0.5438687398046096,
+                "train": 0.740874678112275,
+                "vacuum_cleaner_fan_hairdryer": 0.8329491092538502,
+                "vehicle_idling": 0.3310018974494497,
+                "vehicle_pass_by": 0.2537471319940456,
+                "voices": 0.5040623951628849,
+                "workshop": 0.9607276240098972
+              },
+              "efpr_max": 207.48100292090348,
+              "max_mean_tpr": 0.5401089542030807
+            },
+            "psds_2": {
+              "psds": 0.6812532343931459,
+              "psds_alpha_st0": 0.8431106671891436,
+              "mean_tpr_at": {
+                "5.0": 0.6539720296260503,
+                "10.0": 0.7466851566510835,
+                "30.0": 0.8239994441852332,
+                "60.0": 0.8723069880814526,
+                "100.0": 0.9273776882847483
+              },
+              "per_class_auc": {
+                "birds": 0.9826323951509383,
+                "cat_fights_and_moans": 0.7790107727827116,
+                "chicken_coop": 0.9813961074009389,
+                "cicadas_and_crickets": 0.7542655445532189,
+                "crows_seagulls_magpies": 0.8492521165087474,
+                "dog_barkings_and_howlings": 0.47940475302257096,
+                "glass_breaking": 0.9159475290458533,
+                "horn": 0.9940845481830145,
+                "injected_psds_world_label": 0.4831491748299115,
+                "jet_aircrafts": 0.813291664807439,
+                "lawn_mower_brush_cutter_olive_shaker": 0.9508268812489021,
+                "music": 0.9081802710781781,
+                "propeller_aircrafts": 0.913039940316919,
+                "sirens_and_alarms": 0.7767421864660018,
+                "thunder_fireworks_gunshot": 0.7049066593043574,
+                "train": 0.9937062322670194,
+                "vacuum_cleaner_fan_hairdryer": 0.9822006902549271,
+                "vehicle_idling": 0.777605697382958,
+                "vehicle_pass_by": 0.839859017757436,
+                "voices": 0.8593927186016947,
+                "workshop": 0.9664291100082764
+              },
+              "efpr_max": 337.4059487080924,
+              "max_mean_tpr": 0.9530346572646986
+            },
+            "psds_1_dtc05": {
+              "psds": 0.49043884385225367,
+              "psds_alpha_st0": 0.7035432946435739,
+              "mean_tpr_at": {
+                "5.0": 0.6526350181102577,
+                "10.0": 0.6845276298593562,
+                "30.0": 0.7029422580992181,
+                "60.0": 0.7213280590937148,
+                "100.0": 0.7213280590937148
+              },
+              "per_class_auc": {
+                "birds": 0.9224119198624331,
+                "cat_fights_and_moans": 0.5099888001809092,
+                "chicken_coop": 0.9248559159701938,
+                "cicadas_and_crickets": 0.6211577592051686,
+                "crows_seagulls_magpies": 0.7300057760658494,
+                "dog_barkings_and_howlings": 0.2492795798509691,
+                "glass_breaking": 0.6927240148272655,
+                "horn": 0.7589425211606938,
+                "injected_psds_world_label": 0.23260632267405015,
+                "jet_aircrafts": 0.6172249538283668,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8859616928592754,
+                "music": 0.8297526194199534,
+                "propeller_aircrafts": 0.8988613206841276,
+                "sirens_and_alarms": 0.6898912837271044,
+                "thunder_fireworks_gunshot": 0.6932484802914839,
+                "train": 0.9083818349528111,
+                "vacuum_cleaner_fan_hairdryer": 0.9584058489577789,
+                "vehicle_idling": 0.47674072090271624,
+                "vehicle_pass_by": 0.5675321180645887,
+                "voices": 0.6424278691280807,
+                "workshop": 0.9640078349012294
+              },
+              "efpr_max": 206.90466680167876,
+              "max_mean_tpr": 0.7292645670302227
+            }
+          }
+        }
+      }
+    },
+    "f2": {
+      "event_f1_micro": 0.23125000000000007,
+      "n_events_estimate": 394,
+      "selected": {
+        "psds_1": {
+          "mean_tpr": 0.3644195519480798,
+          "mean_efpr": 0.4116686565890942
+        },
+        "psds_2": {
+          "mean_tpr": 0.4655113431075077,
+          "mean_efpr": 0.3171907411186221
+        }
+      },
+      "grids": {
+        "linear": {
+          "n_grid": 19,
+          "n_points": 19,
+          "n_skipped_over_cap": 0,
+          "events_at_lowest_threshold": 14671,
+          "events_at_highest_threshold": 263,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.25062903375567575,
+              "psds_alpha_st0": 0.4994171518881073,
+              "mean_tpr_at": {
+                "5.0": 0.4660607036134913,
+                "10.0": 0.48692045656539157,
+                "30.0": 0.49992182321005557,
+                "60.0": 0.5047950014822487,
+                "100.0": 0.5189860361260821
+              },
+              "per_class_auc": {
+                "birds": 0.5384615384615384,
+                "cat_fights_and_moans": 0.16969968609831185,
+                "chicken_coop": 0.6451011429865897,
+                "cicadas_and_crickets": 0.12463978992548454,
+                "crows_seagulls_magpies": 0.6696724171738794,
+                "dog_barkings_and_howlings": 0.21006611055567606,
+                "glass_breaking": 0.30337981292507976,
+                "horn": 0.34497417717542284,
+                "injected_psds_world_label": 0.4733087955943526,
+                "jet_aircrafts": 0.2909002883422789,
+                "lawn_mower_brush_cutter_olive_shaker": 0.4165301203661976,
+                "music": 0.8518085593672076,
+                "propeller_aircrafts": 0.8976263147143605,
+                "sirens_and_alarms": 0.5015698372682252,
+                "thunder_fireworks_gunshot": 0.16666666666666669,
+                "train": 0.7396739778638903,
+                "vacuum_cleaner_fan_hairdryer": 0.8077824320477036,
+                "vehicle_idling": 0.39028827326382465,
+                "vehicle_pass_by": 0.4041323032926137,
+                "voices": 0.5765197691865325,
+                "workshop": 0.964958176374419
+              },
+              "efpr_max": 411.2158210668462,
+              "max_mean_tpr": 0.5334471594113994
+            },
+            "psds_2": {
+              "psds": 0.6478177794047325,
+              "psds_alpha_st0": 0.8173034492104945,
+              "mean_tpr_at": {
+                "5.0": 0.7381389363400371,
+                "10.0": 0.7591958794025737,
+                "30.0": 0.815824252384766,
+                "60.0": 0.8401520641563904,
+                "100.0": 0.8591259353911408
+              },
+              "per_class_auc": {
+                "birds": 0.9560108726544264,
+                "cat_fights_and_moans": 0.5898629839373379,
+                "chicken_coop": 0.994325393251155,
+                "cicadas_and_crickets": 0.7417208210540436,
+                "crows_seagulls_magpies": 0.8025917242285479,
+                "dog_barkings_and_howlings": 0.34875843306363036,
+                "glass_breaking": 0.942609213747783,
+                "horn": 0.948334907247967,
+                "injected_psds_world_label": 0.6718773256896796,
+                "jet_aircrafts": 0.8135788436820367,
+                "lawn_mower_brush_cutter_olive_shaker": 0.9079571443554486,
+                "music": 0.9342514267576862,
+                "propeller_aircrafts": 0.9428973743924053,
+                "sirens_and_alarms": 0.7353763765458996,
+                "thunder_fireworks_gunshot": 0.5555555555555556,
+                "train": 0.9937259866484877,
+                "vacuum_cleaner_fan_hairdryer": 0.8773853114213332,
+                "vehicle_idling": 0.7461432832905005,
+                "vehicle_pass_by": 0.8440360333107503,
+                "voices": 0.8517016363592159,
+                "workshop": 0.9646717862264923
+              },
+              "efpr_max": 650.2528668208088,
+              "max_mean_tpr": 0.9006329255523927
+            },
+            "psds_1_dtc05": {
+              "psds": 0.44722015953539335,
+              "psds_alpha_st0": 0.6653678804346171,
+              "mean_tpr_at": {
+                "5.0": 0.6115266940872618,
+                "10.0": 0.6379446257777885,
+                "30.0": 0.6616414480046872,
+                "60.0": 0.672755644544063,
+                "100.0": 0.6954482881418349
+              },
+              "per_class_auc": {
+                "birds": 0.7469531615453517,
+                "cat_fights_and_moans": 0.2993506824674403,
+                "chicken_coop": 0.8953172690312988,
+                "cicadas_and_crickets": 0.16618638656731272,
+                "crows_seagulls_magpies": 0.7748203596374102,
+                "dog_barkings_and_howlings": 0.24639789925484543,
+                "glass_breaking": 0.6174683348055859,
+                "horn": 0.6187505494380793,
+                "injected_psds_world_label": 0.5214767347555189,
+                "jet_aircrafts": 0.5865435310108149,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8073309496955767,
+                "music": 0.8748641900263928,
+                "propeller_aircrafts": 0.8976263147143605,
+                "sirens_and_alarms": 0.6202248455647159,
+                "thunder_fireworks_gunshot": 0.5555555555555556,
+                "train": 0.912584285822158,
+                "vacuum_cleaner_fan_hairdryer": 0.823635464202723,
+                "vehicle_idling": 0.6188815031211916,
+                "vehicle_pass_by": 0.6628282147481745,
+                "voices": 0.7594995843134157,
+                "workshop": 0.9664296728490354
+              },
+              "efpr_max": 407.18146823227306,
+              "max_mean_tpr": 0.711717327833568
+            }
+          }
+        },
+        "log": {
+          "n_grid": 48,
+          "n_points": 19,
+          "n_skipped_over_cap": 29,
+          "events_at_lowest_threshold": 161527,
+          "events_at_highest_threshold": 68,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.24567298645723126,
+              "psds_alpha_st0": 0.4938596320262896,
+              "mean_tpr_at": {
+                "5.0": 0.45716829839989764,
+                "10.0": 0.481181797465388,
+                "30.0": 0.49663384135064514,
+                "60.0": 0.5094831336066625,
+                "100.0": 0.5150902249280396
+              },
+              "per_class_auc": {
+                "birds": 0.5384615384615384,
+                "cat_fights_and_moans": 0.1658230160289251,
+                "chicken_coop": 0.6329980844828704,
+                "cicadas_and_crickets": 0.1242795798509691,
+                "crows_seagulls_magpies": 0.6667114242677705,
+                "dog_barkings_and_howlings": 0.2094486075707924,
+                "glass_breaking": 0.2962083578051811,
+                "horn": 0.34039739034628524,
+                "injected_psds_world_label": 0.4696037776850507,
+                "jet_aircrafts": 0.28259092467432884,
+                "lawn_mower_brush_cutter_olive_shaker": 0.41231051663615936,
+                "music": 0.8540252367488412,
+                "propeller_aircrafts": 0.8815712371073857,
+                "sirens_and_alarms": 0.5011939658861221,
+                "thunder_fireworks_gunshot": 0.16618638656731272,
+                "train": 0.7211831940387634,
+                "vacuum_cleaner_fan_hairdryer": 0.8075903200079619,
+                "vehicle_idling": 0.38895035012991,
+                "vehicle_pass_by": 0.3929417769776667,
+                "voices": 0.5631218256357238,
+                "workshop": 0.955454761642522
+              },
+              "efpr_max": 1136.8229951707838,
+              "max_mean_tpr": 0.5370491155325089
+            },
+            "psds_2": {
+              "psds": 0.6319933017773908,
+              "psds_alpha_st0": 0.805342527968579,
+              "mean_tpr_at": {
+                "5.0": 0.7013946627359157,
+                "10.0": 0.7389340738551335,
+                "30.0": 0.8067851717577399,
+                "60.0": 0.8361037781753314,
+                "100.0": 0.8638213771841381
+              },
+              "per_class_auc": {
+                "birds": 0.9522560449000119,
+                "cat_fights_and_moans": 0.5707283791950588,
+                "chicken_coop": 0.9902592544483187,
+                "cicadas_and_crickets": 0.7367435176911061,
+                "crows_seagulls_magpies": 0.8068669881969754,
+                "dog_barkings_and_howlings": 0.3482438472428941,
+                "glass_breaking": 0.9381855191938862,
+                "horn": 0.9362522141389991,
+                "injected_psds_world_label": 0.6714609040878989,
+                "jet_aircrafts": 0.8058028228355175,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8890109719439901,
+                "music": 0.9140213962646442,
+                "propeller_aircrafts": 0.9211668668742342,
+                "sirens_and_alarms": 0.7163128555879341,
+                "thunder_fireworks_gunshot": 0.5555555555555556,
+                "train": 0.9758077831192375,
+                "vacuum_cleaner_fan_hairdryer": 0.8760118874928863,
+                "vehicle_idling": 0.7228060747711703,
+                "vehicle_pass_by": 0.8089850691508917,
+                "voices": 0.8297058668999694,
+                "workshop": 0.9460092677489765
+              },
+              "efpr_max": 1793.5788260429242,
+              "max_mean_tpr": 0.937606970432693
+            },
+            "psds_1_dtc05": {
+              "psds": 0.4433198253559176,
+              "psds_alpha_st0": 0.6625092467455768,
+              "mean_tpr_at": {
+                "5.0": 0.6001028165146097,
+                "10.0": 0.6294412244172444,
+                "30.0": 0.661154586593456,
+                "60.0": 0.681191335461237,
+                "100.0": 0.7038698281266899
+              },
+              "per_class_auc": {
+                "birds": 0.7478398324980051,
+                "cat_fights_and_moans": 0.294579697730291,
+                "chicken_coop": 0.885879765078994,
+                "cicadas_and_crickets": 0.16570610646795877,
+                "crows_seagulls_magpies": 0.7738157370442663,
+                "dog_barkings_and_howlings": 0.2455745619416672,
+                "glass_breaking": 0.6136049089283415,
+                "horn": 0.636043976141003,
+                "injected_psds_world_label": 0.5273800251735383,
+                "jet_aircrafts": 0.5863740203875135,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8100067959634057,
+                "music": 0.8695441643104721,
+                "propeller_aircrafts": 0.8815712371073857,
+                "sirens_and_alarms": 0.6148373557545718,
+                "thunder_fireworks_gunshot": 0.5555555555555556,
+                "train": 0.899976933214117,
+                "vacuum_cleaner_fan_hairdryer": 0.8421761704759549,
+                "vehicle_idling": 0.608180147805057,
+                "vehicle_pass_by": 0.6474592515688482,
+                "voices": 0.7491711815681554,
+                "workshop": 0.9574167569420103
+              },
+              "efpr_max": 1132.7886423362106,
+              "max_mean_tpr": 0.7417172318023556
+            }
+          }
+        }
+      }
+    },
+    "B0": {
+      "event_f1_micro": 0.21317542561065878,
+      "n_events_estimate": 465,
+      "selected": {
+        "psds_1": {
+          "mean_tpr": 0.41214506299846915,
+          "mean_efpr": 0.69983671620146
+        },
+        "psds_2": {
+          "mean_tpr": 0.5142458741598954,
+          "mean_efpr": 0.528245845063524
+        }
+      },
+      "grids": {
+        "linear": {
+          "n_grid": 19,
+          "n_points": 19,
+          "n_skipped_over_cap": 0,
+          "events_at_lowest_threshold": 3074,
+          "events_at_highest_threshold": 290,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.3074705967880474,
+              "psds_alpha_st0": 0.5451822925344706,
+              "mean_tpr_at": {
+                "5.0": 0.49966335577504967,
+                "10.0": 0.5282892304569922,
+                "30.0": 0.5485145987830009,
+                "60.0": 0.5567751420788618,
+                "100.0": 0.5567751420788618
+              },
+              "per_class_auc": {
+                "birds": 0.8051431287034292,
+                "cat_fights_and_moans": 0.18496993423576125,
+                "chicken_coop": 0.7641936977645364,
+                "cicadas_and_crickets": 0.3332132633084948,
+                "crows_seagulls_magpies": 0.7511583324202015,
+                "dog_barkings_and_howlings": 0.17754225692995582,
+                "glass_breaking": 0.4793363944397827,
+                "horn": 0.4102391102726404,
+                "injected_psds_world_label": 0.41512358578951813,
+                "jet_aircrafts": 0.27004713855002593,
+                "lawn_mower_brush_cutter_olive_shaker": 0.3549815966957644,
+                "music": 0.6816676408758511,
+                "propeller_aircrafts": 0.9423636817372844,
+                "sirens_and_alarms": 0.6434035807944063,
+                "thunder_fireworks_gunshot": 0.6021458825898374,
+                "train": 0.6179158685345293,
+                "vacuum_cleaner_fan_hairdryer": 0.8554281123417843,
+                "vehicle_idling": 0.28272968795401476,
+                "vehicle_pass_by": 0.40888707627621756,
+                "voices": 0.5050354301693682,
+                "workshop": 0.9633027428404756
+              },
+              "efpr_max": 71.46567878386675,
+              "max_mean_tpr": 0.5567751420788618
+            },
+            "psds_2": {
+              "psds": 0.6570283358192813,
+              "psds_alpha_st0": 0.8276786555210174,
+              "mean_tpr_at": {
+                "5.0": 0.7011725566229979,
+                "10.0": 0.7585195348396864,
+                "30.0": 0.8260839722234139,
+                "60.0": 0.8516222707155696,
+                "100.0": 0.8761343047815424
+              },
+              "per_class_auc": {
+                "birds": 0.9606189539611504,
+                "cat_fights_and_moans": 0.6068677097718014,
+                "chicken_coop": 0.9881867820468667,
+                "cicadas_and_crickets": 0.7000703587547182,
+                "crows_seagulls_magpies": 0.8615057884703807,
+                "dog_barkings_and_howlings": 0.3199939370285809,
+                "glass_breaking": 0.9392548794588853,
+                "horn": 0.9649437459065205,
+                "injected_psds_world_label": 0.6767023587006008,
+                "jet_aircrafts": 0.8349296293289253,
+                "lawn_mower_brush_cutter_olive_shaker": 0.9270964452181707,
+                "music": 0.9074823976964158,
+                "propeller_aircrafts": 0.9417993948994454,
+                "sirens_and_alarms": 0.7200482061699519,
+                "thunder_fireworks_gunshot": 0.9789266117717521,
+                "train": 0.9390417643764567,
+                "vacuum_cleaner_fan_hairdryer": 0.8734540041210854,
+                "vehicle_idling": 0.6937406756250175,
+                "vehicle_pass_by": 0.6816465084050581,
+                "voices": 0.8983400189776919,
+                "workshop": 0.966601595251887
+              },
+              "efpr_max": 111.52629987891012,
+              "max_mean_tpr": 0.880896209543447
+            },
+            "psds_1_dtc05": {
+              "psds": 0.4933294756724315,
+              "psds_alpha_st0": 0.7080727563366271,
+              "mean_tpr_at": {
+                "5.0": 0.6411325630862283,
+                "10.0": 0.6816756635708202,
+                "30.0": 0.7094441102902659,
+                "60.0": 0.7255873236846417,
+                "100.0": 0.7255873236846417
+              },
+              "per_class_auc": {
+                "birds": 0.8829528765791594,
+                "cat_fights_and_moans": 0.3050153286178108,
+                "chicken_coop": 0.9642657397794394,
+                "cicadas_and_crickets": 0.5826129131843025,
+                "crows_seagulls_magpies": 0.8724346754623628,
+                "dog_barkings_and_howlings": 0.24886791119438,
+                "glass_breaking": 0.6975056307383922,
+                "horn": 0.7318208214324713,
+                "injected_psds_world_label": 0.5144783675935044,
+                "jet_aircrafts": 0.6223102725274086,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8435577914754171,
+                "music": 0.8335187850785347,
+                "propeller_aircrafts": 0.9460686996465865,
+                "sirens_and_alarms": 0.684626613371353,
+                "thunder_fireworks_gunshot": 0.876241512939235,
+                "train": 0.8227671711475466,
+                "vacuum_cleaner_fan_hairdryer": 0.8556202243815261,
+                "vehicle_idling": 0.3518940817713462,
+                "vehicle_pass_by": 0.5096564716542689,
+                "voices": 0.7599479393005377,
+                "workshop": 0.9633640551935848
+              },
+              "efpr_max": 69.4485023665802,
+              "max_mean_tpr": 0.7255873236846417
+            }
+          }
+        },
+        "log": {
+          "n_grid": 48,
+          "n_points": 48,
+          "n_skipped_over_cap": 0,
+          "events_at_lowest_threshold": 5694,
+          "events_at_highest_threshold": 69,
+          "scenarios": {
+            "psds_1": {
+              "psds": 0.2985220277511483,
+              "psds_alpha_st0": 0.5354768707673925,
+              "mean_tpr_at": {
+                "5.0": 0.426896718033476,
+                "10.0": 0.5232628857517484,
+                "30.0": 0.5470314349845663,
+                "60.0": 0.5584758223509707,
+                "100.0": 0.5584758223509707
+              },
+              "per_class_auc": {
+                "birds": 0.7967197546532215,
+                "cat_fights_and_moans": 0.1815914121575473,
+                "chicken_coop": 0.7445262276959923,
+                "cicadas_and_crickets": 0.3291308824639863,
+                "crows_seagulls_magpies": 0.7207024053859403,
+                "dog_barkings_and_howlings": 0.1762043337960413,
+                "glass_breaking": 0.45644668152284595,
+                "horn": 0.4082049827930237,
+                "injected_psds_world_label": 0.4108696763380975,
+                "jet_aircrafts": 0.268352032317012,
+                "lawn_mower_brush_cutter_olive_shaker": 0.3671278518203245,
+                "music": 0.669254247538703,
+                "propeller_aircrafts": 0.9294647304974927,
+                "sirens_and_alarms": 0.6382666719056642,
+                "thunder_fireworks_gunshot": 0.588537946441476,
+                "train": 0.6075898463984195,
+                "vacuum_cleaner_fan_hairdryer": 0.8488963029905707,
+                "vehicle_idling": 0.2804655103427747,
+                "vehicle_pass_by": 0.3931819170273437,
+                "voices": 0.4781646942210983,
+                "workshop": 0.9513161778076633
+              },
+              "efpr_max": 111.23287101037326,
+              "max_mean_tpr": 0.5584758223509707
+            },
+            "psds_2": {
+              "psds": 0.6422065669650822,
+              "psds_alpha_st0": 0.8159873555206459,
+              "mean_tpr_at": {
+                "5.0": 0.6447810225552258,
+                "10.0": 0.6999066402493492,
+                "30.0": 0.8238223085921567,
+                "60.0": 0.8598317558126267,
+                "100.0": 0.9109711380655806
+              },
+              "per_class_auc": {
+                "birds": 0.9496743209362711,
+                "cat_fights_and_moans": 0.604557522939833,
+                "chicken_coop": 0.948438975775289,
+                "cicadas_and_crickets": 0.6947369483710429,
+                "crows_seagulls_magpies": 0.787516968782304,
+                "dog_barkings_and_howlings": 0.3358590256360553,
+                "glass_breaking": 0.9186099946956888,
+                "horn": 0.9664430977904087,
+                "injected_psds_world_label": 0.6662995521792651,
+                "jet_aircrafts": 0.8255925393369198,
+                "lawn_mower_brush_cutter_olive_shaker": 0.9184787257851361,
+                "music": 0.8930598236070884,
+                "propeller_aircrafts": 0.9174929834821484,
+                "sirens_and_alarms": 0.7413554639652103,
+                "thunder_fireworks_gunshot": 0.9437840046168836,
+                "train": 0.9312813487690274,
+                "vacuum_cleaner_fan_hairdryer": 0.915958137337559,
+                "vehicle_idling": 0.7067303282133334,
+                "vehicle_pass_by": 0.6555888376680954,
+                "voices": 0.8601178221387192,
+                "workshop": 0.9541580439072856
+              },
+              "efpr_max": 161.9694444934544,
+              "max_mean_tpr": 0.9211761163977338
+            },
+            "psds_1_dtc05": {
+              "psds": 0.48244595727789147,
+              "psds_alpha_st0": 0.6987648486828216,
+              "mean_tpr_at": {
+                "5.0": 0.6297123873566597,
+                "10.0": 0.6692550572966175,
+                "30.0": 0.7114515799447945,
+                "60.0": 0.7272880039567506,
+                "100.0": 0.7285986199462657
+              },
+              "per_class_auc": {
+                "birds": 0.8727561606236448,
+                "cat_fights_and_moans": 0.30266361226925015,
+                "chicken_coop": 0.9458229839642479,
+                "cicadas_and_crickets": 0.5786506023646325,
+                "crows_seagulls_magpies": 0.851894351391236,
+                "dog_barkings_and_howlings": 0.24691248507558178,
+                "glass_breaking": 0.6795606197534403,
+                "horn": 0.7324988639256766,
+                "injected_psds_world_label": 0.5081661148591382,
+                "jet_aircrafts": 0.6195981025545862,
+                "lawn_mower_brush_cutter_olive_shaker": 0.8519990286906755,
+                "music": 0.8196645514433248,
+                "propeller_aircrafts": 0.9334441941778538,
+                "sirens_and_alarms": 0.6794897044826108,
+                "thunder_fireworks_gunshot": 0.8627936701573248,
+                "train": 0.8132816391853062,
+                "vacuum_cleaner_fan_hairdryer": 0.8490884150303124,
+                "vehicle_idling": 0.34973282132425354,
+                "vehicle_pass_by": 0.49342300429610547,
+                "voices": 0.73124340660928,
+                "workshop": 0.9513774901607723
+              },
+              "efpr_max": 107.4866862354125,
+              "max_mean_tpr": 0.7285986199462657
+            }
+          }
+        }
+      }
+    }
+  },
+  "hypotheses": {
+    "reference": "v1",
+    "candidate": "v2",
+    "delta_event_f1_micro": 0.05341437964787915,
+    "delta_psds_linear": {
+      "psds_1": 0.011441853977984362,
+      "psds_2": -0.007776465855018122
+    },
+    "reproduced": true,
+    "hypotheses": {
+      "H1": {
+        "psds_2": {
+          "delta_before": -0.007776465855018122,
+          "delta_after": 0.009523425019678067,
+          "supported": true
+        }
+      },
+      "H2": {
+        "psds_2": {
+          "chosen_efpr": 1.2194581117843843,
+          "low_efpr": [],
+          "high_efpr": [
+            "5.0",
+            "10.0",
+            "30.0",
+            "60.0",
+            "100.0"
+          ],
+          "tpr_reference": {
+            "5.0": 0.6895628982319421,
+            "10.0": 0.7348924651944548,
+            "30.0": 0.8066662839666178,
+            "60.0": 0.8459257529672817,
+            "100.0": 0.8528183950815988
+          },
+          "tpr_candidate": {
+            "5.0": 0.7088545245796569,
+            "10.0": 0.7579040232300505,
+            "30.0": 0.8195603483589182,
+            "60.0": 0.8421943365661988,
+            "100.0": 0.8421943365661988
+          },
+          "supported": false
+        }
+      },
+      "H3": {
+        "psds_2": {
+          "delta_before": -0.007776465855018122,
+          "delta_after": -0.0009506730665382879,
+          "supported": true
+        }
+      }
+    },
+    "explained": true
+  },
+  "consistency_checks": {},
+  "git": {
+    "revision": "5ff89539b264b658020552d5d0d804a4c4fba2d6",
+    "dirty": false
+  },
+  "created_at": "2026-11-10T17:07:40.907655+00:00"
+}
