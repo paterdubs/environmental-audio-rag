@@ -17,22 +17,24 @@
 
 ## Phạm vi đã triển khai — đọc trước khi tin bất kỳ sơ đồ nào dưới đây
 
+Cập nhật 10/11/2026. Số chính ở [final_numbers](measurements/) (sinh bởi
+`scripts.report_final_numbers`); trạng thái chi tiết ở [STATUS.md](STATUS.md).
+
 | Thành phần | Mức | Bằng chứng |
 |---|---|---|
-| Tải + verify archive (D0) | ✅ | [measurements/archive_audit_20260922.md](measurements/archive_audit_20260922.md) |
-| Inventory DataSED (D1) | ✅ | `data/manifests/datased_inventory_summary.json` |
-| Annotation contract DataSED (D2) | ✅ | `data/manifests/datased_preparation_audit.json` |
-| Audit duplicate nội bộ DataSED | ✅ | 8 nhóm exact duplicate |
-| Audit duplicate DataSEC + xuyên dataset (D3) | ○ | **Cổng đang chặn** |
-| Split DataSED | ◐ | Candidate 435/142/140, chưa freeze vì chờ D3 |
-| Log-mel v1 | ✅ | 717/717 file, `data/manifests/datased_logmel_v1.json` |
-| SED baseline polyphonic | ✅ | frame macro-F1 test 0.359448 |
-| Event-based F1 / PSDS | ○ | Chưa có post-processing hiệu chuẩn |
-| DataSEC classifier | ○ | Archive đã verify, chưa giải nén |
-| Transfer DataSEC → DataSED | ○ | Phụ thuộc D3 |
-| Grounded caption | ○ | Chỉ có contract §6 |
-| RAG / retrieval | ○ | Chỉ có thiết kế §7 |
-| API / inference / frontend | ○ | Chỉ có thư mục scaffold |
+| Archive, inventory, annotation contract (D0–D2) | ✅ | [archive_audit_20260922](measurements/archive_audit_20260922.md), `data/manifests/*_inventory_summary.json` |
+| Duplicate T1–T3 nội bộ + xuyên dataset, duyệt tay 35 cặp (D3) | ✅ | [dedup_20260923](measurements/dedup_20260923.md); 11 clip DataSEC loại, dải `minor` |
+| Split đóng băng + leakage 5/5 (D4) | ✅ | `data/splits/*.frozen.json`; DataSED 438/137/142, DataSEC 3,434/744/740 |
+| DataSEC classifier phân cấp (E1, RQ4) | ✅ | `classifier_datasec_20260923T121808Z`, ADR-0016/0017 |
+| SED ba nhánh A/B/C, RQ1 nhiều seed | ✅ | ADR-0021 (v1), ADR-0031 §9 (v2) — âm tính |
+| SED v2, Track 2, vòng chọn S13 → f2 | ✅ | ADR-0030, 0032, 0031 §9 |
+| Giai đoạn O → **B0** (OOF 5 fold, suy luận chồng lấn) | ✅ | ADR-0041 §11–12 |
+| Giai đoạn P (4 ứng viên tăng phát hiện) | ✅ âm tính | ADR-0043, PAPER_NOTES S60–S63 |
+| **LBR** tinh chỉnh biên + chấm lại box (V2 số chính, V3 demo) | ✅ | ADR-0045 §12, 0046, 0047 |
+| Grounded caption: template EN/VI + 3 nhánh LLM | ✅ f2 · ◐ B0/LBR | ADR-0022/0023/0025/0026; LLM trên B0/LBR: ADR-0048 §1 |
+| Event store + RAG hybrid + parser câu hỏi | ✅ | ADR-0027, 0036, 0047 |
+| API, inference, frontend, Compose; phục vụ B0 + LBR V3 | ✅ | ADR-0029, 0033, 0042, [DEMO.md](DEMO.md) |
+| Streaming thật | ○ | Ngoài phạm vi (§1.6) |
 
 ---
 
@@ -511,7 +513,12 @@ phần trăm làm tròn 2 chữ số nên trên recording 90 s có sai số tớ
 
 ## 3.6 Duplicate và leakage — cổng D3
 
-Đây là rủi ro lớn nhất của RQ1 và là cổng đang chặn.
+Đây là rủi ro lớn nhất của RQ1. **Cổng đã đóng 23/09** ([dedup_20260923](measurements/dedup_20260923.md),
+[ADR-0007](decisions/ADR-0007-fingerprint-va-luat-dedup.md), [0009](decisions/ADR-0009-nguong-phu-thuoc-overlap.md),
+[0010](decisions/ADR-0010-dinh-danh-datasec-va-cong-freeze.md), [0012](decisions/ADR-0012-nguong-cohesion.md)):
+hai dataset **có** chung bản ghi nguồn (3 cặp tự động, similarity tới 1.000000 trên 35 s); sau duyệt
+tay 35 cặp (10 `duplicate`, 1 `unsure`, 24 `distinct`) có 11 clip DataSEC trùng dev/test DataSED
+bị loại khỏi pretraining — dải `minor`, RQ1 vẫn hợp lệ (`data/manifests/duplicate_audit.json`).
 
 **Vì sao rủi ro cao hơn bình thường:** hai dataset cùng 6 tác giả, cùng miền đo
 ngoài trời, công bố cách nhau 4 tháng. Giả định mặc định phải là "có khả năng
@@ -522,14 +529,14 @@ trùng nguồn" cho đến khi đo được ngược lại.
 | Tầng | Phát hiện | Công cụ | Trạng thái |
 |---|---|---|---|
 | T1 — Cryptographic | File byte-identical | SHA-256 | ✅ DataSED: 8 nhóm |
-| T2 — Signature | Cùng nội dung, khác container/encode | (duration, sample_rate, frames) + hash của decoded PCM | ○ |
-| T3 — Acoustic | Cùng nguồn, khác đoạn cắt hoặc xử lý | Fingerprint chroma/MFCC + so khớp ngưỡng | ○ |
+| T2 — Signature | Cùng nội dung, khác container/encode | (duration, sample_rate, frames) + hash của decoded PCM | ✅ (trùng đúng T1 trên hai dataset này) |
+| T3 — Acoustic | Cùng nguồn, khác đoạn cắt hoặc xử lý | Fingerprint MFCC (bỏ C0, z-score corpus) + ngưỡng theo overlap | ✅ ADR-0007, ADR-0009 |
 
 **Ba kiểm tra phải chạy:**
 
-1. Duplicate bên trong DataSEC.
+1. Duplicate bên trong DataSEC. ✅
 2. Duplicate bên trong DataSED. ✅ (T1)
-3. **Duplicate xuyên DataSEC–DataSED.** ○ — quan trọng nhất.
+3. **Duplicate xuyên DataSEC–DataSED.** ✅ — 3 cặp tự động + duyệt tay 35 cặp.
 
 **Luật xử lý khi tìm thấy cặp xuyên dataset:**
 
@@ -553,14 +560,17 @@ Không được chia một duplicate group qua hai split. Chi tiết thuật to�
 
 | | DataSEC | DataSED |
 |---|---|---|
-| Đơn vị split | Duplicate/content group | **Recording group** |
-| Tỉ lệ | 70/15/15 | 70/15/15 |
-| Phương pháp | Stratify theo coarse (+subclass nếu khả thi) | Iterative multilabel stratification |
-| Hiện trạng | ○ | ◐ candidate 435/142/140 |
-| SHA-256 | — | `656c1851de7c22a5eb6b2c2dc2b20397ad1bce98b136c591b7fe68b88cd130b1` |
+| Đơn vị split | `leakage_group` (định danh `file_id`, ADR-0010) | **`leakage_group` theo recording** |
+| Tỉ lệ | 70/15/15 | **60/20/20** ([ADR-0008](decisions/ADR-0008-ti-le-split-datased.md)) |
+| Phương pháp | Stratify theo coarse + subclass | Iterative multilabel stratification |
+| Hiện trạng | ✅ đóng băng 23/09: 3,434/744/740, 50/50 nhãn phủ cả 3 split | ✅ đóng băng 23/09: 438/137/142 |
+| SHA-256 | `e8d3099010ac2937…` | `d2924a5e45c2b271…` |
 
-Split DataSED **chưa freeze**: phải chạy lại sau D3 vì duplicate group có thể
-buộc recording đổi split.
+Split đã đóng băng sau D3 (`data/splits/*.frozen.json`); `check_leakage` từ chối chạy nếu file
+split đổi. Từ ADR-0034, mọi CV/test SED chỉ chấm recording có ground truth polyphonic (`annotated`:
+dev 134, test 139); 14 recording `wind_turbine` S-0704…S-0717 không có GT polyphonic. Giai đoạn O
+dùng thêm 5 fold trên train ∪ dev annotated (`data/splits/datased_trainval_folds.csv`, ADR-0041 §2)
+— split gốc không đổi.
 
 Cài đặt: `ml/dataops/splits.py::grouped_multilabel_split`, dùng
 `MultilabelStratifiedShuffleSplit` hai lần (train vs holdout, rồi dev vs test),
@@ -588,19 +598,27 @@ thì phải đổi sang ref cố định và tạo `logmel_v2`.
 Config có `checksum` (SHA-256 của config đã sort key) để feature manifest ghi
 được version. Artifact: `data/manifests/datased_logmel_v1.{csv,json}`, 717/717 file.
 
+**Ba frontend thực tế dùng về sau** (`ml/configs/features.yaml`, ADR-0020, ADR-0032):
+
+| Frontend | Dùng cho | Thông số |
+|---|---|---|
+| `logmel_v1` | Nhánh A (CNN + BiGRU từ đầu) | 16 kHz, hop 320 → 50 fps, 64 mel |
+| `logmel_panns_v1` | Nhánh B/C, SED v2 (CNN14) | 32 kHz, hop 320 → **100 fps**, 64 mel |
+| Waveform + frontend của checkpoint | T2a BEATs (fbank Kaldi), T2b / f2 / **B0** (`frame_mn10`) | Đầu ra `frame_mn10` 250 bước / 10 s = 40 ms |
+
 ## 3.9 Cổng dữ liệu D0–D5
 
 | Gate | Điều kiện | Trạng thái |
 |---|---|---|
 | **D0** | Metadata/license/checksum đã lưu; archive khớp size + MD5 | ✅ cả hai dataset |
-| **D1** | Giải nén xong, inventory hoàn tất (sample rate, duration, channels, hash) | ✅ DataSED · ○ DataSEC |
+| **D1** | Giải nén xong, inventory hoàn tất (sample rate, duration, channels, hash) | ✅ cả hai |
 | **D2** | Annotation contract pass (onset/offset hợp lệ, class trong taxonomy) | ✅ DataSED |
-| **D3** | Audit duplicate T1–T3, nội bộ và xuyên dataset | ◐ **cổng đang chặn** |
-| **D4** | Split freeze + leakage check pass | ○ |
-| **D5** | Loader/frame alignment tests pass | ◐ |
+| **D3** | Audit duplicate T1–T3, nội bộ và xuyên dataset | ✅ 23/09 |
+| **D4** | Split freeze + leakage check pass | ✅ 5/5, chứng minh không rỗng bằng đột biến |
+| **D5** | Loader/frame alignment tests pass | ✅ |
 
-**Không huấn luyện benchmark chính trước D4.** Baseline hiện tại chạy trên split
-candidate và vì vậy là số dò đường, không phải số báo cáo.
+**Không huấn luyện benchmark chính trước D4** — đã tuân thủ: baseline dò đường 22/09 (§5.4) là run
+duy nhất trên split candidate và không được báo như kết quả.
 
 ---
 
@@ -634,10 +652,17 @@ thì không thể đổi operating point mà không train lại.
 
 | Service | Trách nhiệm | Không được chứa | Trạng thái |
 |---|---|---|---|
-| `api` | Upload, validation, persistence, orchestration, response envelope | PyTorch, checkpoint, model loading | ○ |
-| `inference` | Preprocessing, SED, post-processing, caption | Business persistence, SQL | ○ |
-| `frontend` | Timeline, caption, search, evidence, provenance | Hằng số taxonomy tự khai | ○ |
-| `stream` | Chunking, overlap-add, event stitching, backpressure | Logic training/benchmark | ○ |
+| `api` | Upload, validation, persistence, orchestration, response envelope | PyTorch, checkpoint, model loading | ✅ FastAPI (`services/api`), CI chặn `import torch` |
+| `inference` | Preprocessing, SED, post-processing (cSEBB hoặc LBR), caption template, embedding BGE-M3 | Business persistence, SQL | ✅ `/v1/analyze`, `/v1/embed`, `/v1/models` (`services/inference`, ADR-0033, ADR-0042) |
+| `frontend` | Timeline, caption, search, evidence, provenance | Hằng số taxonomy tự khai | ✅ React (`services/frontend`, ADR-0037) |
+| `db` | PostgreSQL 16 + pgvector | — | ✅ Compose |
+| `stream` | Chunking, overlap-add, event stitching, backpressure | Logic training/benchmark | ○ ngoài phạm vi; chỉ có scaffold |
+
+Hệ thống phục vụ mặc định là `sed_served_B0_20261107T175659Z` (5 model fold, hop 5 s, gộp tam giác,
+cSEBB đã khóa — ADR-0042). Bật `EARAG_SERVED_LBR` + `EARAG_SERVED_MODE` thì thêm LBR (demo: V3
+`recall_first`, ADR-0047); `/api/v1/models/status` khi đó báo `official=false` và
+`model_version = <run>+<run LBR>:<điểm>`. Câu trả lời RAG dùng Qwen3.5-9B chạy cục bộ qua
+llama.cpp (ADR-0022, ADR-0036); không gọi dịch vụ ngoài.
 
 **Vì sao `api` không được load model.** Ba lý do cụ thể: (1) scale độc lập — API
 là I/O-bound, inference là compute-bound; (2) API restart không phải chờ load
@@ -783,8 +808,10 @@ Tiền tố `/api/v1`. Mọi response dùng envelope `{success, data, error, met
 | Recordings | `/recordings/{id}/timeline` | GET | Event list kèm `model_version` |
 | Recordings | `/recordings/{id}/audio` | GET | Stream audio để phát lại |
 | Captions | `/recordings/{id}/caption` | GET | Caption + `caption_evidence` |
-| Retrieval | `/retrieval/query` | POST | `{question, filters?, mode?}` → `{answer, evidence[], documents[]}` |
-| Models | `/models/status` | GET | Model version active, taxonomy hash, metric |
+| Retrieval | `/retrieval/parse` | POST | Câu hỏi EN/VI → filter có cấu trúc (LLM + JSON Schema, ADR-0036); 503 nếu llama.cpp tắt |
+| Retrieval | `/retrieval/query` | POST | `{question, filters?, mode?}` → `{answer, evidence[], documents[]}`; thiếu filter thì tự parse, trả `filters_source` |
+| Models | `/models/status` | GET | `served_run`, `official`, `lbr_run`, `operating_point`, taxonomy hash |
+| Taxonomy | `/taxonomy` | GET | 22 lớp + thứ tự 21 lớp polyphonic cho frontend |
 | Health | `/health` | GET | Liveness/readiness thật |
 
 **Ba ràng buộc bắt buộc, vi phạm là lỗi hệ thống:**
@@ -800,16 +827,19 @@ Tiền tố `/api/v1`. Mọi response dùng envelope `{success, data, error, met
 
 | Tầng | Lựa chọn | Lý do |
 |---|---|---|
-| Feature | log-mel 64 mel, 50 fps, precompute `.npy` | Đã triển khai; đủ phân giải onset; tránh decode lại mỗi epoch |
-| Encoder baseline | CNN 3 block + BiGRU (`ml/models/audio.py`) | Đã có số đo, làm baseline dưới |
-| Encoder đề xuất | PANNs CNN14 pretrained AudioSet | [ADR-0002](decisions/ADR-0002-encoder-va-nhanh-transfer.md) |
+| Feature | log-mel precompute `.npy` (nhánh A/B/C, v2); waveform + frontend checkpoint (T2, B0) | §3.8 |
+| Encoder baseline | CNN 3 block + BiGRU (`ml/models/audio.py`) | Baseline dưới (nhánh A) |
+| Encoder RQ1 | PANNs CNN14 pretrained AudioSet (B) / AudioSet → DataSEC (C) | [ADR-0002](decisions/ADR-0002-encoder-va-nhanh-transfer.md) |
+| Encoder hệ thống cuối | `frame_mn10` (EfficientSED, 3M tham số) fine-tune toàn bộ, 5 fold | [ADR-0032](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md) §11, [ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md) |
+| Hậu xử lý | cSEBB (Ebbers 2024) chọn bằng CV; LBR = HistGradientBoosting (scikit-learn) học trên OOF | [ADR-0045](decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md) |
+| LLM caption / parser / câu trả lời | Qwen3.5-9B Q4_K_M, llama.cpp b11158, greedy, một slot | [ADR-0022](decisions/ADR-0022-llm-va-lexicon-cho-rq2.md), [ADR-0036](decisions/ADR-0036-parser-cau-hoi-thanh-bo-loc-retrieval.md) |
 | SED metric | `sed_eval`, `psds_eval` | Không tự viết lại metric đã có chuẩn |
 | Caption baseline | Template sinh từ timeline | Grounding đúng 100% theo thiết kế, làm sàn so sánh |
 | Embedding | BGE-M3, 1024-dim | [ADR-0004](decisions/ADR-0004-embedding-cho-retrieval.md) |
 | Backend | FastAPI + Pydantic v2 + SQLAlchemy 2.0 | Async-native; một framework cho api + inference |
 | Database | PostgreSQL 16 + pgvector | [ADR-0005](decisions/ADR-0005-database-va-vector-store.md) |
 | Frontend | React + Vite + TanStack Query | Timeline cần state phức tạp |
-| LLM cho answer | Interface pluggable, không khóa nhà cung cấp | Answer phải bị ràng buộc bởi evidence, không phụ thuộc model cụ thể |
+| LLM cho answer | Interface pluggable; triển khai bằng Qwen cục bộ ở trên | Answer phải bị ràng buộc bởi evidence, không phụ thuộc model cụ thể |
 | Triển khai | Docker Compose | Một node, đủ cho demo khóa luận |
 | GPU | RTX 3070 Laptop, 8 GB | Giới hạn thật: batch size và model size phải vừa 8 GB |
 
@@ -817,7 +847,11 @@ Tiền tố `/api/v1`. Mọi response dùng envelope `{success, data, error, met
 
 # 5. Mô hình: classification, SED và transfer
 
-## 5.1 Kiến trúc hiện tại
+Chương này đi theo thứ tự thời gian: baseline v1 và RQ1 (§5.1–§5.6), SED v2 (§5.7), Track 2 và vòng
+chọn S13 (§5.8), giai đoạn O chọn **B0** (§5.9), giai đoạn P âm tính (§5.10), **LBR** (§5.11), hệ
+thống phục vụ (§5.12). Hệ thống cuối của luận văn: B0 + LBR V2 (số chính), B0 + LBR V3 (demo).
+
+## 5.1 Kiến trúc baseline v1 (nhánh A)
 
 `ml/models/audio.py`, đã triển khai và đã đo:
 
@@ -873,7 +907,9 @@ $w_c$ là `pos_weight` per class.
 trần: `bells`, `cat_fights_and_moans`, `chicken_coop`, `crows_seagulls_magpies`,
 `glass_breaking`, `horn`. Trần này là tham số cần ablation, không phải hằng số
 hiển nhiên — project tiền nhiệm đã đo và thấy `pos_weight` ảnh hưởng lớn tới
-kết quả. ⚠️ CẦN XÁC MINH trên dữ liệu của đề tài này.
+kết quả. Đã đo trên đề tài này ở A4 (ADR-0028): trần 10 nhất quán tốt hơn nhưng n = 1; số v1 giữ
+trần 50, công thức v2 dùng trần 10. Focal loss không `pos_weight` thử ở S11 (ADR-0038), không thay
+hệ thống.
 
 **Classification (multi-class, 22 coarse):** cross-entropy có class weight hoặc
 balanced sampling. Với subclass head, thêm ràng buộc phân cấp:
@@ -884,7 +920,7 @@ $\mathcal{L}_{consistency}$ phạt trường hợp subclass thắng không thu�
 thắng. Không có nó, model có thể dự đoán `sirens_and_alarms` ở coarse nhưng
 `gunshot` ở subclass — vô nghĩa về mặt cấu trúc.
 
-## 5.4 Chi tiết huấn luyện baseline đã chạy
+## 5.4 Baseline dò đường 22/09 (split candidate, không báo như kết quả)
 
 Từ `ml/runs/sed_polyphonic_20260922T115340Z/manifest.json`:
 
@@ -927,18 +963,27 @@ Bốn tham số per class, học từ train/dev:
 duration prior, và suy chúng từ chính tập đang chấm là rò rỉ dù tập đó là dev.
 Chi tiết: [ADR-0003](decisions/ADR-0003-threshold-va-post-processing.md).
 
-## 5.6 Ablation dự kiến
+Về sau có thêm hai họ hậu xử lý, đều chọn bằng CV trên dev hoặc OOF, không bao giờ trên test:
 
-| # | Ablation | Trả lời |
-|---|---|---|
-| A1 | Nhánh A vs B vs C | RQ1 |
-| A2 | Global θ vs per-class θ | Post-processing đóng góp bao nhiêu |
-| A3 | Có vs không median filter | Fragmentation ảnh hưởng event-F1 bao nhiêu |
-| A4 | `pos_weight` trần {10, 30, 50, không clip} | Imbalance handling |
-| A5 | Coarse-only vs hierarchical trên DataSEC | RQ4 |
-| A6 | Class-balanced vs uniform sampling khi pretrain DataSEC | §3.4 |
+- **θ global + `g_max` p25** (ADR-0024): một ngưỡng chung, ổn định hơn θ per-class (A2: per-class
+  overfit dev ở cả ba nhánh).
+- **cSEBB** (Ebbers 2024, `ml/postprocessing/sebb.py`): box theo bước nhảy posterior, chấm confidence
+  từng box, một ngưỡng box. Thua θ global trên CNN14 + RNN, thắng trên `frame_mn10` (S33); là hậu
+  xử lý của f2 và B0.
+- **LBR** (§5.11): mô hình học trên OOF chỉnh biên box và chấm lại box.
 
-## 5.7 SED v2 — đang thí nghiệm ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md), Proposed)
+## 5.6 Ablation đã chạy
+
+| # | Ablation | Kết quả | Nguồn |
+|---|---|---|---|
+| A1 | Nhánh A vs B vs C | Pretraining nói chung giúp rõ (B/C vs A); **C − B không khác biệt đo được** — RQ1 âm tính, cả v1 và v2 | ADR-0021, ADR-0031 §9 |
+| A2 | Global θ vs per-class θ | Per-class overfit dev có hệ thống ở cả ba nhánh; giữ global | ADR-0024, STATUS |
+| A3 | Có vs không median filter | Δ gần 0, đổi dấu giữa nhánh — không kết luận | `*_median_filter_ablation_A3.md` |
+| A4 | `pos_weight` trần {10, 30, 50, không clip} | Trần 10 nhất quán dev + test nhưng n = 1 — hướng mở; số v1 giữ trần 50, công thức v2 dùng 10 | ADR-0028, ADR-0030 |
+| A5 | Percentile duration prior | `g_max` p25 tốt hơn nhất quán; chọn lại trên dev ở ADR-0024 | ADR-0024 |
+| A6 | Class-balanced vs uniform sampling khi pretrain DataSEC | Balanced giữ mặc định | ADR-0002 §4 |
+
+## 5.7 SED v2 — đã chốt 26/09 ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md), Accepted)
 
 **Vì sao.** Chẩn đoán trên dev ([sed_ceilings_20260926.md](measurements/sed_ceilings_20260926.md))
 cho thấy hệ thống v1 **nhận ra** âm thanh khá tốt (segment F1 1 s 0.65) nhưng **đặt onset sai**
@@ -980,6 +1025,62 @@ ADR-0030 §4–§5.
 
 Kiến trúc được ghi trong `manifest.json` của run; `ml/models/sed_factory.py` dựng lại đúng
 model đó khi phục vụ (thiếu khoá thì dựng v1).
+
+**Kết quả** (lựa chọn commit trước test `ec71b20`, test một lần `43d5847`): ensemble 3 seed, test
+micro 0.1476 [0.1088, 0.1866], macro 0.1369 — so với v1 (ensemble C) 0.0941 / 0.0917. Ablation:
+độ phân giải thời gian quyết định; PSDS-1/2 **không** tăng (S21, chẩn đoán ở ADR-0048 §2).
+
+## 5.8 Track 2 và vòng chọn S13 → f2 ([ADR-0032](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md), [ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md) §9)
+
+Encoder pretrain theo frame (PretrainedSED): T2a BEATs đóng băng + head v2; T2b `frame_mn10`
+(EfficientSED, 3M tham số) fine-tune toàn bộ, không sequence model. Vòng chọn S13 trên 11 ứng viên
+ghi trước, CV dev annotated, chọn **f2** = ensemble 3 seed T2b + cSEBB, commit `c3f0033` trước test.
+Test annotated: macro 0.1206, micro 0.1643 [0.1103, 0.2242]. f2 là hệ thống của báo cáo giữa kỳ và
+của S8 (ADR-0040); từ giai đoạn O là mốc so sánh.
+
+## 5.9 Giai đoạn O → B0 ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md))
+
+Hai tầng chọn: tầng S (dev, sàng lọc) và tầng C (OOF 5 fold trên train ∪ dev annotated, 564
+recording, bootstrap ghép cặp). Ba ứng viên qua tầng S đều đảo chiều ở tầng C (S56) — bằng chứng
+cho việc không chọn bằng CV dev 134 recording.
+
+**B0** = công thức T2b + `--train-fixes` (bỏ recording thiếu GT khỏi train, gộp cặp gán đôi), một
+model mỗi fold (5 model), suy luận chồng lấn hop 5 s gộp tam giác sàn 0.3, cSEBB chọn trên OOF.
+OOF micro 0.2342, macro 0.1797. Test một lần (14/10): macro 0.1366, micro 0.1806; B0 − f2 micro
++0.0164 [−0.0128, +0.0495] — CI chứa 0, không gọi là tốt hơn có ý nghĩa.
+
+## 5.10 Giai đoạn P — tăng phát hiện, âm tính ([ADR-0043](decisions/ADR-0043-giai-doan-p-tang-phat-hien.md))
+
+P1 thêm hai seed cho B0, P2 knowledge distillation, P3 cửa sổ 20 s, P4 gain/EQ augmentation. Không
+ứng viên nào vượt B0 ở tầng C (S60–S63); P4 qua tầng S rồi đảo chiều ở tầng C, lần thứ tư sau S56.
+Không mở test trong giai đoạn P.
+
+## 5.11 LBR — tinh chỉnh biên và chấm lại box học được ([ADR-0045](decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md), [0046](decisions/ADR-0046-thuoc-ung-dung-va-tap-lop-viet-nam.md))
+
+Chẩn đoán lỗi OOF của B0: hơn nửa số event bỏ sót có posterior cao nhưng box cSEBB bị loại, và
+onset dự đoán sớm có hệ thống — nút thắt là biên box của hậu xử lý, không phải nhận dạng. LBR gồm
+hai mô hình HistGradientBoosting học trên posterior OOF: (1) **refiner** dịch onset/offset của từng
+box cSEBB, (2) **rescorer** chấm lại xác suất box là đúng. Cross-fit lồng nhau trên 5 fold để không
+mô hình nào thấy fold nó chấm; kiểm chuyển trên OOF ba seed P1.
+
+| Biến thể | Nhãn rescorer | Điểm vận hành | Vai trò |
+|---|---|---|---|
+| **V2** (`sed_lbr_B0_20261109T172809Z`) | khớp collar | `f1` | Số chính, chọn ở tầng C |
+| **V3** (`sed_lbr_B0v3_20261110T042337Z`) | khớp giao nhau | `recall_first` (recall giao nhau tối đa với precision ≥ 0.6) | Cấu hình ứng dụng cho demo, ghi trước test |
+
+OOF: V2 micro 0.2342 → 0.3332 (Δ +0.0990 [+0.0761, +0.1200]). Test annotated một lần (10/11): V2
+macro 0.2356, micro 0.2965, Δ so B0 +0.1159 [+0.0741, +0.1593]; V3 `recall_first` recall giao nhau
+0.8203, precision 0.7812. Đánh đổi: V2 giảm độ phủ (recall giao nhau, segment-F1). PSDS cùng lưới log:
+V2 0.3512 / 0.6116 so với B0 0.3061 / 0.7452 — PSDS-1 cao hơn, PSDS-2 thấp hơn. Thước ứng dụng
+(ADR-0046) và tập 19 lớp Việt Nam báo kèm, không dùng để chọn.
+
+## 5.12 Hệ thống phục vụ ([ADR-0042](decisions/ADR-0042-phuc-vu-he-thong-sed-b0.md), [ADR-0047](decisions/ADR-0047-rq2-rq3-tren-event-lbr.md))
+
+`sed_served_B0_20261107T175659Z` dựng lại đúng B0 từ manifest (5 model fold, hop 5 s, gộp tam giác,
+cSEBB); `ServedSed.enable_lbr` thêm LBR, event được kẹp trong độ dài recording ở nơi tiêu thụ
+(`clip_events_to_duration`, không đổi số event-F1). Parity CUDA của demo LBR V3 so với output đóng
+băng: 573/692 event trùng khít, 665 trong một frame, 691 trong collar — refiner khuếch đại sai lệch
+xác suất fp16 tối đa 0.0020 thành dịch biên một frame.
 
 ---
 
@@ -1055,16 +1156,22 @@ việc không kiểm chứng được**:
 Đây không phải câu văn cho đẹp. Nó là cách duy nhất để báo subclass mà không vi
 phạm §3.3.
 
-## 6.5 Hai nhánh cho RQ2
+## 6.5 Bốn nhánh cho RQ2
 
-| Nhánh | Mô tả | Grounding kỳ vọng |
+| Nhánh | Mô tả | Nguồn |
 |---|---|---|
-| **Template** (baseline) | Sinh xác định từ timeline bằng template | 100% theo thiết kế; đo để xác nhận harness đúng |
-| **Constrained** | Model sinh có ràng buộc decoding | Cần đo |
-| **Unconstrained** (đối chứng) | Model sinh tự do, chỉ nhận timeline làm prompt | Cần đo — kỳ vọng thấp hơn |
+| **Template** (baseline) | Sinh tất định từ timeline, EN + VI (lexicon VI riêng, khớp giữ dấu) | ADR-0025 |
+| **Unconstrained** (đối chứng) | Qwen3.5-9B sinh tự do, chỉ nhận timeline làm prompt | ADR-0022 |
+| **Constrained** | Cùng model và prompt, thêm grammar GBNF: một câu liệt kê dãy con event theo onset | ADR-0023 |
+| **Constrained-cover** | Như constrained, grammar buộc nhắc mọi lớp có trong timeline (omission 0 theo thiết kế) | ADR-0026 |
 
-RQ2 so **Constrained với Unconstrained** trên **cùng SED prediction đóng băng**.
-Nếu đổi SED giữa hai nhánh thì Δ không nói gì về grounding.
+RQ2 so các nhánh LLM với nhau trên **cùng SED prediction đóng băng** (cùng timeline, script dừng nếu
+lệch). Nếu đổi SED giữa hai nhánh thì Δ không nói gì về grounding. Đổi hệ thống SED (f2 → B0 → LBR)
+là một câu hỏi khác — mô tả ở ADR-0040 (f2), ADR-0044/0047 (template trên B0/LBR), ADR-0048 (LLM trên
+B0/LBR, mức e2e; oracle dùng lại từ S8 sau khi kiểm trùng ground truth).
+
+Kết luận đã chốt trên f2 (S8): ràng buộc đưa suy diễn bối cảnh, gọi tên quá mức và từ cấm về 0;
+hallucination nguồn âm ở sàn ở mọi nhánh; constrained-cover giữ omission 0. Số theo hệ thống ở §8.4.
 
 ## 6.6 Trường hợp timeline rỗng
 
@@ -1225,6 +1332,11 @@ retrieval một cách khó chẩn đoán.
 `vector_only` sẽ vi phạm hard filter theo thiết kế — đó chính là thứ cần đo, và
 `filter exactness` là metric bắt được nó (xem 8.5).
 
+Filter có hai nguồn: **gold** (filter đúng của query set) và **parsed** (parser LLM sinh từ câu hỏi,
+ADR-0036 — JSON Schema top-level, enum 21 lớp + bốn predicate). Corpus validation/test được dựng
+lại cho mỗi hệ thống SED (run B → f2 → B0 → LBR V2/V3); corpus validation của B0/LBR dùng posterior
+OOF hoặc event cross-fit, không dùng model đã thấy dev (ADR-0044, ADR-0047).
+
 ---
 
 # 8. Phương pháp đánh giá
@@ -1239,7 +1351,12 @@ retrieval một cách khó chẩn đoán.
 | L1 | DataSEC classification | Macro-F1 trên 22 coarse class | ✅ (STATUS §1) |
 | L2 | DataSED SED | **Event-based macro-F1 + PSDS** | ✅ (STATUS §2, ADR-0021/0024) |
 | L3 | Grounded caption | Hallucination rate, omission rate | ✅ (ADR-0022/0023/0026) |
-| L4 | Retrieval / RAG | Recall@k, MRR, evidence precision | ○ (W6) |
+| L4 | Retrieval / RAG | nDCG@10, Recall@k, MRR, filter exactness, unsupported-claim | ✅ (ADR-0027/0036/0040/0047) |
+
+Từ ADR-0046 có thêm **thước ứng dụng** báo kèm (không dùng để chọn hệ thống): event-F1 collar 1 s,
+segment-F1 1 s, khớp giao nhau theo tiêu chí PSDS (DTC = GTC = 0.1, CTTC = 0.3) và tập 19 lớp Việt
+Nam (bỏ `propeller_aircrafts` và `crows_seagulls_magpies`, hiếm gặp ở đô thị Việt Nam — ADR-0046).
+Event-F1 micro collar 0.2 s vẫn là thước chọn.
 
 **Metric chính của L2 không phải frame-F1.** Frame-F1 chỉ dùng để xác nhận
 pipeline train chạy đúng. Mọi kết luận về SED phải dựa trên event-based F1 và PSDS.
@@ -1361,46 +1478,37 @@ Ba điều tuyệt đối không:
 
 ## 9.1 Run manifest
 
-Mọi run ghi `ml/runs/<run_id>/manifest.json`. Layout **thực tế hiện tại**:
+Mọi run ghi `ml/runs/<run_id>/manifest.json` (contract `contracts/run_manifest.schema.json`,
+manifest v2). Layout thực tế:
 
 ```text
 ml/runs/<run_id>/
-├── manifest.json        ✅ config, hashes, git, environment, complete
-├── metrics.json         ✅ best_validation, test, per_class_f1
-├── checkpoints/         ✅ best.pt, last.pt
-└── logs/                ✅ history.json
+├── manifest.json        ✅ command, config, hashes, git, seed, environment, complete
+├── metrics.json         ✅ best_validation, test, per_class_f1 (run train)
+├── checkpoints/         ✅ best.pt (last.pt đã dọn ở run complete)
+├── logs/                ✅ history.json
+├── predictions/         ✅ {dev,test}.npz logit thô + SHA-256 (G2)
+├── postproc*.json, sebb_cv_selection*.json   ✅ hậu xử lý đã chọn trên dev/OOF
+└── captions/            ✅ caption LLM <nhánh>_<split>.jsonl + meta (run có caption)
 ```
 
-Layout **đích**, còn thiếu:
-
-```text
-├── config.resolved.yaml     ○ config sau khi merge mọi default
-├── taxonomy.snapshot.yaml   ○ bản chụp taxonomy tại thời điểm train
-├── postproc.json            ○ theta_c, w_c, d_min_c, g_max_c đã hiệu chuẩn
-└── predictions/             ○ logit thô để quét ngưỡng lại mà không train lại
-```
-
-`predictions/` là thứ thiếu gây tốn nhất: không có nó thì mỗi lần muốn thử theta
-khác phải chạy lại inference toàn bộ test set.
+Run dẫn xuất có `task` riêng: `sed_ensemble`, `sed_rewindow`, `sed_oof`, `sed_filtered`, `sed_lbr`,
+`sed_lbr_oof_events`, `sed_served`, `retrieval_index`. Không có `config.resolved.yaml` hay
+`taxonomy.snapshot.yaml`: manifest đã ghi config đầy đủ và `taxonomy_sha256`, và mọi script đọc
+taxonomy kiểm hash này.
 
 ## 9.2 Trường bắt buộc trong manifest
 
-Manifest hiện tại đã có: `command`, `config`, `class_ids`, `taxonomy_sha256`,
-`split_sha256`, `pretrained_classifier`, `git`, `environment`, `dataset_windows`,
-`pos_weight`, `complete`, `best_checkpoint`.
+Manifest có: `command`, `config`, `class_ids`, `taxonomy_sha256`, `split_sha256`,
+`data_manifest_sha256`, seed evidence, `git.revision` + `git.dirty`, `environment`,
+`dataset_windows`, `pos_weight`, `complete`, `best_checkpoint`; hậu xử lý ở `postproc.json` có schema
+riêng (`contracts/postproc.schema.json`). Số chính thức chỉ từ run `git.dirty=false`;
+`_validate_final_measurement_policy` (`ml/training/manifest.py`) chặn run dirty, provisional,
+chưa complete hoặc không có revision cụ thể.
 
-**Còn thiếu và phải thêm:**
-
-| Trường | Vì sao cần |
-|---|---|
-| `data_manifest_sha256` | Hiện chỉ có split hash; không biết feature nào đã dùng |
-| `seed` đầy đủ mọi RNG | Hiện có `config.seed` nhưng chưa chứng minh đã seed torch/numpy/python |
-| `git.revision` thật | Hiện là `"HEAD"` với `dirty: true` — **không truy vết được** |
-| `postproc` | theta và filter đã dùng, nếu không thì metric không tái lập |
-
-> `git.revision: "HEAD"` và `dirty: true` trong baseline nghĩa là run đó chạy trên
-> working tree chưa commit. Sau commit `c9ccbc6`/`3c80110` thì các run mới ghi
-> được revision thật. Baseline cũ **không** tái lập chính xác được.
+> Baseline dò đường 22/09 có `git.revision: "HEAD"`, `dirty: true` — không tái lập chính xác được
+> và không được báo như kết quả. Các sai lệch provenance về sau (ví dụ report untracked làm 15 lượt
+> đánh giá test ghi `dirty=true` ở S13) được ghi nguyên văn ở ADR tương ứng và PAPER_NOTES §8.
 
 ## 9.3 Nguyên tắc artifact
 
@@ -1425,8 +1533,11 @@ Quy tắc bù: mọi thứ không commit phải **tái tạo được bằng m�
 | Lint | `ruff check .` | ✅ |
 | Test | `pytest -q` | ✅ |
 | `api` không import torch | `grep -r "import torch" services/api/` | ✅ |
-| Contract schema khớp manifest thật | `pytest tests/test_contracts.py` | ○ |
-| Link nội bộ trong docs | script kiểm link | ○ |
+| Contract schema khớp manifest thật | `pytest tests/test_contracts.py` (trong `pytest -q`) | ✅ |
+| Frontend | `npm ci && npm test && npm run build` | ✅ |
+| Link nội bộ trong docs | `scripts.check_doc_links` (+ test trong `pytest -q`) | ✅ |
+| Lệnh trong docs khớp code | `scripts.check_doc_commands` (+ test) | ✅ |
+| Số chính trong docs khớp artifact | `scripts.check_doc_claims` (cần `ml/runs`, chạy local) | Trước commit tài liệu |
 
 ## 9.5 Giám sát và drift
 
@@ -1473,6 +1584,21 @@ flowchart LR
 **E5 tồn tại để RQ2 và RQ3 có nghĩa.** Nếu caption và retrieval chạy trên SED
 prediction khác nhau ở mỗi lần thí nghiệm, thì Δ của chúng trộn với Δ của SED.
 
+**Diễn tiến thực tế** (E1–E9 đóng hết; sau đó các vòng cải thiện SED, mỗi vòng chọn trên dev/OOF
+trước, test một lần sau, rồi chạy lại W5/W6 trên hệ thống mới):
+
+| Mốc | Ngày | Hệ thống SED | Chọn bằng | W5/W6 chạy lại | ADR |
+|---|---|---|---|---|---|
+| E1–E9 | 22–26/09 | v1: run B; từ 25/09 ensemble C + θ global | CV dev | W5 (3 nhánh LLM), W6 trên corpus run B | 0021, 0024, 0027 |
+| SED v2 | 26/09 | ensemble v2 (CNN14 pool /8 + BiGRU) | Luật ghi trước, CV dev | — | 0030 |
+| S13 | 29/09 | **f2** (T2b × 3 + cSEBB) | 11 ứng viên ghi trước, CV dev annotated | S8: W5 + W6 | 0031, 0040 |
+| Giai đoạn O | 08–14/10 | **B0** (5 fold `frame_mn10`, hop 5 s, cSEBB) | Tầng C, OOF 564 recording | S8-lite: template + W6 | 0041, 0044 |
+| Giai đoạn P | 08/11 | (không đổi) | Tầng S/C | — | 0043 |
+| LBR | 09–10/11 | **B0 + LBR V2** (số chính), **V3** (demo) | Tầng C OOF, cross-fit lồng nhau | Template + W6; LLM ở ADR-0048 | 0045–0048 |
+
+Mọi lượt chạm test ghi ở sổ test (`scripts.report_test_ledger`); mọi artifact được trích có SHA-256
+ở freeze (`scripts.freeze_artifacts`).
+
 ---
 
 # 11. Rủi ro, giả định và hạn chế
@@ -1481,14 +1607,15 @@ prediction khác nhau ở mỗi lần thí nghiệm, thì Δ của chúng trộn
 
 | # | Rủi ro | Mức | Dấu hiệu sớm | Giảm thiểu |
 |---|---|---|---|---|
-| R1 | **DataSEC trùng nguồn với DataSED** làm RQ1 vô giá trị | **CAO** | Cùng 6 tác giả, cùng miền, cách 4 tháng | D3 ba tầng trước mọi kết luận transfer; nếu trùng thì báo cáo là leakage |
-| R2 | Imbalance 38:1 làm pretraining chỉ học voices/music | **CAO** | Đã đo, xem 3.4 | Class-balanced sampling (A6) |
-| R3 | Subclass dưới 25 file làm metric vô nghĩa | **CAO** | 4 subclass, dev/test 3 file | Báo số tuyệt đối, nhóm low-support riêng (8.2) |
-| R4 | Event-based F1 thấp hơn frame-F1 nhiều, dễ tưởng model tệ | TRUNG BÌNH | Chưa có post-processing | Hiệu chuẩn theta/filter trước khi kết luận |
-| R5 | 8 tuần không đủ cho cả caption và RAG | TRUNG BÌNH | Trễ mốc W5 | Cut-list trong [PLAN.md](PLAN.md) |
-| R6 | 8 GB VRAM không đủ cho PANNs CNN14 với window 10 s | TRUNG BÌNH | OOM ở E2 | Giảm batch, gradient accumulation, window 5 s |
-| R7 | Constrained captioner không kịp, RQ2 chỉ còn template | TRUNG BÌNH | Trễ W5 | Template vs unconstrained vẫn trả lời được RQ2 một phần |
-| R8 | License SA hạn chế công bố checkpoint | THẤP | — | Công bố dưới CC-BY-NC-SA-4.0, nêu rõ trong README |
+| R1 | **DataSEC trùng nguồn với DataSED** làm RQ1 vô giá trị | **CAO** | Cùng 6 tác giả, cùng miền, cách 4 tháng | ✅ Đã xảy ra và xử lý: D3 tìm thấy trùng, loại 11 clip, dải `minor` (§3.6) |
+| R2 | Imbalance 38:1 làm pretraining chỉ học voices/music | **CAO** | Đã đo, xem 3.4 | ✅ Class-balanced sampling (A6) |
+| R3 | Subclass dưới 25 file làm metric vô nghĩa | **CAO** | 4 subclass, dev/test 3 file | ✅ Báo số tuyệt đối, nhóm low-support riêng (8.2) |
+| R4 | Event-based F1 thấp hơn frame-F1 nhiều, dễ tưởng model tệ | TRUNG BÌNH | Đã xảy ra (v1 0.09) | ✅ Chẩn đoán trần độ phân giải, lỗi biên → v2, B0, LBR; báo kèm thước ứng dụng |
+| R5 | Không đủ thời gian cho cả caption và RAG | TRUNG BÌNH | — | ✅ Cả hai xong; hạn chót dời sang 28/11 |
+| R6 | 8 GB VRAM không đủ cho model lớn | TRUNG BÌNH | OOM | ✅ Đo VRAM thật (batch 24 ở 10 s); model 3M tham số cho hệ thống cuối |
+| R7 | Constrained captioner không kịp | TRUNG BÌNH | — | ✅ Có cả constrained và constrained-cover |
+| R8 | License SA hạn chế công bố checkpoint | THẤP | — | Không công bố checkpoint; nếu công bố thì CC-BY-NC-SA-4.0 (checkpoint AudioSet không ghi license, ADR-0015) |
+| R9 | **Mở test nhiều lần** làm số test lạc quan (adaptive reuse) | TRUNG BÌNH | Nhiều lượt W5/W6 và SED | Mỗi lượt ghi trước, không chọn theo test, sổ test liệt kê đủ; báo như hạn chế (11.3) |
 
 ## 11.2 Giả định
 
@@ -1498,10 +1625,12 @@ prediction khác nhau ở mỗi lần thí nghiệm, thì Δ của chúng trộn
 | A2 | 717 recording / 18.68 h đủ để train SED 21 class | Phải dựa nhiều hơn vào pretraining; nhánh A sẽ rất thấp |
 | A3 | Subclass DataSEC chuyển được sang DataSED | RQ4 chỉ kết luận trên DataSEC |
 | A4 | Recording DataSED độc lập với nhau | Split theo recording không đủ; cần group lớn hơn |
-| A5 | 50 fps đủ phân giải cho onset của class impulsive | `thunder_fireworks_gunshot` bị sai biên; cần hop nhỏ hơn |
+| A5 | Độ phân giải đầu ra đủ cho onset của class impulsive | `thunder_fireworks_gunshot` bị sai biên; cần hop nhỏ hơn |
 
-A5 đáng lo cụ thể: `Gunshot` có thời gian lên gần như tức thời, và 50 fps nghĩa là
-mỗi frame 20 ms. Event 100 ms chỉ có 5 frame.
+A5 đáng lo cụ thể: `Gunshot` có thời gian lên gần như tức thời. Đã đo được rằng độ phân giải là
+nút thắt thật ở v1 (CNN14 pool /64 = 0.64 s, trần event-F1 0.63 — §5.7); hệ thống cuối ra 40 ms/bước.
+A1 cũng có số kiểm: 8 cặp recording byte-identical được gán nhãn hai lần cho 67/94 biên trong collar
+0.2 s — collar chặt hơn độ chính xác của chính nhãn (trần người ~0.58).
 
 ## 11.3 Hạn chế đã biết — viết vào báo cáo, không giấu
 
@@ -1520,6 +1649,22 @@ mỗi frame 20 ms. Event 100 ms chỉ có 5 frame.
 7. **Một GPU, 8 GB.** Không ablation được model lớn; mọi so sánh nằm trong ngân
    sách tính toán hẹp.
 8. **4 subclass có mẫu test cỡ 3.** Không kết luận được gì ở các node đó.
+9. **Train SED không tất định cùng seed** (nguyên nhân chưa xác minh). Mọi so sánh dựa trên nhiều
+   seed, OOF 5 fold hoặc CI bootstrap; không kết luận từ một run.
+10. **Test được mở lại nhiều lần** (SED: O5, LBR; W5/W6: S8, S8-lite, ADR-0047, ADR-0048). Mỗi lượt
+    ghi trước và không dùng để chọn, nhưng tái sử dụng test thích nghi vẫn làm số test bớt độc lập;
+    sổ test liệt kê đủ.
+11. **LBR đánh đổi:** V2 tăng event-F1 nhưng giảm độ phủ (recall giao nhau, segment-F1) và PSDS-2;
+    V3 tăng độ phủ nhưng precision giảm. Bước nhảy nDCG@10 của V3 trong RQ3 là hiệu ứng độ phủ
+    (nhiều event hơn), không chứng minh retrieval tốt hơn.
+12. **Cấu hình V3 chọn sau khi đã thấy OOF của V2** — ghi trước test, nhưng không phải lựa chọn
+    tầng C ban đầu; vì thế V3 chỉ là cấu hình ứng dụng, không thay số chính.
+13. **Chấm caption bằng lexicon**, không bằng người: so với người đọc mù 60 caption, precision
+    0.896 / recall 0.936 (ADR-0022 §6) — dễ dãi hơn người, bỏ lọt kiểu bịa che sau từ địa điểm.
+14. **Một phần audio gốc lấy từ AudioSet/Freesound** (bài DataSED, S31): encoder pretrain AudioSet có
+    thể đã nghe một phần dữ liệu; không định lượng được.
+15. **Parser câu hỏi** chỉ hiểu câu hỏi có lớp/predicate; câu hỏi tổng quát ("có những sự kiện gì?")
+    bị đoán lớp, không nhận ngữ cảnh recording đang mở.
 
 ## 11.4 Hướng phát triển
 
@@ -1528,6 +1673,9 @@ mỗi frame 20 ms. Event 100 ms chỉ có 5 frame.
 - Streaming thật với overlap-add và event stitching.
 - Gán nhãn subclass cho một tập con DataSED để RQ4 trả lời được đầy đủ.
 - Hiệu chuẩn theo mức áp suất âm tuyệt đối (`logmel_v2`, ref cố định).
+- Học biên trực tiếp trong model (head onset/offset kiểu EPN) thay vì sửa biên sau (LBR); KD từ
+  ensemble teacher; encoder ATST-F (PAPER_NOTES §5).
+- Đánh giá người cho caption và câu trả lời RAG; parser nhận ngữ cảnh recording.
 
 ---
 
@@ -1543,7 +1691,13 @@ mỗi frame 20 ms. Event 100 ms chỉ có 5 frame.
 | **Weak label** | Nhãn chỉ nói class có mặt trong clip |
 | **Polyphonic** | Nhiều event cùng active; nhãn cho phép chồng lấp |
 | **Monophonic** | Chỉ giữ nguồn chiếm ưu thế |
-| **Frame** | Một bước thời gian của feature; ở đây 20 ms (50 fps) |
+| **Frame** | Một bước thời gian; 20 ms ở `logmel_v1`, 10 ms ở `logmel_panns_v1`, 40 ms ở đầu ra `frame_mn10` |
+| **OOF** | Out-of-fold: dự đoán cho mỗi recording train ∪ dev từ model không thấy fold của nó |
+| **Tầng S / tầng C** | Sàng lọc trên dev (S) / xác nhận bằng OOF 5 fold có bootstrap ghép cặp (C), ADR-0041 |
+| **cSEBB** | Hậu xử lý box theo bước nhảy posterior (Ebbers 2024), một ngưỡng confidence box |
+| **LBR** | Learned Boundary Refinement + rescoring: hai model học trên OOF chỉnh biên và chấm lại box |
+| **Khớp giao nhau** | Event đúng khi chồng lấn đủ theo DTC/GTC của PSDS-2 (thước ứng dụng, ADR-0046) |
+| **`recall_first`** | Điểm vận hành cho recall giao nhau cao nhất với precision ≥ 0.6 (demo) |
 | **Coarse class** | 22 class cấp trên trong taxonomy |
 | **Subclass** | 28 class cấp dưới, chỉ có trong DataSEC |
 | **Timeline** | Tập event sau post-processing của một recording |
@@ -1596,32 +1750,33 @@ environmental-audio-rag/
 │   ├── datasets/  features/  models/  training/
 │   ├── evaluation/  captioning/  retrieval/  tracking/
 │   └── runs/                  # artifact (không commit)
-├── scripts/                   # CLI, chỉ điều phối
-├── services/                  # api, inference, frontend, stream
+├── scripts/                   # CLI, chỉ điều phối (+ check_doc_claims, check_doc_commands)
+├── services/                  # api, inference, frontend, common, stream (scaffold)
+├── report/                    # báo cáo theo mẫu khoa: src/*.md → DOCX/PDF
 ├── tests/
 └── notebooks/                 # chỉ khám phá
 ```
 
 ## 12.3 Ánh xạ sang chương báo cáo
 
-| Chương báo cáo | Nguồn chính | Nguồn bổ trợ |
-|---|---|---|
-| 1. Mở đầu | 1 | [PLAN.md](PLAN.md) |
-| 2. Cơ sở lý thuyết | 2 | [RELATED_WORK.md](RELATED_WORK.md) |
-| 3. Dữ liệu | 3 | [DATA_PLAN.md](DATA_PLAN.md), [taxonomy.md](taxonomy.md), [annotation_guideline.md](annotation_guideline.md), [data_inventory.md](data_inventory.md) |
-| 4. Kiến trúc hệ thống | 4 | [decisions/](decisions/) |
-| 5. Mô hình | 5 | [TRAINING_OPS_PLAN.md](TRAINING_OPS_PLAN.md) |
-| 6. Grounded captioning | 6 | 8.3 |
-| 7. RAG | 7 | — |
-| 8. Thực nghiệm và kết quả | 8, 10 | [measurements/](measurements/), [STATUS.md](STATUS.md) |
-| 9. Kết luận | 11 | [STATUS.md](STATUS.md) |
-| Phụ lục | 12 | [decisions/](decisions/) |
+Theo cấu trúc bảy chương của `report/src/` (mẫu khoa):
+
+| Chương báo cáo | File nguồn báo cáo | Mục SYSTEM | Nguồn bổ trợ |
+|---|---|---|---|
+| 1. Giới thiệu | `01_gioi_thieu.md` | 1 | [PLAN.md](PLAN.md) |
+| 2. Cơ sở lý thuyết | `02_co_so_ly_thuyet.md` | 2 | [RELATED_WORK.md](RELATED_WORK.md) |
+| 3. Dữ liệu | `03_du_lieu.md` | 3 | [DATA_PLAN.md](DATA_PLAN.md), [taxonomy.md](taxonomy.md), [data_inventory.md](data_inventory.md) |
+| 4. Phương pháp | `04_phuong_phap.md` | 5, 6, 7, 8.1–8.3, 8.5 | [decisions/](decisions/), [evaluation_protocol.md](evaluation_protocol.md) |
+| 5. Triển khai hệ thống | `05_trien_khai.md` | 4, 5.12, 9 | [DEMO.md](DEMO.md), [REPRODUCE.md](REPRODUCE.md) |
+| 6. Kết quả | `06_ket_qua.md` | 8.4, 10 | `final_numbers_*`, [PAPER_NOTES.md](PAPER_NOTES.md) |
+| 7. Kết luận và hướng phát triển | `07_tien_do_ke_hoach.md` (đổi nội dung ở R5) | 11 | [STATUS.md](STATUS.md) |
+| Phụ lục | `90_phan_cuoi.md` | 12 | sổ test, freeze |
 
 ## 12.4 Ánh xạ câu hỏi nghiên cứu sang thí nghiệm và metric
 
 | RQ | Thí nghiệm | Metric | Điều kiện hợp lệ |
 |---|---|---|---|
-| RQ1 | E3 so với E2(B) | Δ event-F1, Δ PSDS | D3 pass; cùng budget; **so C với B** |
-| RQ2 | E6 constrained so với unconstrained | Δ hallucination, Δ omission | Cùng SED prediction đóng băng (E5) |
-| RQ3 | E8 ba cấu hình | Recall@k, MRR, filter exactness | Query set xây trước khi xem kết quả |
+| RQ1 | E3 so với E2(B), v1 (7 run) và v2 (3 + 3 seed) | Δ event-F1, Δ PSDS, Welch + bootstrap | D3 pass; cùng budget; **so C với B** — âm tính |
+| RQ2 | E6 bốn nhánh caption trên f2 (S8) và trên B0/LBR (ADR-0048) | Hallucination, omission, bối cảnh, gọi tên quá mức, G3 | Cùng SED prediction đóng băng trong mỗi so sánh nhánh |
+| RQ3 | E8 ba cấu hình × gold/parsed filter × corpus f2/B0/LBR | nDCG@10, Recall@k, MRR, filter exactness, unsupported-claim | Query set v2 chọn theo GT train, xây trước khi xem kết quả |
 | RQ4 | E1 hierarchical | Subclass macro-F1 (DataSEC), parent-consistency (DataSED) | Không gọi kết quả DataSED là accuracy |

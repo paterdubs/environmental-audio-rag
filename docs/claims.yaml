@@ -258,3 +258,158 @@ claims:
     key: [results, {system: "B0 (cSEBB)"}, curves, "log 1e-5..0.99 (mới)", psds, psds_2]
     mentions:
       - {file: docs/PLAN.md, text: "B0 lưới log 0.3061 / {value}"}
+
+  # ---------- SYSTEM §5 (mô hình) ----------
+  - id: v2_ensemble_test_micro
+    source: ml/runs/sed_ensemble_v2_20260926T155630Z/evaluation_cv.json
+    key: [event_based_f1, f_measure]
+    mentions: [{file: docs/SYSTEM.md, text: "micro {value} [0.1088, 0.1866]"}]
+  - id: v2_ensemble_test_ci_lower
+    source: ml/runs/sed_ensemble_v2_20260926T155630Z/evaluation_cv.json
+    key: [event_based_f1_bootstrap, lower]
+    mentions: [{file: docs/SYSTEM.md, text: "micro 0.1476 [{value}, 0.1866]"}]
+  - id: v2_ensemble_test_ci_upper
+    source: ml/runs/sed_ensemble_v2_20260926T155630Z/evaluation_cv.json
+    key: [event_based_f1_bootstrap, upper]
+    mentions: [{file: docs/SYSTEM.md, text: "micro 0.1476 [0.1088, {value}]"}]
+  - id: v2_ensemble_test_macro
+    source: ml/runs/sed_ensemble_v2_20260926T155630Z/evaluation_cv.json
+    key: [event_based_f1_macro, f_measure]
+    mentions: [{file: docs/SYSTEM.md, text: "macro {value} — so với v1"}]
+  - id: f2_test_macro
+    source: ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json
+    key: [event_based_f1_macro, f_measure]
+    mentions: [{file: docs/SYSTEM.md, text: "Test annotated: macro {value}, micro 0.1643"}]
+  - id: f2_test_micro
+    source: ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json
+    key: [event_based_f1, f_measure]
+    mentions: [{file: docs/SYSTEM.md, text: "macro 0.1206, micro {value} [0.1103"}]
+  - id: f2_test_ci
+    source: ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json
+    key: [event_based_f1_bootstrap, lower]
+    mentions: [{file: docs/SYSTEM.md, text: "micro 0.1643 [{value}, 0.2242]"}]
+  - id: f2_test_ci_upper
+    source: ml/runs/sed_ensemble_s13_f2_20260929T045053Z/evaluation_cv_annotated.json
+    key: [event_based_f1_bootstrap, upper]
+    mentions: [{file: docs/SYSTEM.md, text: "micro 0.1643 [0.1103, {value}]"}]
+  - id: b0_oof_micro
+    source: docs/measurements/oof_selection_20261014.json
+    key: [systems, B0, micro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "OOF micro {value}, macro 0.1797"}]
+  - id: b0_oof_macro
+    source: docs/measurements/oof_selection_20261014.json
+    key: [systems, B0, macro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "OOF micro 0.2342, macro {value}."}]
+  - id: b0_test_macro_system
+    source: *sed
+    key: [lbr, baseline, all, macro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "(14/10): macro {value}, micro 0.1806"}]
+  - id: b0_test_micro_system
+    source: *sed
+    key: [lbr, baseline, all, micro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "(14/10): macro 0.1366, micro {value};"}]
+  - id: b0_minus_f2
+    source: docs/measurements/rq1_multirun_bootstrap_phase_o_b0_vs_f2_20261014.json
+    key: [differences, B0-f2, estimate]
+    mentions: [{file: docs/SYSTEM.md, text: "B0 − f2 micro {value} ["}]
+  - id: b0_minus_f2_lower
+    source: docs/measurements/rq1_multirun_bootstrap_phase_o_b0_vs_f2_20261014.json
+    key: [differences, B0-f2, lower]
+    mentions: [{file: docs/SYSTEM.md, text: "B0 − f2 micro +0.0164 [{value}, +0.0495]"}]
+  - id: b0_minus_f2_upper
+    source: docs/measurements/rq1_multirun_bootstrap_phase_o_b0_vs_f2_20261014.json
+    key: [differences, B0-f2, upper]
+    mentions: [{file: docs/SYSTEM.md, text: "B0 − f2 micro +0.0164 [−0.0128, {value}]"}]
+  - id: lbr_oof_b0_micro
+    source: docs/measurements/oof_selection_20261109_LBR.json
+    key: [results, B0, f1, all, micro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "OOF: V2 micro {value} → 0.3332"}]
+  - id: lbr_oof_v2_micro
+    source: docs/measurements/oof_selection_20261109_LBR.json
+    key: [results, LBR_v2, f1, all, micro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "V2 micro 0.2342 → {value} (Δ"}]
+  - id: lbr_oof_v2_delta
+    source: docs/measurements/oof_selection_20261109_LBR.json
+    key: [deltas, LBR_v2, estimate]
+    mentions: [{file: docs/SYSTEM.md, text: "→ 0.3332 (Δ {value} ["}]
+  - id: lbr_oof_v2_delta_lower
+    source: docs/measurements/oof_selection_20261109_LBR.json
+    key: [deltas, LBR_v2, lower]
+    mentions: [{file: docs/SYSTEM.md, text: "(Δ +0.0990 [{value}, +0.1200])"}]
+  - id: lbr_oof_v2_delta_upper
+    source: docs/measurements/oof_selection_20261109_LBR.json
+    key: [deltas, LBR_v2, upper]
+    mentions: [{file: docs/SYSTEM.md, text: "(Δ +0.0990 [+0.0761, {value}])"}]
+  - id: v2_test_system
+    source: *sed
+    key: [lbr, points, f1, all, macro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "V2 macro {value}, micro 0.2965, Δ so B0"}]
+  - id: v2_test_micro_system
+    source: *sed
+    key: [lbr, points, f1, all, micro_f1]
+    mentions: [{file: docs/SYSTEM.md, text: "V2 macro 0.2356, micro {value}, Δ so B0"}]
+  - id: v2_delta_system
+    source: *sed
+    key: [lbr, delta_micro_vs_baseline, estimate]
+    mentions: [{file: docs/SYSTEM.md, text: "Δ so B0 {value} [+0.0741, +0.1593]"}]
+  - id: v2_delta_lower_system
+    source: *sed
+    key: [lbr, delta_micro_vs_baseline, lower]
+    mentions: [{file: docs/SYSTEM.md, text: "Δ so B0 +0.1159 [{value}, +0.1593]"}]
+  - id: v2_delta_upper_system
+    source: *sed
+    key: [lbr, delta_micro_vs_baseline, upper]
+    mentions: [{file: docs/SYSTEM.md, text: "Δ so B0 +0.1159 [+0.0741, {value}]"}]
+  - id: v3_rf_recall_system
+    source: *sed
+    key: [lbr_extra, *v3, points, recall_first, all, intersection, micro, recall]
+    mentions: [{file: docs/SYSTEM.md, text: "recall giao nhau {value}, precision 0.7812"}]
+  - id: v3_rf_precision_system
+    source: *sed
+    key: [lbr_extra, *v3, points, recall_first, all, intersection, micro, precision]
+    mentions: [{file: docs/SYSTEM.md, text: "recall giao nhau 0.8203, precision {value}."}]
+  - id: v2_psds_log_system
+    source: *grid
+    key: [results, *v2run, curves, "log 1e-5..0.99 (mới)", psds, psds_1]
+    mentions: [{file: docs/SYSTEM.md, text: "V2 {value} / 0.6116 so với B0"}]
+  - id: v2_psds2_log_system
+    source: *grid
+    key: [results, *v2run, curves, "log 1e-5..0.99 (mới)", psds, psds_2]
+    mentions: [{file: docs/SYSTEM.md, text: "V2 0.3512 / {value} so với B0"}]
+  - id: b0_psds1_log_system
+    source: docs/measurements/lbr_psds_grid_20261110_annotated_b0.json
+    key: [results, {system: "B0 (cSEBB)"}, curves, "log 1e-5..0.99 (mới)", psds, psds_1]
+    mentions: [{file: docs/SYSTEM.md, text: "so với B0 {value} / 0.7452"}]
+  - id: b0_psds2_log_system
+    source: docs/measurements/lbr_psds_grid_20261110_annotated_b0.json
+    key: [results, {system: "B0 (cSEBB)"}, curves, "log 1e-5..0.99 (mới)", psds, psds_2]
+    mentions: [{file: docs/SYSTEM.md, text: "so với B0 0.3061 / {value} — PSDS-1"}]
+  - id: lbrv3_parity_prob_max
+    source: docs/measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.json
+    key: [summary, prob_max_abs]
+    mentions: [{file: docs/SYSTEM.md, text: "fp16 tối đa {value} thành"}]
+  - id: v1_ensemble_c_test_micro
+    source: ml/runs/sed_ensemble_C_clean_20260925T045631Z/evaluation_cv.json
+    key: [event_based_f1, f_measure]
+    mentions: [{file: docs/SYSTEM.md, text: "(ensemble C) {value} / 0.0917"}]
+  - id: v1_ensemble_c_test_macro
+    source: docs/measurements/event_f1_macro_20261002.json
+    key: [rows, {run: sed_ensemble_C_clean_20260925T045631Z, file: evaluation_cv.json}, macro]
+    mentions: [{file: docs/SYSTEM.md, text: "(ensemble C) 0.0941 / {value}"}]
+
+  # ---------- SYSTEM §11 (hạn chế) ----------
+  - id: lexicon_vs_human_precision
+    source: docs/measurements/caption_mention_agreement_20260925.json
+    key: [mentions, precision]
+    decimals: 3
+    mentions: [{file: docs/SYSTEM.md, text: "precision {value} / recall 0.936 (ADR-0022 §6)"}]
+  - id: lexicon_vs_human_recall
+    source: docs/measurements/caption_mention_agreement_20260925.json
+    key: [mentions, recall]
+    decimals: 3
+    mentions: [{file: docs/SYSTEM.md, text: "precision 0.896 / recall {value} (ADR-0022 §6)"}]
+  - id: human_ceiling_event_f1
+    source: docs/measurements/sed_ceilings_20260926.json
+    key: [human_agreement, event_f1_collar_0.2s]
+    decimals: 2
+    mentions: [{file: docs/SYSTEM.md, text: "(trần người ~{value})"}]

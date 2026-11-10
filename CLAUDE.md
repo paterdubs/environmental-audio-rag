@@ -670,9 +670,12 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 ## 7. Lệnh hay dùng
 
 ```bash
-# ==== Chất lượng ====
+# ==== Chất lượng ==== (không chạy qua pipe: `| tail` nuốt mã thoát)
 .venv/Scripts/python.exe -m pytest -q
 .venv/Scripts/python.exe -m ruff check .
+.venv/Scripts/python.exe -m scripts.check_doc_claims      # số chính trong docs ↔ artifact (docs/claims.yaml)
+.venv/Scripts/python.exe -m scripts.check_doc_commands    # lệnh trong REPRODUCE/CLAUDE/DEMO ↔ code
+.venv/Scripts/python.exe -m scripts.check_doc_links       # link tương đối trong docs chính
 
 # ==== Dữ liệu: D0 — metadata và toàn vẹn archive ====
 .venv/Scripts/python.exe -m scripts.data_sources metadata datasec datased
@@ -736,6 +739,13 @@ Không thảo luận lại trừ khi có lý do mới. Mỗi thay đổi phải 
 .venv/Scripts/python.exe -m scripts.report_boundary_errors --run "nhãn=ml/runs/<run>" ...  # xác suất + sai số biên, dev
 .venv/Scripts/python.exe -m scripts.report_event_f1_macro   # macro từ per-class đã lưu, không chạy lại test
 # Thứ tự đầy đủ sau hàng đợi: PLAN, khối "SED v2", mục Runbook
+
+# ==== Hệ thống cuối B0 + LBR (ADR-0041/0045/0047/0048; chi tiết docs/REPRODUCE.md) ====
+.venv/Scripts/python.exe -m scripts.fit_lbr_oof --source ml/runs/<sed_oof_B0_h5_*> --transfer ml/runs/<sed_oof_P1_B0x3_h5_*> --label B0
+.venv/Scripts/python.exe -m scripts.export_lbr_oof_events --lbr-run ml/runs/<sed_lbr_*> --point f1
+.venv/Scripts/python.exe -m scripts.report_psds_diagnosis --eval-set annotated            # chỉ dev
+.venv/Scripts/python.exe -m scripts.report_rq2_llm_systems --split dev --eval-set annotated
+.venv/Scripts/python.exe -m scripts.report_final_numbers --rq2-llm <json> --psds-diagnosis <json>
 
 # ==== Retrieval (W6) ====
 docker compose up -d
