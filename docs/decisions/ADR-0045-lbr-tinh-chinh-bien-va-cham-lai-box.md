@@ -188,7 +188,9 @@ Một lượt `evaluate_run --extra-lbr`, test annotated n=139, nguồn
   segment-F1 0.7260 → 0.5965); V3 recall_first tăng recall giao nhau 0.5351 → 0.8203 với precision
   0.7812. 19 lớp Việt Nam, V3 recall_first: recall 0.8319, P 0.7810.
 - Không chọn lại V2/V3 theo số test; V2 vẫn là số chính, V3 là cấu hình ứng dụng.
-- PSDS ở lượt này tính trên `T_GRID` cũ (V2 0.2146 / 0.2960 so với B0 0.3489 / 0.6987). Lưới này cắt
+- PSDS ở lượt này tính trên `T_GRID` cũ (V2 0.2146 / 0.2960 so với B0 0.3131 / 0.7310 trên lưới
+  tuyến tính của `evaluate_run`; bản đầu ghi nhầm 0.3489 / 0.6987 của ensemble C v1, sửa theo
+  ADR-0048 §4). Lưới này cắt
   phần lớn box của V2; đo lại có ghi trước ở [ADR-0047](ADR-0047-rq2-rq3-tren-event-lbr.md) (bổ sung
   lưới PSDS): V2 0.3512 / 0.6116, V3 0.3369 / 0.6167. PSDS-2 của V2 vẫn thấp hơn B0.
 - Sổ test: [test_ledger_20261110.md](../measurements/test_ledger_20261110.md); freeze:

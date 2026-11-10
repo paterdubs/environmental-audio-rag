@@ -61,8 +61,9 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 **Cập nhật 10/11/2026 (chiều) — LBR đã qua test; RQ2/RQ3 và PSDS đo lại (ADR-0045 §12, ADR-0047).**
 Test annotated n=139 (người dùng duyệt từng lượt mở): **V2 f1 macro 0.2356, micro 0.2965** so với B0
 0.1366 / 0.1806, Δ micro +0.1159 [+0.0741, +0.1593]; V3 `recall_first` recall giao nhau 0.8203,
-precision 0.7812. PSDS đo lại với lưới `geomspace(1e-5, 0.99, 48)` ghi trước: V2 PSDS-1 0.3512 (B0
-0.3489), PSDS-2 0.6116 (B0 0.6987, vẫn thấp hơn); V3 0.3369 / 0.6167. RQ2 template 0 lỗi; RQ3
+precision 0.7812. PSDS đo lại với lưới `geomspace(1e-5, 0.99, 48)` ghi trước: V2 0.3512 / 0.6116,
+V3 0.3369 / 0.6167; B0 0.3131 / 0.7310 (lưới tuyến tính `DEFAULT_THRESHOLD_GRID` của `evaluate_run`, khác lưới) — PSDS-2 của V2 thấp hơn rõ, PSDS-1 chờ so cùng lưới (ADR-0048 §3).
+Bản đầu ghi nhầm B0 = 0.3489 / 0.6987 (số của ensemble C v1), sửa 10/11. RQ2 template 0 lỗi; RQ3
 hybrid/en nDCG@10 B0 0.383, V2 0.404 (CI chồng), V3 0.670 (hiệu ứng độ phủ, trích đúng GT 0.915 →
 0.712). Sửa lỗi kẹp biên event LBR ở nơi tiêu thụ (`clip_events_to_duration`, `513e1f0`) — số event-F1
 không đổi. Sổ test 42 lượt SED, freeze thiếu 0. Demo đã chuyển
@@ -798,7 +799,8 @@ Người dùng duyệt lượt mở test thứ ba cho W5/W6 và đo lại PSDS v
 ở timeline vì 14/945 event vượt cuối recording → kẹp ở nơi tiêu thụ (`513e1f0`, ADR-0047 §5), không đổi
 số event-F1. Chẩn đoán PSDS chỉ trên dev OOF: `T_GRID` cũ cắt ~55% box của V2 (điểm rescorer rất lệch).
 Lưới `geomspace(1e-5, 0.99, 48)` ghi trước (`a5678f8`), đo một lần: V2 0.2146/0.2960 → 0.3512/0.6116,
-V3 0.3354/0.6158 → 0.3369/0.6167; PSDS-2 của V2 vẫn dưới B0 0.6987. Sổ test và freeze mở rộng cho LBR
+V3 0.3354/0.6158 → 0.3369/0.6167; PSDS-2 của V2 vẫn dưới B0 0.7310 (lưới tuyến tính; bản đầu ghi
+nhầm 0.6987 của ensemble C v1, sửa theo ADR-0048 §4). Sổ test và freeze mở rộng cho LBR
 (`f24c59a`, `604ebfb`). Ghi PAPER_NOTES S65/S66/C6/R4/R5, ADR-0045 §12, ADR-0047 kết quả, STATUS. Người
 dùng đổi quy định: agent được commit dưới danh `paterdubs`, không Co-Authored-By; không push.
 

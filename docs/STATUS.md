@@ -4,8 +4,8 @@
 macro 0.2356, micro 0.2965** so với B0 0.1366 / 0.1806, Δ micro +0.1159 [+0.0741, +0.1593]; V3
 `recall_first` (demo): recall giao nhau 0.5351 → 0.8203, precision 0.9706 → 0.7812
 ([báo cáo](measurements/sed_ensemble_B0_final_test_20261014T085016Z_eval_phase_lbr_annotated.md)).
-PSDS đo lại với lưới ghi trước: V2 0.3512 / 0.6116, V3 0.3369 / 0.6167, B0 0.3489 / 0.6987 — PSDS-2
-của V2 vẫn thấp hơn B0 ([báo cáo](measurements/lbr_psds_grid_20261110_annotated.md)). RQ2 template: 0 lỗi
+PSDS đo lại với lưới ghi trước: V2 0.3512 / 0.6116, V3 0.3369 / 0.6167; B0 0.3131 / 0.7310 (lưới tuyến tính `DEFAULT_THRESHOLD_GRID` của `evaluate_run`, khác lưới) — PSDS-2
+của V2 vẫn thấp hơn B0, PSDS-1 chờ so cùng lưới (ADR-0048 §3; bản đầu ghi nhầm B0 = 0.3489 / 0.6987) ([báo cáo](measurements/lbr_psds_grid_20261110_annotated.md)). RQ2 template: 0 lỗi
 ở B0, V2, V3. RQ3 test hybrid/en nDCG@10: B0 0.383, V2 0.404 (CI chồng B0), V3 0.670 — hiệu ứng độ phủ
 của V3, "trích đúng GT" giảm 0.915 → 0.712, không đọc như retrieval tốt hơn
 ([V3](measurements/retrieval_benchmark_test_lbrv3_gold_20261110.md)). Corpus validation của LBR là event

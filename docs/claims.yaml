@@ -1,0 +1,217 @@
+# Số chính trong tài liệu ↔ artifact (ADR-0048 §4). Kiểm: .venv/Scripts/python.exe -m scripts.check_doc_claims
+# Mỗi claim: source (JSON; `ml/runs/...` đọc từ --runs-root), key (dict key / chỉ số / bộ lọc), decimals,
+# mentions (file + mẫu câu có đúng một {value}; mọi lần khớp phải đúng giá trị, phải khớp ít nhất một lần).
+# Thêm claim mỗi khi đưa một số chính mới vào STATUS / CLAUDE §3 / PAPER_NOTES / ADR / báo cáo.
+
+x-sed: &sed ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json
+x-b0-psds: &b0psds ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_o_annotated.json
+x-grid: &grid docs/measurements/lbr_psds_grid_20261110_annotated.json
+x-v3: &v3 {lbr_run: sed_lbr_B0v3_20261110T042337Z}
+x-v2run: &v2run {lbr_run: sed_lbr_B0_20261109T172809Z}
+
+claims:
+  # ---------- SED test annotated n=139 (ADR-0045 §12) ----------
+  - id: b0_test_macro
+    source: *sed
+    key: [lbr, baseline, all, macro_f1]
+    mentions:
+      - {file: docs/STATUS.md, text: "so với B0 {value} / 0.1806"}
+      - {file: CLAUDE.md, text: "so với B0 {value} / 0.1806"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "| B0 | {value} | 0.1806 |"}
+      - {file: docs/PAPER_NOTES.md, text: "B0: macro {value}, micro 0.1806"}
+  - id: b0_test_micro
+    source: *sed
+    key: [lbr, baseline, all, micro_f1]
+    mentions:
+      - {file: docs/STATUS.md, text: "so với B0 0.1366 / {value},"}
+      - {file: CLAUDE.md, text: "so với B0 0.1366 / {value},"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "| B0 | 0.1366 | {value} |"}
+      - {file: docs/PAPER_NOTES.md, text: "B0: macro 0.1366, micro {value} (Nsys"}
+  - id: v2_test_macro
+    source: *sed
+    key: [lbr, points, f1, all, macro_f1]
+    mentions:
+      - {file: docs/STATUS.md, text: "**V2 f1: macro {value}, micro"}
+      - {file: CLAUDE.md, text: "**V2 f1 macro {value}, micro"}
+      - {file: docs/PAPER_NOTES.md, text: "**V2 f1: macro {value}, micro"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "| **V2, điểm f1 (số chính)** | **{value}** |"}
+  - id: v2_test_micro
+    source: *sed
+    key: [lbr, points, f1, all, micro_f1]
+    mentions:
+      - {file: docs/STATUS.md, text: "macro 0.2356, micro {value}**"}
+      - {file: CLAUDE.md, text: "macro 0.2356, micro {value}**"}
+      - {file: docs/PAPER_NOTES.md, text: "macro 0.2356, micro {value}** ["}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "| **0.2356** | **{value}** |"}
+  - id: v2_delta_micro
+    source: *sed
+    key: [lbr, delta_micro_vs_baseline, estimate]
+    mentions:
+      - {file: docs/STATUS.md, text: "0.1806, Δ micro {value} ["}
+      - {file: CLAUDE.md, text: "0.1806, Δ micro {value} ["}
+      - {file: docs/PAPER_NOTES.md, text: "Δ micro {value} [+0.0741"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "V2 **{value} ["}
+  - id: v2_delta_lower
+    source: *sed
+    key: [lbr, delta_micro_vs_baseline, lower]
+    mentions:
+      - {file: docs/STATUS.md, text: "Δ micro +0.1159 [{value},"}
+      - {file: CLAUDE.md, text: "Δ micro +0.1159 [{value},"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "V2 **+0.1159 [{value},"}
+  - id: v2_delta_upper
+    source: *sed
+    key: [lbr, delta_micro_vs_baseline, upper]
+    mentions:
+      - {file: docs/STATUS.md, text: "[+0.0741, {value}]"}
+      - {file: CLAUDE.md, text: "[+0.0741, {value}]"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "[+0.0741, {value}]**"}
+  - id: b0_intersection_recall
+    source: *sed
+    key: [lbr, baseline, all, intersection, micro, recall]
+    mentions:
+      - {file: docs/STATUS.md, text: "recall giao nhau {value} → 0.8203"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "| B0 | 0.1366 | 0.1806 | 345/740 | {value} |"}
+  - id: b0_intersection_precision
+    source: *sed
+    key: [lbr, baseline, all, intersection, micro, precision]
+    mentions:
+      - {file: docs/STATUS.md, text: "precision {value} → 0.7812"}
+  - id: v3_rf_intersection_recall
+    source: *sed
+    key: [lbr_extra, *v3, points, recall_first, all, intersection, micro, recall]
+    mentions:
+      - {file: docs/STATUS.md, text: "recall giao nhau 0.5351 → {value},"}
+      - {file: CLAUDE.md, text: "`recall_first` recall giao nhau {value},"}
+      - {file: docs/PAPER_NOTES.md, text: "recall 0.5351 → **{value}**"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "| 668/740 | **{value}** |"}
+  - id: v3_rf_intersection_precision
+    source: *sed
+    key: [lbr_extra, *v3, points, recall_first, all, intersection, micro, precision]
+    mentions:
+      - {file: docs/STATUS.md, text: "precision 0.9706 → {value}"}
+      - {file: CLAUDE.md, text: "precision {value}. PSDS"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "| **0.8203** | {value} |"}
+
+  # ---------- PSDS (ADR-0047 lưới ghi trước; ADR-0048 §4 sửa số B0) ----------
+  - id: b0_test_psds1_linear
+    source: *b0psds
+    key: [psds, psds_1]
+    mentions:
+      - {file: docs/STATUS.md, text: "B0 {value} / 0.7310 (lưới tuyến tính"}
+      - {file: CLAUDE.md, text: "V3 0.3369 / 0.6167; B0 {value} / 0.7310 (lưới tuyến tính"}
+      - {file: docs/PAPER_NOTES.md, text: "`evaluation_phase_o_annotated.json`): {value} / 0.7310"}
+      - {file: docs/PAPER_NOTES.md, text: "cao hơn số B0 {value}, nhưng"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "so với B0 {value} / 0.7310 trên lưới"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "thấp hơn B0 ({value} / 0.7310;"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "(B0 {value} / 0.7310 trên lưới tuyến tính"}
+      - {file: docs/decisions/ADR-0041-giai-doan-toi-uu-sed.md, text: "| PSDS-1 / PSDS-2 | {value} / **0.7310**"}
+  - id: b0_test_psds2_linear
+    source: *b0psds
+    key: [psds, psds_2]
+    mentions:
+      - {file: docs/STATUS.md, text: "B0 0.3131 / {value} (lưới tuyến tính"}
+      - {file: CLAUDE.md, text: "vẫn dưới B0 {value} (lưới tuyến tính"}
+      - {file: docs/PAPER_NOTES.md, text: "(0.6116 so với {value}):"}
+      - {file: docs/decisions/ADR-0041-giai-doan-toi-uu-sed.md, text: "| PSDS-1 / PSDS-2 | 0.3131 / **{value}**"}
+  - id: v2_psds1_old_grid
+    source: *grid
+    key: [results, *v2run, curves, "T_GRID (cũ)", psds, psds_1]
+    mentions:
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "(V2 {value} / 0.2960 so với B0"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "`98315fd` ({value} / 0.2960)"}
+      - {file: docs/PAPER_NOTES.md, text: "V2 PSDS-1 {value} → **0.3512**"}
+  - id: v2_psds2_old_grid
+    source: *grid
+    key: [results, *v2run, curves, "T_GRID (cũ)", psds, psds_2]
+    mentions:
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "`98315fd` (0.2146 / {value})"}
+      - {file: docs/PAPER_NOTES.md, text: "PSDS-2 {value} → **0.6116**"}
+  - id: v2_psds1_log_grid
+    source: *grid
+    key: [results, *v2run, curves, "log 1e-5..0.99 (mới)", psds, psds_1]
+    mentions:
+      - {file: docs/STATUS.md, text: "V2 {value} / 0.6116"}
+      - {file: CLAUDE.md, text: "ghi trước: V2 {value} / 0.6116"}
+      - {file: docs/PAPER_NOTES.md, text: "V2 PSDS-1 0.2146 → **{value}**"}
+      - {file: docs/PAPER_NOTES.md, text: "PSDS-1 của V2 ({value}) cao hơn"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "V2 {value} / 0.6116, V3"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "V2 PSDS-1 0.2146 → {value}, PSDS-2"}
+  - id: v2_psds2_log_grid
+    source: *grid
+    key: [results, *v2run, curves, "log 1e-5..0.99 (mới)", psds, psds_2]
+    mentions:
+      - {file: docs/STATUS.md, text: "V2 0.3512 / {value}"}
+      - {file: CLAUDE.md, text: "ghi trước: V2 0.3512 / {value}"}
+      - {file: docs/PAPER_NOTES.md, text: "PSDS-2 0.2960 → **{value}**"}
+      - {file: docs/PAPER_NOTES.md, text: "khoảng 0.12** ({value} so với"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "PSDS-2 0.2960 → {value} (B0"}
+  - id: v3_psds1_log_grid
+    source: *grid
+    key: [results, *v3, curves, "log 1e-5..0.99 (mới)", psds, psds_1]
+    mentions:
+      - {file: docs/STATUS.md, text: "V3 {value} / 0.6167"}
+      - {file: CLAUDE.md, text: "V3 {value} / 0.6167"}
+      - {file: docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md, text: "V3 {value} / 0.6167"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "V3 0.3354 → {value} và"}
+  - id: v3_psds2_log_grid
+    source: *grid
+    key: [results, *v3, curves, "log 1e-5..0.99 (mới)", psds, psds_2]
+    mentions:
+      - {file: docs/STATUS.md, text: "V3 0.3369 / {value}"}
+      - {file: CLAUDE.md, text: "V3 0.3369 / {value}"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "0.6158 → {value}. Mô hình"}
+
+  # ---------- RQ3 test, gold filter, hybrid/en (ADR-0047) ----------
+  - id: b0_rq3_hybrid_en
+    source: docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json
+    key: [summary, hybrid/en, ndcg@10]
+    decimals: 3
+    mentions:
+      - {file: docs/STATUS.md, text: "nDCG@10: B0 {value}, V2"}
+      - {file: CLAUDE.md, text: "nDCG@10 B0 {value}, V2"}
+      - {file: docs/PAPER_NOTES.md, text: "hybrid/en: B0 {value} ["}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "| hybrid | {value} ["}
+  - id: v2_rq3_hybrid_en
+    source: docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json
+    key: [summary, hybrid/en, ndcg@10]
+    decimals: 3
+    mentions:
+      - {file: docs/STATUS.md, text: "V2 {value} (CI chồng B0)"}
+      - {file: CLAUDE.md, text: "V2 {value} (CI chồng)"}
+      - {file: docs/PAPER_NOTES.md, text: "LBR V2 f1 {value} ["}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "| hybrid | 0.383 [0.307, 0.461] | {value} ["}
+  - id: v3_rq3_hybrid_en
+    source: docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json
+    key: [summary, hybrid/en, ndcg@10]
+    decimals: 3
+    mentions:
+      - {file: docs/STATUS.md, text: "V3 {value} — hiệu ứng"}
+      - {file: CLAUDE.md, text: "V3 {value} (hiệu ứng độ phủ"}
+      - {file: docs/PAPER_NOTES.md, text: "**LBR V3 recall_first {value} ["}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "0.404 [0.332, 0.478] | {value} ["}
+  - id: b0_cited_relevant
+    source: docs/measurements/retrieval_answers_test_s8lite_b0_gold_20261108.json
+    key: [summary, hybrid/en, cited_relevant_share]
+    decimals: 3
+    mentions:
+      - {file: docs/STATUS.md, text: "giảm {value} → 0.712"}
+      - {file: CLAUDE.md, text: "trích đúng GT {value} → 0.712"}
+      - {file: docs/PAPER_NOTES.md, text: "**trích đúng GT {value} → 0.899"}
+      - {file: docs/PAPER_NOTES.md, text: "giảm ({value} → 0.712)"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "\"trích đúng GT\" {value}, 0.899"}
+  - id: v2_cited_relevant
+    source: docs/measurements/retrieval_answers_test_lbrv2_gold_20261110.json
+    key: [summary, hybrid/en, cited_relevant_share]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "0.915 → {value} → 0.712**"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "\"trích đúng GT\" 0.915, {value},"}
+  - id: v3_cited_relevant
+    source: docs/measurements/retrieval_answers_test_lbrv3_gold_20261110.json
+    key: [summary, hybrid/en, cited_relevant_share]
+    decimals: 3
+    mentions:
+      - {file: docs/STATUS.md, text: "giảm 0.915 → {value},"}
+      - {file: CLAUDE.md, text: "trích đúng GT 0.915 → {value})"}
+      - {file: docs/PAPER_NOTES.md, text: "0.899 → {value}**"}
+      - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "0.915, 0.899, {value}."}

@@ -101,7 +101,8 @@ mười giây ở cuối recording. Export cross-fit không sinh lại (SHA-256 
 
 ## Bổ sung 10/11 — ghi trước lưới PSDS của LBR, đo lại một lần trên test (người dùng duyệt)
 
-**Vấn đề.** PSDS-1/2 của V2 ở lượt test `98315fd` (0.2146 / 0.2960) thấp hơn B0 (0.3489 / 0.6987)
+**Vấn đề.** PSDS-1/2 của V2 ở lượt test `98315fd` (0.2146 / 0.2960) thấp hơn B0 (0.3131 / 0.7310;
+bản đầu ghi nhầm 0.3489 / 0.6987 của ensemble C v1, sửa theo ADR-0048 §4)
 trong khi event-F1 cao hơn nhiều. Chẩn đoán chỉ trên dev OOF (564 recording, không đọc test):
 điểm rescorer rất lệch (phân vị 50% = 3.7e-4, 75% = 0.021, 90% = 0.76) còn `T_GRID` bắt đầu ở 0.005,
 nên ~55% box không bao giờ vào đường PSD-ROC. Đường cong bị cắt ở phía eFPR cao. Trên dev, lưới phủ
@@ -147,5 +148,6 @@ dùng event cross-fit nên không so trực tiếp với B0.
 
 **Số PSDS đo lại (lưới ghi trước).** Xem
 [lbr_psds_grid_20261110_annotated.md](../measurements/lbr_psds_grid_20261110_annotated.md):
-V2 PSDS-1 0.2146 → 0.3512, PSDS-2 0.2960 → 0.6116 (B0 0.3489 / 0.6987); V3 0.3354 → 0.3369 và
+V2 PSDS-1 0.2146 → 0.3512, PSDS-2 0.2960 → 0.6116 (B0 0.3131 / 0.7310 trên lưới tuyến tính, khác
+lưới; cùng lưới ở ADR-0048 §3); V3 0.3354 → 0.3369 và
 0.6158 → 0.6167. Mô hình, điểm vận hành và event-F1 không đổi. PSDS-2 của V2 vẫn thấp hơn B0.
