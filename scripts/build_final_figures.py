@@ -20,6 +20,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 from ml.provenance import git_state  # noqa: E402
+from scripts.build_midterm_figures import figure_architecture  # noqa: E402
+from scripts.build_thesis_figures import demo_interface  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "report" / "final_figures"
@@ -111,11 +113,15 @@ def main() -> None:
     args.output.mkdir(parents=True, exist_ok=True)
     out = args.output / "f01_sed_final.png"
     figure_sed_final(data, out)
+    figure_architecture(args.output / "f02_architecture.png", "SED B0 + LBR V3, mô tả")
+    revision = git_state(ROOT)["revision"]
+    demo_interface(args.output, revision)
+    (args.output / "07_demo_interface.png").replace(args.output / "f03_demo_interface.png")
     manifest = {
         "git": git_state(ROOT),
         "dpi": DPI,
         "source": args.final_numbers.resolve().relative_to(ROOT).as_posix(),
-        "figures": ["f01_sed_final.png"],
+        "figures": ["f01_sed_final.png", "f02_architecture.png", "f03_demo_interface.png"],
     }
     (args.output / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"

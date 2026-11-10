@@ -1,11 +1,13 @@
 {
   "git": {
-    "revision": "7997cece3b8827a2b48e52c5644c485c00a56575",
+    "revision": "80270ef8831dca89c2459b6b810f97fac88a7ac1",
     "dirty": true
   },
   "dpi": 300,
   "source": "docs/measurements/final_numbers_20261110.json",
   "figures": [
-    "f01_sed_final.png"
+    "f01_sed_final.png",
+    "f02_architecture.png",
+    "f03_demo_interface.png"
   ]
 }

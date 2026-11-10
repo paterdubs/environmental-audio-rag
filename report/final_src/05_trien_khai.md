@@ -18,11 +18,11 @@ Hai nguyên tắc ranh giới được kiểm bằng máy chứ không chỉ là
 
 **Giao diện web** (React) có sáu phần: khung tải lên; danh sách bản ghi; dòng thời gian sự kiện (bấm vào sự kiện để nghe đúng đoạn); mô tả song ngữ Anh–Việt kèm bằng chứng; khung hỏi bằng câu tự nhiên, hiển thị bộ lọc đã phân tích dưới dạng thẻ sửa được; và thanh trạng thái mô hình. Bấm vào một trích dẫn trong câu trả lời sẽ mở đúng bản ghi và tua tới đúng khoảng thời gian (⟪fig:demo⟫).
 
-![](docs/thesis/figures/07_demo_interface.png){width=13cm}
+![](report/final_figures/f03_demo_interface.png){width=13cm}
 
 @@CAP:fig:demo|Giao diện demo: tải lên, dòng thời gian, bộ lọc từ câu hỏi và bằng chứng@@
 
-@@NOTE:Nguồn: docs/demo_screenshots/ (Playwright, 1440×900), ghép bằng scripts/build_thesis_figures.py; bản ghi trong lịch sử demo chỉ lấy từ tập train.@@
+@@NOTE:Nguồn: docs/demo_screenshots/ (Playwright, 1440×900, chụp trên LBR V3 ngày 11/11/2026), ghép bằng scripts/build_final_figures.py; bản ghi trong lịch sử demo chỉ lấy từ tập train.@@
 
 ## Chạy demo
 

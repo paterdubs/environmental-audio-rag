@@ -58,6 +58,8 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 11/11/2026 (khuya) — R5/R6 có bản đầy đủ.** Báo cáo cuối `report/Khoa_luan_environmental_audio_rag.{docx,pdf}` (nguồn `report/final_src/`, bảng `report/final_tables/`, hình `report/final_figures/`; dựng bằng `scripts.build_final_tables`, `scripts.build_final_figures`, `scripts.build_midterm_report --source report/final_src`), 75 trang, `check_midterm_docx` đạt. Slide bảo vệ `report/slide_bao_ve.pptx` (`scripts.build_final_slides`), kịch bản `report/slide/kich_ban_bao_ve.md`; ảnh demo chụp lại trên LBR V3. Còn: người dùng đọc lại, điền nhật ký tuần 5–7 và ngày GVHD; đóng băng 18/11 (R7).
+
 **Cập nhật 11/11/2026 (tối) — R4 văn liệu xong.** Ba claim khoảng trống đã tra: C2 và C3 rút lại thành "áp dụng và mở rộng" (ECHO, TAC; Weck & Serra 2023, Wijngaard 2025), C4 giữ có điều kiện (LA-RAG 2026 đã có event store SQL + cửa sổ thời gian tuyệt đối, không thấy predicate giữa hai sự kiện); claim "chưa ai làm cả chuỗi" bị rút. DOI Mesaros/PSDS và vol/pages PANNs đóng qua Crossref. RELATED_WORK §2.4/§9/§10, PAPER_NOTES S69. **Tiếp theo:** báo cáo cuối (R5), slide (R6), đóng băng 18/11 (R7).
 
 **Cập nhật 11/11/2026 — Hoàn thiện (ADR-0048): caption LLM trên B0/LBR, S21, tài liệu đồng bộ.** Caption LLM chạy lại
@@ -811,6 +813,10 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-11 (khuya) — R5/R6: báo cáo cuối, slide bảo vệ, ảnh demo LBR V3
+
+Chạy tự động trong lúc người dùng vắng, commit và push dưới danh `paterdubs` theo yêu cầu. Viết lại Chương 4–7 (B0, LBR, PSDS, RQ2/RQ3 bốn hệ SED, kết luận), cập nhật Chương 1–2 theo R4; bảng và hình sinh từ `final_numbers`, sổ test, freeze. Slide 19+3 trang có ghi chú người nói. Docker Desktop và llama.cpp được bật để chụp lại ảnh demo, rồi tắt bằng `demo_down.ps1`. Tuần 5–7 của nhật ký làm việc chưa có ghi chép trong nhật ký dự án nên để người dùng bổ sung.
 
 ### 2026-11-11 (tối) — R4: tra văn liệu cho ba claim khoảng trống
 

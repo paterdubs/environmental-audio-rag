@@ -422,8 +422,8 @@ mọi lệnh trong tài liệu qua `check_doc_commands`.
 | R2 | Caption LLM RQ2 trên B0/V2/V3, ba nhánh, mức e2e: dev → cổng → test (ADR-0048 §1); chấm + `report_rq2_llm_systems` | 12/11 | ✅ 11/11 (PAPER_NOTES S67) |
 | R3 | Chẩn đoán PSDS S21 trên dev (§2); PSDS B0 trên test cùng lưới log (§3) | 11/11 | ✅ 11/11 (S68; B0 lưới log 0.3061 / 0.7452) |
 | R4 | Văn liệu: tra cho ba claim mới lạ (RELATED_WORK §9), DOI/vol còn thiếu, bỏ hoặc hạ các `⚠️ CẦN XÁC MINH` | 13/11 | ✅ 11/11 (RELATED_WORK §2.4; claim 1–2 rút lại, claim 3 giữ có điều kiện; PAPER_NOTES S69) |
-| R5 | Báo cáo cuối: Chương 4–7 theo B0/LBR, bảng/hình sinh từ artifact, bìa/header "khóa luận" tháng 11, DOCX/PDF, `check_midterm_docx`-tương đương | 17/11 | ○ |
-| R6 | Slide bảo vệ + kịch bản; chụp lại ảnh demo trên LBR V3 | 18/11 | ○ |
+| R5 | Báo cáo cuối: Chương 1–7 theo B0/LBR, bảng/hình sinh từ artifact, bìa/header "khóa luận" tháng 11, DOCX/PDF, `check_midterm_docx` | 17/11 | ◐ bản đầy đủ 11/11 (`report/Khoa_luan_environmental_audio_rag.{docx,pdf}`, 75 trang, kiểm đạt); còn: người dùng đọc lại, điền nhật ký tuần 5–7 và ngày GVHD |
+| R6 | Slide bảo vệ + kịch bản; chụp lại ảnh demo trên LBR V3 | 18/11 | ◐ 11/11: `report/slide_bao_ve.pptx` (19 slide + 3 phụ lục, ghi chú người nói), `report/slide/kich_ban_bao_ve.md`, ảnh demo chụp lại trên LBR V3; còn: tập dượt, chỉnh theo góp ý |
 | R7 | Đóng băng 18/11: sổ test, freeze, gate (ruff, pytest, hai bộ kiểm), người dùng push | 18/11 | ○ |
 
 19–28/11: đọc lại, sửa theo nhận xét GVHD, nộp. Không mở test mới sau R2/R3 trừ khi ghi trước và

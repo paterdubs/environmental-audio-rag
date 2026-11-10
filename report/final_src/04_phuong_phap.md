@@ -6,7 +6,7 @@ Chương này trình bày phương pháp theo luồng dữ liệu của hệ th�
 
 Hệ thống gồm năm khối nối tiếp (⟪fig:architecture⟫). Bản ghi âm đi qua dịch vụ suy luận để thành danh sách sự kiện. Danh sách này được dùng theo hai hướng: sinh mô tả bám sát sự kiện, và lưu vào kho sự kiện để truy hồi. Câu hỏi của người dùng được chuyển thành bộ lọc, truy hồi trong kho, rồi trả lời kèm bằng chứng. Ranh giới quan trọng nhất là **bước ghép xác suất thành sự kiện thuộc dịch vụ suy luận, không thuộc mô hình**: ngưỡng và tham số là kết quả hiệu chuẩn trên dev, lưu cạnh checkpoint và nạp khi phục vụ. Nhờ vậy đổi được điểm vận hành mà không cần huấn luyện lại.
 
-![](report/figures/m01_architecture.png){width=13cm}
+![](report/final_figures/f02_architecture.png){width=13cm}
 
 @@CAP:fig:architecture|Kiến trúc tổng thể của hệ thống@@
 

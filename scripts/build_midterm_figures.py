@@ -137,7 +137,7 @@ def save(fig: plt.Figure, path: Path) -> None:
     plt.close(fig)
 
 
-def figure_architecture(path: Path) -> list[str]:
+def figure_architecture(path: Path, served: str = "SED f2 + cSEBB, mô tả") -> list[str]:
     fig, ax = canvas(5.3)
     w, h = 1.85, 0.95
     cols = (0.05, 2.375, 4.7)
@@ -161,7 +161,7 @@ def figure_architecture(path: Path) -> list[str]:
         w,
         h,
         "Dịch vụ suy luận",
-        "SED f2 + cSEBB, mô tả\nBGE-M3 (CPU container)",
+        f"{served}\nBGE-M3 (container)",
         "model",
     )
     box(

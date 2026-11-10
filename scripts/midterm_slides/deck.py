@@ -36,6 +36,8 @@ class Deck:
     count: int = 0
     appendix: int = 0
     pages: dict[str, int] = field(default_factory=dict)
+    total: int = MAIN_TOTAL
+    sections: dict[int, str] = field(default_factory=lambda: dict(SECTIONS))
 
     def layout(self, name: str):
         return next(layout for layout in self.pres.slide_layouts if layout.name == name)
@@ -46,7 +48,7 @@ class Deck:
         self.count += 1
         if key:
             self.pages[key] = self.count
-        footer = f"Phần {section} · {SECTIONS[section]}    {self.count} / {MAIN_TOTAL}"
+        footer = f"Phần {section} · {self.sections[section]}    {self.count} / {self.total}"
         kit.title(slide, f"0{section}", heading, footer)
         return slide
 
@@ -78,7 +80,7 @@ def _repair_notes(pres: Presentation) -> None:
             cover_part.drop_rel(r_id)
 
 
-def open_template() -> Deck:
+def open_template(footer: str = FOOTER) -> Deck:
     pres = Presentation(str(TEMPLATE))
     slide_ids = pres.slides._sldIdLst
     for slide_id in list(slide_ids)[1:]:
@@ -89,7 +91,7 @@ def open_template() -> Deck:
         for shape in layout.shapes:
             if shape.has_text_frame and "Tương tác Người" in shape.text_frame.text:
                 runs = shape.text_frame.paragraphs[0].runs
-                runs[0].text = FOOTER
+                runs[0].text = footer
                 for extra in runs[1:]:
                     extra.text = ""
     return Deck(pres)
