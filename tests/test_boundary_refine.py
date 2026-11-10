@@ -14,6 +14,7 @@ from ml.postprocessing.boundary_refine import (
     feature_size,
     fit_regressor,
     load_bundle,
+    matches_intersection,
     matches_primary,
     save_bundle,
 )
@@ -103,6 +104,16 @@ def test_matches_primary_uses_onset_collar_and_offset_percentage():
     assert matches_primary(boxes, reference).tolist() == [True, False, False]
 
 
+def test_matches_intersection_needs_ten_percent_of_both_durations():
+    reference = {"r": [{"class_id": "a", "onset": 1.0, "offset": 11.0}]}
+    boxes = [Box("r", "a", 9.5, 12.0, 0.9),   # giao 1.5 s: ≥ 10% event, ≥ 10% box
+             Box("r", "a", 10.5, 30.0, 0.9),  # giao 0.5 s < 10% event
+             Box("r", "b", 1.0, 11.0, 0.9),   # sai lớp
+             Box("r", "a", 11.0, 12.0, 0.9)]  # chỉ chạm biên
+    assert matches_intersection(boxes, reference).tolist() == [True, False, False, False]
+    assert matches_primary(boxes[:1], reference).tolist() == [False]
+
+
 def test_boxes_to_events_keeps_empty_recordings():
     events = boxes_to_events([Box("r1", "a", 1.0, 2.0, 0.9)], np.array([False]),
                              recordings=["r1", "r2"])
@@ -136,7 +147,7 @@ def test_candidate_boxes_respect_min_score():
     assert [b.class_id for b in boxes] == ["a"]
 
 
-@pytest.mark.parametrize("variant", ["v1", "v2"])
+@pytest.mark.parametrize("variant", ["v1", "v2", "v3"])
 def test_crossfit_learns_systematic_onset_lag(variant):
     probabilities, reference, folds = make_dataset()
     data = data_for(probabilities, reference, folds)
@@ -147,7 +158,7 @@ def test_crossfit_learns_systematic_onset_lag(variant):
     assert objective(result.events["f1"], list(reference)) > 0.9
 
 
-@pytest.mark.parametrize("variant", ["v1", "v2"])
+@pytest.mark.parametrize("variant", ["v1", "v2", "v3"])
 def test_heldout_fold_predictions_ignore_its_own_labels(variant):
     probabilities, reference, folds = make_dataset()
     _, perturbed, _ = make_dataset(fold0_extra=0.15)

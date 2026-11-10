@@ -62,7 +62,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--baseline-postproc", type=Path, default=None,
                         help="chỉ với --postproc là run sed_lbr: selection cSEBB của B0 để so "
                              "ghép cặp trong cùng lượt mở test (ADR-0045 §8)")
-    return parser.parse_args()
+    parser.add_argument("--extra-lbr", type=Path, action="append", default=[],
+                        help="chỉ với --postproc là run sed_lbr: manifest của run LBR ứng dụng "
+                             "(vd. V3, ADR-0045 §11) chấm kèm trong cùng lượt mở test; số chính "
+                             "vẫn của --postproc")
+    args = parser.parse_args()
+    if args.extra_lbr and args.postproc is None:
+        parser.error("--extra-lbr cần --postproc là run sed_lbr")
+    return args
 
 
 def load_events_by_recording(recording_ids: set[str]) -> dict[str, list[dict[str, object]]]:
@@ -237,6 +244,11 @@ def main() -> None:
     taxonomy = load_taxonomy(ROOT / "ml" / "configs" / "taxonomy.yaml")
     class_ids = taxonomy.polyphonic_class_ids
     family = "lbr" if is_lbr_run(postproc) else str(postproc.get("family", "theta"))
+    if args.extra_lbr and family != "lbr":
+        raise SystemExit("--extra-lbr chỉ dùng khi --postproc là run sed_lbr")
+    for extra in args.extra_lbr:
+        if not is_lbr_run(json.loads(extra.read_text(encoding="utf-8"))):
+            raise SystemExit(f"{extra}: không phải manifest run sed_lbr")
     if family == "lbr":
         selected_sebb = None
     elif family == "csebb":
@@ -341,6 +353,13 @@ def main() -> None:
         result["lbr"] = lbr_test_section.section(lbr, reference, probabilities,
                                                  class_ids=class_ids, frame_rate=frame_rate,
                                                  baseline=baseline)
+        result["lbr_extra"] = [
+            lbr_test_section.section(
+                lbr_test_section.estimate(extra.parent, probabilities, class_ids=class_ids,
+                                          frame_rate=frame_rate),
+                reference, probabilities, class_ids=class_ids, frame_rate=frame_rate,
+                baseline=baseline)
+            for extra in args.extra_lbr]
     output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     report_path.write_text(_render_report(result), encoding="utf-8")
     print(json.dumps({"evaluation": str(output_path), "report": str(report_path)}, indent=2))
@@ -398,6 +417,10 @@ def _render_report(result: dict) -> str:
         lines += _render_application_metrics(result["application_metrics"])
     if "lbr" in result:
         lines += lbr_test_section.render(result["lbr"])
+    for extra in result.get("lbr_extra", []):
+        lines += ["", "> Run LBR ứng dụng, chấm kèm trong cùng lượt mở test — không phải số "
+                  "chính (ADR-0045 §11)."]
+        lines += lbr_test_section.render(extra)
     return "\n".join(lines)
 
 

@@ -186,6 +186,27 @@ def matches_primary(boxes: Sequence[Box], reference: EventRows, *, collar: float
     return matched
 
 
+def matches_intersection(boxes: Sequence[Box], reference: EventRows, *,
+                         min_cover: float = 0.1) -> np.ndarray:
+    """Whether each box overlaps a same-class event by ≥ ``min_cover`` of both durations.
+
+    Nhãn của rescorer V3 (ADR-0045 §11): gần với DTC/GTC 0.1 của thước giao nhau (ADR-0046),
+    thay vì tiêu chí biên 0.2 s của V2.
+    """
+    matched = np.zeros(len(boxes), dtype=bool)
+    for i, box in enumerate(boxes):
+        for event in reference.get(box.recording_id, []):
+            if _label(event) != box.class_id:
+                continue
+            onset, offset = _bounds(event)
+            inter = min(offset, box.offset_s) - max(onset, box.onset_s)
+            if (inter > 0 and inter >= min_cover * (box.offset_s - box.onset_s)
+                    and inter >= min_cover * (offset - onset)):
+                matched[i] = True
+                break
+    return matched
+
+
 def rescore_features(x_on: np.ndarray, x_off: np.ndarray, delta_on: np.ndarray,
                      delta_off: np.ndarray, *, n_classes: int) -> np.ndarray:
     return np.c_[x_on, x_off[:, META_FEATURES + n_classes:], delta_on, delta_off]

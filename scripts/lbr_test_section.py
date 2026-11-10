@@ -27,7 +27,7 @@ def estimate(lbr_run: Path, probabilities: Mapping[str, np.ndarray], *,
     bundle = load_lbr(lbr_run, class_ids=class_ids)
     boxes, scores = lbr_scored_boxes(bundle, probabilities, frame_rate=frame_rate)
     recordings = sorted(probabilities)
-    grid = T_GRID if bundle["variant"] == "v2" else LAMBDA_GRID
+    grid = LAMBDA_GRID if bundle["variant"] == "v1" else T_GRID
     return {"bundle": bundle, "boxes": boxes, "scores": scores,
             "estimate": lbr_events(bundle, boxes, scores, point="f1", recordings=recordings),
             "psds_events": [boxes_to_events(boxes, scores >= t, recordings=recordings)

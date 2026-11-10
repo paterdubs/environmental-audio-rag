@@ -95,7 +95,7 @@ def test_evaluate_run_adds_metrics_without_changing_legacy_json(evaluator, monke
     postproc.write_text(json.dumps({"taxonomy_sha256": "abc", "family": family,
                                    "per_class": {c: {"theta": 0.5} for c in classes}}))
     args = argparse.Namespace(run_dir=run, postproc=postproc, tag="fixture", split="dev",
-                              render_only=False, eval_set="annotated")
+                              render_only=False, eval_set="annotated", extra_lbr=[])
     monkeypatch.setattr(script, "parse_args", lambda: args)
     priors = {c: DurationPrior(1, 0, 0, 1) for c in classes}
     monkeypatch.setattr(script, "priors_from_postproc", lambda *a: priors)

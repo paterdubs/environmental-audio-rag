@@ -50,7 +50,7 @@ def write_run(tmp_path, *, variant="v1", task="sed_lbr", corrupt=False):
     return probabilities, reference
 
 
-@pytest.mark.parametrize("variant", ["v1", "v2"])
+@pytest.mark.parametrize("variant", ["v1", "v2", "v3"])
 def test_frozen_run_reproduces_refined_events(tmp_path, variant):
     probabilities, reference = write_run(tmp_path, variant=variant)
     bundle = load_lbr(tmp_path, class_ids=CLASSES)

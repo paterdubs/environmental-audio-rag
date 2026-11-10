@@ -26,6 +26,7 @@ from ml.postprocessing.boundary_refine import (
     feature_matrices,
     fit_classifier,
     fit_regressor,
+    matches_intersection,
     matches_primary,
     rescore_features,
 )
@@ -34,7 +35,10 @@ from ml.postprocessing.sebb import SebbParams
 LAMBDA_GRID = (0.5, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95)
 T_GRID = (0.005, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09,
           *(round(0.10 + 0.05 * i, 2) for i in range(16)))
-VARIANTS = ("v1", "v2")
+VARIANTS = ("v1", "v2")  # ứng viên tầng C (ADR-0045 §6)
+APPLICATION_VARIANTS = ("v3",)  # cấu hình ứng dụng, không qua luật chọn (ADR-0045 §11)
+ALL_VARIANTS = VARIANTS + APPLICATION_VARIANTS
+RESCORER_LABELS = {"v2": matches_primary, "v3": matches_intersection}
 Events = dict[str, list[dict[str, Any]]]
 Objective = Callable[[Events, list[str]], float]
 
@@ -128,9 +132,9 @@ def _inner_shifts(data: LbrData, fit: np.ndarray, fit_folds: set[int], config: L
 
 
 def _rescorer_inputs(data: LbrData, fit: np.ndarray, d_on: np.ndarray, d_off: np.ndarray,
-                     config: LbrConfig) -> tuple[np.ndarray, np.ndarray]:
+                     config: LbrConfig, variant: str) -> tuple[np.ndarray, np.ndarray]:
     refined = apply_deltas([data.boxes[i] for i in fit], d_on, d_off, config=config)
-    labels = matches_primary(refined, data.reference).astype(int)
+    labels = RESCORER_LABELS[variant](refined, data.reference).astype(int)
     features = rescore_features(data.x_on[fit], data.x_off[fit], d_on, d_off,
                                 n_classes=data.n_classes)
     return features, labels
@@ -139,8 +143,8 @@ def _rescorer_inputs(data: LbrData, fit: np.ndarray, d_on: np.ndarray, d_off: np
 def fit_lbr(data: LbrData, *, fit_folds: set[int], variant: str,
             objectives: Mapping[str, Objective], config: LbrConfig) -> LbrModel:
     """Refiner (+ rescorer for v2) and one threshold per objective, from ``fit_folds`` only."""
-    if variant not in VARIANTS:
-        raise ValueError(f"variant phải thuộc {VARIANTS}")
+    if variant not in ALL_VARIANTS:
+        raise ValueError(f"variant phải thuộc {ALL_VARIANTS}")
     if len(fit_folds) < 2:
         raise ValueError("cross-fit lồng nhau cần ít nhất 2 fold fit")
     fit = data.rows(fit_folds)
@@ -148,8 +152,8 @@ def fit_lbr(data: LbrData, *, fit_folds: set[int], variant: str,
     d_on, d_off = _inner_shifts(data, fit, fit_folds, config)
     refined = apply_deltas([data.boxes[i] for i in fit], d_on, d_off, config=config)
     rescorer = None
-    if variant == "v2":
-        features, labels = _rescorer_inputs(data, fit, d_on, d_off, config)
+    if variant in RESCORER_LABELS:
+        features, labels = _rescorer_inputs(data, fit, d_on, d_off, config, variant)
         scores = np.zeros(len(fit))
         for j in sorted(fit_folds):
             own = data.box_folds[fit] == j
@@ -168,7 +172,7 @@ def fit_lbr(data: LbrData, *, fit_folds: set[int], variant: str,
 
 def apply_lbr(model: LbrModel, boxes: list[Box], x_on: np.ndarray, x_off: np.ndarray
               ) -> tuple[list[Box], np.ndarray]:
-    """Refined boxes whose ``score`` is the selection score (box score for v1, P(match) for v2)."""
+    """Refined boxes whose ``score`` is the selection score (box score for v1, P(match) else)."""
     if not boxes:
         return [], np.zeros(0)
     d_on, d_off = model.refiner_on.predict(x_on), model.refiner_off.predict(x_off)
