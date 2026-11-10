@@ -172,6 +172,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--tag", default="")
     args = parser.parse_args(argv)
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    git = git_state(ROOT)  # trước lượt chạy dài: output của lượt song song không làm bẩn
     taxonomy = load_taxonomy(ROOT / "ml/configs/taxonomy.yaml")
     systems = parse_systems(args.system) if args.system else DEFAULT_SYSTEMS
     results, inputs, checks = {}, {}, {}
@@ -193,7 +194,7 @@ def main(argv: list[str] | None = None) -> None:
     out = {"split": "dev", "eval_set": args.eval_set, "inputs": inputs, "grids": {
         k: list(v) for k, v in GRIDS.items()}, "scenarios": SCENARIOS,
         "efpr_points": list(diag.EFPR_POINTS), "results": results, "hypotheses": hypotheses,
-        "consistency_checks": checks, "git": git_state(ROOT),
+        "consistency_checks": checks, "git": git,
         "created_at": datetime.now(UTC).isoformat()}
     stem = f"psds_diagnosis_{datetime.now(UTC):%Y%m%d}{eval_suffix(args.eval_set)}{args.tag}"
     out_dir = ROOT / "docs" / "measurements"
