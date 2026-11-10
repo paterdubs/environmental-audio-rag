@@ -46,6 +46,7 @@ from ml.captioning.timeline import canonicalize_timeline
 from ml.evaluation.predictions import load_predictions
 from ml.postprocessing import process_recordings, stack_predictions_by_recording
 from ml.postprocessing.calibration import validate_postproc_artifact
+from ml.postprocessing.lbr_apply import OPERATING_POINTS
 from ml.postprocessing.lbr_timeline import is_lbr_postproc, lbr_postproc_events
 from ml.postprocessing.lbr_timeline import model_version as lbr_model_version
 from ml.postprocessing.sebb import SebbParams, sebb_candidates, select_boxes
@@ -59,7 +60,7 @@ BRANCHES = {"unconstrained": UnconstrainedLLMCaptioner, "constrained": Constrain
             "constrained_cover": CoverConstrainedLLMCaptioner}
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--branch", choices=tuple(BRANCHES), default="unconstrained")
@@ -72,9 +73,32 @@ def parse_args() -> argparse.Namespace:
         "--predictions-run", type=Path, default=None,
         help="run chứa predictions/<split>.npz; run_dir vẫn là hệ thống logic",
     )
+    parser.add_argument(
+        "--lbr-point", choices=OPERATING_POINTS, default=None,
+        help="điểm vận hành khi --postproc là manifest LBR (ADR-0047/0048); bắt buộc với LBR",
+    )
     parser.add_argument("--levels", nargs="+", choices=LEVELS, default=list(LEVELS))
     parser.add_argument("--limit", type=int, default=None, help="chỉ để smoke-test")
-    return parser.parse_args()
+    return parser.parse_args(argv)
+
+
+def resolved_postproc(args: argparse.Namespace) -> Path:
+    return args.postproc or args.run_dir / "postproc.json"
+
+
+def postproc_provenance(path: Path, lbr_point: str | None, *, root: Path = ROOT) -> dict[str, Any]:
+    """Đường dẫn đủ, không chỉ tên file: mọi postproc LBR đều là `manifest.json` (ADR-0048)."""
+    resolved = path.resolve()
+    try:
+        shown = resolved.relative_to(root.resolve()).as_posix()
+    except ValueError:
+        shown = resolved.as_posix()
+    return {"postproc": shown, "postproc_sha256": sha256_file(path), "lbr_point": lbr_point}
+
+
+def e2e_level(args: argparse.Namespace, taxonomy: Taxonomy) -> dict[str, dict[str, Any]]:
+    return e2e_timelines(args.run_dir, args.split, taxonomy, resolved_postproc(args),
+                         args.predictions_run or args.run_dir, lbr_point=args.lbr_point)
 
 
 def check_test_gate(split: str, lexicon_sha: str, frozen_sha: str | None) -> None:
@@ -239,11 +263,7 @@ def main() -> None:
 
     predictions_run = args.predictions_run or args.run_dir
     prediction_path = predictions_run / "predictions" / f"{args.split}.npz"
-    by_level = {
-        "e2e": e2e_timelines(
-            args.run_dir, args.split, taxonomy, args.postproc, predictions_run
-        )
-    }
+    by_level = {"e2e": e2e_level(args, taxonomy)}
     recording_ids = sorted(by_level["e2e"])[: args.limit]
     recordings = pd.read_csv(ROOT / "data/manifests/datased_recordings.csv")
     durations = dict(zip(recordings["recording_id"], recordings["duration_s"], strict=True))
@@ -275,8 +295,7 @@ def main() -> None:
         "sed_run": args.run_dir.name, "split": args.split, "levels": levels,
         "predictions_run": predictions_run.name,
         "predictions_sha256": sha256_file(prediction_path),
-        "postproc": (args.postproc or args.run_dir / "postproc.json").name,
-        "postproc_sha256": sha256_file(args.postproc or args.run_dir / "postproc.json"),
+        **postproc_provenance(resolved_postproc(args), args.lbr_point),
         "n_recordings": len(recording_ids), "n_captions": len(rows),
         "n_truncated": truncated, "wall_clock_s": round(wall_s, 1),
         "prompt_version": PROMPT_VERSION, "prompt_sha256": prompt_sha256(),
