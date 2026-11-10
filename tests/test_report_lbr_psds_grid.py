@@ -32,3 +32,40 @@ def test_curve_reports_points_and_boxes_below_the_lowest_threshold(tmp_path):
     assert all(0.0 <= v <= 1.0 for v in curve["psds"].values())
     assert curve["boxes_never_included"] == 0  # điểm V1 là điểm box, đều > 1e-5
     assert curve["events_at_lowest_threshold"] >= 1
+
+
+def _b0_case():
+    from ml.postprocessing.events import PostprocessedEvent
+
+    candidates = {"r": [PostprocessedEvent("r", "x", 1.0, 3.0, 0.9),
+                        PostprocessedEvent("r", "y", 5.0, 6.0, 0.03),
+                        PostprocessedEvent("r", "y", 8.0, 9.0, 1e-6)]}
+    ground_truth = pd.DataFrame([{"filename": "r", "event_label": "x", "onset": 1.0, "offset": 3.0},
+                                 {"filename": "r", "event_label": "y", "onset": 5.0,
+                                  "offset": 6.0}])
+    metadata = pd.DataFrame({"filename": ["r"], "duration": [3600.0]})
+    return candidates, ground_truth, metadata
+
+
+def test_b0_curve_counts_boxes_below_each_grid_like_the_lbr_curve():
+    from scripts.report_lbr_psds_grid import sebb_curve
+
+    candidates, ground_truth, metadata = _b0_case()
+    linear = sebb_curve(candidates, (0.05, 0.5, 0.95), ground_truth=ground_truth,
+                        metadata=metadata)
+    log = sebb_curve(candidates, PSDS_GRID_LOG, ground_truth=ground_truth, metadata=metadata)
+    assert linear["boxes_never_included"] == 2 and log["boxes_never_included"] == 1
+    assert linear["events_at_lowest_threshold"] == 1 and log["events_at_lowest_threshold"] == 2
+    assert log["psds"]["psds_2"] > linear["psds"]["psds_2"]  # y chỉ vào được trên lưới log
+
+
+def test_b0_reference_check_passes_only_on_exact_reproduction():
+    import pytest
+
+    from scripts.report_lbr_psds_grid import check_reference
+
+    curve = {"psds": {"psds_1": 0.3131178, "psds_2": 0.7309525}}
+    ok = check_reference(curve, {"psds": {"psds_1": 0.3131178, "psds_2": 0.7309525}})
+    assert ok["match"] is True
+    with pytest.raises(SystemExit, match="không tái tạo"):
+        check_reference(curve, {"psds": {"psds_1": 0.3489, "psds_2": 0.7309525}})
