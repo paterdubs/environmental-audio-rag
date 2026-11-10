@@ -196,12 +196,19 @@ class ServedSed:
 
     def events(self, probabilities: np.ndarray) -> list[dict[str, Any]]:
         if getattr(self, "lbr", None) is not None:
-            from ml.postprocessing.lbr_apply import lbr_events, lbr_scored_boxes
+            from ml.postprocessing.lbr_apply import (
+                clip_events_to_duration,
+                lbr_events,
+                lbr_scored_boxes,
+            )
 
             boxes, scores = lbr_scored_boxes(self.lbr, {SERVED_ID: probabilities},
                                              frame_rate=self.config.frame_rate)
-            return lbr_events(self.lbr, boxes, scores, point=self.lbr_mode,
-                              recordings=[SERVED_ID])[SERVED_ID]
+            events = lbr_events(self.lbr, boxes, scores, point=self.lbr_mode,
+                                recordings=[SERVED_ID])[SERVED_ID]
+            # Pipeline.timeline đòi event nằm trong recording (ADR-0047 §5).
+            return clip_events_to_duration(
+                events, probabilities.shape[0] / self.config.frame_rate)
         if getattr(self, "postproc_family", "theta") == "csebb":
             candidates = sebb_candidates({SERVED_ID: probabilities}, class_ids=self.class_ids,
                                          frame_rate=self.config.frame_rate,

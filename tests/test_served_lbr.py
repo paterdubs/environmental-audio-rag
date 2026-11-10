@@ -80,6 +80,7 @@ def test_served_events_use_lbr_when_enabled(tmp_path):
     assert [round(e["onset"], 2) for e in before if e["class_id"] == "a"][0] == 3.0
     assert abs([e["onset"] for e in after if e["class_id"] == "a"][0] - 3.3) <= 0.2
     assert all(e["recording_id"] == SERVED_ID for e in after)
+    assert all(0 <= e["onset_s"] < e["offset_s"] <= probabilities.shape[0] / FR for e in after)
     assert sed.model_version == "sed_served_B0+sed_lbr_t:f1"
     sed.enable_lbr(load_lbr(tmp_path, class_ids=CLASSES), mode="recall_first")
     assert sed.model_version == "sed_served_B0+sed_lbr_t:recall_first"  # không chồng hậu tố

@@ -3,11 +3,17 @@
 import json
 from pathlib import Path
 
+import numpy as np
 import pytest
 from test_lbr_apply import CLASSES, FR, write_run
 
 from ml.dataops.inventory import sha256_file
-from ml.postprocessing.lbr_apply import lbr_events, lbr_scored_boxes, load_lbr
+from ml.postprocessing.lbr_apply import (
+    clip_events_to_duration,
+    lbr_events,
+    lbr_scored_boxes,
+    load_lbr,
+)
 from ml.postprocessing.lbr_timeline import (
     EVENTS_FILE,
     OOF_EVENTS_TASK,
@@ -61,8 +67,9 @@ def test_frozen_run_refuses_dev_because_final_model_saw_it(tmp_path):
 def test_oof_events_are_returned_for_exactly_the_posterior_recordings(tmp_path):
     events = {"a": [{"class_id": "a", "onset_s": 1.0, "offset_s": 2.0, "score": 0.9}], "b": []}
     path = write_oof_events(tmp_path, events)
-    got = lbr_postproc_events(_manifest(path), path, {"b": None, "a": None}, class_ids=CLASSES,
-                              frame_rate=FR, split="dev", point="f1")
+    posterior = np.zeros((int(5 * FR), len(CLASSES)))
+    got = lbr_postproc_events(_manifest(path), path, {"b": posterior, "a": posterior},
+                              class_ids=CLASSES, frame_rate=FR, split="dev", point="f1")
     assert got == events and list(got) == ["a", "b"]
     assert model_version(_manifest(path), "f1") == "sed_lbr_x:f1"
 
@@ -98,3 +105,25 @@ def test_e2e_timelines_requires_point_exactly_for_lbr(tmp_path):
     plain.write_text(json.dumps({"family": "csebb"}), encoding="utf-8")
     with pytest.raises(SystemExit, match="lbr-point"):
         e2e_timelines(tmp_path, "dev", taxonomy, plain, tmp_path, lbr_point="f1")
+
+
+def test_clip_events_to_duration_keeps_inside_clips_overhang_and_drops_empty():
+    rows = [{"class_id": "a", "onset_s": 1.0, "offset_s": 2.0, "score": 0.9},
+            {"class_id": "a", "onset_s": 4.0, "offset_s": 5.5, "score": 0.8},
+            {"class_id": "b", "onset_s": 5.2, "offset_s": 6.0, "score": 0.7},
+            {"class_id": "b", "onset_s": -0.3, "offset_s": 1.0, "score": 0.6}]
+    got = clip_events_to_duration(rows, 5.0)
+    assert [(e["onset_s"], e["offset_s"]) for e in got] == [(1.0, 2.0), (4.0, 5.0), (0.0, 1.0)]
+    assert rows[1]["offset_s"] == 5.5  # không sửa đầu vào
+    pair = {"onset": 4.0, "offset": 5.5, "onset_s": 4.0, "offset_s": 5.5}
+    both = clip_events_to_duration([pair], 5.0)
+    assert both == [{"onset": 4.0, "offset": 5.0, "onset_s": 4.0, "offset_s": 5.0}]
+
+
+def test_oof_events_beyond_the_recording_are_clipped_for_the_timeline(tmp_path):
+    events = {"a": [{"class_id": "a", "onset_s": 4.0, "offset_s": 5.6, "score": 0.9}]}
+    path = write_oof_events(tmp_path, events)
+    posterior = np.zeros((int(5 * FR), len(CLASSES)))
+    got = lbr_postproc_events(_manifest(path), path, {"a": posterior}, class_ids=CLASSES,
+                              frame_rate=FR, split="dev", point="f1")
+    assert got["a"][0]["offset_s"] == posterior.shape[0] / FR

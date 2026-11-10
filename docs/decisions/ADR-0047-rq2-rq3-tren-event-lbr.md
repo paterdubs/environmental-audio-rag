@@ -81,3 +81,20 @@ Không chấm thêm điểm vận hành nào khác; không chọn giữa V2/V3 t
 DB demo kết thúc với corpus V3 (validation cross-fit, test đóng băng). Corpus B0 tái dựng được từ
 ADR-0044. Số validation của LBR không so được trực tiếp với B0 vì event dev đến từ cross-fit, khác
 cách sinh; so sánh với B0 chỉ dùng test.
+
+## Bổ sung 10/11 — kẹp biên event LBR ở nơi tiêu thụ
+
+Lượt validation `lbrv3` dừng ở `canonicalize_timeline` ("invalid event bounds"). Nguyên nhân: box
+sau tinh chỉnh có `offset` vượt độ dài recording; `apply_deltas` chỉ kẹp `onset ≥ 0`. Đo trên event
+cross-fit đã export: V3 ưu tiên phát hiện có **14/945** event vượt cuối recording (ví dụ S-0030:
+offset 141.675 s, recording 141.64 s; S-0236: 36.243 s so với 36.01 s), V2 điểm F1 có 0/400 trên dev.
+Hệ quả thực tế: bật `EARAG_SERVED_LBR` thì một lần upload tương tự sẽ lỗi trong `Pipeline.timeline`.
+
+Quyết định: `clip_events_to_duration` (`ml/postprocessing/lbr_apply.py`) kẹp event vào
+`[0, duration]` và bỏ event không còn độ dài; dùng ở `lbr_postproc_events` (timeline caption/RAG,
+cả run đóng băng lẫn event cross-fit) và `ServedSed.events`. **Không đổi `lbr_events`/`apply_deltas`**
+nên mọi số event-F1, PSDS, thước ứng dụng đã đo (tầng C, lượt test `98315fd`) giữ nguyên; event-F1
+vẫn tính trên box chưa kẹp, còn caption/RAG và demo dùng event đã kẹp. Phần lệch tối đa vài phần
+mười giây ở cuối recording. Export cross-fit không sinh lại (SHA-256 đã khóa); kẹp áp lúc đọc.
+`lbrv2` validation đã chạy trước bản sửa (0 event vượt trên dev nên kết quả không đổi); sinh lại cùng
+`lbrv3` trên tree sạch sau commit bản sửa để mọi bản ghi cùng một revision.

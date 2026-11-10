@@ -18,6 +18,7 @@ import numpy as np
 from ml.dataops.inventory import sha256_file
 from ml.postprocessing.lbr_apply import (
     OPERATING_POINTS,
+    clip_events_to_duration,
     is_lbr_run,
     lbr_events,
     lbr_scored_boxes,
@@ -83,9 +84,13 @@ def lbr_postproc_events(manifest: Mapping[str, Any], manifest_path: Path,
     if point not in OPERATING_POINTS:
         raise ValueError(f"điểm vận hành phải thuộc {OPERATING_POINTS}")
     if is_lbr_run(manifest):
-        return _frozen_run_events(manifest_path.parent, probabilities, class_ids=class_ids,
-                                  frame_rate=frame_rate, split=split, point=point)
-    if is_oof_events(manifest):
-        return _oof_events(manifest, manifest_path.parent, probabilities, split=split,
-                           point=point)
-    raise ValueError(f"{manifest_path}: không phải hậu xử lý LBR")
+        events = _frozen_run_events(manifest_path.parent, probabilities, class_ids=class_ids,
+                                    frame_rate=frame_rate, split=split, point=point)
+    elif is_oof_events(manifest):
+        events = _oof_events(manifest, manifest_path.parent, probabilities, split=split,
+                             point=point)
+    else:
+        raise ValueError(f"{manifest_path}: không phải hậu xử lý LBR")
+    # Timeline đòi event nằm trong recording; box tinh chỉnh có thể vượt cuối (ADR-0047 §5).
+    return {rid: clip_events_to_duration(rows, probabilities[rid].shape[0] / frame_rate)
+            for rid, rows in events.items()}

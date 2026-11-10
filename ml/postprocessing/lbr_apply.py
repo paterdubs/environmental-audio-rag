@@ -61,6 +61,25 @@ def lbr_scored_boxes(bundle: Mapping[str, Any], probabilities: Mapping[str, np.n
     return apply_lbr(model, boxes, x_on, x_off)
 
 
+def clip_events_to_duration(events: Sequence[Mapping[str, Any]], duration_s: float
+                            ) -> list[dict[str, Any]]:
+    """Kẹp event vào [0, duration_s]; bỏ event không còn độ dài (ADR-0047 §5).
+
+    Box sau tinh chỉnh có thể vượt cuối recording vài phần mười giây. Timeline caption/RAG và
+    phục vụ đòi 0 <= onset < offset <= duration nên kẹp ở nơi tiêu thụ; `lbr_events` giữ nguyên
+    để số event-F1 đã đo không đổi (collar 0.2 s tính trên box chưa kẹp).
+    """
+    clipped = []
+    for event in events:
+        onset, offset = max(0.0, float(event["onset_s"])), min(float(event["offset_s"]), duration_s)
+        if offset > onset:
+            row = {**event, "onset_s": onset, "offset_s": offset}
+            if "onset" in row and "offset" in row:  # boxes_to_events ghi cả hai cặp khóa
+                row["onset"], row["offset"] = onset, offset
+            clipped.append(row)
+    return clipped
+
+
 def lbr_events(bundle: Mapping[str, Any], boxes: Sequence[Box], scores: np.ndarray, *,
                point: str, recordings: Sequence[str]) -> dict[str, list[dict[str, Any]]]:
     if point not in OPERATING_POINTS:
