@@ -76,6 +76,7 @@ def run(recording_id: str, base_url: str) -> dict[str, Any]:
         rag = request_json(client, "POST", "/api/v1/retrieval/query", json=query)
         rag_s = time.perf_counter() - started
     evidence = rag["data"]["evidence"]
+    documents = rag["data"]["documents"]
     return {
         "source_recording_id": recording_id, "source_split": "train",
         "audio_relative_path": audio.relative_to(ROOT).as_posix(),
@@ -87,9 +88,19 @@ def run(recording_id: str, base_url: str) -> dict[str, Any]:
         "captions_with_evidence": sum(bool(c["evidence"]) for c in captions),
         "rag_mode": "hybrid", "rag_query_class": query_class, "rag_elapsed_s": rag_s,
         "rag_evidence": len(evidence),
-        "rag_contains_uploaded_recording": any(e["recording_id"] == rid for e in evidence),
+        "rag_documents": len(documents),
+        "rag_contains_uploaded_recording": uploaded_in_results(rid, documents),
         "git": git_state(ROOT),
     }
+
+
+def uploaded_in_results(recording_id: str, documents: list[dict[str, Any]]) -> bool:
+    """Recording vừa upload có nằm trong danh sách xếp hạng không.
+
+    `evidence` chỉ giữ tối đa 3 dòng nên có thể bỏ sót recording xếp hạng thấp hơn (nợ #31);
+    danh sách đầy đủ là `documents`.
+    """
+    return any(d["recording_id"] == recording_id for d in documents)
 
 
 def render(result: dict[str, Any]) -> str:

@@ -27,3 +27,9 @@ def test_render_records_operational_evidence() -> None:
     })
     assert "1.234 s" in text and "official=`false`" in text
     assert "en, vi" in text and "chứa recording vừa upload: true" in text
+
+
+def test_uploaded_recording_found_in_documents_beyond_top_evidence() -> None:
+    documents = [{"recording_id": f"r{i}"} for i in range(5)]
+    assert report.uploaded_in_results("r3", documents)
+    assert not report.uploaded_in_results("rX", documents)
