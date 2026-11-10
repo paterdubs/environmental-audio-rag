@@ -123,7 +123,6 @@ def provenance(
     eval_set: str,
 ) -> dict:
     manifest = json.loads((run_dir / "manifest.json").read_text(encoding="utf-8"))
-    metrics = json.loads((run_dir / "metrics.json").read_text(encoding="utf-8"))
     if manifest["taxonomy_sha256"] != lexicon.taxonomy.checksum:
         raise SystemExit("run khoá theo taxonomy khác taxonomy đang dùng")
     captions = {}
@@ -138,11 +137,18 @@ def provenance(
             postproc_hashes.add(meta["postproc_sha256"])
     if len(prediction_hashes) > 1 or len(postproc_hashes) > 1:
         raise SystemExit("các nhánh caption không cùng prediction/postproc")
-    prediction_sha = (
-        next(iter(prediction_hashes))
-        if prediction_hashes
-        else metrics[f"{split}_predictions_sha256"]
-    )
+    # Meta caption ghi hash prediction; chỉ meta cũ mới cần metrics.json (run LBR không có file
+    # này — ADR-0048).
+    if prediction_hashes:
+        prediction_sha = next(iter(prediction_hashes))
+    else:
+        metrics_path = run_dir / "metrics.json"
+        metrics = (json.loads(metrics_path.read_text(encoding="utf-8"))
+                   if metrics_path.exists() else {})
+        prediction_sha = metrics.get(f"{split}_predictions_sha256")
+        if prediction_sha is None:
+            raise SystemExit(f"{run_dir.name}: không có predictions_sha256 trong meta caption "
+                             "lẫn metrics.json")
     return {"run": run_dir.name, "split": split, "split_sha256": manifest["split_sha256"],
             "eval_set": eval_set,
             "taxonomy_sha256": manifest["taxonomy_sha256"],
