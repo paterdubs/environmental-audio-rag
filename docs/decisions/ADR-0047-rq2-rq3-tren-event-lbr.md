@@ -106,7 +106,8 @@ bản đầu ghi nhầm 0.3489 / 0.6987 của ensemble C v1, sửa theo ADR-0048
 trong khi event-F1 cao hơn nhiều. Chẩn đoán chỉ trên dev OOF (564 recording, không đọc test):
 điểm rescorer rất lệch (phân vị 50% = 3.7e-4, 75% = 0.021, 90% = 0.76) còn `T_GRID` bắt đầu ở 0.005,
 nên ~55% box không bao giờ vào đường PSD-ROC. Đường cong bị cắt ở phía eFPR cao. Trên dev, lưới phủ
-mọi phân vị cho PSDS-1 0.3676 (B0 0.3512) và PSDS-2 0.6535 (B0 0.7504).
+mọi phân vị cho PSDS-1 0.3676 (B0 0.3512) và PSDS-2 0.6535 (B0 0.7504). *Ghi chú 11/11: các số dev OOF này
+đến từ script nháp, không có artifact trong repo (nợ #30); báo cáo cuối không trích chúng.*
 
 **Ghi trước.**
 

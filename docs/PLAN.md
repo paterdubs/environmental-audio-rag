@@ -489,7 +489,7 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~27~~ | ~~PSDS B0 (lưới tuyến tính) và LBR (lưới log) khác thước~~ — **đóng 10/11** (ADR-0048 §3, `19209ea`): B0 lưới log 0.3061 / 0.7452, lưới tuyến tính tái tạo đúng số cũ | — | ✅ |
 | ~~28~~ | ~~RQ2 với LLM chỉ có số trên f2~~ — **đóng 11/11** (ADR-0048 §1, S67) | — | ✅ |
 | ~~29~~ | ~~S21 chưa giải thích~~ — **đóng 11/11** (ADR-0048 §2, S68; gợi ý, không CI) | — | ✅ |
-| 30 | Số chẩn đoán PSDS trên dev OOF trong ADR-0047 và PAPER_NOTES S66 (PSDS-1 0.3676 so B0 0.3512, PSDS-2 0.6535 so 0.7504, chỉ-tinh-chỉnh 0.6602) đến từ script nháp, chưa có artifact trong repo | TRUNG BÌNH | R3: đối chiếu với `psds_diagnosis_*` (B0 dev OOF), ghi rõ nguồn hoặc thay số |
+| 30 | Số chẩn đoán PSDS trên dev OOF trong ADR-0047 và PAPER_NOTES S66 (PSDS-1 0.3676 so B0 0.3512, PSDS-2 0.6535 so 0.7504, chỉ-tinh-chỉnh 0.6602) đến từ script nháp, chưa có artifact trong repo | THẤP | 11/11: ADR-0047 ghi chú rõ nguồn; báo cáo cuối, SYSTEM và `final_numbers` không dùng các số này; chỉ tái tạo nếu cần trích |
 | 31 | Harness E2E demo kiểm "có recording vừa upload" trên `evidence` (tối đa 3) thay vì `documents` → `rag_contains_uploaded_recording=false` ở `demo_lbrv3_e2e_20261110` dù recording xếp hạng 4 | THẤP | Ghi nhận; sửa nếu chạy lại demo E2E |
 | 32 | Parser trả năm lớp đầu taxonomy cho câu hỏi tổng quát ("có những sự kiện gì trong âm thanh này?"); không nhận recording context | THẤP | Hạn chế báo cáo (ADR-0036 không đổi) |
 
