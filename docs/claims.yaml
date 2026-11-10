@@ -215,3 +215,34 @@ claims:
       - {file: CLAUDE.md, text: "trích đúng GT 0.915 → {value})"}
       - {file: docs/PAPER_NOTES.md, text: "0.899 → {value}**"}
       - {file: docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md, text: "0.915, 0.899, {value}."}
+
+  # ---------- REPRODUCE.md (thời gian chỉ để lập lịch) ----------
+  - id: demo_lbrv3_upload_s
+    source: docs/measurements/demo_lbrv3_e2e_20261110.json
+    key: [upload_elapsed_s]
+    decimals: 1
+    mentions:
+      - {file: docs/REPRODUCE.md, text: "upload + phân tích {value} s"}
+      - {file: docs/STATUS.md, text: "upload TRAIN {value} s"}
+  - id: b0_test_macro_reproduce
+    source: *sed
+    key: [lbr, baseline, all, macro_f1]
+    mentions:
+      - {file: docs/REPRODUCE.md, text: "test annotated macro {value}, micro"}
+  - id: b0_test_micro_reproduce
+    source: *sed
+    key: [lbr, baseline, all, micro_f1]
+    mentions:
+      - {file: docs/REPRODUCE.md, text: "macro 0.1366, micro {value} |"}
+  - id: b0_dev_unconstrained_wall_s
+    source: ml/runs/sed_filtered_B0_oof_dev_20261107T181008Z/captions/unconstrained_dev.meta.json
+    key: [wall_clock_s]
+    decimals: 1
+    mentions:
+      - {file: docs/REPRODUCE.md, text: "unconstrained {value} s, constrained"}
+  - id: b0_dev_constrained_wall_s
+    source: ml/runs/sed_filtered_B0_oof_dev_20261107T181008Z/captions/constrained_dev.meta.json
+    key: [wall_clock_s]
+    decimals: 1
+    mentions:
+      - {file: docs/REPRODUCE.md, text: "constrained {value} s (`wall_clock_s`"}
