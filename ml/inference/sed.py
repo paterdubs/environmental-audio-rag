@@ -177,7 +177,31 @@ class ServedSed:
         merged = average_predictions(members) if len(members) > 1 else members[0]
         return stack_predictions_by_recording(merged)[SERVED_ID]
 
+    def enable_lbr(self, bundle: dict[str, Any], *, mode: str) -> None:
+        """Dựng event bằng LBR đã đóng băng (ADR-0045) thay cho box cSEBB gốc.
+
+        Import lười: image inference chỉ cần scikit-learn khi bật LBR.
+        """
+        from ml.postprocessing.lbr_apply import OPERATING_POINTS
+
+        if mode not in OPERATING_POINTS:
+            raise ValueError(f"mode phải thuộc {OPERATING_POINTS}")
+        if list(bundle["class_ids"]) != list(self.class_ids):
+            raise ValueError("thứ tự lớp của LBR khác model phục vụ")
+        self.lbr, self.lbr_mode = bundle, mode
+        # Mỗi event lưu DB mang model_version: ghi rõ run LBR và điểm vận hành để truy nguồn.
+        base = getattr(self, "base_model_version", getattr(self, "model_version", "sed"))
+        self.base_model_version = base
+        self.model_version = f"{base}+{bundle['manifest']['run_id']}:{mode}"
+
     def events(self, probabilities: np.ndarray) -> list[dict[str, Any]]:
+        if getattr(self, "lbr", None) is not None:
+            from ml.postprocessing.lbr_apply import lbr_events, lbr_scored_boxes
+
+            boxes, scores = lbr_scored_boxes(self.lbr, {SERVED_ID: probabilities},
+                                             frame_rate=self.config.frame_rate)
+            return lbr_events(self.lbr, boxes, scores, point=self.lbr_mode,
+                              recordings=[SERVED_ID])[SERVED_ID]
         if getattr(self, "postproc_family", "theta") == "csebb":
             candidates = sebb_candidates({SERVED_ID: probabilities}, class_ids=self.class_ids,
                                          frame_rate=self.config.frame_rate,
