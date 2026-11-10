@@ -1,6 +1,6 @@
 # Sổ ghi các lần chạm tập test
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `832c3f4`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `7997cec`.
 
 | Nhóm | Số mục |
 |---|---:|

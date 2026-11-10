@@ -83,7 +83,15 @@ Phân tích lỗi của B0 (Chương 4) dẫn tới LBR. Trên dự đoán ngoà
 
 @@INCLUDE:report/final_tables/f01_sed.md|used=1:^LBR V2@@
 
-Có hai cách đọc bảng này mà số liệu không cho phép bỏ qua. Thứ nhất, PSDS chỉ so được trong cùng một lưới ngưỡng (phần sau). Thứ hai, LBR đánh đổi độ phủ lấy độ chính xác của biên. ⟪tbl:sedapp⟫ báo thêm thước ứng dụng theo tiêu chí giao nhau của PSDS-2 (hộp dự đoán được tính đúng khi phần giao với sự kiện tham chiếu cùng lớp chiếm ít nhất 10% cả hai; ADR-0046) và F1 theo đoạn 1 s. V2 có recall giao nhau 0,5108, thấp hơn 0,5351 của B0 ở điểm vận hành đã khóa của B0, và F1 theo đoạn 0,5965 so với 0,7260; precision giao nhau 0,9545. V3 ở điểm `recall_first` (recall giao nhau tối đa với precision không dưới 0,6) dự đoán 668 sự kiện cho 740 sự kiện tham chiếu, đạt recall giao nhau 0,8203 và precision 0,7812, còn event-F1 micro 0,2287. Tức là có hai điểm vận hành cho hai mục đích: V2 khi cần biên khớp chặt, V3 khi cần ít bỏ sót sự kiện. Demo dùng V3.
+⟪fig:sedfinal⟫ minh họa cùng số liệu: event-F1 micro tăng từ f2 và B0 lên LBR, trong khi thước giao nhau cho thấy hai điểm vận hành của LBR đánh đổi nhau.
+
+![](report/final_figures/f01_sed_final.png){width=15cm}
+
+@@CAP:fig:sedfinal|Event-F1 micro và thước giao nhau của các hệ SED trên test annotated@@
+
+@@NOTE:Nguồn: docs/measurements/final_numbers_20261110.json; sinh bằng scripts/build_final_figures.py.@@
+
+Có hai cách đọc ⟪tbl:sedfinal⟫ mà số liệu không cho phép bỏ qua. Thứ nhất, PSDS chỉ so được trong cùng một lưới ngưỡng (phần sau). Thứ hai, LBR đánh đổi độ phủ lấy độ chính xác của biên. ⟪tbl:sedapp⟫ báo thêm thước ứng dụng theo tiêu chí giao nhau của PSDS-2 (hộp dự đoán được tính đúng khi phần giao với sự kiện tham chiếu cùng lớp chiếm ít nhất 10% cả hai; ADR-0046) và F1 theo đoạn 1 s. V2 có recall giao nhau 0,5108, thấp hơn 0,5351 của B0 ở điểm vận hành đã khóa của B0, và F1 theo đoạn 0,5965 so với 0,7260; precision giao nhau 0,9545. V3 ở điểm `recall_first` (recall giao nhau tối đa với precision không dưới 0,6) dự đoán 668 sự kiện cho 740 sự kiện tham chiếu, đạt recall giao nhau 0,8203 và precision 0,7812, còn event-F1 micro 0,2287. Theo lớp (Phụ lục C), trong 20 lớp có từ 10 sự kiện tham chiếu trở lên, B0 có 6 lớp với event-F1 bằng 0 và LBR V2 có 3 lớp (`birds`, `vehicle_idling`, `vehicle_pass_by`; riêng `vehicle_pass_by` có 70 sự kiện tham chiếu); lớp tốt nhất của V2 là `workshop` (0,6992) và `cicadas_and_crickets` (0,5588). Tức là có hai điểm vận hành cho hai mục đích: V2 khi cần biên khớp chặt, V3 khi cần ít bỏ sót sự kiện. Demo dùng V3.
 
 @@CAP:tbl:sedapp|Thước ứng dụng trên test annotated@@
 

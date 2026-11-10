@@ -38,11 +38,17 @@ Bảng dưới là sổ ghi mọi lần chạm tập test tính đến mốc bá
 
 @@HEADING2N:Phụ lục C. Kết quả theo lớp@@
 
-Theo giao thức đánh giá, lớp có dưới 10 mẫu test chỉ được báo bằng số tuyệt đối. Bảng đầu là mô hình phân loại DataSEC ở cấp lớp gộp; bảng sau là hệ SED f2 (mốc so sánh của S13) trên test annotated; chưa có bảng theo lớp tương ứng cho B0 và LBR. Ở bảng sau, số sự kiện tham chiếu được đếm từ nhãn gốc, còn F1, precision và recall đọc từ tệp đánh giá đã lưu, không chạy lại đánh giá.
+Theo giao thức đánh giá, lớp có dưới 10 mẫu test chỉ được báo bằng số tuyệt đối. Bảng đầu là mô hình phân loại DataSEC ở cấp lớp gộp; bảng sau là hệ SED trên test annotated: trước hết B0 và LBR V2 (hệ cuối), sau đó f2 (mốc so sánh của S13). Ở bảng sau, số sự kiện tham chiếu được đếm từ nhãn gốc, còn F1, precision và recall đọc từ tệp đánh giá đã lưu, không chạy lại đánh giá.
 
 @@CAP:tbl:classperclass|Mô hình phân loại DataSEC theo lớp gộp (test)@@
 
 @@INCLUDE:report/tables/m02_classifier_per_class.md@@
+
+@@CAP:tbl:b0perclass|Event-F1 theo lớp của B0 và LBR V2 trên test annotated@@
+
+@@COLWIDTHS:33,13,12,12,15,15@@
+
+@@INCLUDE:report/final_tables/f09_per_class.md@@
 
 @@CAP:tbl:f2perclass|Event-F1 theo lớp của hệ f2 (mốc so sánh) trên test annotated@@
 

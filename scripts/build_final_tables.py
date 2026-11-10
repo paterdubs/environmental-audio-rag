@@ -236,11 +236,51 @@ def build_freeze(freeze: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_per_class(run_dir: Path, revision: str) -> str:
+    """Event-F1 theo lớp của B0 và LBR V2 trên test annotated; lớp n < 10 chỉ báo số tuyệt đối."""
+    from scripts.build_midterm_tables import (
+        ANNOTATIONS,
+        DATASED_SPLIT,
+        SMALL_N,
+        UNANNOTATED,
+        annotated_test_counts,
+    )
+
+    b0_path = run_dir / "evaluation_phase_o_annotated.json"
+    v2_path = run_dir / "evaluation_phase_lbr_annotated.json"
+    b0 = json.loads(b0_path.read_text(encoding="utf-8"))
+    v2 = json.loads(v2_path.read_text(encoding="utf-8"))
+    counts = annotated_test_counts()
+    if sum(counts.values()) != v2["n_events_reference"]:
+        raise ValueError("Số sự kiện tham chiếu đếm từ nhãn gốc không khớp evaluation đã lưu")
+    rows = []
+    for class_id, v2_scores in v2["event_based_f1_per_class"].items():
+        n = counts[class_id]
+        b0_scores = b0["event_based_f1_per_class"][class_id]
+        if n >= SMALL_N:
+            rows.append([f"`{class_id}`", n, format(b0_scores["f_measure"], ".4f"),
+                         format(v2_scores["f_measure"], ".4f"),
+                         format(v2_scores["precision"], ".4f"),
+                         format(v2_scores["recall"], ".4f")])
+        else:
+            rows.append([f"`{class_id}`", n, f"khớp {round(b0_scores['recall'] * n)}/{n}",
+                         f"khớp {round(v2_scores['recall'] * n)}/{n}", "—", "—"])
+    return table(
+        "Event-F1 theo lớp của B0 và LBR V2 trên test annotated (n = 139 bản ghi)",
+        ["Lớp", "Sự kiện tham chiếu", "B0 F1", "LBR V2 F1", "LBR V2 precision", "LBR V2 recall"],
+        rows,
+        [b0_path, v2_path, ANNOTATIONS, DATASED_SPLIT, UNANNOTATED],
+        revision,
+        ["---", "---:", "---:", "---:", "---:", "---:"],
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--final-numbers", type=Path, required=True)
     parser.add_argument("--ledger", type=Path, help="test_ledger_*.json")
     parser.add_argument("--freeze", type=Path, help="artifact_freeze_*.json")
+    parser.add_argument("--run-dir", type=Path, help="run B0 final test (bảng theo lớp)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
     source = args.final_numbers.resolve()
@@ -261,6 +301,12 @@ def main() -> None:
         )
         (args.output / name).write_text(text, encoding="utf-8", newline="\n")
         print(f"Đã ghi {args.output / name}")
+    if args.run_dir is not None:
+        text = build_per_class(args.run_dir.resolve(), revision).replace(
+            "scripts.build_thesis_tables", "scripts.build_final_tables"
+        )
+        (args.output / "f09_per_class.md").write_text(text, encoding="utf-8", newline="\n")
+        print(f"Đã ghi {args.output / 'f09_per_class.md'}")
     extra = (
         ("f07_ledger.md", build_ledger, args.ledger),
         ("f08_freeze.md", build_freeze, args.freeze),

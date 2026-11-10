@@ -46,3 +46,13 @@ def test_rq3_and_psds_tables(data):
 def test_rq1_and_intersection(data):
     assert "-0.0071 [-0.0164, +0.0021]" in bft.build_rq1(data, "abcdef0", FINAL)
     assert "0.8203" in bft.build_intersection(data, "abcdef0", FINAL)
+
+
+RUN_B0 = ROOT / "ml" / "runs" / "sed_ensemble_B0_final_test_20261014T085016Z"
+
+
+@pytest.mark.skipif(not RUN_B0.is_dir(), reason="chưa có run B0 final test")
+def test_per_class_table_hides_f1_for_small_classes():
+    text = bft.build_per_class(RUN_B0, "abcdef0")
+    assert "| `cat_fights_and_moans` | 9 | khớp 0/9 | khớp 3/9 | — | — |" in text
+    assert "| `workshop` | 69 | 0.4505 | 0.6992 | 0.7963 | 0.6232 |" in text

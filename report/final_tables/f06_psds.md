@@ -1,6 +1,6 @@
 # Chẩn đoán PSDS v1 → v2 trên dev annotated (n = 134)
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `832c3f4`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `7997cec`.
 
 | Đại lượng | Giá trị |
 |---|---:|
