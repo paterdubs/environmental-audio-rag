@@ -333,9 +333,11 @@ Từng mắt đã có nghiên cứu riêng. Điểm đề tài đóng góp là *
 provenance xuyên suốt**: mọi câu trả lời cuối cùng truy được về recording ID,
 time span, model version, split hash và taxonomy hash.
 
-> ⚠️ CẦN XÁC MINH — claim "chưa có công trình nào làm cả chuỗi này trên DataSEC/
-> DataSED" chỉ được viết vào báo cáo sau systematic search và bảng so sánh trong
-> [RELATED_WORK.md](RELATED_WORK.md) §7.
+> **Trạng thái văn liệu (R4, 11/11):** không viết "chưa có công trình nào làm cả chuỗi này".
+> LA-RAG (Hegde và cs. 2026) đã dựng chuỗi phát hiện → event store SQL → RAG và TAC (Kumar và cs.
+> 2026) làm caption có timestamp; ba claim khoảng trống đã được rút lại hoặc hạ xuống
+> ([RELATED_WORK.md](RELATED_WORK.md) §2.4, §9). Đóng góp của đề tài diễn đạt là **tích hợp có
+> provenance và kiểm chứng bằng máy**, kèm transfer có kiểm soát rò rỉ trên cặp DataSEC–DataSED.
 
 ---
 

@@ -243,7 +243,7 @@ cổng T0 của ADR-0031 §3)
 Pretrained Audio Neural Networks for Audio Pattern Recognition.* IEEE/ACM TASLP (2020);
 arXiv:1912.10211 (v5 23/08/2020).** — **V2**; chi tiết kiến trúc **V3**
 
-- Tiếp cận: metadata trên arXiv (arXiv **không ghi** vol/pages → ⚠️ CẦN XÁC MINH trên IEEE);
+- Tiếp cận: metadata trên arXiv (arXiv không ghi vol/pages; Crossref 11/11: TASLP 28:2880–2894, DOI 10.1109/TASLP.2020.3030497);
   venue TASLP 2020 thấy qua bản postprint của Surrey. **Đọc trực tiếp code**
   `qiuqiangkong/audioset_tagging_cnn/pytorch/models.py` (26/09).
 - Dữ kiện đối chiếu từ code: `Cnn14.forward` có `conv_block1…5` với `pool_size=(2, 2)` và
@@ -293,10 +293,9 @@ bằng Scaper). Dùng ở: ý tưởng soundscape tổng hợp từ DataSEC (PAP
 **(8) Chỉ thấy trong danh mục tham khảo của (1)** — **V2**, chưa mở bài gốc:
 
 - Mesaros A., Heittola T., Virtanen T. (2016). *Metrics for polyphonic sound event
-  detection.* Applied Sciences 6(6):162 (DOI ⚠️ CẦN XÁC MINH; trang MDPI chặn truy cập tự
-  động 26/09).
+  detection.* Applied Sciences 6(6):162, DOI 10.3390/app6060162 (Crossref 11/11; đã lên V3 ngày 03/10, §2.2).
 - Bilen Ç. và cộng sự (2020). *A framework for the robust evaluation of sound event detection.*
-  ICASSP 2020 — PSDS.
+  ICASSP 2020, tr. 61–65, DOI 10.1109/ICASSP40776.2020.9052995 (Crossref 11/11) — PSDS.
 - Ferroni G. và cộng sự (2021). *Improving sound event detection metrics: insights from DCASE
   2020.* ICASSP 2021.
 - Ebbers J., Haeb-Umbach R., Serizel R. (2022). *Threshold independent evaluation of sound
@@ -480,6 +479,52 @@ không sửa ADR thuộc Claude. Các hàng Scaper/pseudo-label theo tag dùng n
 
 ---
 
+### 2.4 Tra cứu R4 cho ba claim khoảng trống (11/11/2026, PLAN R4)
+
+PDF tải bằng `curl` rồi `pdftotext`, lưu ngoài repo; SHA-256 8 ký tự đầu: 062920df, a25d82eb, 6a52bf78,
+ad218fda, 9cecc484, 76facaca (lần lượt cho (26), (27), (28), (30), (29), (31)). Đọc các đoạn liên quan bằng
+`grep` + đọc trực tiếp văn bản trích.
+
+- **(26) Hegde K., Sridhar A. K., Vakada N., Guo Y., Visser E.** *Event-Grounded Question Answering over
+  Long Audio via Structured Retrieval (LA-RAG).* [arXiv:2602.14612v4](https://arxiv.org/abs/2602.14612)
+  (23/06/2026). AGM (CNN 8 lớp + BiGRU, độ tương đồng cosine với embedding tag) → bản ghi (tên sự kiện,
+  start, end, confidence, loudness) trong SQLite; câu hỏi → viết lại theo lịch sử, phân giải biểu thức
+  thời gian tuyệt đối ("before noon") bằng luật + LLM, phân loại intent (detection/counting/summary/
+  anomaly), top-k theo embedding + bộ lọc có cấu trúc, LLM sinh câu trả lời. Offline: 76.88% (Home-IoT),
+  71.10% (Industrial-IoT), độ trễ < 0.6 s. **Gần nhất với chuỗi của đề tài**; khác ở: không thấy predicate
+  quan hệ giữa hai sự kiện trong phần phương pháp, không có contract kiểm chứng câu trả lời, benchmark
+  tự dựng. — **V3**
+- **(27) Kumar S., Seetharaman P., Chen K., Nieto O., Su J., Wang Z., Kumar R., Manocha D., Bryan N. J.,
+  Jin Z., Salamon J.** *TAC: Timestamped Audio Captioning.* [arXiv:2602.15766v2](https://arxiv.org/abs/2602.15766)
+  (06/10/2026). Caption có timestamp trên hỗn hợp tổng hợp; Hal% = tỉ lệ event dự đoán có điểm FLAM <
+  τ = 0.25 (cố định trước khi đánh giá; xếp hạng ổn định từ τ ≥ 0.20, Phụ lục B). Tác giả nêu rõ giới hạn
+  của đánh giá theo reference: một âm có thật nhưng chưa được chú giải bị tính là FP. — **V3**
+- **(28) Weck B., Serra X.** *Data leakage in cross-modal retrieval training: a case study.*
+  [arXiv:2302.12258v1](https://arxiv.org/abs/2302.12258) (ICASSP 2023). SoundDesc (BBC Sound Effects):
+  phát hiện bản trùng/bản chồng lấn bằng fingerprint Panako (cặp trùng nếu số giây khớp > 50% tổng), chỉ ra
+  điểm retrieval cao giả, đề xuất split mới và gộp file cùng quy trình thu để tránh "weak contamination".
+  Khác đề tài: một dataset, không xuyên dataset. DOI bản IEEE chưa xác minh (Crossref không trả về khi
+  thử `10.1109/ICASSP.2023.10094617`) → trích dẫn bằng arXiv. — **V3**
+- **(29) Kuan C.-Y., Huang W.-P., Lee H.** *Understanding Sounds, Missing the Questions: The Challenge of
+  Object Hallucination in Large Audio-Language Models.* [arXiv:2406.08402v1](https://arxiv.org/abs/2406.08402)
+  (12/06/2024; venue Interspeech chưa đối chiếu). ECHO-I (tỉ lệ đối tượng bịa) và ECHO-S (tỉ lệ caption có
+  đối tượng bịa), trích danh từ bằng spaCy rồi so với nhãn thật, mô phỏng CHAIR. — **V3**
+- **(30) Xie Z., Xu X., Wu M., Yu K.** *Enhance Temporal Relations in Audio Captioning with Sound Event
+  Detection.* [arXiv:2306.01533v2](https://arxiv.org/abs/2306.01533) (18/07/2024). Tag thời gian từ SED để
+  caption diễn đạt "then"/"while", kèm metric thời gian riêng. Chỉ đọc tóm tắt và phần giới thiệu. — **V2**
+- **(31) Wijngaard G., Formisano E., Esposito M., Dumontier M.** *Audio-Language Datasets of Scenes and
+  Events: A Survey.* [arXiv:2407.06947v2](https://arxiv.org/abs/2407.06947) (08/01/2025). 69 dataset;
+  phân tích rò rỉ bằng độ tương đồng CLAP, tập con không chồng lấn ở ngưỡng 99%; nêu các bộ huấn luyện
+  (WavCaps, LAION-CLAP) loại mẫu trùng với Clotho/AudioCaps. Đọc đoạn §IV-B. — **V3**
+- **Chỉ thấy qua tóm tắt tìm kiếm (V1, không trích dẫn):** AHA (arXiv:2512.24052), ARIA-Rubrics
+  (arXiv:2609.09681), X-ACE (ACL Findings 2024), BAT (arXiv:2303.10667), RiTTA (arXiv:2412.15922),
+  text-to-audio grounding (arXiv:2102.11474, 2210.06354).
+- **Giới hạn của lượt tra:** ba truy vấn WebSearch mở rộng, không dùng cơ sở dữ liệu trả phí, không
+  Google Scholar; "không thấy" nghĩa là không thấy trong kết quả và các văn bản đã đọc, không phải bằng
+  chứng không tồn tại.
+
+---
+
 ## 3. Transfer learning và domain shift
 
 | Chủ đề | Mức |
@@ -492,12 +537,17 @@ không sửa ADR thuộc Claude. Các hàng Scaper/pseudo-label theo tag dùng n
 
 ### Khoảng trống đề tài nhắm tới — C3
 
-Cần tìm xem có công trình nào **audit duplicate xuyên dataset trước khi báo Δ
-transfer** hay không. Giả thuyết: phần lớn không làm.
+Câu hỏi: có công trình nào **audit duplicate xuyên dataset trước khi báo Δ transfer** không.
 
-> ⚠️ CẦN XÁC MINH — claim này chỉ được viết vào báo cáo sau systematic search.
-> Nếu tìm thấy công trình đã làm, C3 phải diễn đạt lại thành "áp dụng vào cặp
-> DataSEC–DataSED" chứ không phải "lần đầu".
+**Kết quả tra 11/11 (R4): claim "phần lớn không làm" KHÔNG được giữ.** Đã có (a) audit bằng
+fingerprint Panako trong một dataset và chỉ ra điểm số retrieval bị thổi phồng do rò rỉ
+(Weck & Serra 2023, §2.4 (28)), và (b) khảo sát chồng lấn giữa các dataset audio-language bằng
+embedding CLAP, kèm danh sách tập con không chồng lấn (Wijngaard và cs. 2025, §2.4 (31)); các bộ
+huấn luyện lớn (WavCaps, LAION-CLAP) cũng loại mẫu trùng để giữ zero-shot. Điều chưa thấy trong
+phạm vi tra: audit **fingerprint xuyên hai dataset cùng nhóm tác giả** kèm quyết định người duyệt
+và đo tác động lên Δ transfer. **C3 viết lại thành "áp dụng quy trình audit xuyên dataset vào cặp
+DataSEC–DataSED và đo mức rò rỉ (11/5,048 clip, dải `minor`)", không phải "lần đầu".**
+Phạm vi tra có giới hạn (§2.4 cuối).
 
 ---
 
@@ -514,11 +564,17 @@ transfer** hay không. Giả thuyết: phần lớn không làm.
 
 ### Khoảng trống đề tài nhắm tới — C1 và C2
 
-Cần tìm xem đã có bộ metric nào đo **factual grounding của caption âm thanh so
-với event timeline** (không cần reference prose) hay chưa.
+Câu hỏi: đã có bộ metric nào đo **factual grounding của caption âm thanh so với event
+timeline** (không cần reference prose) chưa.
 
-Nếu đã có: C2 chuyển thành "áp dụng và mở rộng", và phải so sánh bộ metric của đề
-tài với bộ đã có.
+**Kết quả tra 11/11 (R4): đã có các metric gần, chưa thấy bộ trùng khít → C2 chuyển thành "áp dụng
+và mở rộng".** ECHO (Kuan và cs. 2024, §2.4 (29)) đo tỉ lệ đối tượng bịa so với nhãn thật theo
+kiểu CHAIR nhưng không có thời gian/thứ tự; TAC (Kumar và cs. 2026, §2.4 (27)) đo hallucination
+rate bằng điểm FLAM phía audio và có event-F1/segment-F1 theo timestamp; Xie và cs. (2024, §2.4 (30))
+đo quan hệ thời gian giữa các sự kiện trong caption. G1–G3 của đề tài khác ở chỗ: so với **timeline
+sự kiện đã phát hiện** bằng ràng buộc kiểm được bằng máy (độ phủ, claim không có evidence, thứ tự
+thời gian, vi phạm bối cảnh/gọi tên quá mức) và có đường cưỡng chế ở bước sinh (constrained). Báo cáo
+phải so sánh khái niệm với ECHO/TAC thay vì tuyên bố chưa ai đo.
 
 ---
 
@@ -535,9 +591,17 @@ tài với bộ đã có.
 
 ### Khoảng trống đề tài nhắm tới — C4
 
-Cần tìm công trình về retrieval âm thanh có **temporal predicate** (A trước B)
-chứ không chỉ tương đồng ngữ nghĩa. Quan hệ khoảng Allen là khái niệm có sẵn
-trong CSDL thời gian; câu hỏi là đã ai áp vào event timeline âm thanh chưa.
+Câu hỏi: đã có retrieval âm thanh với **temporal predicate** (A trước B), không chỉ tương đồng
+ngữ nghĩa, chưa. Quan hệ khoảng Allen là khái niệm có sẵn trong CSDL thời gian.
+
+**Kết quả tra 11/11 (R4): C4 là đóng góp kỹ thuật, không phải khái niệm.** LA-RAG (Hegde và cs.
+2026, §2.4 (26)) đã dựng pipeline gần như cùng dạng — âm thanh → bản ghi sự kiện có timestamp →
+kho SQL → truy xuất theo intent + cửa sổ thời gian + embedding → LLM trả lời — nhưng "thời gian"
+ở đó là cửa sổ tuyệt đối ("trước 12 giờ trưa"); trong phần phương pháp tôi không thấy toán tử
+quan hệ **giữa hai sự kiện** (before/overlaps/during). Các nguồn khác chỉ đo thứ tự trong
+embedding hoặc caption (BAT, RiTTA — mới thấy qua tóm tắt tìm kiếm, V1) chứ không truy vấn event
+store. Đề tài đóng góp: bốn predicate quan hệ cài thành SQL, đo exactness của bộ lọc (1.000) và nDCG
+trên query set ghi trước.
 
 ---
 
@@ -554,8 +618,13 @@ Từng mắt đã có nghiên cứu riêng. Điểm đề tài đóng góp là *
 provenance xuyên suốt**: mọi câu trả lời cuối truy được về recording ID, time
 span, model version, split hash và taxonomy hash.
 
-> ⚠️ CẦN XÁC MINH — claim "chưa có công trình nào làm cả chuỗi này trên
-> DataSEC/DataSED" chỉ được viết sau systematic search và bảng §8 điền đủ.
+> **Trạng thái 11/11:** KHÔNG viết "chưa có công trình nào làm cả chuỗi này". Phạm vi tra cho thấy
+> LA-RAG (§2.4 (26)) đã làm chuỗi phát hiện → event store → RAG, và TAC (§2.4 (27)) làm caption có
+> timestamp. Còn lại cho đề tài: (i) transfer có kiểm soát rò rỉ trên cặp DataSEC–DataSED,
+> (ii) caption bị ràng buộc với kiểm chứng bằng máy, (iii) provenance đầy đủ xuyên suốt
+> (recording ID, time span, model version, hash split/taxonomy), (iv) kết quả âm tính được báo
+> nguyên văn. Dùng cách diễn đạt "tích hợp có provenance và kiểm chứng được", không dùng "lần đầu".
+> Dataset DataSEC/DataSED vẫn chưa có số SED event-based nào của bên khác (§2.3 (21)–(25)).
 
 ---
 
@@ -603,11 +672,12 @@ Từ khóa gợi ý: `polyphonic sound event detection`, `environmental noise da
 | Morocutti et al., EfficientSED, arXiv:2503.11373v2 | 2025 | SED ít tham số | AudioSet Strong | Strong + KD | FMN10 + TF256 | PSDS1 | 42.28→43.86 (đã KD); mở rộng KD 45.25 (Bảng I/II tr. 4) | O-B/O-C/O-G; §2.3 (16) | Khác benchmark, 407 lớp eval; checkpoint giữ hai head 447 lớp | **V3** (08/10) |
 | Schmid et al., RealDESED, arXiv:2607.16736v1 | 2026 | SED ghi âm nhà thật | RealDESED | Strong đa annotator + reviewed | ATST-F | Macro PSDS1 | Hop10→2.5 s: .711→.736; raw/median/cSEBB .662/.693/.731 (Bảng 2/3 tr. 4) | O-A/O0.4; §2.3 (17) | .675→.697 gồm reviewed labels; bản gửi DCASE 2026, chưa xác minh chấp nhận | **V3** (08/10) |
 | Schmid et al., Multi-Iteration Multi-Stage, arXiv:2407.12997v1 | 2024 | SED heterogeneous data + KD | DESED + MAESTRO | Strong/weak/unlabeled | CRNN + ATST/fPaSST/BEATs | PSDS1 + mpAUC | ATST DT+cSEBB public eval .692 (Bảng 3 tr. 4) | O-D/O-G; §2.3 (18) | Full development train; không phải validation, cần nhiều unlabeled data | **V3** (08/10) |
-| ⚠️ CẦN XÁC MINH | | SED | | | | | | §2.1 | | V0 |
-| ⚠️ CẦN XÁC MINH | | PSDS | | | | | | §2.2 | | V0 |
-| ⚠️ CẦN XÁC MINH | | Transfer | | | | | | §2.3 | | V0 |
-| ⚠️ CẦN XÁC MINH | | AAC hallucination | | | | | | §2.4 | | V0 |
-| ⚠️ CẦN XÁC MINH | | Audio retrieval | | | | | | §2.5 | | V0 |
+| Hegde et al., LA-RAG, arXiv:2602.14612v4 | 2026 | QA trên audio dài qua event store | Home-IoT, Industrial-IoT 24 h; CASTELLA-QA | Timestamp do AGM sinh | AGM (CRNN, kiểu CLAP) + SQL + LLM | Accuracy theo loại câu hỏi; F1 theo giao điểm | 76.88% / 71.10% (offline) | §2.4 (26); C4, chuỗi | Thời gian = cửa sổ tuyệt đối, không thấy predicate giữa hai sự kiện; benchmark tự dựng | **V3** (11/11) |
+| Kumar et al., TAC, arXiv:2602.15766v2 | 2026 | Caption có timestamp | Hỗn hợp tổng hợp; MMAU-Pro… | Timestamp tổng hợp | LALM + FLAM | EvtF1, SegF1, Hal% (FLAM < 0.25) | — (không dùng số) | §2.4 (27); C2 | Hal% phụ thuộc model chấm FLAM | **V3** (11/11) |
+| Kuan et al., ECHO, arXiv:2406.08402v1 | 2024 | Object hallucination ở LALM | AudioSet | Nhãn lớp | LALM | ECHO-I/ECHO-S (kiểu CHAIR) | — | §2.4 (29); C2 | Không có thời gian/thứ tự | **V3** (11/11) |
+| Weck & Serra, arXiv:2302.12258v1 (ICASSP 2023) | 2023 | Rò rỉ dữ liệu retrieval | SoundDesc | — | Panako + bi-encoder | Recall retrieval | Trùng ở train/test làm điểm cao giả | §2.4 (28); C3 | Một dataset, không xuyên dataset | **V3** (11/11) |
+| Xie et al., arXiv:2306.01533v2 | 2024 | Quan hệ thời gian trong caption | Clotho | Tag SED | AAC + SED | BLEU…, metric thời gian riêng | — | §2.4 (30); C2 | Chỉ đọc phần tóm tắt/giới thiệu | **V2** (11/11) |
+| Wijngaard et al., arXiv:2407.06947v2 | 2025 | Khảo sát dataset audio-language | 69 dataset | — | CLAP (phân tích rò rỉ) | Độ tương đồng centroid, % cặp > ngưỡng | Tập con không chồng lấn ở ngưỡng 99% | §2.4 (31); C3 | Phân tích dựa embedding, không fingerprint | **V3** (11/11) |
 
 ---
 
@@ -615,11 +685,13 @@ Từ khóa gợi ý: `polyphonic sound event detection`, `environmental noise da
 
 | # | Claim | Trạng thái | Nếu sai thì |
 |---:|---|---|---|
-| 1 | Chưa có bộ metric đo factual grounding của caption âm thanh so với timeline | ⚠️ CẦN XÁC MINH | C2 đổi thành "áp dụng và mở rộng", phải so với bộ đã có |
-| 2 | Nghiên cứu transfer thường không audit duplicate xuyên dataset | ⚠️ CẦN XÁC MINH | C3 đổi thành "áp dụng vào cặp DataSEC–DataSED" |
-| 3 | Retrieval âm thanh thường không hỗ trợ temporal predicate | ⚠️ CẦN XÁC MINH | C4 đổi thành đóng góp kỹ thuật, không phải đóng góp khái niệm |
+| 1 | Chưa có bộ metric đo factual grounding của caption âm thanh so với timeline | **Rút lại một phần (11/11):** có ECHO, TAC Hal%, metric thời gian của Xie; chưa thấy bộ trùng khít | C2 = "áp dụng và mở rộng", so với ECHO/TAC ở báo cáo |
+| 2 | Nghiên cứu transfer thường không audit duplicate xuyên dataset | **Rút lại (11/11):** Weck & Serra 2023 audit Panako, Wijngaard 2025 đo chồng lấn xuyên dataset | C3 = "áp dụng vào cặp DataSEC–DataSED" (đã thực hiện) |
+| 3 | Retrieval âm thanh thường không hỗ trợ temporal predicate | **Giữ có điều kiện (11/11):** LA-RAG có cửa sổ thời gian tuyệt đối, không thấy predicate giữa hai sự kiện | C4 = đóng góp kỹ thuật; không viết "lần đầu" |
 
 **Rút lại một claim không làm khóa luận yếu đi.** Giữ một claim sai thì có.
+
+Phạm vi tra 11/11 là **tìm mức khóa luận, không phải systematic review đầy đủ**: ba truy vấn mở rộng + đọc văn bản sáu bài; không dùng cơ sở dữ liệu trả phí; không đọc X-ACE, BAT, RiTTA, FLAM. Báo cáo ghi giới hạn này khi nêu các claim.
 
 ---
 
@@ -657,4 +729,7 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 08/10 | WebFetch | zenodo.org/records/{17033970, 15346092, 23097290}; zenodo.org/api/records/{17033970,15346092}/versions | **DataSEC v4** (02/10/2026) sửa lỗi số file Music; repo dùng 17033970 (5,048 file); DataSED một phiên bản | §2.3 (23), ADR-0041 |
 | 08/10 | WebSearch + WebFetch + đọc trực tiếp PDF trang 1–3 | `Fredianelli Artuso … DataSED …`; arxiv.org/html/2607.13571; dael.euracoustics.org/confs/fa2025/data/articles/000340.pdf | Bài ngoài đầu tiên dùng DataSED (frame mAP, chia ngẫu nhiên đoạn — không so được); bài FA2025 là phân loại CLAP | §2.3 (21), (22) |
 | 09/11 | WebSearch (extended ×2, standard ×1) + tác tử web-fetch đọc HTML arXiv | `Fredianelli Artuso Pompei Licitra sound event detection DataSED 2026`; `"DataSED" sound event detection environmental noise results`; `sound event detection onset offset boundary refinement post-processing learned regression 2025 2026`; arxiv.org/html/{2609.30083v1, 2603.05128v4} | Vẫn **chưa có** bài nào báo số SED event-based trên DataSED; nhóm tác giả chưa công bố SED sau bài dataset. PolyBench dùng 169 clip DataSED cho hỏi đáp LALM; COSED không dùng DataSED. Kết quả tìm 'learned boundary refinement' chỉ ra nguồn cũ (Phan và cs. 2014–2015 regression forest onset/offset; YOHO 2022) — chưa đọc, V1 | §2.3 (24), (25) |
+| 11/11 | WebSearch (extended ×3) | `audio captioning hallucination evaluation metric sound event grounding`; `cross-dataset duplicate leakage audio datasets overlap pretraining evaluation contamination sound event`; `temporal relation query sound event retrieval "before" "after" audio timeline retrieval language query` | Tóm tắt (V1–V2): ECHO, TAC, X-ACE, AHA, ARIA-Rubrics; SoundDesc leakage, khảo sát chồng lấn dataset; LA-RAG, BAT, RiTTA | §2.4 |
+| 11/11 | curl + `pdftotext` + **đọc trực tiếp** | arxiv.org/pdf/{2602.14612v4, 2602.15766, 2302.12258, 2306.01533, 2406.08402, 2407.06947} | (26)–(31); LA-RAG thay đổi trạng thái C4 và claim chuỗi; ba claim §9 rút lại/hạ | §2.4, §9 |
+| 11/11 | Crossref API `works/{DOI}` | 10.3390/app6060162; 10.1109/TASLP.2020.3030497; 10.1109/ICASSP40776.2020.9052995 | Đóng các `⚠️ CẦN XÁC MINH` DOI Mesaros 2016, vol/pages PANNs, DOI PSDS | §2.1 (3), (8) |
 | 03/10 (rà soát L3) | Web, đọc trực tiếp FAQ chính thức, mục adaptation/ShareAlike/AI | https://creativecommons.org/faq/ | FAQ không thiết lập quy tắc mọi checkpoint học từ dữ liệu CC đều tự động cùng license; đánh dấu cần xác minh riêng thay cho kết luận pháp lý tuyệt đối. Nguồn hướng dẫn, không phải paper và không thêm vào bibliography | report/danh_gia_bao_cao_20261003.md K02 |

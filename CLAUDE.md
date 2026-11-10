@@ -58,6 +58,8 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 11/11/2026 (tối) — R4 văn liệu xong.** Ba claim khoảng trống đã tra: C2 và C3 rút lại thành "áp dụng và mở rộng" (ECHO, TAC; Weck & Serra 2023, Wijngaard 2025), C4 giữ có điều kiện (LA-RAG 2026 đã có event store SQL + cửa sổ thời gian tuyệt đối, không thấy predicate giữa hai sự kiện); claim "chưa ai làm cả chuỗi" bị rút. DOI Mesaros/PSDS và vol/pages PANNs đóng qua Crossref. RELATED_WORK §2.4/§9/§10, PAPER_NOTES S69. **Tiếp theo:** báo cáo cuối (R5), slide (R6), đóng băng 18/11 (R7).
+
 **Cập nhật 11/11/2026 — Hoàn thiện (ADR-0048): caption LLM trên B0/LBR, S21, tài liệu đồng bộ.** Caption LLM chạy lại
 (lượt mở test thứ tư cho W5): omission constrained f2 0.012, B0 0.013, V2 0.007, V3 0.081 (timeline dày), constrained-cover 0
 ở mọi hệ thống, hallucination ≤ 0.022. S21 trên dev: Δ PSDS-2 −0.0078 (tái hiện), lưới ngưỡng (H1) và `alpha_st` (H3) đủ
@@ -809,6 +811,10 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-11 (tối) — R4: tra văn liệu cho ba claim khoảng trống
+
+Người dùng giao chạy tự động ba tiếng (commit và push dưới danh `paterdubs`). Ba truy vấn WebSearch mở rộng, tải và đọc sáu bài arXiv (LA-RAG, TAC, ECHO, Weck & Serra, Xie, Wijngaard), Crossref cho DOI/vol. LA-RAG làm đổi trạng thái C4 và claim chuỗi: không còn viết "lần đầu". Phạm vi tra có giới hạn, ghi ở RELATED_WORK §2.4 và §9.
 
 ### 2026-11-11 — Hoàn thiện: đồng bộ tài liệu, caption LLM trên B0/LBR, chẩn đoán PSDS
 
