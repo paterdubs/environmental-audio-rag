@@ -118,8 +118,9 @@ $env:EARAG_SERVED_MODE = "recall_first"   # mặc định: ưu tiên phát hiệ
 & .venv\Scripts\python.exe -m scripts.serve_demo
 ```
 
-Container inference cần **rebuild** (`requirements-inference.txt` đã thêm `scikit-learn`) và truyền hai
-biến trên qua Compose trước khi bật trong Docker. Không đặt `EARAG_SERVED_LBR` thì hành vi cũ giữ nguyên;
+Trong Docker: `docker-compose.yml` truyền sẵn hai biến trên cho dịch vụ inference (rỗng = tắt). Đặt biến
+trong shell rồi chạy `docker compose --profile app up -d --build inference api`; lần đầu cần **build lại**
+vì `requirements-inference.txt` đã thêm `scikit-learn`. Không đặt `EARAG_SERVED_LBR` thì hành vi cũ giữ nguyên;
 `ml.inference` chỉ import scikit-learn khi bật LBR (có test). Event lưu DB mang `model_version`
 `<run phục vụ>+<run LBR>:<chế độ>` để truy nguồn. Chuyển chế độ hiện là khởi động lại với biến
 môi trường khác; công tắc trên giao diện chưa làm.

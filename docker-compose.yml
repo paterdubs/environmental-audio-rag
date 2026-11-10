@@ -49,6 +49,10 @@ services:
     environment:
       HF_HUB_OFFLINE: "1"
       TRANSFORMERS_OFFLINE: "1"
+      # LBR tùy chọn (ADR-0045 §11, docs/DEMO.md): rỗng = tắt, giữ hành vi cũ. Đường dẫn tương đối
+      # trong repo, ví dụ ml/runs/sed_lbr_B0v3_<ts>; chế độ f1 | recall_first.
+      EARAG_SERVED_LBR: ${EARAG_SERVED_LBR:-}
+      EARAG_SERVED_MODE: ${EARAG_SERVED_MODE:-recall_first}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s
