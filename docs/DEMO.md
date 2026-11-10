@@ -1,7 +1,9 @@
-# Kịch bản demo local B0 (7–10 phút)
+# Kịch bản demo local B0 + LBR V3 (7–10 phút)
 
 Demo phục vụ hệ thống SED cuối giai đoạn O, **B0** (ADR-0042): `sed_served_B0_20261107T175659Z`
 (5 model fold, cửa sổ chồng lấn hop 5 s gộp tam giác) + `sebb_cv_selection_annotated.json`.
+Mặc định `demo_up.ps1` bật thêm **LBR V3** ở điểm `recall_first` (ADR-0045 §11, ADR-0047): event
+dựng từ posterior B0 bằng bộ tinh chỉnh biên + chấm lại box; `-NoLbr` chạy B0 + cSEBB thuần.
 Rollback về f2: đặt `EARAG_SERVED_RUN=ml/runs/sed_ensemble_t2b_20260927T200914Z` (status báo
 `official=false`). Máy demo cần Docker Desktop, checkpoint/BGE-M3/Qwen
 đã tải sẵn trong repo local và llama.cpp Qwen3.5-9B theo `ml/configs/caption_llm.yaml`.
@@ -15,7 +17,7 @@ PowerShell 5.1, từ thư mục repo:
 ```
 
 Script kiểm Docker, đọc model path từ `caption_llm.yaml`, khởi động llama.cpp cổng 8081 nếu
-chưa có, build và khởi động Compose, chờ `/health` và f2 `official=true`, kiểm parser, nạp
+chưa có, build và khởi động Compose, chờ `/health` và status khớp (B0; LBR V3 `recall_first` khi bật), kiểm parser, nạp
 history TRAIN nếu corpus `upload` đang rỗng, rồi mở `http://127.0.0.1:8088`.
 
 Tuỳ chọn làm lại riêng history demo:
@@ -96,24 +98,27 @@ node scripts/capture_demo_screenshots.mjs
 ## Checklist ngày demo
 
 - [ ] Docker Desktop đã chạy; `docker compose ps` cho `db`, `inference`, `api` healthy.
-- [ ] `demo_check.ps1` pass; status báo `official=true`, `served_run` là f2.
+- [ ] `demo_check.ps1` pass; status báo `served_run` là B0 và `lbr_run`/`operating_point` đúng (B0 thuần thì `official=true`).
 - [ ] RAM/VRAM còn trống, đóng IDE/browser/app nặng, cắm sạc.
-- [ ] Qwen, BGE-M3 và f2 có trên đĩa; không phụ thuộc mạng.
+- [ ] Qwen, BGE-M3, run B0 và run LBR V3 có trên đĩa; không phụ thuộc mạng.
 - [ ] Đo thời gian khởi động thật từ `demo_up.ps1` đến trang sẵn sàng; ghi vào sổ buổi demo.
 - [ ] Có sẵn một WAV TRAIN chưa nằm trong history và đã nghe thử đoạn audio.
 - [ ] Nếu cần làm sạch dữ liệu demo: `.\scripts\demo_up.ps1 -ResetHistory`.
 - [ ] Nếu live lỗi: dùng ảnh trong `docs/demo_screenshots/`, hoặc tắt llama.cpp và chuyển
       bộ lọc thủ công.
 
-## Bật LBR cho demo (ADR-0045, ADR-0046 §5) — tùy chọn, chưa qua test
+## LBR cho demo (ADR-0045, ADR-0046 §5, ADR-0047) — mặc định bật
 
 LBR dựng event từ posterior B0 bằng model tinh chỉnh biên + chấm lại box. Cho demo dùng **V3**
-(`ml/runs/sed_lbr_B0v3_<ts>`, sinh theo `docs/notes/test_once_lbr.md` bước 1; ADR-0045 §11) ở chế độ
-`recall_first`; V2 (`ml/runs/sed_lbr_B0_20261109T172809Z`) là hệ thống của số chính. Khi bật, `/api/v1/models/status` báo `official=false`
-cho tới khi LBR qua lượt test một lần (`docs/notes/test_once_lbr.md`).
+(`ml/runs/sed_lbr_B0v3_20261110T042337Z`, ADR-0045 §11) ở chế độ `recall_first`; V2
+(`ml/runs/sed_lbr_B0_20261109T172809Z`) là hệ thống của số chính. Cả hai đã qua lượt test một lần
+(ADR-0045 §12) nhưng V3 là lựa chọn hậu nghiệm trên OOF nên `/api/v1/models/status` vẫn báo
+`official=false` và giao diện gắn nhãn demo. Ở điểm này recall giao nhau trên test 0.8203 với precision
+0.7812 (B0: 0.5351 / 0.9706): nói rõ khi trình bày rằng demo ưu tiên phát hiện, đổi lấy precision thấp hơn.
+Parity CUDA: [báo cáo](measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.md).
 
 ```powershell
-$env:EARAG_SERVED_LBR = "ml/runs/sed_lbr_B0v3_<ts>"   # V2: ml/runs/sed_lbr_B0_20261109T172809Z
+$env:EARAG_SERVED_LBR = "ml/runs/sed_lbr_B0v3_20261110T042337Z"   # V2: ml/runs/sed_lbr_B0_20261109T172809Z
 $env:EARAG_SERVED_MODE = "recall_first"   # mặc định: ưu tiên phát hiện; "f1" = điểm vận hành chính
 & .venv\Scripts\python.exe -m scripts.serve_demo
 ```

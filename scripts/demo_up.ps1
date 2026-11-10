@@ -1,7 +1,11 @@
 param(
     [switch]$ResetHistory,
-    [int]$HistoryCount = 20
+    [int]$HistoryCount = 20,
+    [switch]$NoLbr  # chạy B0 + cSEBB thay vì LBR V3 (ADR-0047)
 )
+
+# Demo mặc định chạy LBR V3 ở điểm ưu tiên phát hiện (ADR-0045 §11); biến môi trường có sẵn được giữ.
+$DefaultLbrRun = "ml/runs/sed_lbr_B0v3_20261110T042337Z"
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
@@ -50,13 +54,25 @@ if (-not $llamaReady) {
     Wait-Http "http://127.0.0.1:8081/health" "llama.cpp" 180
 } else { Write-Host "[llama.cpp] đã có server trên cổng 8081." }
 
-Write-Host "[Compose] khởi động db, inference, api và frontend..."
+if ($NoLbr) {
+    Remove-Item Env:EARAG_SERVED_LBR -ErrorAction SilentlyContinue
+} elseif ([string]::IsNullOrWhiteSpace($env:EARAG_SERVED_LBR)) {
+    $env:EARAG_SERVED_LBR = $DefaultLbrRun
+    if ([string]::IsNullOrWhiteSpace($env:EARAG_SERVED_MODE)) { $env:EARAG_SERVED_MODE = "recall_first" }
+}
+Write-Host "[Compose] khởi động db, inference, api và frontend (LBR: '$env:EARAG_SERVED_LBR')..."
 docker compose --profile app up -d --build
 if ($LASTEXITCODE -ne 0) { Fail-Step "Compose" "docker compose up thất bại." }
 Wait-Http "http://127.0.0.1:8088/health" "api" 300
 $status = Invoke-RestMethod "http://127.0.0.1:8088/api/v1/models/status"
-if (-not $status.success -or -not $status.data.official -or $status.data.served_run -notmatch "sed_ensemble_t2b") {
-    Fail-Step "models/status" "API không báo f2 official=true."
+$expectedLbr = $env:EARAG_SERVED_LBR
+if (-not $status.success -or $status.data.served_run -notmatch "sed_served_B0") {
+    Fail-Step "models/status" "API không báo hệ thống phục vụ B0."
+}
+if ([string]::IsNullOrWhiteSpace($expectedLbr)) {
+    if (-not $status.data.official) { Fail-Step "models/status" "API không báo official=true cho B0." }
+} elseif ($status.data.lbr_run -ne $expectedLbr -or $status.data.operating_point -ne $env:EARAG_SERVED_MODE) {
+    Fail-Step "models/status" ("LBR không khớp: lbr_run={0}, operating_point={1}" -f $status.data.lbr_run, $status.data.operating_point)
 }
 $parse = Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8088/api/v1/retrieval/parse" `
     -ContentType "application/json" -Body '{"question":"Bản ghi nào có tiếng chim?","language":"vi"}'
