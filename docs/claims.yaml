@@ -246,3 +246,15 @@ claims:
     decimals: 1
     mentions:
       - {file: docs/REPRODUCE.md, text: "constrained {value} s (`wall_clock_s`"}
+
+  # ---------- PSDS B0 cùng lưới log (ADR-0048 §3) ----------
+  - id: b0_test_psds1_log_grid
+    source: docs/measurements/lbr_psds_grid_20261110_annotated_b0.json
+    key: [results, {system: "B0 (cSEBB)"}, curves, "log 1e-5..0.99 (mới)", psds, psds_1]
+    mentions:
+      - {file: docs/PLAN.md, text: "B0 lưới log {value} / 0.7452"}
+  - id: b0_test_psds2_log_grid
+    source: docs/measurements/lbr_psds_grid_20261110_annotated_b0.json
+    key: [results, {system: "B0 (cSEBB)"}, curves, "log 1e-5..0.99 (mới)", psds, psds_2]
+    mentions:
+      - {file: docs/PLAN.md, text: "B0 lưới log 0.3061 / {value}"}

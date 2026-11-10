@@ -1,6 +1,7 @@
 # PLAN.md — Master Plan 8 tuần
 
-**Bắt đầu:** 22/09/2026 · **Deadline:** 09/11/2026 · **Buffer:** tới 16/11/2026
+**Bắt đầu:** 22/09/2026 · **Deadline:** 28/11/2026 (người dùng xác nhận 08/11; mốc 09/11 cũ đã
+lỗi thời) · **Đóng băng:** 18/11/2026 (ADR-0043)
 
 > Mỗi tuần chỉ hoàn tất khi đạt **Nghiệm thu** và cập nhật
 > [STATUS.md](STATUS.md). "Code chạy" không phải nghiệm thu.
@@ -18,14 +19,17 @@
 | W5 | 20–26/10 | Grounded caption + metric hallucination | ✅ làm sớm (ADR-0022/0023) |
 | W6 | 27/10–02/11 | Event store + RAG + retrieval benchmark | ✅ làm sớm (ADR-0027 duyệt 26/09; Alembic hoãn) |
 | W7 | 03–09/11 | API + frontend + test một lần | ✅ hoàn tất sớm 02/10: 7.1–7.5 trên f2; 7.6 measurement tổng tree sạch; 7.7 artifact freeze + REPRODUCE |
-| W8 | 10–16/11 | Buffer, chỉ dùng khi được gia hạn (viết báo cáo dời lên 19/10) | ○ |
+| W8 | 10–16/11 | Không còn là buffer: hạn mới 28/11, xem khối "Lộ trình hoàn thiện" | → R1–R7 |
 | SED v2 | thêm 26/09 | Cải thiện model SED ([ADR-0030](decisions/ADR-0030-cai-thien-sed-v2.md)) + tài liệu cho paper | ✅ chốt 26/09 tối; là baseline cho S9/S13 |
 | Cải thiện cuối | 27/09–18/10 | RQ1-v2, Track 2 PretrainedSED, lớp hiếm, vòng chọn cuối ([ADR-0031](decisions/ADR-0031-lo-trinh-cai-thien-cuoi-va-dong-bang-model.md)) | ✅ hoàn tất sớm 29/09; f2 khóa trước test |
-| Viết báo cáo | 19/10–09/11 | Luận văn + slide (ADR-0031 §7) | ◐ 02/10: đã viết nháp học thuật Chương 1–4; còn Chương 5–7, dàn trang và slide |
-| Giai đoạn O | 08/10–27/10 | Tối ưu SED sau giữa kỳ: sửa dữ liệu, suy luận chồng lấn, kiến trúc, học biên, DataSEC → nhãn mạnh, chọn bằng OOF 5 fold ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md)) | ○ Proposed 08/10, chờ duyệt |
+| Báo cáo giữa kỳ | 02–04/10 | DOCX/PDF 63 trang + slide theo mẫu khoa | ✅ 03–04/10 (`report/`); số còn trên f2 |
+| Giai đoạn O | 08/10–14/10 | Tối ưu SED sau giữa kỳ, chọn bằng OOF 5 fold ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md)) | ✅ B0 (§11), test một lần 14/10 (§12); O6 phục vụ B0 + S8-lite 08/11 (ADR-0042, ADR-0044) |
+| Giai đoạn P | 08/11 | Tăng phát hiện: P1 seed, P2 KD, P3 cửa sổ 20 s, P4 gain/EQ ([ADR-0043](decisions/ADR-0043-giai-doan-p-tang-phat-hien.md)) | ✅ cả bốn không vượt B0 (S60–S63) |
+| LBR | 09–10/11 | Tinh chỉnh biên + chấm lại box học trên OOF ([ADR-0045](decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md), [0046](decisions/ADR-0046-thuoc-ung-dung-va-tap-lop-viet-nam.md), [0047](decisions/ADR-0047-rq2-rq3-tren-event-lbr.md)) | ✅ test 10/11: V2 số chính, V3 demo; RQ2 template/RQ3 chạy lại; demo LBR V3 |
+| Hoàn thiện | 10–28/11 | R1–R7: đồng bộ tài liệu, caption LLM trên B0/LBR, chẩn đoán PSDS, văn liệu, báo cáo cuối, slide, đóng băng ([ADR-0048](decisions/ADR-0048-caption-llm-tren-b0-lbr-va-chan-doan-psds.md)) | ◐ xem khối "Lộ trình hoàn thiện" |
 
-**Nếu không dùng buffer, W7 là tuần cuối.** Mọi thứ phải xong trước 09/11. Từ 26/09 lịch đi theo
-khối "Lộ trình tới hạn nộp" bên dưới: **mốc đóng băng model 18/10**.
+Lịch từ 10/11 đi theo khối **"Lộ trình hoàn thiện"** (sau giai đoạn O). Các khối W1–W7, SED v2 và
+"Lộ trình tới hạn nộp" bên dưới là lịch sử đã đóng; mốc 09/11 và 18/10 trong đó đã lỗi thời.
 
 ---
 
@@ -290,7 +294,7 @@ dùng cho cải thiện model, rồi viết báo cáo trước hạn.
 
 ---
 
-# Giai đoạn O · 08/10–27/10 · Tối ưu SED ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md), **Proposed**)
+# Giai đoạn O · 08/10–27/10 · Tối ưu SED ([ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md), Accepted 08/10)
 
 Người dùng (08/10): sau báo cáo giữa kỳ, dồn sức vào SED vì caption và RAG bị chặn bởi chất lượng SED.
 **Người dùng duyệt ADR-0041 ngày 08/10; trạng thái từng task cập nhật 14/10 bên dưới.**
@@ -321,7 +325,7 @@ Chẩn đoán dẫn đường (ADR-0041 Context):
 | O4.1 | Ghi tên ứng viên tầng C vào ADR-0041 **trước** khi chạy fold | O4 | O1–O3 | ✅ vòng 1 ghi muộn (§8, sai lệch đã ghi); vòng 2 ghi trước (§9) |
 | O4.2 | Tầng C: B0 + ≤ 3 ứng viên + ensemble liên họ × 5 fold; OOF; chọn theo luật; **commit** | O4 | O4.1 | ✅ **B0** (ADR-0041 §11, `oof_selection_20261014`) |
 | O5.1 | Dump test, đánh giá đúng một lần, sổ test, bootstrap so f2 | O5 | O4.2 commit | ✅ 14/10: B0 macro 0.1366, micro 0.1806; Δ micro so f2 +0.0164 [−0.0128, +0.0495] (ADR-0041 §12) |
-| O6.1 | Phục vụ hệ thống mới (parity CUDA/CPU), S8-lite theo lựa chọn của người dùng | O6 | O5.1 | ○ |
+| O6.1 | Phục vụ hệ thống mới (parity CUDA/CPU), S8-lite theo lựa chọn của người dùng | O6 | O5.1 | ✅ 08/11: `sed_served_B0` (ADR-0042), S8-lite W5 template + W6 trên B0 (ADR-0044) |
 
 **Nghiệm thu giai đoạn O:** luật chọn commit trước test (có hash); OOF và test của mọi hệ thống
 trong tầng C đều được báo, kèm chỉ số ứng dụng; PAPER_NOTES ghi mọi thí nghiệm tầng S, kể cả âm
@@ -406,10 +410,24 @@ tính; sổ test cập nhật; báo cáo cuối dùng đúng các số này.
 
 ---
 
-# W8 · 10–16/11 · Buffer
+# Lộ trình hoàn thiện · 10–28/11 ([ADR-0048](decisions/ADR-0048-caption-llm-tren-b0-lbr-va-chan-doan-psds.md))
 
-Chỉ dùng nếu được gia hạn. Việc viết báo cáo **đã dời lên 19/10–09/11** (ADR-0031 §7), không chờ
-W8. Nếu dùng W8, ưu tiên: vá lỗ hổng nghiệm thu → hoàn thiện `RELATED_WORK.md` → làm đẹp giao diện.
+Người dùng 10/11: làm hoàn thiện, đầy đủ, đúng; không để lở dở. Hệ thống SED đã khóa (B0, LBR V2
+số chính, V3 demo); từ đây **không thêm ứng viên SED**. Mọi số mới phải qua `check_doc_claims`,
+mọi lệnh trong tài liệu qua `check_doc_commands`.
+
+| # | Task | Hạn | Trạng thái |
+|---:|---|---|---|
+| R1 | Đồng bộ PLAN, SYSTEM, REPRODUCE theo B0/LBR; sửa PSDS B0 trích nhầm (ADR-0048 §4); bộ kiểm `check_doc_claims` + `check_doc_commands` | 12/11 | ◐ sửa số, hai bộ kiểm, REPRODUCE, PLAN xong; SYSTEM đang làm |
+| R2 | Caption LLM RQ2 trên B0/V2/V3, ba nhánh, mức e2e: dev → cổng → test (ADR-0048 §1); chấm + `report_rq2_llm_systems` | 12/11 | ◐ hàng đợi chạy từ 10/11 18:15 |
+| R3 | Chẩn đoán PSDS S21 trên dev (§2); PSDS B0 trên test cùng lưới log (§3) | 11/11 | ◐ §3 xong: B0 lưới log 0.3061 / 0.7452; §2 đang chạy |
+| R4 | Văn liệu: systematic search cho ba claim mới lạ (RELATED_WORK §9), DOI/vol còn thiếu, bỏ hoặc hạ các `⚠️ CẦN XÁC MINH` | 13/11 | ○ |
+| R5 | Báo cáo cuối: Chương 4–7 theo B0/LBR, bảng/hình sinh từ artifact, bìa/header "khóa luận" tháng 11, DOCX/PDF, `check_midterm_docx`-tương đương | 17/11 | ○ |
+| R6 | Slide bảo vệ + kịch bản; chụp lại ảnh demo trên LBR V3 | 18/11 | ○ |
+| R7 | Đóng băng 18/11: sổ test, freeze, gate (ruff, pytest, hai bộ kiểm), người dùng push | 18/11 | ○ |
+
+19–28/11: đọc lại, sửa theo nhận xét GVHD, nộp. Không mở test mới sau R2/R3 trừ khi ghi trước và
+người dùng duyệt.
 
 ---
 
@@ -446,11 +464,11 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~2~~ | ~~`find_duplicates` và `check_leakage` chưa có~~ — **đóng 23/09** | — | ✅ |
 | ~~3~~ | ~~Chưa lưu logit thô~~ — **đóng 23/09** (G2): `predictions/{dev,test}.npz` mọi run SED | — | ✅ |
 | ~~4~~ | ~~Manifest thiếu `data_manifest_sha256` và `postproc`~~ — **đóng 23/09** (G2/H2): `data_manifest_sha256` trong `manifest.json`, `postproc.json` schema riêng (`contracts/postproc.schema.json`) | — | ✅ |
-| 5 | Seed reproducibility: classifier **tái lập bit-for-bit** (D2). **SED KHÔNG tái lập** cùng seed (24/09): code train không đổi, frame macro-F1 B 0.5850→0.5705, C 0.5947→0.5893. Nguyên nhân chưa xác minh. Hệ quả: mọi số SED phải báo mean±sd nhiều run, không báo 1 run | **CAO** | W3 |
-| 6 | `RELATED_WORK.md` còn `⚠️ CẦN XÁC MINH`, chưa có DOI | TRUNG BÌNH | W8 |
+| 5 | Seed reproducibility: classifier **tái lập bit-for-bit** (D2). **SED KHÔNG tái lập** cùng seed (24/09): code train không đổi, frame macro-F1 B 0.5850→0.5705, C 0.5947→0.5893. Nguyên nhân chưa xác minh. Hệ quả: mọi số SED phải báo mean±sd nhiều run, không báo 1 run; giai đoạn O chọn bằng OOF 5 fold; thêm hai seed cho B0 (P1) không đổi micro OOF (S60) | **CAO** | Hạn chế báo cáo |
+| 6 | `RELATED_WORK.md` còn 13 chỗ `⚠️ CẦN XÁC MINH` (ba claim mới lạ chưa systematic search, DOI bài Applied Sciences, vol/pages bài IEEE, năm dòng bảng tổng hợp trống) | TRUNG BÌNH | R4 · 13/11 |
 | ~~7~~ | ~~Ngưỡng T3 0.95/0.85 chưa hiệu chuẩn~~ — **đóng 23/09**: giữ 0.95/0.85, `threshold_calibration.json` | — | ✅ |
 | ~~8~~ | ~~Percentile `g_max` chọn không có cơ sở thực nghiệm~~ — **đóng 25/09** (4.9, ADR-0024): CV 5 fold trên **dev** chọn percentile 25 ở cả 5 ứng viên (cùng hướng A5 đã thấy trên test); ADR-0003 giữ percentile 50 cho số RQ1 | — | ✅ |
-| 11 | `short_duplicate_min = 0.99` chọn từ hình dạng phân bố, chưa hiệu chuẩn trên positive đoạn ngắn | TRUNG BÌNH | W2 |
+| 11 | `short_duplicate_min = 0.99` chọn từ hình dạng phân bố, chưa hiệu chuẩn trên positive đoạn ngắn (E1 chỉ đo positive) | TRUNG BÌNH | Hạn chế báo cáo |
 | ~~12~~ | ~~1,731 ràng buộc cohesion kéo theo cụm lớn~~ — **đóng 23/09**: DataSED cụm lớn nhất 4 (0.6%); DataSEC có cụm 326 (6.5%), cần theo dõi ở W2 | THẤP | ✅ |
 | ~~13~~ | ~~35 cặp xuyên dataset ở dải review chưa có quyết định người~~ — **đóng 23/09**: duyệt tay xong (10 duplicate/1 unsure/24 distinct) | — | ✅ |
 | ~~9~~ | ~~Chưa có CI~~ — **đóng 24/09**: `.github/workflows/ci.yml` xanh trên GitHub Actions | — | ✅ |
@@ -467,6 +485,13 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | 23 | Mã thoát 127 của mọi run v2 (cuDNN giải phóng GRU nhiều lớp có dropout lúc tắt, Windows) — tự động hoá phải kiểm `manifest.complete` (TRAINING_OPS_PLAN §7 #6) | THẤP | Ghi nhận |
 | ~~24~~ | ~~`metrics.json` `best_validation` luôn là max frame macro-F1, kể cả khi checkpoint chọn theo macro-AP (v2)~~ — **đóng 27/09** (`4135d17`): dùng đúng `config.select_metric`; v1 không đổi hành vi | — | ✅ |
 | ~~25~~ | **Đóng 28/09: phương án (B), [ADR-0034](decisions/ADR-0034-chi-cham-recording-co-ground-truth-polyphonic.md)** — `--eval-set annotated`; không đổi raw annotation, split hay train. Đã sinh đủ 18/18 file CV dev annotated sạch cho 9 ứng viên và báo cáo tự động [s13_ranking_annotated_20260928.md](measurements/s13_ranking_annotated_20260928.md). Thứ hạng đổi từ `f4/d/f2/c/f1/e/b/f3/a` (`all`) thành `f2/f4/f1/d/e/c/f3/b/a` (`annotated`); f2 0.2383 ± 0.0562 và f4 0.2354 ± 0.0585, chênh 0.0029 ≤ sd f2 nên không gọi là tốt hơn. Đây chỉ là dữ liệu chuẩn bị cho S13, chưa chọn hệ thống và chưa mở test. Gốc nợ: 14 recording S-0704…S-0717 không có GT polyphonic (train 8 / dev 3 / test 3), xem [polyphonic_coverage_20260927.md](measurements/polyphonic_coverage_20260927.md). | — | ✅ |
+| ~~26~~ | ~~PSDS của B0 bị trích nhầm số ensemble C v1 (0.3489 / 0.6987) ở bảy chỗ ngày 10/11~~ — **đóng 10/11** (ADR-0048 §4, `efcb73e`): sửa theo `evaluation_phase_o_annotated.json` (0.3131 / 0.7310); thêm `check_doc_claims` + `docs/claims.yaml` để bắt lại lỗi cùng loại | — | ✅ |
+| ~~27~~ | ~~PSDS B0 (lưới tuyến tính) và LBR (lưới log) khác thước~~ — **đóng 10/11** (ADR-0048 §3, `19209ea`): B0 lưới log 0.3061 / 0.7452, lưới tuyến tính tái tạo đúng số cũ | — | ✅ |
+| 28 | RQ2 với LLM chỉ có số trên f2; hệ thống cuối là B0/LBR | CAO | R2 · ◐ ADR-0048 §1 |
+| 29 | S21 (event-F1 v2 > v1 nhưng PSDS không tăng) chưa giải thích | TRUNG BÌNH | R3 · ◐ ADR-0048 §2 |
+| 30 | Số chẩn đoán PSDS trên dev OOF trong ADR-0047 và PAPER_NOTES S66 (PSDS-1 0.3676 so B0 0.3512, PSDS-2 0.6535 so 0.7504, chỉ-tinh-chỉnh 0.6602) đến từ script nháp, chưa có artifact trong repo | TRUNG BÌNH | R3: đối chiếu với `psds_diagnosis_*` (B0 dev OOF), ghi rõ nguồn hoặc thay số |
+| 31 | Harness E2E demo kiểm "có recording vừa upload" trên `evidence` (tối đa 3) thay vì `documents` → `rag_contains_uploaded_recording=false` ở `demo_lbrv3_e2e_20261110` dù recording xếp hạng 4 | THẤP | Ghi nhận; sửa nếu chạy lại demo E2E |
+| 32 | Parser trả năm lớp đầu taxonomy cho câu hỏi tổng quát ("có những sự kiện gì trong âm thanh này?"); không nhận recording context | THẤP | Hạn chế báo cáo (ADR-0036 không đổi) |
 
 ---
 
