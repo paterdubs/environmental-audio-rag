@@ -21,6 +21,7 @@ from pathlib import Path
 
 from ml.captioning.lexicon import VI_LEXICON_CONFIG, CaptionLexicon
 from ml.captioning.template import TemplateCaptioner
+from ml.postprocessing.lbr_apply import OPERATING_POINTS
 from ml.provenance import git_state
 from ml.retrieval import store
 from ml.retrieval.document_builder import build_document
@@ -41,6 +42,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", nargs="+", choices=tuple(SPLIT_FILE), default=["validation"])
     parser.add_argument("--device", default=None)
     parser.add_argument("--replace", action="store_true")
+    parser.add_argument("--lbr-point", choices=OPERATING_POINTS, default=None,
+                        help="bắt buộc khi --postproc là manifest LBR (ADR-0047)")
     return parser.parse_args()
 
 
@@ -67,6 +70,7 @@ def build_corpus(args, split: str, taxonomy, embedder: Embedder) -> dict:
         taxonomy,
         args.postproc,
         args.predictions_run,
+        lbr_point=args.lbr_point,
     )
     en = TemplateCaptioner(CaptionLexicon.from_taxonomy(taxonomy))
     vi = TemplateCaptioner(CaptionLexicon.from_taxonomy(taxonomy, config=VI_LEXICON_CONFIG))
@@ -114,7 +118,8 @@ def run_manifest(run_id, args, taxonomy, embedder, loaded, migrations, git) -> d
         "data_manifest_sha256": sed["data_manifest_sha256"],
         "config": {"sed_run": args.run.name,
                    "predictions_run": (args.predictions_run or args.run).name,
-                   "postproc": (args.postproc or args.run / "postproc.json").name,
+                   "postproc": str(args.postproc or args.run / "postproc.json"),
+                   "lbr_point": args.lbr_point,
                    "embedding_version": embedder.version, "model_revision": embedder.revision,
                    "corpora": loaded, "migrations_applied": migrations},
         "environment": {"python": platform.python_version(),

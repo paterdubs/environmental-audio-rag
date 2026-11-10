@@ -46,6 +46,8 @@ from ml.captioning.timeline import canonicalize_timeline
 from ml.evaluation.predictions import load_predictions
 from ml.postprocessing import process_recordings, stack_predictions_by_recording
 from ml.postprocessing.calibration import validate_postproc_artifact
+from ml.postprocessing.lbr_timeline import is_lbr_postproc, lbr_postproc_events
+from ml.postprocessing.lbr_timeline import model_version as lbr_model_version
 from ml.postprocessing.sebb import SebbParams, sebb_candidates, select_boxes
 from ml.taxonomy import Taxonomy, load_taxonomy
 from ml.training.common import git_state, sha256_file
@@ -91,10 +93,18 @@ def e2e_timelines(
     taxonomy: Taxonomy,
     postproc_path: Path | None = None,
     predictions_run: Path | None = None,
+    lbr_point: str | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Timeline từ prediction đóng băng — cùng đường đi với `scripts.generate_captions`."""
+    """Timeline từ prediction đóng băng — cùng đường đi với `scripts.generate_captions`.
+
+    `postproc_path` là manifest LBR (run đóng băng hoặc event cross-fit) thì `lbr_point` bắt buộc
+    (ADR-0047); với hậu xử lý khác thì không được truyền.
+    """
     postproc_path = postproc_path or run_dir / "postproc.json"
     postproc = json.loads(postproc_path.read_text(encoding="utf-8"))
+    is_lbr = is_lbr_postproc(postproc)
+    if is_lbr != (lbr_point is not None):
+        raise SystemExit("--lbr-point chỉ dùng và bắt buộc khi --postproc là manifest LBR")
     class_ids = taxonomy.polyphonic_class_ids
     prediction_dir = predictions_run or run_dir
     artifact = load_predictions(
@@ -104,7 +114,16 @@ def e2e_timelines(
         raise SystemExit(f"predictions split={artifact.split!r}, cần {split!r}")
     probabilities = stack_predictions_by_recording(artifact)
     frame_rate = 1.0 / artifact.frame_hop_s
-    if postproc.get("family") == "csebb":
+    version = run_dir.name
+    if is_lbr:
+        try:
+            estimate = lbr_postproc_events(postproc, postproc_path, probabilities,
+                                           class_ids=class_ids, frame_rate=frame_rate,
+                                           split=split, point=lbr_point)
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
+        version = lbr_model_version(postproc, lbr_point)
+    elif postproc.get("family") == "csebb":
         selected = postproc.get("selected", {})
         params = SebbParams(
             step_filter_s=float(selected["step_filter_s"]),
@@ -132,7 +151,7 @@ def e2e_timelines(
     return {
         rid: canonicalize_timeline(
             f"datased:{rid}", probabilities[rid].shape[0] / frame_rate,
-            estimate.get(rid, []), taxonomy, model_version=run_dir.name,
+            estimate.get(rid, []), taxonomy, model_version=version,
         )
         for rid in sorted(probabilities)
     }

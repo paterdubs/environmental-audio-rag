@@ -1,0 +1,83 @@
+# ADR-0047 — Chạy lại caption template (RQ2) và RAG (RQ3) trên event LBR V2 và V3
+
+**Status:** Accepted (người dùng chọn 10/11: chạy lại RQ2/RQ3 trên event LBR, cả V2 và V3, phạm vi
+template EN/VI + RAG)
+**Date:** 2026-11-10
+
+## Context
+
+Lượt mở test LBR (`98315fd`, ADR-0045 §8) cho V2 micro 0.2965 so với B0 0.1806, Δ +0.1159
+[+0.0741, +0.1593]; V3 là cấu hình ứng dụng cho demo (ADR-0045 §11). Mọi số W5/W6 hiện có lại tính
+trên event B0 (ADR-0044). Người dùng chọn đo lại để caption và RAG mô tả đúng hệ thống mới, thay vì
+ghi hạn chế.
+
+Hai ràng buộc kỹ thuật:
+
+1. W5/W6 dựng timeline qua `e2e_timelines` (`scripts/generate_llm_captions.py`), vốn chỉ nhận
+   posterior + θ/cSEBB.
+2. Model LBR cuối fit trên đủ 5 fold OOF, tức đã thấy **mọi** recording dev. Áp nó lên dev cho số
+   in-sample, đúng lỗi ADR-0044 §1 đã tránh với B0.
+
+## Decision
+
+### 1. Đầu vào
+
+- **Test:** `sed_ensemble_B0_final_test_20261014T085016Z/predictions/test.npz` (artifact đã chấm ở
+  O5 và lượt test LBR, không dump lại) + manifest run LBR đóng băng; event sinh bằng đúng
+  `lbr_scored_boxes`/`lbr_events` như `evaluate_run`.
+- **Validation (dev):** posterior `sed_filtered_B0_oof_dev_20261107T181008Z/predictions/dev.npz`
+  (134 recording, như ADR-0044) + **event cross-fit**: `scripts.export_lbr_oof_events` lặp lại
+  cross-fit lồng nhau của tầng C (cùng OOF nguồn, fold, biến thể, cấu hình), mỗi recording được chấm
+  bằng model không thấy fold của nó, rồi giữ recording split `validation`. Manifest ghi micro F1 trên
+  toàn bộ 564 recording OOF; **phải trùng** measurement tầng C (V2 điểm F1 0.333197, V3 ưu tiên
+  phát hiện 0.230248), lệch thì dừng.
+- **Kiểm trước commit (10/11, bản xem trước tree bẩn, chỉ đọc dev OOF, không đọc test):** micro OOF
+  trên 564 recording trùng tầng C chính xác tới chữ số cuối: V2 điểm F1 0.3331973898858075, V3 ưu
+  tiên phát hiện 0.23024830699774265; mỗi bản giữ 134 recording validation. Bản chính thức vẫn sinh
+  lại trên tree sạch.
+- `e2e_timelines` nhận manifest LBR qua `--postproc` kèm `--lbr-point` bắt buộc
+  (`ml/postprocessing/lbr_timeline.py`); manifest run đóng băng trên split khác `test` bị từ chối.
+  `model_version` của timeline/event là `<run LBR>:<điểm>`.
+- Không đổi lexicon EN/VI, query set, BGE-M3, output parser đã khóa (ADR-0036), contract.
+
+### 2. Cấu hình ghi trước
+
+| Nhãn | Run LBR | Điểm vận hành | Vai trò |
+|---|---|---|---|
+| `lbrv2` | `sed_lbr_B0_20261109T172809Z` | `f1` | số chính của luận văn (cùng hệ SED với số SED chính) |
+| `lbrv3` | `sed_lbr_B0v3_20261110T042337Z` | `recall_first` | đúng cấu hình demo phục vụ (DEMO.md) |
+
+Không chấm thêm điểm vận hành nào khác; không chọn giữa V2/V3 từ số W5/W6.
+
+### 3. Phạm vi
+
+- **W6:** với mỗi nhãn, dựng lại corpus `validation` rồi `test` bằng `build_retrieval_index
+  --replace`; bốn cấu hình (gold/parsed × retrieval/answers) như ADR-0044.
+- **W5:** chỉ template EN và VI (`scripts.score_template_e2e`), mức `e2e`, `--eval-set annotated`;
+  test báo thêm `all` làm độ nhạy. Ba nhánh LLM không chạy lại; số LLM vẫn trên f2 (ADR-0040).
+- Đây là lần mở test **thứ ba** cho W5/W6 (sau S8 và S8-lite). So với B0 (ADR-0044 §4) chỉ mô tả;
+  không đổi hệ thống phục vụ hay lựa chọn SED từ các số này.
+
+### 4. Thứ tự
+
+1. Code + test + ADR này commit; mọi bước dưới chạy trên tree sạch.
+2. `export_lbr_oof_events` cho hai nhãn; kiểm micro OOF trùng tầng C.
+3. Với `lbrv2` rồi `lbrv3`: W6 validation (4 cấu hình) → W5 template dev. Chỉ khi wiring đạt
+   (contract, unsupported-claim, evidence thật) mới sang bước 4.
+4. W6 test (4 cấu hình) → W5 template test, `lbrv2` trước, `lbrv3` sau, để DB demo kết thúc ở V3.
+5. Sổ test, freeze artifact, STATUS, PAPER_NOTES.
+
+## Alternatives considered
+
+| Phương án | Lý do không chọn |
+|---|---|
+| Áp model LBR cuối lên dev | Model đã thấy dev; số validation lạc quan giả |
+| Chỉ V2 hoặc chỉ V3 | Người dùng chọn cả hai: V2 khớp số SED chính, V3 khớp demo |
+| Chạy lại ba nhánh LLM | ~1–1.5 ngày GPU; RQ2 về ràng buộc LLM đã có kết luận trên f2 |
+| Giữ W5/W6 trên B0, ghi hạn chế | Người dùng chọn đo lại |
+
+## Consequences
+
+DB demo kết thúc với corpus V3 (validation cross-fit, test đóng băng). Corpus B0 tái dựng được từ
+ADR-0044. Số validation của LBR không so được trực tiếp với B0 vì event dev đến từ cross-fit, khác
+cách sinh; so sánh với B0 chỉ dùng test.

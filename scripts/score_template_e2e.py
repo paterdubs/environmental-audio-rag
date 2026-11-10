@@ -23,6 +23,7 @@ from ml.captioning.template import TemplateCaptioner
 from ml.evaluation.caption_stats import CI_METRICS, metric_ci, summarise
 from ml.evaluation.coverage import EVAL_SETS, eval_suffix, unannotated_recordings
 from ml.evaluation.grounding import evaluate_grounding
+from ml.postprocessing.lbr_apply import OPERATING_POINTS
 from ml.provenance import git_state
 from ml.taxonomy import load_taxonomy
 from ml.training.common import sha256_file
@@ -41,6 +42,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", choices=("dev", "test"), required=True)
     parser.add_argument("--eval-set", choices=EVAL_SETS, default="annotated")
     parser.add_argument("--frozen-lexicon-sha256", default=None)
+    parser.add_argument("--lbr-point", choices=OPERATING_POINTS, default=None,
+                        help="bắt buộc khi --postproc là manifest LBR (ADR-0047)")
     return parser.parse_args()
 
 
@@ -73,7 +76,7 @@ def main() -> None:
     check_test_gate(args.split, english.sha256(), args.frozen_lexicon_sha256)
     vietnamese = CaptionLexicon.from_taxonomy(taxonomy, config=VI_LEXICON_CONFIG)
     timelines = e2e_timelines(args.predictions_run, args.split, taxonomy, args.postproc,
-                              args.predictions_run)
+                              args.predictions_run, lbr_point=args.lbr_point)
     excluded = unannotated_recordings() if args.eval_set == "annotated" else frozenset()
     timelines = {rid: t for rid, t in timelines.items() if rid not in excluded}
     result = {
@@ -82,6 +85,7 @@ def main() -> None:
         "predictions_sha256": sha256_file(
             args.predictions_run / "predictions" / f"{args.split}.npz"),
         "postproc": str(args.postproc), "postproc_sha256": sha256_file(args.postproc),
+        "lbr_point": args.lbr_point,
         "lexicon_sha256": {"en": english.sha256(), "vi": vietnamese.sha256()},
         "languages": {"en": score(timelines, english, "en"),
                       "vi": score(timelines, vietnamese, "vi")},
