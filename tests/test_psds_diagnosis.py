@@ -110,3 +110,16 @@ def test_localised_gain_hypothesis_compares_tpr_below_and_above_the_chosen_point
     v2_flat = _system(0.20, base2, tpr=dict(zip(efprs, [0.1] * 5, strict=True)), sel=12.0)
     assert diag.evaluate_hypotheses({"v1": v1, "v2": v2_flat})[
         "hypotheses"]["H2"]["psds_1"]["supported"] is False
+
+
+def test_grid_points_skips_operating_points_above_the_event_cap_and_reports_it():
+    def events(n):
+        return {"a": [{"class_id": "x", "onset_s": float(i), "offset_s": i + 0.5, "score": 0.5}
+                      for i in range(n)]}
+
+    table = {0.1: events(5), 0.5: events(2), 0.9: events(1)}
+    points, sizes = diag.grid_points(lambda t: table[t], [0.1, 0.5, 0.9], max_events=3)
+    assert sizes == [5, 2, 1] and len(points) == 2  # điểm 5 event bị bỏ
+    assert diag.skipped_over_cap(sizes, 3) == 1
+    points_all, _ = diag.grid_points(lambda t: table[t], [0.1, 0.5, 0.9])
+    assert len(points_all) == 3

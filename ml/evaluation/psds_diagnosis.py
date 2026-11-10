@@ -41,16 +41,26 @@ def detection_frame(events_by_recording: Mapping[str, Iterable[Mapping[str, Any]
 def grid_points(
     events_at: Callable[[float], Mapping[str, Iterable[Mapping[str, Any]]]],
     grid: Iterable[float],
+    max_events: int | None = None,
 ) -> tuple[list[tuple[pd.DataFrame]], list[int]]:
-    """Một điểm vận hành mỗi ngưỡng; ngưỡng không ra event bị bỏ như ``evaluate_run``."""
+    """Một điểm vận hành mỗi ngưỡng; ngưỡng không ra event bị bỏ như ``evaluate_run``.
+
+    ``max_events`` (ADR-0048 bổ sung): điểm có nhiều event hơn mức này bị bỏ — ``psds_eval`` nối
+    event × nhãn theo từng recording nên vài trăm nghìn event làm hết bộ nhớ. ``sizes`` vẫn ghi
+    số event của mọi ngưỡng để báo số điểm bị bỏ.
+    """
     points: list[tuple[pd.DataFrame]] = []
     sizes: list[int] = []
     for threshold in grid:
         frame = detection_frame(events_at(threshold))
         sizes.append(len(frame))
-        if len(frame):
+        if len(frame) and (max_events is None or len(frame) <= max_events):
             points.append((frame,))
     return points, sizes
+
+
+def skipped_over_cap(sizes: Iterable[int], max_events: int | None) -> int:
+    return 0 if max_events is None else sum(size > max_events for size in sizes)
 
 
 def build_evaluator(ground_truth: pd.DataFrame, metadata: pd.DataFrame,

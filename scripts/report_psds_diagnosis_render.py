@@ -14,8 +14,9 @@ def _f(value: float) -> str:
 def _psds_table(out: dict) -> list[str]:
     lines = ["## PSDS theo lưới và biến thể", "",
              "| Hệ thống | Lưới | Điểm | Event ở ngưỡng thấp nhất | PSDS-1 | PSDS-2 | "
-             "PSDS-1 α_st=0 | PSDS-2 α_st=0 | PSDS-1 DTC=GTC=0.5 | eFPR lớn nhất (PSDS-2) |",
-             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+             "PSDS-1 α_st=0 | PSDS-2 α_st=0 | PSDS-1 DTC=GTC=0.5 | eFPR lớn nhất (PSDS-2) | "
+             "Bỏ vì >50,000 event |",
+             "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for label, res in out["results"].items():
         for grid, g in res["grids"].items():
             s = g["scenarios"]
@@ -24,7 +25,7 @@ def _psds_table(out: dict) -> list[str]:
                 f"{g['events_at_lowest_threshold']} | {_f(s['psds_1']['psds'])} | "
                 f"{_f(s['psds_2']['psds'])} | {_f(s['psds_1']['psds_alpha_st0'])} | "
                 f"{_f(s['psds_2']['psds_alpha_st0'])} | {_f(s['psds_1_dtc05']['psds'])} | "
-                f"{s['psds_2']['efpr_max']:.1f} |")
+                f"{s['psds_2']['efpr_max']:.1f} | {g.get('n_skipped_over_cap', 0)} |")
     return lines
 
 

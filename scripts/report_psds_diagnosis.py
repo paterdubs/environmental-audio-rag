@@ -49,6 +49,9 @@ SCENARIOS = {**PSDS_SCENARIOS,
              "psds_1_dtc05": {**PSDS_SCENARIOS["psds_1"], "dtc_threshold": 0.5,
                               "gtc_threshold": 0.5}}
 GRIDS = {"linear": tuple(DEFAULT_THRESHOLD_GRID), "log": PSDS_GRID_LOG}
+# ADR-0048 bổ sung 10/11 (ghi trước lượt chạy): điểm vận hành có hơn ngần này event bị bỏ vì
+# psds_eval hết bộ nhớ (cSEBB của f2 cho tới 161,527 box ở ngưỡng thấp; B0, v1, v2 dưới 10,000).
+MAX_EVENTS_PER_POINT = 50_000
 # ADR-0048 §2 — ghi trước khi đo; đường dẫn tương đối --runs-root.
 DEFAULT_SYSTEMS = {
     "v1": ("sed_ensemble_C_clean_20260925T045631Z",
@@ -103,9 +106,10 @@ def system_result(events_at: Callable[[float], Events], estimate: Events, *,
         "grids": {},
     }
     for name, grid in grids.items():
-        points, sizes = diag.grid_points(events_at, grid)
+        points, sizes = diag.grid_points(events_at, grid, max_events=MAX_EVENTS_PER_POINT)
         result["grids"][name] = {
             "n_grid": len(grid), "n_points": len(points),
+            "n_skipped_over_cap": diag.skipped_over_cap(sizes, MAX_EVENTS_PER_POINT),
             "events_at_lowest_threshold": sizes[0] if sizes else 0,
             "events_at_highest_threshold": sizes[-1] if sizes else 0,
             "scenarios": {s: diag.curve_stats(diag.build_evaluator(ground_truth, metadata,

@@ -139,3 +139,17 @@ Sổ test thêm 9 file caption test (ba nhánh × ba hệ thống, mức e2e; de
 PSDS B0. Freeze phải
 thêm caption mới. Số RQ2 của báo cáo cuối dùng B0/V2/V3; số f2 giữ làm mốc. Nếu V3 có caption bị
 cắt, đó là giới hạn của ngân sách sinh khi timeline dày, ghi vào hạn chế, không sửa.
+
+## Bổ sung 10/11 (đêm) — giới hạn event mỗi điểm vận hành của chẩn đoán PSDS (ghi trước lượt chạy)
+
+Hai lượt chẩn đoán đầu tiên dừng vì `MemoryError` (4–7 GiB) trong `psds_eval` khi dựng evaluator cho
+f2; **chưa có số nào được ghi hay xem** (script dừng trước khi ghi file). Đo số event theo ngưỡng
+trên dev annotated (chỉ đếm): cSEBB của f2 cho 161,527 box ở ngưỡng 1e-5 và 50,786 ở 0.01 (độ phân
+giải 40 ms, không làm mượt chồng lấn); B0 5,694; v1 2,805; v2 2,807. `psds_eval` nối event × nhãn
+theo từng recording nên chi phí tăng theo bình phương số box.
+
+**Quy tắc cố định:** mọi hệ thống, mọi lưới — điểm vận hành có **hơn 50,000 event** bị bỏ, và số
+điểm bị bỏ được ghi ở mỗi ô (`n_skipped_over_cap`). Chỉ f2 bị ảnh hưởng (các ngưỡng thấp), nên PSDS
+của f2 là PSDS của đường cong cụt ở phía eFPR cao, không so thẳng với số khác; f2 chỉ là hệ thống
+bối cảnh, không nằm trong luật H1–H4 (chỉ v1 và v2). Không đổi luật H1–H4, lưới hay kịch bản.
+Chạy tuần tự từng lượt (annotated rồi all), không song song với llama.cpp.
