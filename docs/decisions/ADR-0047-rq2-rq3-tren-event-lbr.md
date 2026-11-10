@@ -119,3 +119,33 @@ mọi phân vị cho PSDS-1 0.3676 (B0 0.3512) và PSDS-2 0.6535 (B0 0.7504).
    điểm thấp nhất. Số cũ không bị thay thế.
 4. Không chọn lại hệ thống, điểm vận hành hay lưới từ số test. Nếu PSDS-2 vẫn thấp hơn B0, báo
    nguyên văn (trên dev, một phần do tinh chỉnh biên: chỉ-tinh-chỉnh 0.6602 so với B0 0.7504).
+
+## Bổ sung 10/11 — kết quả
+
+Lượt mở test thứ ba cho W5/W6 đã chạy theo §4 trên tree sạch; chỉ mô tả, không đổi hệ thống phục vụ.
+
+**W5, template (test annotated n=139, EN và VI):** hallucination, omission, forbidden term và
+over-specific đều 0.0000 ở B0, V2 `f1`, V3 `recall_first`. Template sinh tất định từ timeline nên 0
+lỗi chứng minh đường ống và lexicon, không chứng minh khả năng tổng quát.
+
+**W6, nDCG@10 test, gold filter, EN [CI 95%]:**
+
+| Cấu hình | B0 (ADR-0044) | LBR V2 `f1` | LBR V3 `recall_first` |
+|---|---:|---:|---:|
+| structured_only | 0.392 [0.315, 0.469] | 0.411 [0.337, 0.486] | 0.683 [0.624, 0.740] |
+| vector_only | 0.458 [0.391, 0.522] | 0.491 [0.432, 0.553] | 0.630 [0.579, 0.679] |
+| hybrid | 0.383 [0.307, 0.461] | 0.404 [0.332, 0.478] | 0.670 [0.610, 0.729] |
+
+Với `parsed` filter các số thấp hơn gold không quá 0.02 ở mọi cấu hình. Câu trả lời ràng buộc
+evidence: unsupported-claim 0.000, contract và evidence thật 97/97 ở cả ba; "có trả lời" hybrid/en
+58/97 (B0), 62/97 (V2), 95/97 (V3); "trích đúng GT" 0.915, 0.899, 0.712.
+
+**Cách đọc.** V2 so với B0: CI chồng lấn, không gọi là tốt hơn. V3 nhảy mạnh vì đưa 668/740 event vào
+corpus; relevance lấy từ ground truth nên nhiều event hơn làm nDCG@10 và độ phủ tăng, còn "trích đúng
+GT" giảm — đọc kèm precision giao nhau 0.7812, không đọc như retrieval tốt hơn. Validation của LBR
+dùng event cross-fit nên không so trực tiếp với B0.
+
+**Số PSDS đo lại (lưới ghi trước).** Xem
+[lbr_psds_grid_20261110_annotated.md](../measurements/lbr_psds_grid_20261110_annotated.md):
+V2 PSDS-1 0.2146 → 0.3512, PSDS-2 0.2960 → 0.6116 (B0 0.3489 / 0.6987); V3 0.3354 → 0.3369 và
+0.6158 → 0.6167. Mô hình, điểm vận hành và event-F1 không đổi. PSDS-2 của V2 vẫn thấp hơn B0.

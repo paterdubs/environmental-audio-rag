@@ -58,6 +58,18 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 10/11/2026 (chiều) — LBR đã qua test; RQ2/RQ3 và PSDS đo lại (ADR-0045 §12, ADR-0047).**
+Test annotated n=139 (người dùng duyệt từng lượt mở): **V2 f1 macro 0.2356, micro 0.2965** so với B0
+0.1366 / 0.1806, Δ micro +0.1159 [+0.0741, +0.1593]; V3 `recall_first` recall giao nhau 0.8203,
+precision 0.7812. PSDS đo lại với lưới `geomspace(1e-5, 0.99, 48)` ghi trước: V2 PSDS-1 0.3512 (B0
+0.3489), PSDS-2 0.6116 (B0 0.6987, vẫn thấp hơn); V3 0.3369 / 0.6167. RQ2 template 0 lỗi; RQ3
+hybrid/en nDCG@10 B0 0.383, V2 0.404 (CI chồng), V3 0.670 (hiệu ứng độ phủ, trích đúng GT 0.915 →
+0.712). Sửa lỗi kẹp biên event LBR ở nơi tiêu thụ (`clip_events_to_duration`, `513e1f0`) — số event-F1
+không đổi. Sổ test 42 lượt SED, freeze thiếu 0. **Tiếp theo:** tài liệu (xong), rồi demo: bật
+`EARAG_SERVED_LBR` (V3 `recall_first`), build lại Docker, parity + E2E; sau đó viết báo cáo/slide trên
+số đã khóa, đóng băng 18/11. Quy định commit mới 10/11: agent được commit nhưng dưới danh `paterdubs`,
+không có Co-Authored-By; không tự push.
+
 **Cập nhật 10/11/2026 (sáng) — V3 ghi trước test (ADR-0045 §11).** Người dùng duyệt: V3 = rescorer nhãn giao nhau, cấu hình ứng dụng cho demo, không thay V2. OOF: chính 0.3058, ưu tiên phát hiện recall giao nhau 0.834 (P 0.674); ngưỡng ở mép lưới. `evaluate_run --extra-lbr` chấm V2 + V3 một lượt; manifest cũ thiếu `environment` thành xfail strict. **Tiếp theo:** người dùng commit → chạy bước 1 runbook (V3 trên tree sạch) → duyệt mở test.
 
 **Cập nhật 10/11/2026 — LBR qua tầng C, chưa mở test (ADR-0045, ADR-0046).**
@@ -65,7 +77,7 @@ V2 (refiner + rescorer) OOF micro 0.2342 → **0.3332** [Δ CI +0.076, +0.120], 
 P1×3 0.3505. Đánh đổi: segment-F1 và recall giao nhau giảm; điểm "ưu tiên phát hiện" chạm đáy lưới. Code:
 `ml/postprocessing/{boundary_refine,lbr_crossfit,lbr_apply}.py`, `scripts/{fit_lbr_oof,lbr_test_section,
 report_lbr_diagnosis}.py`, `evaluate_run` nhận run `sed_lbr`. **Tiếp theo (chờ người dùng):** duyệt mở test
-theo `docs/notes/test_once_lbr.md`. Người dùng yêu cầu 10/11: **không tự commit**, để người dùng commit tay.
+theo `docs/notes/test_once_lbr.md`. Quy định commit cập nhật 10/11 chiều: agent được commit dưới danh `paterdubs`, không Co-Authored-By.
 
 **Cập nhật 09/11/2026 — Chẩn đoán lỗi OOF B0: nút thắt là biên box hậu xử lý; thăm dò LBR.**
 Script nháp (chưa vào repo, chưa ghi ADR, không mở test): 789/1477 event bỏ sót có posterior ≥ 0.9 nhưng box cSEBB bị
@@ -779,6 +791,16 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-10 (chiều) — Test LBR, RQ2/RQ3 trên event LBR, PSDS đo lại, sổ test và freeze
+
+Người dùng duyệt lượt mở test thứ ba cho W5/W6 và đo lại PSDS với lưới ghi trước. Lượt validation V3 dừng
+ở timeline vì 14/945 event vượt cuối recording → kẹp ở nơi tiêu thụ (`513e1f0`, ADR-0047 §5), không đổi
+số event-F1. Chẩn đoán PSDS chỉ trên dev OOF: `T_GRID` cũ cắt ~55% box của V2 (điểm rescorer rất lệch).
+Lưới `geomspace(1e-5, 0.99, 48)` ghi trước (`a5678f8`), đo một lần: V2 0.2146/0.2960 → 0.3512/0.6116,
+V3 0.3354/0.6158 → 0.3369/0.6167; PSDS-2 của V2 vẫn dưới B0 0.6987. Sổ test và freeze mở rộng cho LBR
+(`f24c59a`, `604ebfb`). Ghi PAPER_NOTES S65/S66/C6/R4/R5, ADR-0045 §12, ADR-0047 kết quả, STATUS. Người
+dùng đổi quy định: agent được commit dưới danh `paterdubs`, không Co-Authored-By; không push.
 
 ### 2026-11-10 — Ghi trước V3 và gộp vào lượt mở test
 

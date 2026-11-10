@@ -169,6 +169,31 @@ chạy lại trên tree sạch theo `docs/notes/test_once_lbr.md` bước 1):
 Mã: `matches_intersection` (`ml/postprocessing/boundary_refine.py`), `ALL_VARIANTS`/`RESCORER_LABELS`
 (`lbr_crossfit.py`), `scripts/fit_lbr_application.py`, `evaluate_run --extra-lbr`.
 
+### 12. Kết quả test (10/11, lượt mở test một lần, commit `98315fd`)
+
+Một lượt `evaluate_run --extra-lbr`, test annotated n=139, nguồn
+`sed_ensemble_B0_final_test_20261014T085016Z`, hai run LBR đóng băng. Nguồn:
+[báo cáo](../measurements/sed_ensemble_B0_final_test_20261014T085016Z_eval_phase_lbr_annotated.md).
+
+| 21 lớp, test | Macro | Micro | Nsys/Nref | Giao nhau R | Giao nhau P | Segment 1 s |
+|---|---:|---:|---:|---:|---:|---:|
+| B0 | 0.1366 | 0.1806 | 345/740 | 0.5351 | 0.9706 | 0.7260 |
+| **V2, điểm f1 (số chính)** | **0.2356** | **0.2965** | 373/740 | 0.5108 | 0.9545 | 0.5965 |
+| V3, điểm f1 | 0.1955 | 0.2731 | 395/740 | 0.6486 | 0.9836 | 0.7752 |
+| V3, recall_first (demo) | 0.1754 | 0.2287 | 668/740 | **0.8203** | 0.7812 | 0.7821 |
+
+- Δ micro so B0 (ghép cặp theo recording): V2 **+0.1159 [+0.0741, +0.1593]**; V3 f1 +0.0925
+  [+0.0549, +0.1331]. CI không chạm 0.
+- Hướng OOF được giữ trên test: V2 tăng thước chính và giảm độ phủ (recall giao nhau 0.5351 → 0.5108,
+  segment-F1 0.7260 → 0.5965); V3 recall_first tăng recall giao nhau 0.5351 → 0.8203 với precision
+  0.7812. 19 lớp Việt Nam, V3 recall_first: recall 0.8319, P 0.7810.
+- Không chọn lại V2/V3 theo số test; V2 vẫn là số chính, V3 là cấu hình ứng dụng.
+- PSDS ở lượt này tính trên `T_GRID` cũ (V2 0.2146 / 0.2960 so với B0 0.3489 / 0.6987). Lưới này cắt
+  phần lớn box của V2; đo lại có ghi trước ở [ADR-0047](ADR-0047-rq2-rq3-tren-event-lbr.md) (bổ sung
+  lưới PSDS): V2 0.3512 / 0.6116, V3 0.3369 / 0.6167. PSDS-2 của V2 vẫn thấp hơn B0.
+- Sổ test: [test_ledger_20261110.md](../measurements/test_ledger_20261110.md); freeze:
+  [artifact_freeze_20261110.md](../measurements/artifact_freeze_20261110.md), thiếu 0 artifact.
+
 ## Alternatives considered
 
 1. λ riêng theo lớp trên cSEBB: đo được 0.2335, không tăng.
