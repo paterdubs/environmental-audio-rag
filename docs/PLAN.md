@@ -418,9 +418,9 @@ mọi lệnh trong tài liệu qua `check_doc_commands`.
 
 | # | Task | Hạn | Trạng thái |
 |---:|---|---|---|
-| R1 | Đồng bộ PLAN, SYSTEM, REPRODUCE theo B0/LBR; sửa PSDS B0 trích nhầm (ADR-0048 §4); bộ kiểm `check_doc_claims` + `check_doc_commands` | 12/11 | ◐ sửa số, hai bộ kiểm, REPRODUCE, PLAN xong; SYSTEM đang làm |
-| R2 | Caption LLM RQ2 trên B0/V2/V3, ba nhánh, mức e2e: dev → cổng → test (ADR-0048 §1); chấm + `report_rq2_llm_systems` | 12/11 | ◐ hàng đợi chạy từ 10/11 18:15 |
-| R3 | Chẩn đoán PSDS S21 trên dev (§2); PSDS B0 trên test cùng lưới log (§3) | 11/11 | ◐ §3 xong: B0 lưới log 0.3061 / 0.7452; §2 đang chạy |
+| R1 | Đồng bộ PLAN, SYSTEM, REPRODUCE theo B0/LBR; sửa PSDS B0 trích nhầm (ADR-0048 §4); ba bộ kiểm tài liệu | 12/11 | ✅ 11/11 |
+| R2 | Caption LLM RQ2 trên B0/V2/V3, ba nhánh, mức e2e: dev → cổng → test (ADR-0048 §1); chấm + `report_rq2_llm_systems` | 12/11 | ✅ 11/11 (PAPER_NOTES S67) |
+| R3 | Chẩn đoán PSDS S21 trên dev (§2); PSDS B0 trên test cùng lưới log (§3) | 11/11 | ✅ 11/11 (S68; B0 lưới log 0.3061 / 0.7452) |
 | R4 | Văn liệu: systematic search cho ba claim mới lạ (RELATED_WORK §9), DOI/vol còn thiếu, bỏ hoặc hạ các `⚠️ CẦN XÁC MINH` | 13/11 | ○ |
 | R5 | Báo cáo cuối: Chương 4–7 theo B0/LBR, bảng/hình sinh từ artifact, bìa/header "khóa luận" tháng 11, DOCX/PDF, `check_midterm_docx`-tương đương | 17/11 | ○ |
 | R6 | Slide bảo vệ + kịch bản; chụp lại ảnh demo trên LBR V3 | 18/11 | ○ |
@@ -487,8 +487,8 @@ Cắt từ trên xuống. Không cắt nhảy cóc.
 | ~~25~~ | **Đóng 28/09: phương án (B), [ADR-0034](decisions/ADR-0034-chi-cham-recording-co-ground-truth-polyphonic.md)** — `--eval-set annotated`; không đổi raw annotation, split hay train. Đã sinh đủ 18/18 file CV dev annotated sạch cho 9 ứng viên và báo cáo tự động [s13_ranking_annotated_20260928.md](measurements/s13_ranking_annotated_20260928.md). Thứ hạng đổi từ `f4/d/f2/c/f1/e/b/f3/a` (`all`) thành `f2/f4/f1/d/e/c/f3/b/a` (`annotated`); f2 0.2383 ± 0.0562 và f4 0.2354 ± 0.0585, chênh 0.0029 ≤ sd f2 nên không gọi là tốt hơn. Đây chỉ là dữ liệu chuẩn bị cho S13, chưa chọn hệ thống và chưa mở test. Gốc nợ: 14 recording S-0704…S-0717 không có GT polyphonic (train 8 / dev 3 / test 3), xem [polyphonic_coverage_20260927.md](measurements/polyphonic_coverage_20260927.md). | — | ✅ |
 | ~~26~~ | ~~PSDS của B0 bị trích nhầm số ensemble C v1 (0.3489 / 0.6987) ở bảy chỗ ngày 10/11~~ — **đóng 10/11** (ADR-0048 §4, `efcb73e`): sửa theo `evaluation_phase_o_annotated.json` (0.3131 / 0.7310); thêm `check_doc_claims` + `docs/claims.yaml` để bắt lại lỗi cùng loại | — | ✅ |
 | ~~27~~ | ~~PSDS B0 (lưới tuyến tính) và LBR (lưới log) khác thước~~ — **đóng 10/11** (ADR-0048 §3, `19209ea`): B0 lưới log 0.3061 / 0.7452, lưới tuyến tính tái tạo đúng số cũ | — | ✅ |
-| 28 | RQ2 với LLM chỉ có số trên f2; hệ thống cuối là B0/LBR | CAO | R2 · ◐ ADR-0048 §1 |
-| 29 | S21 (event-F1 v2 > v1 nhưng PSDS không tăng) chưa giải thích | TRUNG BÌNH | R3 · ◐ ADR-0048 §2 |
+| ~~28~~ | ~~RQ2 với LLM chỉ có số trên f2~~ — **đóng 11/11** (ADR-0048 §1, S67) | — | ✅ |
+| ~~29~~ | ~~S21 chưa giải thích~~ — **đóng 11/11** (ADR-0048 §2, S68; gợi ý, không CI) | — | ✅ |
 | 30 | Số chẩn đoán PSDS trên dev OOF trong ADR-0047 và PAPER_NOTES S66 (PSDS-1 0.3676 so B0 0.3512, PSDS-2 0.6535 so 0.7504, chỉ-tinh-chỉnh 0.6602) đến từ script nháp, chưa có artifact trong repo | TRUNG BÌNH | R3: đối chiếu với `psds_diagnosis_*` (B0 dev OOF), ghi rõ nguồn hoặc thay số |
 | 31 | Harness E2E demo kiểm "có recording vừa upload" trên `evidence` (tối đa 3) thay vì `documents` → `rag_contains_uploaded_recording=false` ở `demo_lbrv3_e2e_20261110` dù recording xếp hạng 4 | THẤP | Ghi nhận; sửa nếu chạy lại demo E2E |
 | 32 | Parser trả năm lớp đầu taxonomy cho câu hỏi tổng quát ("có những sự kiện gì trong âm thanh này?"); không nhận recording context | THẤP | Hạn chế báo cáo (ADR-0036 không đổi) |

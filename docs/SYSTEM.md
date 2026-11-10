@@ -1412,36 +1412,59 @@ end-to-end sẽ quy tội sai cho captioner.
 N-gram metric (BLEU/METEOR/CIDEr) chỉ báo phụ, vì không có một cách diễn đạt duy
 nhất đúng cho một timeline.
 
-## 8.4 Mẫu bảng kết quả — điền dần
+## 8.4 Bảng kết quả (số chính, test một lần mỗi hệ thống)
 
-### L2 — SED trên DataSED polyphonic, 21 class
+Mọi số dưới đây trích từ [final_numbers_20261110](measurements/final_numbers_20261110.md) (sinh bởi
+`scripts.report_final_numbers`, chỉ đọc artifact) và được `scripts.check_doc_claims` đối chiếu.
 
-| Nhánh | Encoder | Event F1 | PSDS-1 | PSDS-2 | Frame F1 |
-|---|---|---:|---:|---:|---:|
-| A | CNN+BiGRU scratch | ○ | ○ | ○ | **0.359448** ✅ |
-| B | PANNs CNN14 | ○ | ○ | ○ | ○ |
-| C | PANNs sang DataSEC | ○ | ○ | ○ | ○ |
+### L2 — SED trên DataSED polyphonic, 21 lớp (test annotated n = 139, event-F1 collar 0.2 s)
 
-> Ô `0.359448` là frame-F1 tại theta = 0.5 trên split **candidate**. Không phải
-> kết quả báo cáo. Nguồn:
-> [measurements/sed_polyphonic_20260922T115340Z.md](measurements/sed_polyphonic_20260922T115340Z.md).
+| Hệ thống | Macro | Micro [CI 95%] | Δ micro so B0 [CI] | PSDS-1 / PSDS-2 (lưới log) |
+|---|---:|---:|---:|---:|
+| f2 (mốc S13) | 0.1206 | 0.1643 [0.1103, 0.2242] | — | 0.3164 / 0.7253 (lưới tuyến tính) |
+| B0 | 0.1366 | 0.1806 [0.1261, 0.2384] | — | 0.3061 / 0.7452 |
+| **LBR V2, điểm f1 (số chính)** | **0.2356** | **0.2965** [0.2293, 0.3603] | +0.1159 [+0.0741, +0.1593] | 0.3512 / 0.6116 |
+| LBR V3, điểm f1 | 0.1955 | 0.2731 | +0.0925 [+0.0549, +0.1331] | 0.3369 / 0.6167 |
+| LBR V3, `recall_first` (demo) | 0.1754 | 0.2287 | — | 0.3369 / 0.6167 |
 
-### L3 — Grounded caption
+Thước ứng dụng (giao nhau): recall B0 0.5351 → V3 `recall_first` 0.8203, precision 0.9706 → 0.7812.
+V1 (ensemble C, hệ thống của báo cáo giữa kỳ): micro 0.0941, macro 0.0917. Frame-F1 của baseline dò
+đường 22/09 (0.359448, split candidate) không phải kết quả báo cáo.
 
-Đã có số (test, CI và hiệu số cặp): `measurements/caption_grounding_sed_polyphonic_20260924T054531Z_test.md`,
-diễn giải ở ADR-0023 §4 và ADR-0026. Cột thứ tự là tỷ lệ cặp đúng thứ tự, không phải Kendall τ.
+### L3 — Grounded caption (RQ2), test annotated n = 139, mức e2e
 
-| Nhánh | Mức | Hallucination ↓ | Omission ↓ | Thứ tự (tỷ lệ cặp) ↑ | Forbidden ↓ |
-|---|---|---:|---:|---:|---:|
-| Template / Constrained / Constrained-cover / Unconstrained | Oracle + End-to-end | ✅ | ✅ | ✅ | ✅ |
+Template EN/VI: mọi lỗi 0 ở B0, V2, V3. LLM, omission [CI 95%] (hallucination ≤ 0.022 và từ cấm 0 ở
+mọi nhánh LLM; không caption nào bị cắt):
 
-### L4 — Retrieval
+| Nhánh | f2 | B0 | LBR V2 | LBR V3 |
+|---|---:|---:|---:|---:|
+| unconstrained | 0.005 [0.000, 0.012] | 0.000 [0.000, 0.000] | 0.004 [0.000, 0.014] | 0.023 [0.010, 0.039] |
+| constrained | 0.012 [0.002, 0.024] | 0.013 [0.002, 0.029] | 0.007 [0.000, 0.018] | 0.081 [0.051, 0.112] |
+| constrained-cover | 0.000 | 0.000 | 0.000 | 0.000 |
 
-| Cấu hình | R@1 | R@5 | R@10 | MRR | Filter exactness | Evidence precision |
-|---|---:|---:|---:|---:|---:|---:|
-| `structured_only` | ○ | ○ | ○ | ○ | ○ | ○ |
-| `vector_only` | ○ | ○ | ○ | ○ | ○ | ○ |
-| `hybrid` | ○ | ○ | ○ | ○ | ○ | ○ |
+Đọc: ràng buộc đưa suy diễn bối cảnh và gọi tên quá mức về 0 ở mọi hệ thống; timeline dày của V3 (668
+event) làm nhánh `constrained` bỏ sót nhiều lớp hơn (hiệu so f2 +0.069 [+0.041, +0.097]) trong khi
+`constrained-cover` giữ omission 0. Chi tiết: [rq2_llm_systems_20261110_test_annotated](measurements/rq2_llm_systems_20261110_test_annotated.md).
+
+### L4 — Retrieval (RQ3), test, filter gold, nDCG@10 [CI 95%]
+
+| Cấu hình (EN) | f2 | B0 | LBR V2 | LBR V3 |
+|---|---:|---:|---:|---:|
+| `structured_only` | 0.416 [0.346, 0.487] | 0.392 [0.315, 0.469] | 0.411 [0.337, 0.486] | 0.683 [0.624, 0.740] |
+| `vector_only` | 0.526 [0.467, 0.582] | 0.458 [0.391, 0.522] | 0.491 [0.432, 0.553] | 0.630 [0.579, 0.679] |
+| `hybrid` | 0.415 [0.344, 0.485] | 0.383 [0.307, 0.461] | 0.404 [0.332, 0.478] | 0.670 [0.610, 0.729] |
+
+Unsupported-claim 0.000 ở mọi cấu hình. Bước nhảy của V3 là hiệu ứng độ phủ (nhiều event hơn); tỷ lệ
+trích đúng GT giảm 0.915 → 0.712, không đọc như retrieval tốt hơn.
+
+### RQ1 — C − B (event-F1 micro, test)
+
+v1 (7 run): bootstrap −0.0071 [−0.0164, +0.0021]; v2 (3 + 3 seed): −0.0029 [−0.0254, +0.0199]. Âm tính.
+
+### Chẩn đoán PSDS v1 → v2 (dev annotated, ADR-0048 §2)
+
+Δ = v2 − v1: event-F1 micro +0.0534; PSDS-2 −0.0078 (tái hiện S21), PSDS-1 +0.0114. H1 (lưới cắt đường
+cong) và H3 (`alpha_st`) đủ điều kiện theo luật ghi trước, H2 không. Độ lớn nhỏ, in-sample, không CI.
 
 ## 8.5 L4 — Retrieval
 

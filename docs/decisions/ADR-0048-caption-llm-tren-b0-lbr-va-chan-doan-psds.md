@@ -153,3 +153,23 @@ theo từng recording nên chi phí tăng theo bình phương số box.
 của f2 là PSDS của đường cong cụt ở phía eFPR cao, không so thẳng với số khác; f2 chỉ là hệ thống
 bối cảnh, không nằm trong luật H1–H4 (chỉ v1 và v2). Không đổi luật H1–H4, lưới hay kịch bản.
 Chạy tuần tự từng lượt (annotated rồi all), không song song với llama.cpp.
+
+## Kết quả 11/11
+
+**§1 Caption LLM.** 18 file caption (dev 9, test 9), tất cả `dirty=False`, 0 caption bị cắt, cổng dev đạt. Test annotated n=139, omission:
+
+| Nhánh | f2 | B0 | V2 | V3 |
+|---|---:|---:|---:|---:|
+| unconstrained | 0.005 | 0.000 | 0.004 | 0.023 |
+| constrained | 0.012 | 0.013 | 0.007 | 0.081 |
+| constrained-cover | 0.000 | 0.000 | 0.000 | 0.000 |
+
+Hallucination ≤ 0.022 và từ cấm 0 ở mọi nhánh LLM; template EN/VI 0 lỗi. Với V3 nhánh constrained bỏ sót nhiều lớp hơn (V3 − f2 +0.069 [+0.041, +0.097]) — hiệu ứng timeline dày; cover giữ 0. Chi tiết [rq2_llm_systems_20261110_test_annotated](../measurements/rq2_llm_systems_20261110_test_annotated.md).
+
+Ghi nhận trung thực: (1) llama-server gặp CUDA out of memory khi sinh constrained_cover của V3 trên dev (GPU còn bị tiến trình khác chiếm), khởi động lại và chạy lại đúng file đó — chuỗi request sau lần khởi động lại khác chuỗi trước; (2) lần chấm đầu ghi `dirty=true` vì file sinh giữa chừng (như S13), đã xóa và chấm lại với đầu ra ngoài repo; (3) kiểm token dev trước khi chạy cho thấy V3 có thể vượt context 4096 ở timeline 38 event, nhưng không caption nào bị cắt thực tế.
+
+**§2 Chẩn đoán PSDS.** Xem PAPER_NOTES S68: tái hiện S21 ở PSDS-2 (Δ −0.0078) nhưng không ở PSDS-1 (+0.0114); H1 và H3 đủ điều kiện, H2 không. Đường tới đó có một lần sửa trước khi chạy: `MemoryError` trong `psds_eval` với cSEBB của f2 (161,527 box) → quy tắc bỏ điểm >50,000 event (bổ sung ở trên, ghi trước, chưa xem số).
+
+**§3 PSDS B0 cùng lưới trên test.** B0 0.3061 / 0.7452 (lưới log), lưới tuyến tính tái tạo đúng 0.3131 / 0.7310. So cùng lưới log: V2 0.3512 / 0.6116 và V3 0.3369 / 0.6167 — PSDS-1 của LBR cao hơn B0, PSDS-2 thấp hơn.
+
+**§4 Sửa số trích sai** — xong (`efcb73e`), `check_doc_claims` bắt lại lỗi cùng loại.

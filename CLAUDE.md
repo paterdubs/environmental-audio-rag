@@ -58,6 +58,13 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 11/11/2026 — Hoàn thiện (ADR-0048): caption LLM trên B0/LBR, S21, tài liệu đồng bộ.** Caption LLM chạy lại
+(lượt mở test thứ tư cho W5): omission constrained f2 0.012, B0 0.013, V2 0.007, V3 0.081 (timeline dày), constrained-cover 0
+ở mọi hệ thống, hallucination ≤ 0.022. S21 trên dev: Δ PSDS-2 −0.0078 (tái hiện), lưới ngưỡng (H1) và `alpha_st` (H3) đủ
+điều kiện theo luật ghi trước. PSDS B0 cùng lưới log 0.3061 / 0.7452. Sửa PSDS B0 trích nhầm; thêm `check_doc_claims`,
+`check_doc_commands`, `check_doc_links`; viết lại PLAN, SYSTEM, REPRODUCE. **Tiếp theo:** văn liệu (R4), báo cáo cuối (R5),
+slide (R6), đóng băng 18/11 (R7).
+
 **Cập nhật 10/11/2026 (chiều) — LBR đã qua test; RQ2/RQ3 và PSDS đo lại (ADR-0045 §12, ADR-0047).**
 Test annotated n=139 (người dùng duyệt từng lượt mở): **V2 f1 macro 0.2356, micro 0.2965** so với B0
 0.1366 / 0.1806, Δ micro +0.1159 [+0.0741, +0.1593]; V3 `recall_first` recall giao nhau 0.8203,
@@ -802,6 +809,14 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-11 — Hoàn thiện: đồng bộ tài liệu, caption LLM trên B0/LBR, chẩn đoán PSDS
+
+Người dùng duyệt ADR-0048. Phát hiện và sửa số PSDS của B0 trích nhầm số ensemble C ở bảy chỗ (0.3489 / 0.6987 → 0.3131 / 0.7310);
+thêm `check_doc_claims` (87 claim), `check_doc_commands`, `check_doc_links`. PLAN, SYSTEM, REPRODUCE viết lại theo B0/LBR. Hàng đợi
+caption LLM 18 file chạy đêm: một lần llama-server CUDA out of memory (chạy lại đúng file), lỗi provenance dirty=true của lần
+chấm đầu bị bắt và chấm lại. Chẩn đoán PSDS gặp MemoryError ở cSEBB của f2 → quy tắc 50,000 event ghi trước khi chạy. Kết quả ở
+PAPER_NOTES S67–S68, ADR-0048 "Kết quả". Không push.
 
 ### 2026-11-10 (chiều) — Test LBR, RQ2/RQ3 trên event LBR, PSDS đo lại, sổ test và freeze
 

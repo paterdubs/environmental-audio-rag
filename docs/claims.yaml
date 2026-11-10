@@ -413,3 +413,81 @@ claims:
     key: [human_agreement, event_f1_collar_0.2s]
     decimals: 2
     mentions: [{file: docs/SYSTEM.md, text: "(trần người ~{value})"}]
+
+  # ---------- SYSTEM §8.4 (final_numbers, rq2_llm_systems, psds_diagnosis) ----------
+  - id: v3_f1_micro
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, lbrv3_f1, micro, value]
+    mentions: [{file: docs/SYSTEM.md, text: "| LBR V3, điểm f1 | 0.1955 | {value} |"}]
+  - id: v3_f1_macro
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, lbrv3_f1, macro, value]
+    mentions: [{file: docs/SYSTEM.md, text: "| LBR V3, điểm f1 | {value} | 0.2731 |"}]
+  - id: v3_rf_micro
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, lbrv3_recall_first, micro, value]
+    mentions: [{file: docs/SYSTEM.md, text: "(demo) | 0.1754 | {value} |"}]
+  - id: v3_rf_macro
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, lbrv3_recall_first, macro, value]
+    mentions: [{file: docs/SYSTEM.md, text: "(demo) | {value} | 0.2287 |"}]
+  - id: v3_delta_micro
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, lbrv3_f1, delta_micro_vs_b0, estimate, value]
+    mentions: [{file: docs/SYSTEM.md, text: "| {value} [+0.0549, +0.1331] |"}]
+  - id: b0_micro_ci_lower
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, B0, micro_ci, lower, value]
+    mentions: [{file: docs/SYSTEM.md, text: "0.1806 [{value}, 0.2384]"}]
+  - id: b0_micro_ci_upper
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, B0, micro_ci, upper, value]
+    mentions: [{file: docs/SYSTEM.md, text: "0.1806 [0.1261, {value}]"}]
+  - id: f2_psds1_linear
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, f2, psds_linear, psds_1, value]
+    mentions: [{file: docs/SYSTEM.md, text: "| {value} / 0.7253 (lưới tuyến tính)"}]
+  - id: f2_psds2_linear
+    source: docs/measurements/final_numbers_20261110.json
+    key: [sed, rows, f2, psds_linear, psds_2, value]
+    mentions: [{file: docs/SYSTEM.md, text: "| 0.3164 / {value} (lưới tuyến tính)"}]
+  - id: rq2_test_cons_omission_v3
+    source: docs/measurements/rq2_llm_systems_20261110_test_annotated.json
+    key: [e2e, constrained, lbrv3, ci, omission_rate, estimate]
+    decimals: 3
+    mentions: [{file: docs/SYSTEM.md, text: "| constrained | 0.012 [0.002, 0.024] | 0.013 [0.002, 0.029] | 0.007 [0.000, 0.018] | {value} ["}]
+  - id: rq2_test_cons_omission_f2
+    source: docs/measurements/rq2_llm_systems_20261110_test_annotated.json
+    key: [e2e, constrained, f2, ci, omission_rate, estimate]
+    decimals: 3
+    mentions: [{file: docs/SYSTEM.md, text: "| constrained | {value} [0.002, 0.024] |"}]
+  - id: rq2_test_unc_omission_v3
+    source: docs/measurements/rq2_llm_systems_20261110_test_annotated.json
+    key: [e2e, unconstrained, lbrv3, ci, omission_rate, estimate]
+    decimals: 3
+    mentions: [{file: docs/SYSTEM.md, text: "0.004 [0.000, 0.014] | {value} ["}]
+  - id: rq2_test_paired_v3_f2
+    source: docs/measurements/rq2_llm_systems_20261110_test_annotated.json
+    key: [paired, constrained, lbrv3−f2, omission_rate, estimate]
+    decimals: 3
+    mentions: [{file: docs/SYSTEM.md, text: "hiệu so f2 {value} [+0.041, +0.097]"}]
+  - id: diag_dev_delta_f1
+    source: docs/measurements/psds_diagnosis_20261110_annotated.json
+    key: [hypotheses, delta_event_f1_micro]
+    mentions: [{file: docs/SYSTEM.md, text: "event-F1 micro {value}; PSDS-2"}]
+  - id: diag_dev_delta_psds2
+    source: docs/measurements/psds_diagnosis_20261110_annotated.json
+    key: [hypotheses, delta_psds_linear, psds_2]
+    mentions: [{file: docs/SYSTEM.md, text: "PSDS-2 {value} (tái hiện S21)"}]
+  - id: diag_dev_delta_psds1
+    source: docs/measurements/psds_diagnosis_20261110_annotated.json
+    key: [hypotheses, delta_psds_linear, psds_1]
+    mentions: [{file: docs/SYSTEM.md, text: "PSDS-1 {value}. H1"}]
+  - id: rq1_v1_boot
+    source: docs/measurements/final_numbers_20261110.json
+    key: [rq1, v1, bootstrap_c_minus_b, estimate, value]
+    mentions: [{file: docs/SYSTEM.md, text: "bootstrap {value} [−0.0164, +0.0021]"}]
+  - id: rq1_v2_boot
+    source: docs/measurements/final_numbers_20261110.json
+    key: [rq1, v2, bootstrap_c_minus_b, estimate, value]
+    mentions: [{file: docs/SYSTEM.md, text: "v2 (3 + 3 seed): {value} [−0.0254, +0.0199]"}]

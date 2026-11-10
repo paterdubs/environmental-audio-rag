@@ -10,7 +10,10 @@ của V2 vẫn thấp hơn B0, PSDS-1 chờ so cùng lưới (ADR-0048 §3; bả
 của V3, "trích đúng GT" giảm 0.915 → 0.712, không đọc như retrieval tốt hơn
 ([V3](measurements/retrieval_benchmark_test_lbrv3_gold_20261110.md)). Corpus validation của LBR là event
 cross-fit nên không so trực tiếp với B0. [Sổ test](measurements/test_ledger_20261110.md) 42 lượt SED,
-[freeze](measurements/artifact_freeze_20261110.md) thiếu 0. Caption LLM vẫn đo trên f2. Demo phục vụ
+[freeze](measurements/artifact_freeze_20261110.md) thiếu 0. Caption LLM (ba nhánh) đã chạy lại trên B0/V2/V3 (11/11, ADR-0048): omission constrained f2 0.012, B0 0.013, V2 0.007,
+V3 0.081 (timeline dày; constrained-cover 0 ở mọi hệ thống), hallucination ≤ 0.022
+([bảng](measurements/rq2_llm_systems_20261110_test_annotated.md)). S21 giải thích trên dev: lưới ngưỡng và `alpha_st`
+([chẩn đoán](measurements/psds_diagnosis_20261110_annotated.md)); PSDS B0 cùng lưới log 0.3061 / 0.7452. Demo phục vụ
 đã chuyển sang LBR V3 `recall_first` (Compose, `official=false`): [parity CUDA](measurements/inference_parity_sed_lbr_b0v3_20261110t042337z_recall_first_cuda_20261110.md)
 573/692 event trùng khít, 665 trong 1 frame, 691 trong collar 0.2 s (bộ tinh chỉnh biên khuếch đại sai lệch fp16);
 [E2E](measurements/demo_lbrv3_e2e_20261110.md) upload TRAIN 3.7 s, `demo_check.ps1` pass.
