@@ -94,3 +94,30 @@ def test_repo_claims_file_is_valid_and_consistent():
         assert spec["mentions"], spec["id"]
         for mention in spec["mentions"]:
             checker.mention_regex(mention["text"])
+
+
+def test_unicode_minus_in_documents_is_read_as_a_negative_number(repo):
+    import json as _json
+
+    root, runs = repo
+    (root / "docs/n.json").write_text(_json.dumps({"lo": -0.0128}), encoding="utf-8")
+    (root / "docs/A.md").write_text("Δ +0.0164 [−0.0128, +0.0495]", encoding="utf-8")
+    spec = {"id": "n", "source": "docs/n.json", "key": ["lo"], "decimals": 4,
+            "mentions": [{"file": "docs/A.md", "text": "+0.0164 [{value}, +0.0495]"}]}
+    assert checker.check([spec], root=root, runs_root=runs) == []
+    (root / "docs/A.md").write_text("Δ +0.0164 [−0.0129, +0.0495]", encoding="utf-8")
+    assert len(checker.check([spec], root=root, runs_root=runs)) == 1
+
+
+def test_filters_may_match_several_fields_and_bad_keys_are_reported_not_raised(repo):
+    import json as _json
+
+    root, runs = repo
+    data = {"rows": [{"run": "a", "file": "x", "v": 0.1}, {"run": "a", "file": "y", "v": 0.2}]}
+    assert checker.select(data, ["rows", {"run": "a", "file": "y"}, "v"]) == 0.2
+    (root / "docs/r.json").write_text(_json.dumps(data), encoding="utf-8")
+    (root / "docs/A.md").write_text("giá trị 0.2 ở", encoding="utf-8")
+    spec = {"id": "bad", "source": "docs/r.json", "key": ["rows", {"run": "zz"}, "v"],
+            "decimals": 1, "mentions": [{"file": "docs/A.md", "text": "giá trị {value} ở"}]}
+    [failure] = checker.check([spec], root=root, runs_root=runs)
+    assert "khóa" in failure.message

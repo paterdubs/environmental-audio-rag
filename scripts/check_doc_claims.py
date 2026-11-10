@@ -24,6 +24,11 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 NUMBER = r"([-+]?\d+\.\d+)"
 WHITESPACE = re.compile(r"\s+")
+UNICODE_MINUS = "−"  # tài liệu viết "−0.0128"; so như "-0.0128"
+
+
+def normalise(text: str) -> str:
+    return WHITESPACE.sub(" ", text).replace(UNICODE_MINUS, "-")
 
 
 @dataclass(frozen=True)
@@ -39,12 +44,11 @@ def load_claims(path: Path) -> list[dict[str, Any]]:
 
 
 def select(data: Any, key: list[Any]) -> Any:
-    """Đi theo khóa dict (str), chỉ số list (int), hoặc bộ lọc {trường: giá trị} khớp đúng một."""
+    """Đi theo khóa dict (str), chỉ số list (int), hoặc bộ lọc {trường: giá trị, ...} khớp một."""
     for part in key:
         if isinstance(part, dict):
-            (field, wanted), = part.items()
-            matches = [item for item in data
-                       if isinstance(item, dict) and item.get(field) == wanted]
+            matches = [item for item in data if isinstance(item, dict)
+                       and all(item.get(f) == w for f, w in part.items())]
             if len(matches) != 1:
                 raise KeyError(f"{part}: {len(matches)} khớp")
             data = matches[0]
@@ -54,7 +58,7 @@ def select(data: Any, key: list[Any]) -> Any:
 
 
 def mention_regex(template: str) -> re.Pattern[str]:
-    parts = WHITESPACE.sub(" ", template).split("{value}")
+    parts = normalise(template).split("{value}")
     if len(parts) != 2:
         raise ValueError(f"mẫu phải có đúng một {{value}}: {template!r}")
     return re.compile(re.escape(parts[0]) + NUMBER + re.escape(parts[1]))
@@ -72,11 +76,16 @@ def check(claims: list[dict[str, Any]], *, root: Path, runs_root: Path) -> list[
     texts: dict[str, str] = {}
     for spec in claims:
         source = resolve_source(spec["source"], root=root, runs_root=runs_root)
-        value = float(select(json.loads(source.read_text(encoding="utf-8")), spec["key"]))
+        try:
+            value = float(select(json.loads(source.read_text(encoding="utf-8")), spec["key"]))
+        except (KeyError, IndexError, TypeError, ValueError) as error:
+            failures.append(Failure(spec["id"], spec["source"],
+                                    f"khóa {spec['key']} không đọc được: {error}"))
+            continue
         for mention in spec["mentions"]:
             name = mention["file"]
             if name not in texts:
-                texts[name] = WHITESPACE.sub(" ", (root / name).read_text(encoding="utf-8"))
+                texts[name] = normalise((root / name).read_text(encoding="utf-8"))
             decimals = int(mention.get("decimals", spec.get("decimals", 4)))
             expected = f"{value:.{decimals}f}"
             found = mention_regex(mention["text"]).findall(texts[name])
