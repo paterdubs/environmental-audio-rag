@@ -9,8 +9,8 @@ của V2 vẫn thấp hơn B0, PSDS-1 chờ so cùng lưới (ADR-0048 §3; bả
 ở B0, V2, V3. RQ3 test hybrid/en nDCG@10: B0 0.383, V2 0.404 (CI chồng B0), V3 0.670 — hiệu ứng độ phủ
 của V3, "trích đúng GT" giảm 0.915 → 0.712, không đọc như retrieval tốt hơn
 ([V3](measurements/retrieval_benchmark_test_lbrv3_gold_20261110.md)). Corpus validation của LBR là event
-cross-fit nên không so trực tiếp với B0. [Sổ test](measurements/test_ledger_20261110.md) 42 lượt SED,
-[freeze](measurements/artifact_freeze_20261110.md) thiếu 0. Caption LLM (ba nhánh) đã chạy lại trên B0/V2/V3 (11/11, ADR-0048): omission constrained f2 0.012, B0 0.013, V2 0.007,
+cross-fit nên không so trực tiếp với B0. [Sổ test](measurements/test_ledger_20261111.md) 42 lượt SED,
+[freeze](measurements/artifact_freeze_20261111.md) thiếu 0. Caption LLM (ba nhánh) đã chạy lại trên B0/V2/V3 (11/11, ADR-0048): omission constrained f2 0.012, B0 0.013, V2 0.007,
 V3 0.081 (timeline dày; constrained-cover 0 ở mọi hệ thống), hallucination ≤ 0.022
 ([bảng](measurements/rq2_llm_systems_20261110_test_annotated.md)). S21 giải thích trên dev: lưới ngưỡng và `alpha_st`
 ([chẩn đoán](measurements/psds_diagnosis_20261110_annotated.md)); PSDS B0 cùng lưới log 0.3061 / 0.7452. Demo phục vụ

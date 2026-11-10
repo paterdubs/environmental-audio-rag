@@ -6,7 +6,7 @@ Tài liệu tách hai việc:
 2. **Tái tạo** từ đầu trong một clone/máy mới — train, chọn trên dev, rồi mở test theo protocol.
 
 **Không chạy lại lệnh có test trong clone đã sinh số chính thức.** Mỗi lượt chạm test đã được ghi ở
-sổ test mới nhất ([`test_ledger_20261110.md`](measurements/test_ledger_20261110.md)). Mọi lệnh dưới
+sổ test mới nhất ([`test_ledger_20261111.md`](measurements/test_ledger_20261111.md)). Mọi lệnh dưới
 đây là đúng lệnh đã chạy, lấy từ trường `command` trong manifest của run tương ứng; kiểm máy bằng
 `scripts.check_doc_commands` (module và cờ còn tồn tại).
 
@@ -39,7 +39,7 @@ phép bằng `scripts.report_archive_audit`. Không tự tạo lại split: dùn
 File ngoài cần có: CNN14 AudioSet, BEATs, `frame_mn10_strong_1.pt`, Qwen GGUF, cache BGE-M3. Tên,
 sự tồn tại và SHA-256 của chúng cùng mọi `best.pt`, prediction, postproc/cSEBB, model LBR, split,
 taxonomy, lexicon và grammar được đóng băng ở
-[`artifact_freeze_20261110.md`](measurements/artifact_freeze_20261110.md). Không commit các file
+[`artifact_freeze_20261111.md`](measurements/artifact_freeze_20261111.md). Không commit các file
 này vào Git.
 
 ## Audit trong repository này (chỉ đọc)
