@@ -119,6 +119,22 @@ Phân tích lỗi của B0 (Chương 4) dẫn tới LBR. Trên dự đoán ngoà
 
 Có hai cách đọc ⟪tbl:sedfinal⟫ mà số liệu không cho phép bỏ qua. Thứ nhất, PSDS chỉ so được trong cùng một lưới ngưỡng (phần sau). Thứ hai, LBR đánh đổi độ phủ lấy độ chính xác của biên. ⟪tbl:sedapp⟫ báo thêm thước ứng dụng theo tiêu chí giao nhau của PSDS-2 (hộp dự đoán được tính đúng khi phần giao với sự kiện tham chiếu cùng lớp chiếm ít nhất 10% cả hai; ADR-0046) và F1 theo đoạn 1 s. V2 có recall giao nhau 0,5108, thấp hơn 0,5351 của B0 ở điểm vận hành đã khóa của B0, và F1 theo đoạn 0,5965 so với 0,7260; precision giao nhau 0,9545. V3 ở điểm `recall_first` (recall giao nhau tối đa với precision không dưới 0,6) dự đoán 668 sự kiện cho 740 sự kiện tham chiếu, đạt recall giao nhau 0,8203 và precision 0,7812, còn event-F1 micro 0,2287. Theo lớp (Phụ lục C), trong 20 lớp có từ 10 sự kiện tham chiếu trở lên, B0 có 6 lớp với event-F1 bằng 0 và LBR V2 có 3 lớp (`birds`, `vehicle_idling`, `vehicle_pass_by`; riêng `vehicle_pass_by` có 70 sự kiện tham chiếu); lớp tốt nhất của V2 là `workshop` (0,6992) và `cicadas_and_crickets` (0,5588). Tức là có hai điểm vận hành cho hai mục đích: V2 khi cần biên khớp chặt, V3 khi cần ít bỏ sót sự kiện. Demo dùng V3.
 
+⟪fig:perclass⟫ đặt event-F1 theo lớp của B0 và LBR V2 cạnh nhau cho 20 lớp có ít nhất 10 sự kiện tham chiếu. LBR tăng ở 15 lớp, giảm ở 2 lớp (`music` và `propeller_aircrafts`), còn 3 lớp đứng yên ở 0 với cả hai hệ. Mức tăng lớn nhất nằm ở các lớp kéo dài, có biên đầu bị đoán sớm (⟪fig:onsetbias⟫): `vacuum_cleaner_fan_hairdryer`, `cicadas_and_crickets` và `workshop` tăng 0,24 đến 0,26. Ba lớp đứng ở 0 là giới hạn mà tinh chỉnh biên không chạm được: nếu mô hình gốc không sinh hộp đúng lớp thì không có gì để tinh chỉnh.
+
+![](report/research_figures/r07_per_class.png){width=13.5cm}
+
+@@CAP:fig:perclass|Event-F1 theo lớp của B0 và B0 + LBR V2 trên test annotated (lớp có ít nhất 10 sự kiện)@@
+
+@@NOTE:Nguồn: evaluation_phase_o_annotated.json và evaluation_phase_lbr_annotated.json của ml/runs/sed_ensemble_B0_final_test_20261014T085016Z (đọc lại, không tính lại).@@
+
+**Hành trình qua các thế hệ.** ⟪fig:journey⟫ gom năm thế hệ SED trên cùng tập test annotated (139 bản ghi), kèm điểm mà mỗi thế hệ dùng để được chọn. Hai điều đáng chú ý. Thứ nhất, từ v1 đến B0, micro test chỉ tăng từ 0,0945 lên 0,1806, và khoảng tin cậy của các thế hệ liền kề chồng lên nhau. Bước nhảy lớn nhất là LBR (0,2965); khoảng tin cậy riêng của nó vẫn chồng nhẹ với của B0 ([0,2293; 0,3603] so với [0,1261; 0,2384]), nhưng phép so đúng cho hai hệ trên cùng bản ghi là bootstrap ghép cặp, và hiệu ghép cặp +0,1159 [+0,0741; +0,1593] không chứa 0. Thứ hai, điểm chọn luôn cao hơn điểm test, nhưng khoảng cách hẹp lại khi chuyển từ kiểm chứng chéo trên dev (chênh 0,067 đến 0,074 ở v1, v2 và f2) sang dự đoán ngoài mẫu (0,054 ở B0, 0,037 ở LBR V2): ước lượng ngoài mẫu trên 564 bản ghi lạc quan ít hơn. Cả năm thế hệ vẫn còn cách xa mức đồng thuận giữa hai lần gán nhãn (0,5785).
+
+![](report/research_figures/r04_sed_journey.png){width=15cm}
+
+@@CAP:fig:journey|Hành trình event-F1 của các thế hệ SED trên test annotated và điểm dùng để chọn@@
+
+@@NOTE:Nguồn: s13_test_20261018.json, s13_ranking_annotated_20260928.json, final_numbers_20261110.json, lbr_context_20261123.json, calibration_20261123.json. Điểm chọn của v1, v2, f2 là kiểm chứng chéo 5 fold trên dev (134 bản ghi); của B0 và LBR V2 là dự đoán ngoài mẫu (564 bản ghi).@@
+
 @@CAP:tbl:sedapp|Thước ứng dụng trên test annotated@@
 
 @@INCLUDE:report/final_tables/f02_intersection.md@@
@@ -234,10 +250,16 @@ Hệ thống phục vụ cũng được kiểm xem có tái tạo đúng đầu 
 
 Tập test annotated (139 bản ghi) không phải "dùng một lần" theo nghĩa đen: sổ test (Phụ lục B) ghi **42 lượt đánh giá SED trên 33 run hoặc ensemble khác nhau**, cộng các lượt đo mô tả, truy hồi và chẩn đoán. Điều nhóm bảo đảm là hẹp hơn: mỗi cấu hình đã khóa chỉ được mở test **một lần**, lựa chọn được commit trước khi sinh dự đoán test, và không cấu hình nào được chọn lại sau khi xem test (ví dụ f1 có micro test cao nhất ở vòng S13, 0,1817, nhưng không được chọn thay f2). Bốn điều cần nói thẳng khi đọc các so sánh trên test.
 
-- **Dev không dự báo tốt test, nên vòng chọn được chuyển sang ngoài mẫu.** Ở vòng S13, tương quan hạng Spearman giữa micro kiểm chứng chéo trên dev và micro test của 11 ứng viên là ρ = 0,62 (0,49 nếu bỏ ứng viên a), tính lại từ bảng xếp hạng S13. Đây là lý do nhóm chuyển sang chọn trên 564 bản ghi dự đoán ngoài mẫu từ giai đoạn O.
+- **Dev không dự báo tốt test, nên vòng chọn được chuyển sang ngoài mẫu.** Ở vòng S13, tương quan hạng Spearman giữa micro kiểm chứng chéo trên dev và micro test của 11 ứng viên là ρ = 0,62 (0,49 nếu bỏ ứng viên a), tính lại từ bảng xếp hạng S13 (⟪fig:devtest⟫). Ví dụ, ứng viên d đứng thứ năm trên dev nhưng thứ chín trên test, còn f1 đứng thứ tư trên dev nhưng cao nhất trên test. Đây là lý do nhóm chuyển sang chọn trên 564 bản ghi dự đoán ngoài mẫu từ giai đoạn O.
 - **Ngoài mẫu và test cùng hướng.** Với LBR V2, hiệu micro ngoài mẫu so với B0 là +0,0990 và hiệu trên test là +0,1159; cả hai khoảng tin cậy đều không chứa 0. Sự nhất quán này là bằng chứng chống quá khớp mạnh hơn bất kỳ lượt test đơn lẻ nào.
 - **Có ba chỗ tái sử dụng thích nghi, được công khai.** Một, các thí nghiệm bỏ-từng-phần A2 (ngưỡng chung so với ngưỡng riêng từng lớp) và A5 (phân vị của khoảng trống tối đa) từng được đo trên test của các hệ cũ và gợi ý hướng chọn; ADR-0024 sau đó chọn lại hai thứ này bằng kiểm chứng chéo trên dev theo luật ghi trước, nhưng ý tưởng đến từ quan sát trên test. Hai, thiết kế của LBR (đặc trưng, siêu tham số, điểm vận hành) được thăm dò trên chính tập dự đoán ngoài mẫu dùng để chọn, và điểm "ưu tiên phát hiện" chạm đáy lưới ngưỡng; số trên test được mở một lần cho cấu hình đã khóa. Ba, 10 trong 42 lượt có cờ `dirty` như nêu ở phần hạn chế.
 - **Khoảng tin cậy không hiệu chỉnh cho so sánh bội.** Mỗi khoảng tin cậy trong báo cáo là bootstrap theo bản ghi cho một so sánh đã định trước, không hiệu chỉnh khi xét nhiều ứng viên hay nhiều chỉ số cùng lúc. Kết luận chính của đề tài (LBR so với B0) là một so sánh ghép cặp đã khóa trước, khoảng tin cậy không chứa 0 và cùng hướng với số ngoài mẫu; các so sánh phụ (ví dụ PSDS-2 của RQ1 ở công thức v2, p = 0,0193) không nên đọc là kết luận. Với RQ1, cận trên của khoảng tin cậy loại được lợi ích của DataSEC lớn hơn +0,0021 (công thức v1) và +0,0199 (công thức v2) về event-F1 micro; kết quả âm tính này không loại trừ lợi ích nhỏ hơn mức đó.
+
+![](report/research_figures/r08_dev_vs_test.png){width=10cm}
+
+@@CAP:fig:devtest|Micro kiểm chứng chéo trên dev so với micro test của 11 ứng viên vòng S13 (cam: hệ được chọn)@@
+
+@@NOTE:Nguồn: s13_ranking_annotated_20260928.json và s13_test_20261018.json; ρ tính bằng scipy.stats.spearmanr trong scripts/build_research_figures.py.@@
 
 ## Thảo luận và hạn chế
 

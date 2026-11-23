@@ -25,6 +25,22 @@ Kết quả trên 21 lớp đa âm và trên 22 lớp đơn âm **không so sán
 
 Hai lớp gộp `sirens_and_alarms` và `thunder_fireworks_gunshot` chứa các nguồn âm khác bản chất (còi báo động khác chuông báo; sấm khác pháo hoa và tiếng súng). DataSED chỉ có nhãn ở cấp gộp, nên mô tả về hai lớp này phải giữ đúng mức mơ hồ: viết "một âm thanh xung giống sấm, pháo hoa hoặc tiếng súng", không viết "một tiếng súng". Điều này được kiểm thử trong phần sinh mô tả (Chương 4).
 
+⟪fig:dataprofile⟫ cho thấy hai kiểu mất cân bằng khác nhau. Ở DataSEC, số tệp theo lớp trải từ 50 (`cat_fights_and_moans`) đến 1.900 (`voices`), lệch khoảng 38 lần. Ở DataSED, 4.034 sự kiện đa âm chia thành 2.408 ở train, 886 ở dev và 740 ở test; lớp nhiều nhất (`workshop`) có số sự kiện gấp khoảng năm lần lớp ít nhất (`jet_aircrafts`), và lớp nào cũng có mặt ở cả ba tập.
+
+![](report/research_figures/r01_data_profile.png){width=15cm}
+
+@@CAP:fig:dataprofile|Phân bố lớp: số tệp DataSEC và số sự kiện DataSED theo tập@@
+
+@@NOTE:Nguồn: docs/measurements/data_profile_20261008_lf.json, vẽ bằng scripts/build_research_figures.py.@@
+
+Độ dài sự kiện cũng chênh lệch mạnh giữa các lớp (⟪fig:duration⟫). Trên toàn bộ 4.034 sự kiện, trung vị là 5,8 s, 90% số sự kiện nằm trong khoảng 1,0 đến 43,5 s, và chỉ 194 sự kiện (4,8%) ngắn hơn 1 s. Trung vị theo lớp trên tập train đi từ 1,5 s (`horn`) đến 38,0 s (`propeller_aircrafts`). Điều này có hai hệ quả cho phần đánh giá: với lớp kéo dài hàng chục giây, sai 0,2 s ở biên chỉ là một phần rất nhỏ của sự kiện nhưng vẫn bị event-F1 tính là sai hoàn toàn; còn với lớp ngắn như `horn`, một bước gộp thời gian 0,64 s đã lớn hơn ba lần collar.
+
+![](report/research_figures/r02_event_duration.png){width=14cm}
+
+@@CAP:fig:duration|Độ dài sự kiện đa âm theo lớp trên tập train (thang log)@@
+
+@@NOTE:Nguồn: docs/measurements/data_profile_20261008_lf.json; đường đứt nét là collar 0,2 s của event-F1.@@
+
 ## Quy trình chuẩn bị dữ liệu
 
 Quy trình gồm các cổng kiểm tra nối tiếp; cổng sau chỉ chạy khi cổng trước đạt (⟪fig:pipeline⟫).

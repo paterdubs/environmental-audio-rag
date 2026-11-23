@@ -58,7 +58,27 @@ Checkpoint ngoài được kiểm SHA-256 trước khi dùng. Mã BEATs và Pret
 
 **Giai đoạn O: chọn bằng dự đoán ngoài mẫu và hệ B0.** Chọn hệ thống bằng kiểm chứng chéo trên dev (134 bản ghi) quá nhiễu: ba ứng viên qua vòng sàng lọc trên dev đều đảo chiều khi đo ngoài mẫu (ADR-0041). Giai đoạn này vì vậy dùng hai tầng. Tầng S sàng lọc trên dev. Tầng C chạy 5 fold trên 564 bản ghi có nhãn của train và dev; mỗi bản ghi được dự đoán bởi mô hình không thấy nó (dự đoán ngoài mẫu, out-of-fold, OOF), và hai ứng viên được so bằng bootstrap ghép cặp. Hệ cuối của giai đoạn là **B0**: công thức T2b; bỏ khỏi tập huấn luyện các bản ghi thiếu nhãn (trước đó bị huấn luyện như toàn âm tính) và xử lý các cặp bản ghi giống hệt nhau được gán nhãn hai lần; mỗi fold một mô hình (5 mô hình); suy luận chồng lấn với bước 5 s và gộp theo trọng số tam giác; cSEBB chọn trên OOF. Giai đoạn P (thêm seed, chưng cất tri thức, cửa sổ 20 s, tăng cường gain/EQ) không có ứng viên nào vượt B0 ở tầng C (ADR-0043), nên B0 giữ nguyên.
 
-**Tinh chỉnh biên và chấm lại hộp (LBR).** Phân tích lỗi OOF của B0 cho thấy hơn nửa số sự kiện bị bỏ sót có xác suất khung từ 0,9 trở lên nhưng hộp do cSEBB sinh ra bị loại, và thời điểm bắt đầu dự đoán sớm có hệ thống. Nút thắt nằm ở biên hộp sau hậu xử lý, không phải ở nhận dạng (ADR-0045). LBR gồm hai mô hình HistGradientBoosting học trên xác suất OOF: bộ **tinh chỉnh** dịch thời điểm bắt đầu và kết thúc của từng hộp cSEBB, và bộ **chấm lại** ước lượng xác suất hộp đúng. Việc học lồng nhau (cross-fit) trên 5 fold bảo đảm không mô hình nào thấy fold nó chấm; khả năng chuyển sang xác suất của mô hình khác được kiểm trên OOF của ba seed. Có hai biến thể. **V2** dùng nhãn khớp collar và điểm vận hành `f1`; đây là số chính, chọn ở tầng C. **V3** dùng nhãn khớp giao nhau và điểm vận hành `recall_first` (recall giao nhau tối đa với precision giao nhau không dưới 0,6, ADR-0046); đây là cấu hình ứng dụng cho demo và được ghi trước khi mở test. Với bài toán giám sát, câu hỏi "sự kiện này có được phát hiện không" nhiều khi quan trọng hơn việc khớp biên chặt, nên hai thước giao nhau được báo kèm; chúng không dùng để chọn hệ thống chính.
+⟪fig:training⟫ là nhật ký huấn luyện của năm mô hình fold trong B0, đọc từ `logs/history.json` của từng lần chạy. Loss trên dev của fold ổn định sau khoảng 10 epoch và cao hơn loss train 0,035 đến 0,095 ở epoch cuối, tức có khoảng cách tổng quát hóa nhưng không thấy loss dev tăng trở lại. Checkpoint được chọn theo macro AP theo khung trên dev của fold, rơi vào epoch 15, 23, 25, 26 và 28 trên 30; giá trị tốt nhất từ 0,776 đến 0,815. Một fold thấp hơn hẳn bốn fold còn lại (0,776), cho thấy độ khó khác nhau giữa các fold khi chia theo nhóm trùng, và là một lý do để không đánh giá trên một fold duy nhất.
+
+![](report/research_figures/r03_training_curves.png){width=15cm}
+
+@@CAP:fig:training|Nhật ký huấn luyện năm mô hình fold của B0@@
+
+@@NOTE:Nguồn: logs/history.json của năm run thành viên trong ml/runs/sed_served_B0_20261107T175659Z/manifest.json; chỉ số trên dev của từng fold.@@
+
+**Tinh chỉnh biên và chấm lại hộp (LBR).** Phân tích lỗi OOF của B0 (⟪fig:fnbreakdown⟫, ⟪fig:onsetbias⟫) cho thấy B0 chỉ khớp đúng 592 trong 3.294 sự kiện tham chiếu. Trong 2.702 sự kiện bị bỏ sót, 1.477 không có hộp cùng lớp nào chồng lên, nhưng 789 trong số đó (53%) có xác suất khung lớn nhất từ 0,9 trở lên: mô hình đã "nghe thấy", chỉ là hộp do cSEBB sinh ra bị loại. 872 sự kiện khác có hộp cùng lớp nhưng lệch biên, chủ yếu ở biên đầu (656). Biên đầu bị đoán sớm có hệ thống: 8 trong 21 lớp có trung vị lệch vượt ngoài collar 0,2 s, nặng nhất là các lớp dài như `train` và `jet_aircrafts` (khoảng −1,5 s) và `vehicle_pass_by` (−1,06 s). Nút thắt nằm ở biên hộp sau hậu xử lý, không phải ở nhận dạng (ADR-0045). LBR gồm hai mô hình HistGradientBoosting học trên xác suất OOF: bộ **tinh chỉnh** dịch thời điểm bắt đầu và kết thúc của từng hộp cSEBB, và bộ **chấm lại** ước lượng xác suất hộp đúng. Việc học lồng nhau (cross-fit) trên 5 fold bảo đảm không mô hình nào thấy fold nó chấm; khả năng chuyển sang xác suất của mô hình khác được kiểm trên OOF của ba seed. Có hai biến thể. **V2** dùng nhãn khớp collar và điểm vận hành `f1`; đây là số chính, chọn ở tầng C. **V3** dùng nhãn khớp giao nhau và điểm vận hành `recall_first` (recall giao nhau tối đa với precision giao nhau không dưới 0,6, ADR-0046); đây là cấu hình ứng dụng cho demo và được ghi trước khi mở test. Với bài toán giám sát, câu hỏi "sự kiện này có được phát hiện không" nhiều khi quan trọng hơn việc khớp biên chặt, nên hai thước giao nhau được báo kèm; chúng không dùng để chọn hệ thống chính.
+
+![](report/research_figures/r05_fn_breakdown.png){width=15cm}
+
+@@CAP:fig:fnbreakdown|Phân loại 2.702 sự kiện bị B0 bỏ sót trên dự đoán ngoài mẫu và xác suất lớn nhất của mô hình trong các sự kiện không có hộp cùng lớp@@
+
+@@NOTE:Nguồn: docs/measurements/lbr_diagnosis_20261109.json (OOF trên train ∪ dev, 564 bản ghi; không dùng test).@@
+
+![](report/research_figures/r06_onset_bias.png){width=13cm}
+
+@@CAP:fig:onsetbias|Trung vị lệch biên đầu theo lớp của B0 trên dự đoán ngoài mẫu@@
+
+@@NOTE:Nguồn: như hình trước; tính trên các sự kiện khớp 1-1 cùng lớp.@@
 
 ## Ghép xác suất thành sự kiện
 

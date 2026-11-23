@@ -1,0 +1,28 @@
+{
+  "figures": [
+    "r01_data_profile.png",
+    "r02_event_duration.png",
+    "r03_training_curves.png",
+    "r04_sed_journey.png",
+    "r05_fn_breakdown.png",
+    "r06_onset_bias.png",
+    "r07_per_class.png",
+    "r08_dev_vs_test.png"
+  ],
+  "sources": [
+    "docs/measurements/data_profile_20261008_lf.json",
+    "docs/measurements/s13_test_20261018.json",
+    "docs/measurements/s13_ranking_annotated_20260928.json",
+    "docs/measurements/final_numbers_20261110.json",
+    "docs/measurements/lbr_context_20261123.json",
+    "docs/measurements/calibration_20261123.json",
+    "docs/measurements/lbr_diagnosis_20261109.json",
+    "ml/runs/sed_served_B0_20261107T175659Z/manifest.json",
+    "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z"
+  ],
+  "spearman_dev_test": 0.6181818181818182,
+  "git": {
+    "revision": "c750cb4d75917e886725fd3db553338dfa069f25",
+    "dirty": true
+  }
+}
