@@ -19,6 +19,15 @@ def test_reports_missing_relative_targets_and_ignores_urls_anchors_and_code(tmp_
     assert [(p.line, p.target) for p in problems] == [(2, "decisions/ADR-0002-b.md")]
 
 
+def test_percent_encoded_targets_are_decoded_before_checking(tmp_path: Path):
+    (tmp_path / "báo cáo.md").write_text("x", encoding="utf-8")
+    page = tmp_path / "P.md"
+    page.write_text(
+        "[ok](b%C3%A1o%20c%C3%A1o.md) [sai](kh%C3%B4ng%20c%C3%B3.md)\n", encoding="utf-8")
+    problems = checker.check([page], root=tmp_path)
+    assert [p.target for p in problems] == ["kh%C3%B4ng%20c%C3%B3.md"]
+
+
 def test_repo_documents_have_no_broken_relative_links():
     root = Path(checker.__file__).resolve().parents[1]
     problems = checker.check([root / name for name in checker.DEFAULT_DOCS], root=root)

@@ -13,6 +13,7 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DOCS = ("CLAUDE.md", "docs/SYSTEM.md", "docs/STATUS.md", "docs/PLAN.md",
@@ -47,7 +48,7 @@ def check(paths: list[Path], *, root: Path = ROOT) -> list[Problem]:
         for number, target in links(path.read_text(encoding="utf-8")):
             if re.match(r"^[a-z]+:", target) or target.startswith("#"):
                 continue
-            relative = target.split("#", 1)[0]
+            relative = unquote(target.split("#", 1)[0])
             if relative and not (path.parent / relative).exists():
                 problems.append(Problem(path.relative_to(root).as_posix(), number, target))
     return problems
