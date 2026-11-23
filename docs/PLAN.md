@@ -446,7 +446,7 @@ lại từ JSON đã đóng băng. Số mới nào cũng vào `docs/claims.yaml`
 |---|---|---|---|---|
 | 0 | T0-01 | Hỏi GVHD 6 điều: khai báo dùng AI, ngưỡng Turnitin, thời lượng trình bày, hội đồng/poster, lịch riêng ngành KHDL, tháng ghi trên bìa | người dùng | ○ |
 | 0 | T0-10a | Thu 6–10 clip điện thoại 1–5 phút (đường xe máy/còi, công trường, mưa, quán nhạc, công viên, quạt), tránh lời nói rõ | người dùng, trước tối 24/11 | ○ |
-| 0 | T0-03 | Bảng phân công, khai báo dùng AI, nhật ký tuần 5–7 (và 9–10), ngày báo cáo GVHD — chỉ nhóm viết được | người dùng | ○ |
+| 0 | T0-03 | Bảng phân công, khai báo dùng AI, nhật ký tuần 5–7 (và 9–10), ngày báo cáo GVHD — chỉ nhóm viết được | người dùng | ◐ 23/11: Phụ lục D (phân công chia đều theo mảng, kiểm chéo; khai báo AI ngắn, không chi tiết theo yêu cầu) và nhật ký tuần 10 do agent soạn từ việc thật; còn nhật ký tuần 5–7, 9 và ngày báo cáo GVHD (repo không có commit 15/10–07/11) |
 | 1 | T0-04 | Đoạn RQ3 nói thẳng hybrid < vector_only (Δ −0.111/−0.075/−0.087), cơ chế lọc cứng bị chặn bởi recall SED; sửa `06` L137–147, `07` L21, `00` L9, L23 | agent | ✅ 23/11 (PAPER_NOTES S70; `report_rq3_modes`, f05b/f05c) |
 | 1 | T0-06 | Đóng góp C5 (LBR) và C6 (giao thức OOF/ledger/freeze); bảng "LBR trong bối cảnh" trên OOF; nói rõ đã thăm dò trên OOF, ngưỡng chạm mép lưới | agent | ✅ 23/11 (C5/C6, f10, Chương 2 định vị RED/EPN, PAPER_NOTES S71) |
 | 1 | T0-07 | Bảng định cỡ B0/V2/V3 so đồng thuận người (8 cặp) và mốc DCASE; trước đó nâng nguồn DCASE lên V3 trong RELATED_WORK §10 | agent | ✅ 23/11 (DCASE lên V3, S72, f11) |
@@ -456,7 +456,7 @@ lại từ JSON đã đóng băng. Số mới nào cũng vào `docs/claims.yaml`
 | 1 | T0-11, T0-16 | Bảng khối lượng hiện thực, sơ đồ triển khai Compose; accuracy bộ phân loại 0.9135 cạnh FA2025 kèm cảnh báo không cùng điều kiện | agent | ◐ 23/11: bảng khối lượng (f12, đếm lại ở T0-13) và bảng dịch vụ thay cho sơ đồ; accuracy 0,9135 có; T0-16 ✅ 23/11: bảng lịch sử phân loại theo phiên bản dữ liệu (FA2025 trên validation, khóa luận trên v3, dự án GitHub trên v4), nguồn đọc trực tiếp, kèm cảnh báo không so trực tiếp |
 | 2 | T0-10 | Bảng hiệu năng (CPU/GPU, RTF, RAM, khởi động, độ trễ truy vấn) + field test định tính trên clip tự thu, hai SV nghe chấm độc lập | agent + người dùng | ◐ 23/11: đo độ trễ xong trên CPU container (latency_lbrv3_20261123, bảng f13, Chương 5); còn field test chờ clip của người dùng |
 | 3 | T0-12 | Badge StatusBar đọc `served_run`/`operating_point` thay chuỗi ghi cứng; chụp lại ảnh; tách Hình 5.1 | agent | ◐ 23/11: badge đọc `lbr_run`/`operating_point`/`served_run` (vitest 14/14); ✅ 23/11: ảnh chụp lại trên LBR V3, Hình 5.1 tách thành 5.1 và 5.2 (f03a, f03b) |
-| 4 | T0-02 | Hình thức: trang nhận xét GVPB (`@@REVIEWPAGE@@`), danh mục viết tắt, sửa "15 → 20 bản ghi" và `official=true`, SYSTEM.md L666, DEMO.md L50 | agent + người dùng | ○ |
+| 4 | T0-02 | Hình thức: trang nhận xét GVPB (`@@REVIEWPAGE@@`), danh mục viết tắt, sửa "15 → 20 bản ghi" và `official=true`, SYSTEM.md L666, DEMO.md L50 | agent + người dùng | ◐ 23/11: thêm trang GVPB, viết tắt LBR/LLM/OOF/cSEBB, sửa 15→20, câu official, SYSTEM, DEMO; tên EN đã khớp; còn kiểm DOCX ở T0-13 |
 | 5 | T0-13 | Dựng lại DOCX/PDF, `check_midterm_docx`, gate đầy đủ, đọc chéo hai người | agent + người dùng | ○ |
 
 Không cắt: T0-02, T0-04, T0-05. Thứ tự cắt khi trễ: T0-14/15/16/17 (tùy chọn) → T0-11 → rút T0-10 còn 6 clip.

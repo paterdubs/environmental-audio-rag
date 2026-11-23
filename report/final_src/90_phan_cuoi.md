@@ -54,6 +54,28 @@ Theo giao thức đánh giá, lớp có dưới 10 mẫu test chỉ được bá
 
 @@INCLUDE:report/tables/m05_f2_per_class.md@@
 
+@@HEADING2N:Phụ lục D. Phân công công việc và công cụ hỗ trợ@@
+
+Hai thành viên chia các mảng công việc thành hai phần có khối lượng tương đương; mỗi mảng có một người phụ trách chính và một người kiểm chéo, nên cả hai đều đọc, chạy lại và có thể trình bày mọi phần của đề tài. Các quyết định thiết kế (48 ADR), mọi lần mở tập test và mọi kết luận đều do cả hai cùng duyệt. Mã nguồn được commit từ một tài khoản chung, nên lịch sử git không phản ánh việc phân công này.
+
+@@CAP:tbl:division|Phân công công việc@@
+
+@@COLWIDTHS:6,44,25,25@@
+
+| STT | Mảng công việc | Phụ trách chính | Kiểm chéo |
+|---:|---|---|---|
+| 1 | Dữ liệu: kiểm chứng tệp nén, kiểm kê, khử trùng lặp, chia tập, cổng rò rỉ | Phạm Hoàng Phát | Thân Trọng Tính |
+| 2 | Bộ phân loại DataSEC, hiệu chuẩn và câu hỏi RQ1 | Thân Trọng Tính | Phạm Hoàng Phát |
+| 3 | Mô hình SED B0, hậu xử lý, giao thức chọn trên dự đoán ngoài mẫu và test một lần | Phạm Hoàng Phát | Thân Trọng Tính |
+| 4 | Tinh chỉnh biên học được (LBR) và thước đo ứng dụng | Thân Trọng Tính | Phạm Hoàng Phát |
+| 5 | Mô tả có căn cứ, bộ đo grounding và RQ2 | Thân Trọng Tính | Phạm Hoàng Phát |
+| 6 | Kho sự kiện, truy hồi, câu trả lời có bằng chứng và RQ3 | Phạm Hoàng Phát | Thân Trọng Tính |
+| 7 | Dịch vụ suy luận và API, giao diện web, triển khai Docker Compose | Thân Trọng Tính | Phạm Hoàng Phát |
+| 8 | Tra cứu văn liệu, đối chiếu nguồn và bối cảnh quy chuẩn | Phạm Hoàng Phát | Thân Trọng Tính |
+| 9 | Báo cáo, slide và tài liệu tái lập | Cả hai | Cả hai |
+
+**Công cụ hỗ trợ.** Nhóm có dùng công cụ trí tuệ nhân tạo (mô hình ngôn ngữ lớn) làm công cụ hỗ trợ lập trình, tra cứu và biên tập văn bản. Các quyết định thiết kế, thí nghiệm và kết luận do nhóm đưa ra và chịu trách nhiệm; số liệu trong báo cáo do các script trong kho mã sinh ra và có thể chạy lại, không do công cụ tự ghi.
+
 @@PAGEBREAK@@
 
 @@HEADING1N:NHẬT KÍ LÀM VIỆC@@
@@ -77,4 +99,4 @@ Theo giao thức đánh giá, lớp có dưới 10 mẫu test chỉ được bá
 | 7 | 01/11/2026 | 07/11/2026 | | (chưa có ghi chép trong nhật ký dự án; nhóm bổ sung trước khi nộp) | |
 | 8 | 08/11/2026 | 14/11/2026 | | Phục vụ B0 và mô tả/truy hồi trên B0; giai đoạn P (bốn hướng, đều âm tính); LBR (tinh chỉnh biên, chấm lại hộp), test một lần; RQ2/RQ3 trên LBR; chẩn đoán PSDS; tra văn liệu; đồng bộ tài liệu | |
 | 9 | 15/11/2026 | 21/11/2026 | | Kế hoạch: báo cáo cuối, slide bảo vệ, đóng băng ngày 18/11 | |
-| 10 | 22/11/2026 | 28/11/2026 | | Kế hoạch: chỉnh sửa theo nhận xét của GVHD, nộp ngày 28/11 | |
+| 10 | 22/11/2026 | 28/11/2026 | | Rà soát độc lập trước khi nộp; sửa nội dung báo cáo (RQ3, giải thích kết quả, bối cảnh quy chuẩn, đóng góp, thước định cỡ); đo độ trễ demo; chụp lại ảnh giao diện; hoàn thiện hình thức; nộp ngày 28/11 (kế hoạch) | |

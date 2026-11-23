@@ -663,8 +663,8 @@ thì không thể đổi operating point mà không train lại.
 Hệ thống phục vụ mặc định là `sed_served_B0_20261107T175659Z` (5 model fold, hop 5 s, gộp tam giác,
 cSEBB đã khóa — ADR-0042). Bật `EARAG_SERVED_LBR` + `EARAG_SERVED_MODE` thì thêm LBR (demo: V3
 `recall_first`, ADR-0047); `/api/v1/models/status` khi đó báo `official=false` và
-`model_version = <run>+<run LBR>:<điểm>`. Câu trả lời RAG dùng Qwen3.5-9B chạy cục bộ qua
-llama.cpp (ADR-0022, ADR-0036); không gọi dịch vụ ngoài.
+`model_version = <run>+<run LBR>:<điểm>`. Qwen3.5-9B chạy cục bộ qua llama.cpp (ADR-0022, ADR-0036) và chỉ phân tích câu hỏi thành bộ lọc;
+câu trả lời RAG và caption trong giao diện là mẫu tất định bám bằng chứng. Không gọi dịch vụ ngoài.
 
 **Vì sao `api` không được load model.** Ba lý do cụ thể: (1) scale độc lập — API
 là I/O-bound, inference là compute-bound; (2) API restart không phải chờ load

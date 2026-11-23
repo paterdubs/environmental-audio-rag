@@ -41,13 +41,14 @@ Trước buổi demo khoảng 10 phút, chạy kiểm tra không khởi động 
 
 History được chọn tự động từ TRAIN, greedy theo độ phủ lớp và ưu tiên lớp dễ nghe. Lượt đã
 chạy thật được ghi ở [demo_seed_20261002.md](measurements/demo_seed_20261002.md): 15 lựa chọn,
-21 lớp phủ. Lượt kịch bản thật ở [demo_script_20261002.md](measurements/demo_script_20261002.md).
+21 lớp phủ; lượt dựng lại 23/11/2026 trên LBR V3 chọn 20 bản ghi, vẫn phủ 21 lớp
+([demo_seed_20261123.md](measurements/demo_seed_20261123.md)). Lượt kịch bản thật ở [demo_script_20261002.md](measurements/demo_script_20261002.md).
 
 ## Kịch bản nói và thao tác
 
 | Thời gian | Thao tác | Bằng chứng cần chỉ |
 |---|---|---|
-| 0:00–1:00 | Chọn một WAV TRAIN chưa có trong history, upload | timeline, nhãn f2 chính thức, thời gian xử lý |
+| 0:00–1:00 | Chọn một WAV TRAIN chưa có trong history, upload | timeline, nhãn của hệ đang phục vụ (B0 + LBR V3, ghi trên thanh trạng thái), thời gian xử lý |
 | 1:00–2:30 | Mở event, đổi EN/VI, bấm event để nghe | onset/offset, caption EN/VI và evidence |
 | 2:30–6:00 | Nhập câu hỏi tự nhiên, kiểm chip rồi chạy | bộ lọc parser, câu trả lời và citation |
 | 6:00–7:00 | Bấm citation | mở đúng recording và seek đúng đoạn audio |

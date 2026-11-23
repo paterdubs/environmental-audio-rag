@@ -44,6 +44,12 @@ Cuối cùng, nhóm cảm ơn gia đình và bạn bè đã luôn động viên 
 
 @@PAGEBREAK@@
 
+@@TITLE:NHẬN XÉT CỦA GIÁO VIÊN PHẢN BIỆN@@
+
+@@REVIEWPAGE@@
+
+@@PAGEBREAK@@
+
 @@TITLE:MỤC LỤC@@
 
 @@TOC@@
@@ -74,14 +80,18 @@ Cuối cùng, nhóm cảm ơn gia đình và bạn bè đã luôn động viên 
 | CNN | Convolutional Neural Network | Mạng nơ-ron tích chập |
 | CPU | Central Processing Unit | Bộ xử lý trung tâm |
 | CRNN | Convolutional Recurrent Neural Network | Mạng nơ-ron tích chập hồi quy |
+| cSEBB | change-detection-based Sound Event Bounding Boxes | Biến thể SEBB dùng phát hiện điểm đổi để chọn biên hộp bao |
 | DCASE | Detection and Classification of Acoustic Scenes and Events | Chuỗi thử thách phát hiện và phân loại cảnh, sự kiện âm thanh |
 | ECE | Expected Calibration Error | Sai số hiệu chuẩn kỳ vọng |
 | GPU | Graphics Processing Unit | Bộ xử lý đồ họa |
 | HNSW | Hierarchical Navigable Small World | Chỉ mục đồ thị cho tìm kiếm vector gần đúng |
 | JSON | JavaScript Object Notation | Định dạng dữ liệu có cấu trúc |
+| LBR | Learned Boundary Refinement | Tinh chỉnh biên học được: bộ tinh chỉnh biên và bộ chấm lại hộp, học bằng cross-fit |
+| LLM | Large Language Model | Mô hình ngôn ngữ lớn |
 | MFCC | Mel-Frequency Cepstral Coefficients | Hệ số cepstral thang mel |
 | MRR | Mean Reciprocal Rank | Hạng nghịch đảo trung bình |
 | nDCG | normalized Discounted Cumulative Gain | Lợi ích tích lũy chiết khấu chuẩn hóa |
+| OOF | Out-of-Fold | Dự đoán ngoài mẫu, tạo bằng kiểm chứng chéo |
 | PANNs | Pretrained Audio Neural Networks | Mạng nơ-ron âm thanh tiền huấn luyện |
 | PSDS | Polyphonic Sound Detection Score | Điểm phát hiện âm thanh đa âm |
 | RAG | Retrieval-Augmented Generation | Sinh tăng cường truy hồi |
