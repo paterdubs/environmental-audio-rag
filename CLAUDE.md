@@ -65,8 +65,8 @@ lượng đủ tầm; rủi ro là trình bày và kết quả chưa nói ra: hy
 Nam, thiếu trang GVPB/nhật ký/phân công. Người dùng duyệt kế hoạch: **mở lại bản đóng băng 18/11** để làm bộ T0 ★
 (T0-01…T0-13, PLAN), không train lại, không mở test, không "lần đầu". Báo cáo:
 [reports/Đánh giá khóa luận audio RAG.md](reports/Đánh%20giá%20khóa%20luận%20audio%20RAG.md). **Tiến độ tối 23/11:** Phase 1, 3 và phần agent của Phase 2, 4 đã xong và push (độ trễ demo, ảnh demo, Hình 5.1 tách đôi,
-trang GVPB, viết tắt, Phụ lục D phân công chia đều, nhật ký theo lịch sử commit). Dựng thử DOCX/PDF: 96 trang
-(trước 75), `check_midterm_docx` đạt. **Tiếp theo:** field test chờ clip điện thoại của người dùng
+trang GVPB, viết tắt, Phụ lục D phân công chia đều, nhật ký theo lịch sử commit). Ngày 24/11 thêm 12 hình phân tích và sổ đăng ký run; bản chính thức 104 trang
+(giới hạn 150), `check_midterm_docx` đạt. **Tiếp theo:** field test chờ clip điện thoại của người dùng
 (`scripts.field_test`), rồi Phase 5 (đếm lại khối lượng, dựng DOCX/PDF chính thức, đọc chéo). Người dùng còn: sáu câu hỏi GVHD
 (thêm: giới hạn số trang), ngày báo cáo GVHD, xác nhận Phụ lục D.
 
@@ -825,6 +825,10 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-24 — Tăng tính nghiên cứu của báo cáo: 12 hình phân tích, sổ đăng ký run
+
+Người dùng yêu cầu báo cáo mang đậm tính nghiên cứu (số liệu, biểu đồ, log, theo dõi), giới hạn 150 trang, bỏ qua câu hỏi GVHD, để trống nhật ký tuần 5–7 và 9. `scripts.build_research_figures` sinh r01–r12 từ artifact đã đóng băng (dữ liệu, độ dài sự kiện, nhật ký huấn luyện 5 fold B0, hành trình SED, lỗi OOF của B0, lệch onset theo lớp, F1 theo lớp, dev so với test, RQ1 theo seed, RQ2 theo cách sinh, RQ3 theo truy vấn, dòng thời gian run); `scripts.report_run_registry` lập sổ 218 run. Mọi con số trong đoạn diễn giải được kiểm lại bằng dữ liệu, bắt và sửa 6 lỗi diễn đạt trước khi commit, trong đó một câu sai có từ trước ở Chương 4 ("hơn nửa số bỏ sót có p ≥ 0,9" thực là 53% của nhóm không có hộp cùng lớp) và câu "run bẩn không dùng cho số chính" (mốc v1 có manifest bẩn, đã dựng lại sạch trùng byte). Báo cáo chính thức 104 trang, `check_midterm_docx` 25/25. Không train, không mở test.
 
 ### 2026-11-23 (tối) — Thực hiện giai đoạn F: Phase 1–4 phần agent
 
