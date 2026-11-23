@@ -64,8 +64,11 @@ lượng đủ tầm; rủi ro là trình bày và kết quả chưa nói ra: hy
 (micro test 0.18 → 0.30) vắng khỏi danh sách đóng góp, "0 ảo giác" của RQ2 có được do cấu tạo, báo cáo không nhắc Việt
 Nam, thiếu trang GVPB/nhật ký/phân công. Người dùng duyệt kế hoạch: **mở lại bản đóng băng 18/11** để làm bộ T0 ★
 (T0-01…T0-13, PLAN), không train lại, không mở test, không "lần đầu". Báo cáo:
-[reports/Đánh giá khóa luận audio RAG.md](reports/Đánh%20giá%20khóa%20luận%20audio%20RAG.md). **Tiếp theo:** Phase 1
-(sửa nội dung báo cáo), Phase 2 cần clip tự thu của người dùng; việc chỉ nhóm viết được: phân công, khai báo AI, nhật ký.
+[reports/Đánh giá khóa luận audio RAG.md](reports/Đánh%20giá%20khóa%20luận%20audio%20RAG.md). **Tiến độ tối 23/11:** Phase 1, 3 và phần agent của Phase 2, 4 đã xong và push (độ trễ demo, ảnh demo, Hình 5.1 tách đôi,
+trang GVPB, viết tắt, Phụ lục D phân công chia đều, nhật ký theo lịch sử commit). Dựng thử DOCX/PDF: 96 trang
+(trước 75), `check_midterm_docx` đạt. **Tiếp theo:** field test chờ clip điện thoại của người dùng
+(`scripts.field_test`), rồi Phase 5 (đếm lại khối lượng, dựng DOCX/PDF chính thức, đọc chéo). Người dùng còn: sáu câu hỏi GVHD
+(thêm: giới hạn số trang), ngày báo cáo GVHD, xác nhận Phụ lục D.
 
 **Cập nhật 11/11/2026 (khuya) — R5/R6 có bản đầy đủ.** Báo cáo cuối `report/Khoa_luan_environmental_audio_rag.{docx,pdf}` (nguồn `report/final_src/`, bảng `report/final_tables/`, hình `report/final_figures/`; dựng bằng `scripts.build_final_tables`, `scripts.build_final_figures`, `scripts.build_midterm_report --source report/final_src`), 75 trang, `check_midterm_docx` đạt. Slide bảo vệ `report/slide_bao_ve.pptx` (`scripts.build_final_slides`), kịch bản `report/slide/kich_ban_bao_ve.md`; ảnh demo chụp lại trên LBR V3. Còn: người dùng đọc lại, điền nhật ký tuần 5–7 và ngày GVHD; đóng băng 18/11 (R7).
 
@@ -822,6 +825,10 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-23 (tối) — Thực hiện giai đoạn F: Phase 1–4 phần agent
+
+Người dùng duyệt và yêu cầu bắt đầu từ Phase 1; thêm giữ so sánh phân loại với FA2025 (làm thành bảng lịch sử theo phiên bản dữ liệu, đọc trực tiếp PDF FA2025 và README dự án trên DataSEC v4). Viết lại Chương 1, 2, 4–7 (RQ3, RQ2, LBR, định cỡ, QCVN 26:2025, khối lượng), bốn script đo mới (`report_rq3_modes`, `report_lbr_context`, `report_calibration`, `report_workload`), `report_latency` (độ trễ demo trên CPU), badge giao diện đọc từ `/models/status`, chụp lại ảnh. Thư mục `gold` của dự án cũ được dò: AudioSet Strong 10 giây, hệ lớp an ninh, có nguy cơ nhiễm tiền huấn luyện nên không dùng làm field test; chờ clip điện thoại. Không train, không chạm test, push tới `f01fda3`.
 
 ### 2026-11-23 — Rà soát độc lập trước nộp; lập kế hoạch giai đoạn F
 
