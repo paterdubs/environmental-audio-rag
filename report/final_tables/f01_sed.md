@@ -1,6 +1,6 @@
 # SED trên test annotated (n = 139, event-F1 collar 0,2 s)
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `358c8dd`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `5e6c55d`.
 
 | Hệ thống | Macro | Micro [CI 95%] | Δ micro so B0 | Nsys/Nref | PSDS-1/2 lưới tuyến tính | PSDS-1/2 lưới log |
 |---|---:|---:|---:|---:|---:|---:|

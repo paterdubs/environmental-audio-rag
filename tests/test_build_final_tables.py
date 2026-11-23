@@ -101,3 +101,13 @@ def test_workload_table_formats_counts_from_the_measurement():
             "runs": {"sed": 103, "classifier": 8}, "json_schemas": 8}
     text = bft.build_workload(data, "abcdef0", ROOT / "docs" / "measurements" / "w.json")
     assert "400 commit" in text and "6.004 dòng" in text and "103 run SED" in text
+
+
+def test_latency_table_reports_median_and_p95_with_audio_range():
+    data = {"elapsed_s": {"n": 10, "median": 3.89, "p95": 11.96, "max": 11.96},
+            "rtf": {"n": 10, "median": 0.0721, "p95": 0.2936, "max": 0.2936},
+            "query_s": {"n": 5, "median": 0.2215, "p95": 0.3021, "max": 0.3021},
+            "audio_duration_s": {"min": 3.36, "max": 179.6}}
+    text = bft.build_latency(data, "abcdef0", ROOT / "docs" / "measurements" / "l.json")
+    assert "| Tải lên + phân tích (giây) | 10 | 3.89 | 11.96 |" in text
+    assert "3.4 đến 179.6" in text and "0.072" in text

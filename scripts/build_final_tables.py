@@ -292,6 +292,26 @@ def build_workload(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_latency(data: dict[str, Any], revision: str, source: Path) -> str:
+    """Độ trễ của demo đang chạy, đo bởi `report_latency` trên bản ghi TRAIN."""
+    e, r, q, a = data["elapsed_s"], data["rtf"], data["query_s"], data["audio_duration_s"]
+    rows = [
+        ["Tải lên + phân tích (giây)", str(e["n"]), f"{e['median']:.2f}", f"{e['p95']:.2f}"],
+        ["Hệ số thời gian thực (xử lý / độ dài)", str(r["n"]), f"{r['median']:.3f}",
+         f"{r['p95']:.3f}"],
+        ["Truy vấn kết hợp (giây)", str(q["n"]), f"{q['median']:.3f}", f"{q['p95']:.3f}"],
+        ["Độ dài âm thanh (giây)", str(e["n"]), f"{a['min']:.1f} đến {a['max']:.1f}", "—"],
+    ]
+    return table(
+        "Độ trễ của demo trên CPU (LBR V3, bản ghi TRAIN)",
+        ["Đại lượng", "n", "Trung vị", "p95"],
+        rows,
+        [source],
+        revision,
+        ["---", "---:", "---:", "---:"],
+    )
+
+
 def build_psds(data: dict[str, Any], revision: str, source: Path) -> str:
     d = data["psds_diagnosis"]
     rows = [
@@ -396,6 +416,7 @@ def main() -> None:
     parser.add_argument("--lbr-context", type=Path, help="lbr_context_*.json")
     parser.add_argument("--calibration", type=Path, help="calibration_*.json")
     parser.add_argument("--workload", type=Path, help="workload_*.json")
+    parser.add_argument("--latency", type=Path, help="latency_*.json")
     parser.add_argument("--run-dir", type=Path, help="run B0 final test (bảng theo lớp)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
@@ -431,6 +452,7 @@ def main() -> None:
         ("f10_lbr_context.md", build_lbr_context, args.lbr_context),
         ("f11_calibration.md", build_calibration, args.calibration),
         ("f12_workload.md", build_workload, args.workload),
+        ("f13_latency.md", build_latency, args.latency),
     )
     for name, builder, path in extra:
         if path is None:

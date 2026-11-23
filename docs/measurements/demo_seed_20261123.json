@@ -1,0 +1,324 @@
+{
+  "timestamp": "2026-11-23T12:30:00.257455+00:00",
+  "reset_count": 21,
+  "covered_classes": [
+    "bells",
+    "birds",
+    "cat_fights_and_moans",
+    "chicken_coop",
+    "cicadas_and_crickets",
+    "crows_seagulls_magpies",
+    "dog_barkings_and_howlings",
+    "glass_breaking",
+    "horn",
+    "jet_aircrafts",
+    "lawn_mower_brush_cutter_olive_shaker",
+    "music",
+    "propeller_aircrafts",
+    "sirens_and_alarms",
+    "thunder_fireworks_gunshot",
+    "train",
+    "vacuum_cleaner_fan_hairdryer",
+    "vehicle_idling",
+    "vehicle_pass_by",
+    "voices",
+    "workshop"
+  ],
+  "uploads": [
+    {
+      "source_recording_id": "S-0053",
+      "recording_id": "upload:06ccade2-ebac-4992-9b69-4055481f14be",
+      "classes": [
+        "dog_barkings_and_howlings",
+        "horn",
+        "jet_aircrafts",
+        "thunder_fireworks_gunshot",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0053.wav",
+      "duplicate": false,
+      "events": 14,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0031",
+      "recording_id": "upload:1b1bae75-d1ed-4706-a0e0-edc2979ebe70",
+      "classes": [
+        "birds",
+        "crows_seagulls_magpies",
+        "jet_aircrafts",
+        "sirens_and_alarms",
+        "train",
+        "vehicle_pass_by"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0031.wav",
+      "duplicate": false,
+      "events": 10,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0504",
+      "recording_id": "upload:ad9ea960-036a-4366-883a-15846ddb216e",
+      "classes": [
+        "bells",
+        "horn",
+        "music",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0504.wav",
+      "duplicate": false,
+      "events": 17,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0396",
+      "recording_id": "upload:c1e02cd4-3c62-4f4f-b7dc-ad43979ea50d",
+      "classes": [
+        "chicken_coop",
+        "lawn_mower_brush_cutter_olive_shaker",
+        "train",
+        "vehicle_idling"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0396.wav",
+      "duplicate": false,
+      "events": 2,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0371",
+      "recording_id": "upload:f0216b6a-44f3-4d15-a12b-5f5d330807bc",
+      "classes": [
+        "dog_barkings_and_howlings",
+        "music",
+        "propeller_aircrafts",
+        "vehicle_idling",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0371.wav",
+      "duplicate": false,
+      "events": 6,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0427",
+      "recording_id": "upload:7edb93c6-2546-4998-9991-7ba9261734d4",
+      "classes": [
+        "music",
+        "vacuum_cleaner_fan_hairdryer",
+        "vehicle_idling",
+        "vehicle_pass_by"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0427.wav",
+      "duplicate": false,
+      "events": 7,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0201",
+      "recording_id": "upload:1c2dd66f-ac63-45eb-8a99-ddbd85fe7682",
+      "classes": [
+        "dog_barkings_and_howlings",
+        "glass_breaking",
+        "vehicle_idling",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0201.wav",
+      "duplicate": false,
+      "events": 12,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0687",
+      "recording_id": "upload:b3ffe702-511f-4e90-beed-974783890cd4",
+      "classes": [
+        "birds",
+        "vehicle_pass_by",
+        "workshop"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0687.wav",
+      "duplicate": false,
+      "events": 4,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0574",
+      "recording_id": "upload:684d2b3f-1488-474f-8d7b-f7435fb4696e",
+      "classes": [
+        "birds",
+        "cicadas_and_crickets"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0574.wav",
+      "duplicate": false,
+      "events": 9,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0200",
+      "recording_id": "upload:2ca09a4d-53c7-4d56-968c-92e12260aaae",
+      "classes": [
+        "cat_fights_and_moans",
+        "dog_barkings_and_howlings"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0200.wav",
+      "duplicate": false,
+      "events": 3,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0339",
+      "recording_id": "upload:43f90fad-a33c-415f-afbb-324c84dcb0ff",
+      "classes": [
+        "birds",
+        "horn",
+        "music",
+        "train",
+        "vehicle_idling",
+        "vehicle_pass_by"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0339.wav",
+      "duplicate": false,
+      "events": 8,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0035",
+      "recording_id": "upload:214b622c-a309-4503-9752-654eafc3cc58",
+      "classes": [
+        "chicken_coop",
+        "dog_barkings_and_howlings",
+        "horn",
+        "train",
+        "vehicle_idling",
+        "vehicle_pass_by"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0035.wav",
+      "duplicate": false,
+      "events": 16,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0316",
+      "recording_id": "upload:97ff989c-2a15-4240-b2f7-1654e4913315",
+      "classes": [
+        "dog_barkings_and_howlings",
+        "sirens_and_alarms",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0316.wav",
+      "duplicate": false,
+      "events": 11,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0292",
+      "recording_id": "upload:089d1cd2-bcea-45a6-bd4b-542cede7d0e4",
+      "classes": [
+        "dog_barkings_and_howlings",
+        "music",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0292.wav",
+      "duplicate": false,
+      "events": 8,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0422",
+      "recording_id": "upload:360bdaf7-18ba-42fe-8838-3e4d4ca81eae",
+      "classes": [
+        "horn",
+        "jet_aircrafts",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0422.wav",
+      "duplicate": false,
+      "events": 9,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0333",
+      "recording_id": "upload:81a72ced-8231-4bda-a457-d8aa48e1230b",
+      "classes": [
+        "birds",
+        "crows_seagulls_magpies",
+        "train",
+        "vehicle_idling",
+        "vehicle_pass_by"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0333.wav",
+      "duplicate": false,
+      "events": 7,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0064",
+      "recording_id": "upload:0db41d5a-1562-41e2-91a5-25423e1c04e4",
+      "classes": [
+        "birds",
+        "crows_seagulls_magpies",
+        "dog_barkings_and_howlings",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0064.wav",
+      "duplicate": false,
+      "events": 9,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0049",
+      "recording_id": "upload:b11f1744-554f-4146-a3aa-4dfeb40eac45",
+      "classes": [
+        "horn",
+        "jet_aircrafts",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0049.wav",
+      "duplicate": false,
+      "events": 10,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0036",
+      "recording_id": "upload:1a55ae4c-964a-472a-be6d-63c838e0fa12",
+      "classes": [
+        "chicken_coop",
+        "dog_barkings_and_howlings",
+        "horn",
+        "vehicle_idling",
+        "vehicle_pass_by"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0036.wav",
+      "duplicate": false,
+      "events": 14,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    },
+    {
+      "source_recording_id": "S-0029",
+      "recording_id": "upload:76fa6ef0-dcfe-4da9-a81c-a7971e5e24f9",
+      "classes": [
+        "birds",
+        "jet_aircrafts",
+        "vehicle_idling",
+        "vehicle_pass_by",
+        "voices"
+      ],
+      "audio_relative_path": "data/raw/datased/extracted/DataSED - DataSED - Dataset for Sound Event Detection of environmental noise/SED_wav/S-0029.wav",
+      "duplicate": false,
+      "events": 4,
+      "reason": "greedy coverage; ưu tiên lớp dễ nghe, chỉ từ split TRAIN"
+    }
+  ]
+}

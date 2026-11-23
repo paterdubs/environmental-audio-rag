@@ -75,6 +75,20 @@ Hai nguyên tắc ranh giới được kiểm bằng máy chứ không chỉ là
 
 @@NOTE:Nguồn: docs/demo_screenshots/ (Playwright, 1440×900, chụp trên LBR V3 ngày 11/11/2026), ghép bằng scripts/build_final_figures.py; bản ghi trong lịch sử demo chỉ lấy từ tập train.@@
 
+## Độ trễ
+
+⟪tbl:latency⟫ báo độ trễ của demo đang chạy trên CPU trong container, với tầng LBR V3 `recall_first`. Nhóm tải lên 12 bản ghi chọn đều theo độ dài từ tập train (3,4 đến 818 s), nhưng 2 bản ghi trong số đó (S-0049 và S-0713, bản ghi dài nhất) đã có sẵn trong lịch sử demo nên bị hệ thống từ chối trùng; vì vậy bảng chỉ có 10 lần đo, bản dài nhất là 179,6 s. Truy vấn kết hợp được lặp 5 lần. Thời gian khởi động và nạp mô hình lần đầu không nằm trong bảng; lần gọi đầu tiên sau khi khởi động chậm hơn đáng kể vì dịch vụ suy luận nạp mô hình lúc đó (trước đây đo được khoảng 50 s với B0).
+
+@@CAP:tbl:latency|Độ trễ của demo trên CPU (LBR V3, bản ghi TRAIN)@@
+
+@@COLWIDTHS:46,10,22,22@@
+
+@@INCLUDE:report/final_tables/f13_latency.md@@
+
+Trung vị 3,89 s cho một lần tải lên và phân tích, tương ứng hệ số thời gian thực 0,072: xử lý nhanh hơn thời gian thật khoảng 14 lần. Trường hợp xấu nhất (p95) là 0,294 và rơi vào bản ghi ngắn nhất (3,4 s), nơi chi phí cố định của một lượt gọi chiếm phần lớn; với bản dài trên 16 s hệ số này nằm trong khoảng 0,06 đến 0,10. Truy vấn kết hợp trung vị 0,22 s. Bộ nhớ của container suy luận ở mức 1,24 GiB trên tổng 7,39 GiB, gần như không đổi qua các bản ghi (đo bằng `docker stats` sau mỗi lần tải). Các số này đo trên một máy, một lần chạy, nên chỉ cho biết cỡ độ lớn; nhóm không dùng chúng để khẳng định yêu cầu thời gian thực trên máy khác. Phép đo chạy khi cây làm việc chưa sạch vì chính script đo chưa được commit lúc chạy (chỉ ảnh hưởng ghi chú nguồn gốc, không ảnh hưởng thời gian).
+
+@@NOTE:Nguồn: docs/measurements/latency_lbrv3_20261123.json (scripts.report_latency); chỉ tải bản ghi thuộc tập train, không chấm metric.@@
+
 ## Chạy demo
 
 Hệ thống chạy cục bộ bằng Docker Compose: một container cơ sở dữ liệu, một container suy luận và một container API phục vụ cả giao diện (cổng 8088). Checkpoint và mô hình embedding được gắn vào ở chế độ chỉ đọc; các container đặt chế độ ngoại tuyến nên demo không cần mạng. Mô hình ngôn ngữ chạy trên máy chủ bằng llama.cpp để dùng GPU.
