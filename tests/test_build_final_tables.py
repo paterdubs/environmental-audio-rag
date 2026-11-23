@@ -81,3 +81,14 @@ def test_lbr_context_table_has_baselines_ceiling_and_robustness_row():
     assert "0.3332" in text and "+0.0990 [+0.0761, +0.1200]" in text
     assert "0.4641" in text  # trần ±1 s
     assert "0.3505" in text  # kiểm chuyển sang ensemble 3 seed
+
+
+CALIBRATION = ROOT / "docs" / "measurements" / "calibration_20261123.json"
+
+
+@pytest.mark.skipif(not CALIBRATION.is_file(), reason="chưa có calibration")
+def test_calibration_table_places_systems_next_to_label_agreement():
+    data = json.loads(CALIBRATION.read_text(encoding="utf-8"))
+    text = bft.build_calibration(data, "abcdef0", CALIBRATION)
+    assert "| B0 | 0.1806 | 0.3889 | 0.7260 |" in text
+    assert "0.5785 | 0.7603 | 0.7425" in text

@@ -36,7 +36,7 @@ Hai con số trả lời hai câu hỏi khác nhau nên nhóm báo cả hai. T�
 
 **PSDS.** Event-F1 gắn với một ngưỡng duy nhất. Điểm PSDS (Polyphonic Sound Detection Score) đánh giá trên cả **dải** ngưỡng, dùng tỷ lệ giao thời gian thay cho collar [@bilen2020psds]. Nhóm dùng hai kịch bản cố định trước khi chạy test: PSDS-1 nhấn mạnh việc định vị đúng thời điểm, PSDS-2 nhấn mạnh việc tránh nhầm lớp (docs/evaluation_protocol.md §3.3). Một hệ thống có thể tốt ở kịch bản này mà kém ở kịch bản kia; chênh lệch đó là thông tin cần báo.
 
-**Mức khó.** Ở thử thách DCASE 2016 (nhiệm vụ 3, ghi âm đời thực), các hệ thống đạt event-F1 chỉ 4,7–6,3% [@dcase2016task3]. Con số này chỉ để **định cỡ** độ khó, không so trực tiếp được với kết quả của đề tài vì khác dữ liệu, số lớp và quy tắc collar.
+**Mức khó.** Ở thử thách DCASE 2016 (nhiệm vụ 3, ghi âm đời thực), ba hệ dẫn đầu theo xếp hạng đoạn và hệ cơ sở đạt event-F1 chỉ xét onset 4,7–6,3%, và cả 16 hệ nộp từ 1,5% đến 8,1% [@dcase2016task3]. Con số này chỉ để **định cỡ** độ khó, không so trực tiếp được với kết quả của đề tài vì khác dữ liệu, số lớp và quy tắc collar.
 
 ## Từ xác suất thành sự kiện
 

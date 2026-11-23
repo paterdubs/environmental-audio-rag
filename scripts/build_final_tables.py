@@ -251,6 +251,26 @@ def build_lbr_context(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_calibration(data: dict[str, Any], revision: str, source: Path) -> str:
+    """Event-F1 của B0/LBR cạnh mức đồng thuận quan sát giữa hai lần gán nhãn."""
+    rows = []
+    for name, r in data["rows"].items():
+        inter = ("—" if r["intersection_recall"] is None
+                 else f"{r['intersection_recall']:.4f} / {r['intersection_precision']:.4f}")
+        rows.append([name, f"{r['micro']:.4f}", f"{r['collar_1s']:.4f}",
+                     f"{r['segment_1s']:.4f}", inter])
+    h = data["human"]
+    rows.append([f"Đồng thuận giữa hai lần gán nhãn ({h['pairs']} cặp)",
+                 f"{h['micro_f1']:.4f}", f"{h['event_f1_collar_1s']:.4f}",
+                 f"{h['segment_f1_1s']:.4f}", "—"])
+    return table(
+        f"Event-F1 theo bốn thước đo (test annotated, n = {data['n_recordings']})",
+        ["Hệ thống", "Micro, collar 0,2 s", "Micro, collar 1 s", "Segment-F1 1 s",
+         "Giao nhau R / P"],
+        rows, [source], revision, ["---", "---:", "---:", "---:", "---:"],
+    )
+
+
 def build_psds(data: dict[str, Any], revision: str, source: Path) -> str:
     d = data["psds_diagnosis"]
     rows = [
@@ -353,6 +373,7 @@ def main() -> None:
     parser.add_argument("--freeze", type=Path, help="artifact_freeze_*.json")
     parser.add_argument("--rq3-modes", type=Path, help="rq3_modes_*.json")
     parser.add_argument("--lbr-context", type=Path, help="lbr_context_*.json")
+    parser.add_argument("--calibration", type=Path, help="calibration_*.json")
     parser.add_argument("--run-dir", type=Path, help="run B0 final test (bảng theo lớp)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
@@ -386,6 +407,7 @@ def main() -> None:
         ("f05b_rq3_paired.md", build_rq3_paired, args.rq3_modes),
         ("f05c_rq3_groups.md", build_rq3_groups, args.rq3_modes),
         ("f10_lbr_context.md", build_lbr_context, args.lbr_context),
+        ("f11_calibration.md", build_calibration, args.calibration),
     )
     for name, builder, path in extra:
         if path is None:

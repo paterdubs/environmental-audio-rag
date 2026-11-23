@@ -1,0 +1,59 @@
+{
+  "n_recordings": 139,
+  "rows": {
+    "B0": {
+      "micro": 0.18064516129032257,
+      "macro": 0.13659283156040392,
+      "collar_1s": 0.3889400921658986,
+      "segment_1s": 0.7260196587956164,
+      "intersection_recall": 0.5351351351351351,
+      "intersection_precision": 0.9705882352941176
+    },
+    "LBR V2, điểm f1": {
+      "micro": 0.29649595687331537,
+      "macro": 0.2356214895797802,
+      "collar_1s": 0.5157232704402515,
+      "segment_1s": 0.5964755459072915,
+      "intersection_recall": 0.5108108108108108,
+      "intersection_precision": 0.9545454545454546
+    },
+    "LBR V3, điểm f1": {
+      "micro": 0.27312775330396477,
+      "macro": 0.1954603951940625,
+      "collar_1s": 0.46519823788546266,
+      "segment_1s": 0.7752162876236854,
+      "intersection_recall": 0.6486486486486487,
+      "intersection_precision": 0.9836065573770492
+    },
+    "LBR V3, recall_first": {
+      "micro": 0.22869318181818182,
+      "macro": 0.17535171631071217,
+      "collar_1s": 0.41903409090909094,
+      "segment_1s": 0.7820512820512819,
+      "intersection_recall": 0.8202702702702702,
+      "intersection_precision": 0.7812097812097812
+    }
+  },
+  "human": {
+    "pairs": 8,
+    "micro_f1": 0.5785123966942148,
+    "macro_f1": 0.23700879765395894,
+    "event_f1_collar_1s": 0.7603305785123967,
+    "segment_f1_1s": 0.7424657534246576,
+    "intersection_f1": 0.9173045379989064
+  },
+  "ratios": {
+    "v2_micro_over_human": 0.5125144397381595,
+    "v2_collar_1s_over_human": 0.6782882143833742,
+    "b0_segment_over_human": 0.9778493559424353
+  },
+  "sources": [
+    "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z/evaluation_phase_lbr_annotated.json",
+    "docs/measurements/oof_selection_20261109_LBR.json"
+  ],
+  "git": {
+    "revision": "9dec769de6abad7f1e446273961012a77d089d6a",
+    "dirty": true
+  },
+  "created_at": "2026-11-23T12:11:26.721119+00:00"
+}

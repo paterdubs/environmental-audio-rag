@@ -529,3 +529,23 @@ claims:
     decimals: 3
     mentions:
       - {file: docs/PAPER_NOTES.md, text: "vector_only 0.274 / {value} /"}
+
+  # ---------- Định cỡ event-F1 (PAPER_NOTES S72; docs/measurements/calibration_20261123.json) ----------
+  - id: calib_v2_micro_over_human
+    source: docs/measurements/calibration_20261123.json
+    key: [ratios, v2_micro_over_human]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "Tỷ lệ V2 / đồng thuận: {value} (0.2 s)"}
+  - id: calib_v2_collar_over_human
+    source: docs/measurements/calibration_20261123.json
+    key: [ratios, v2_collar_1s_over_human]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "(0.2 s), {value} (1 s)"}
+  - id: calib_b0_segment_over_human
+    source: docs/measurements/calibration_20261123.json
+    key: [ratios, b0_segment_over_human]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "B0 segment / đồng thuận {value}"}

@@ -115,6 +115,34 @@ Hiện tượng "event-F1 tăng nhưng PSDS không tăng" đã xuất hiện ở
 
 @@INCLUDE:report/final_tables/f06_psds.md@@
 
+## Event-F1 khoảng 0,30 là cao hay thấp?
+
+Một con số event-F1 đứng riêng khó đọc, nên báo cáo đặt nó cạnh hai thang so sánh. Cả hai chỉ để **định cỡ**, không phải bảng xếp hạng, vì khác dữ liệu, số lớp và cách chấm.
+
+**Thang thứ nhất: mức đồng thuận giữa hai lần gán nhãn trên chính DataSED.** ⟪tbl:calibration⟫ cho thấy, trên 8 cặp bản ghi giống hệt byte được gán nhãn hai lần, event-F1 giữa hai lần gán chỉ là 0,5785 ở collar 0,2 s, 0,7603 ở collar 1 s và 0,7425 theo đoạn 1 s. LBR V2 đạt 0,2965 ở collar 0,2 s, tức khoảng 51% mức đồng thuận quan sát; ở collar 1 s là 0,5157, khoảng 68%. Theo đoạn 1 s, B0 đạt 0,7260, khoảng 98% mức đồng thuận. Nói cách khác, nhận dạng *có mặt hay không trong từng giây* đã gần mức đồng thuận quan sát, còn **định vị biên chính xác** là nút thắt, và LBR là can thiệp trực tiếp vào nút thắt đó. Đây không phải khẳng định "ngang người": mẫu chỉ có 8 cặp, không biết người gán, và hai bên đo trên các bản ghi khác nhau.
+
+@@CAP:tbl:calibration|Event-F1 theo bốn thước đo cạnh mức đồng thuận giữa hai lần gán nhãn@@
+
+@@COLWIDTHS:34,16,16,16,18@@
+
+@@INCLUDE:report/final_tables/f11_calibration.md@@
+
+**Thang thứ hai: các mốc DCASE.** ⟪tbl:dcase⟫ liệt kê các mốc công bố trên trang kết quả của DCASE, đọc trực tiếp ngày 23/11/2026. Ở ghi âm đời thực DCASE 2016, event-F1 chỉ xét thời điểm bắt đầu chỉ từ 1,5% đến 8,1% trên 16 hệ nộp [@dcase2016task3]; event-F1 0,2965 của đề tài nghiêm hơn (phải khớp cả bắt đầu lẫn kết thúc) nhưng khác dữ liệu và số lớp. Với DESED, PSDS-1 và PSDS-2 của hệ cơ sở là 0,315 và 0,543 năm 2022, 0,327 và 0,538 năm 2023 [@dcase2022task4; @dcase2023task4a]; PSDS của đề tài (0,3061 đến 0,3512 với PSDS-1 và 0,6116 đến 0,7452 với PSDS-2, tùy lưới ngưỡng) cùng cỡ về độ lớn nhưng DESED là clip 10 s, 10 lớp, phần lớn tổng hợp, còn DataSED là bản ghi trung bình 94 s với 21 lớp và chỉ 564 bản ghi có nhãn cho huấn luyện và dev. Nhóm không viết "tương đương DESED".
+
+@@CAP:tbl:dcase|Các mốc công bố dùng để định cỡ (không so trực tiếp được)@@
+
+@@COLWIDTHS:30,22,48@@
+
+| Bối cảnh | Chỉ số | Mốc công bố |
+|---|---|---|
+| DCASE 2016 nhiệm vụ 3, ghi âm đời thực | Event-F1, chỉ onset | 1,5% đến 8,1% trên 16 hệ; hệ cơ sở 6,3% |
+| DCASE 2022 nhiệm vụ 4, DESED | PSDS-1 / PSDS-2 | Hệ cơ sở 0,315 / 0,543; hệ cơ sở có AudioSet 0,345 / 0,540 |
+| DCASE 2023 nhiệm vụ 4A, DESED | PSDS-1 / PSDS-2 | Hệ cơ sở 0,327 / 0,538; hệ cơ sở có AudioSet và BEATs 0,510 / 0,798 |
+| DCASE 2023 nhiệm vụ 4B, MAESTRO Real | F1 micro / macro | Hệ cơ sở 74,13 / 35,28 |
+| Khóa luận (test annotated, 21 lớp) | Event-F1 micro / macro; PSDS-1 / PSDS-2 | 0,2965 / 0,2356 (LBR V2); 0,3061 đến 0,3512 / 0,6116 đến 0,7452 |
+
+@@NOTE:Nguồn: trang kết quả DCASE 2016 T3, 2022 T4, 2023 T4A và T4B (đọc trực tiếp 23/11/2026; RELATED_WORK §10); số của khóa luận từ final_numbers_20261110.json. PSDS dùng cùng tham số chuẩn của DCASE (evaluation_protocol §3.3).@@
+
 ## RQ2: mô tả có bám sát sự kiện không?
 
 Phép so bốn cách sinh được lặp cho từng hệ SED trên test annotated (⟪tbl:rq2final⟫, mức đầu–cuối, n = 139). Mọi mô tả đều dùng danh sách sự kiện của hệ SED tương ứng; mọi tệp mô tả đều chạy hết, không có mô tả nào bị cắt. Có bốn kết quả.
