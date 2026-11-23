@@ -10,7 +10,8 @@
     "r08_dev_vs_test.png",
     "r09_rq1_seeds.png",
     "r10_rq2_errors.png",
-    "r11_rq3_queries.png"
+    "r11_rq3_queries.png",
+    "r12_run_timeline.png"
   ],
   "sources": [
     "docs/measurements/data_profile_20261008_lf.json",
@@ -25,7 +26,8 @@
     "docs/measurements/rq1_multiseed_clean_20260924.json",
     "docs/measurements/rq1_v2_multiseed_20260929.json",
     "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
-    "docs/measurements/rq3_modes_20261123.json"
+    "docs/measurements/rq3_modes_20261123.json",
+    "docs/measurements/run_registry_20261123.json"
   ],
   "spearman_dev_test": 0.6181818181818182,
   "rq3_query_counts": [
@@ -67,7 +69,7 @@
     }
   ],
   "git": {
-    "revision": "c84df41ddaf1917fbbda252c68ab57042ac13248",
+    "revision": "478e1538ee83194f505d9b14c3f99b452cf33428",
     "dirty": true
   }
 }

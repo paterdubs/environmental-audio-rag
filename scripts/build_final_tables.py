@@ -312,6 +312,26 @@ def build_latency(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_run_registry(data: dict[str, Any], revision: str, source: Path) -> str:
+    """Sổ đăng ký run theo loại, từ `report_run_registry`."""
+    from scripts.report_run_registry import TASK_NAMES
+
+    def day(stamp: str) -> str:
+        return f"{stamp[6:]}/{stamp[4:6]}"
+
+    rows = [[TASK_NAMES.get(task, task), str(s["n"]), str(s["complete"]), str(s["dirty"]),
+             str(s["split_hashes"]), f"{day(s['first'])} – {day(s['last'])}"]
+            for task, s in data["by_task"].items()]
+    rows.append(["Tổng", str(data["n_runs"]),
+                 str(sum(s["complete"] for s in data["by_task"].values())),
+                 str(sum(s["dirty"] for s in data["by_task"].values())), "—", "—"])
+    return table(
+        f"Sổ đăng ký {data['n_runs']} lần chạy trong ml/runs",
+        ["Loại lần chạy", "n", "Hoàn tất", "Cây bẩn", "Mã băm split", "Khoảng ngày"],
+        rows, [source], revision, ["---", "---:", "---:", "---:", "---:", "---"],
+    )
+
+
 def build_psds(data: dict[str, Any], revision: str, source: Path) -> str:
     d = data["psds_diagnosis"]
     rows = [
@@ -417,6 +437,7 @@ def main() -> None:
     parser.add_argument("--calibration", type=Path, help="calibration_*.json")
     parser.add_argument("--workload", type=Path, help="workload_*.json")
     parser.add_argument("--latency", type=Path, help="latency_*.json")
+    parser.add_argument("--run-registry", type=Path, help="run_registry_*.json")
     parser.add_argument("--run-dir", type=Path, help="run B0 final test (bảng theo lớp)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
@@ -453,6 +474,7 @@ def main() -> None:
         ("f11_calibration.md", build_calibration, args.calibration),
         ("f12_workload.md", build_workload, args.workload),
         ("f13_latency.md", build_latency, args.latency),
+        ("f14_run_registry.md", build_run_registry, args.run_registry),
     )
     for name, builder, path in extra:
         if path is None:

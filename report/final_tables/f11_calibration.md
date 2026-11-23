@@ -1,6 +1,6 @@
 # Event-F1 theo bốn thước đo (test annotated, n = 139)
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `2653726`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `478e153`.
 
 | Hệ thống | Micro, collar 0,2 s | Micro, collar 1 s | Segment-F1 1 s | Giao nhau R / P |
 |---|---:|---:|---:|---:|

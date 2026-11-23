@@ -111,3 +111,14 @@ def test_latency_table_reports_median_and_p95_with_audio_range():
     text = bft.build_latency(data, "abcdef0", ROOT / "docs" / "measurements" / "l.json")
     assert "| Tải lên + phân tích (giây) | 10 | 3.89 | 11.96 |" in text
     assert "3.4 đến 179.6" in text and "0.072" in text
+
+
+def test_run_registry_table_lists_tasks_and_a_total_row():
+    data = {"n_runs": 5, "by_task": {
+        "sed_polyphonic": {"n": 3, "complete": 2, "dirty": 1, "split_hashes": 1,
+                           "first": "20260922", "last": "20261108"},
+        "sed_lbr": {"n": 2, "complete": 2, "dirty": 0, "split_hashes": 1,
+                    "first": "20261109", "last": "20261110"}}}
+    text = bft.build_run_registry(data, "abcdef0", ROOT / "docs" / "measurements" / "r.json")
+    assert "| Huấn luyện SED | 3 | 2 | 1 | 1 | 22/09 – 08/11 |" in text
+    assert "| Tổng | 5 | 4 | 1 | — | — |" in text

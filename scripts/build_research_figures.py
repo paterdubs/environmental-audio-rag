@@ -18,6 +18,7 @@ from typing import Any
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.dates  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 
 from ml.provenance import git_state  # noqa: E402
@@ -45,7 +46,18 @@ SOURCES = {
     "rq1_v2": M / "rq1_v2_multiseed_20260929.json",
     "rq2": M / "rq2_llm_systems_20261110_test_annotated.json",
     "rq3": M / "rq3_modes_20261123.json",
+    "registry": M / "run_registry_20261123.json",
 }
+TASK_GROUPS = {
+    "Huấn luyện SED": ("sed_polyphonic",),
+    "Suy luận lại, OOF, ensemble": ("sed_rewindow", "sed_oof", "sed_ensemble", "sed_filtered",
+                                    "pseudo_labels", "sed_served"),
+    "LBR": ("sed_lbr", "sed_lbr_oof_events"),
+    "Bộ phân loại DataSEC": ("classifier_datasec",),
+    "Kho truy hồi": ("retrieval_index",),
+}
+PHASES = (("20260922", "20260925", "v1, RQ1"), ("20260926", "20260929", "v2, Track 2, S13"),
+          ("20261008", "20261014", "Giai đoạn O"), ("20261107", "20261110", "P, LBR"))
 SYSTEM_NAMES = {"f2": "f2", "B0": "B0", "lbrv2": "LBR V2", "lbrv3": "LBR V3"}
 METHOD_NAMES = {"template": "Mẫu cố định", "unconstrained": "LLM tự do",
                 "constrained": "LLM ràng buộc", "constrained_cover": "LLM ràng buộc + phủ"}
@@ -135,6 +147,18 @@ def query_diffs(per_query: list[dict], a: str = "hybrid", b: str = "vector_only"
 def rq2_rates(rq2: dict, metric: str) -> dict[str, dict[str, float]]:
     return {method: {sys: rq2["e2e"][method][sys]["summary"][metric] for sys in SYSTEM_NAMES}
             for method in METHOD_NAMES}
+
+
+def runs_per_day(registry: dict) -> tuple[list[str], dict[str, list[int]]]:
+    """Ngày (YYYYMMDD) và số run mỗi ngày theo nhóm loại; loại lạ dồn vào nhóm cuối."""
+    lookup = {task: group for group, tasks in TASK_GROUPS.items() for task in tasks}
+    days = sorted(registry["per_day"])
+    counts = {group: [0] * len(days) for group in TASK_GROUPS}
+    fallback = list(TASK_GROUPS)[-1]
+    for i, day in enumerate(days):
+        for task, n in registry["per_day"][day].items():
+            counts[lookup.get(task, fallback)][i] += n
+    return days, counts
 
 
 # ---------- hình ----------
@@ -378,6 +402,35 @@ def fig_rq3_queries(rq3: dict, path: Path) -> list[dict]:
     return [{k: v for k, v in s.items() if k != "diffs"} for s in stores]
 
 
+def fig_run_timeline(registry: dict, path: Path) -> None:
+    from datetime import date
+
+    def as_date(stamp: str) -> date:
+        return date(int(stamp[:4]), int(stamp[4:6]), int(stamp[6:]))
+
+    days, counts = runs_per_day(registry)
+    x = [as_date(d) for d in days]
+    fig, ax = plt.subplots(figsize=(7.0, 3.0))
+    bottom = [0] * len(days)
+    for (group, values), color in zip(counts.items(), (BLUE, GRAY, ORANGE, GREEN, "#8250df"),
+                                      strict=True):
+        ax.bar(x, values, bottom=bottom, color=color, width=0.8, label=group)
+        bottom = [b + v for b, v in zip(bottom, values, strict=True)]
+    top = max(bottom)
+    for start, end, label in PHASES:
+        ax.axvspan(as_date(start), as_date(end), color=GRID, alpha=0.35, zorder=0)
+        ax.text(as_date(start), top * 1.04, label, fontsize=7, color=MUTED)
+    ax.set_ylim(0, top * 1.15)
+    ax.set_ylabel("Số lần chạy được tạo")
+    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%d/%m"))
+    ax.legend(frameon=False, fontsize=6.5, loc="upper center", ncol=3,
+              bbox_to_anchor=(0.5, -0.12))
+    ax.set_title(f"{registry['n_runs']} lần chạy trong ml/runs theo ngày tạo", fontsize=9)
+    _style(ax)
+    fig.tight_layout()
+    _save(fig, path)
+
+
 def build(output: Path) -> dict[str, Any]:
     from scripts.build_midterm_tables import annotated_test_counts
 
@@ -400,6 +453,7 @@ def build(output: Path) -> dict[str, Any]:
     fig_rq1_seeds(data["rq1_v1"], data["rq1_v2"], output / "r09_rq1_seeds.png")
     fig_rq2_errors(data["rq2"], output / "r10_rq2_errors.png")
     rq3_counts = fig_rq3_queries(data["rq3"], output / "r11_rq3_queries.png")
+    fig_run_timeline(data["registry"], output / "r12_run_timeline.png")
     manifest = {"figures": sorted(p.name for p in output.glob("r*.png")),
                 "sources": [p.relative_to(ROOT).as_posix() for p in SOURCES.values()],
                 "spearman_dev_test": rho, "rq3_query_counts": rq3_counts,

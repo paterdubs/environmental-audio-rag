@@ -1,0 +1,2371 @@
+{
+ "n_runs": 218,
+ "by_task": {
+  "sed_polyphonic": {
+   "n": 103,
+   "complete": 99,
+   "dirty": 7,
+   "split_hashes": 2,
+   "taxonomy_hashes": 1,
+   "first": "20260922",
+   "last": "20261108"
+  },
+  "sed_rewindow": {
+   "n": 51,
+   "complete": 51,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20261008",
+   "last": "20261108"
+  },
+  "sed_ensemble": {
+   "n": 25,
+   "complete": 25,
+   "dirty": 4,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20260925",
+   "last": "20261014"
+  },
+  "sed_oof": {
+   "n": 13,
+   "complete": 13,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20261008",
+   "last": "20261108"
+  },
+  "retrieval_index": {
+   "n": 11,
+   "complete": 11,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20260925",
+   "last": "20261110"
+  },
+  "classifier_datasec": {
+   "n": 8,
+   "complete": 8,
+   "dirty": 6,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20260923",
+   "last": "20260923"
+  },
+  "sed_lbr": {
+   "n": 2,
+   "complete": 2,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20261109",
+   "last": "20261110"
+  },
+  "sed_lbr_oof_events": {
+   "n": 2,
+   "complete": 2,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20261110",
+   "last": "20261110"
+  },
+  "pseudo_labels": {
+   "n": 1,
+   "complete": 1,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20261013",
+   "last": "20261013"
+  },
+  "sed_filtered": {
+   "n": 1,
+   "complete": 1,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20261107",
+   "last": "20261107"
+  },
+  "sed_served": {
+   "n": 1,
+   "complete": 1,
+   "dirty": 0,
+   "split_hashes": 1,
+   "taxonomy_hashes": 1,
+   "first": "20261107",
+   "last": "20261107"
+  }
+ },
+ "per_day": {
+  "20260922": {
+   "sed_polyphonic": 2
+  },
+  "20260923": {
+   "classifier_datasec": 8,
+   "sed_polyphonic": 1
+  },
+  "20260924": {
+   "sed_polyphonic": 10
+  },
+  "20260925": {
+   "retrieval_index": 1,
+   "sed_ensemble": 3,
+   "sed_polyphonic": 3
+  },
+  "20260926": {
+   "sed_ensemble": 4,
+   "sed_polyphonic": 9
+  },
+  "20260927": {
+   "sed_ensemble": 4,
+   "sed_polyphonic": 14
+  },
+  "20260928": {
+   "sed_ensemble": 2,
+   "sed_polyphonic": 13
+  },
+  "20260929": {
+   "sed_ensemble": 8
+  },
+  "20261002": {
+   "retrieval_index": 2
+  },
+  "20261008": {
+   "sed_ensemble": 3,
+   "sed_oof": 5,
+   "sed_polyphonic": 18,
+   "sed_rewindow": 19
+  },
+  "20261009": {
+   "sed_oof": 2,
+   "sed_polyphonic": 7,
+   "sed_rewindow": 5
+  },
+  "20261013": {
+   "pseudo_labels": 1,
+   "sed_oof": 2,
+   "sed_polyphonic": 6,
+   "sed_rewindow": 5
+  },
+  "20261014": {
+   "sed_ensemble": 1,
+   "sed_rewindow": 5
+  },
+  "20261107": {
+   "retrieval_index": 2,
+   "sed_filtered": 1,
+   "sed_oof": 3,
+   "sed_polyphonic": 10,
+   "sed_rewindow": 11,
+   "sed_served": 1
+  },
+  "20261108": {
+   "sed_oof": 1,
+   "sed_polyphonic": 10,
+   "sed_rewindow": 6
+  },
+  "20261109": {
+   "sed_lbr": 1
+  },
+  "20261110": {
+   "retrieval_index": 6,
+   "sed_lbr": 1,
+   "sed_lbr_oof_events": 2
+  }
+ },
+ "gpus": {
+  "NVIDIA GeForce RTX 3070 Laptop GPU": 111
+ },
+ "runs": [
+  {
+   "run": "classifier_datasec_20260923T121808Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "classifier_datasec_20260923T125149Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "classifier_datasec_20260923T132031Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "classifier_datasec_20260923T132834Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "classifier_datasec_20260923T134241Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "classifier_datasec_20260923T135301Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "classifier_datasec_20260923T140248Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "classifier_datasec_20260923T141238Z",
+   "task": "classifier_datasec",
+   "date": "20260923",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "e8d3099010ac2937e5bb9c542a29f51fe50712525a7d35d077c0cedec75ec60a",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "pseudo_datasec_s_20261013T221755Z",
+   "task": "pseudo_labels",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20260925T202815Z",
+   "task": "retrieval_index",
+   "date": "20260925",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261002T104832Z",
+   "task": "retrieval_index",
+   "date": "20261002",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261002T104923Z",
+   "task": "retrieval_index",
+   "date": "20261002",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261107T181219Z",
+   "task": "retrieval_index",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261107T181538Z",
+   "task": "retrieval_index",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261110T063718Z",
+   "task": "retrieval_index",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261110T063956Z",
+   "task": "retrieval_index",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261110T065101Z",
+   "task": "retrieval_index",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261110T065319Z",
+   "task": "retrieval_index",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261110T065541Z",
+   "task": "retrieval_index",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "retrieval_index_20261110T065813Z",
+   "task": "retrieval_index",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_B0_final_test_20261014T085016Z",
+   "task": "sed_ensemble",
+   "date": "20261014",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_B_clean_20260925T045606Z",
+   "task": "sed_ensemble",
+   "date": "20260925",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_BC_clean_20260925T045658Z",
+   "task": "sed_ensemble",
+   "date": "20260925",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_bcv2_20260926T205412Z",
+   "task": "sed_ensemble",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_C_clean_20260925T045631Z",
+   "task": "sed_ensemble",
+   "date": "20260925",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_cv2_20260926T205405Z",
+   "task": "sed_ensemble",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_f2_h2.5_triangular0.3_20261008T060746Z",
+   "task": "sed_ensemble",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_f2_h2.5_uniform_20261008T074349Z",
+   "task": "sed_ensemble",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_f2_h5_triangular0.3_20261008T064740Z",
+   "task": "sed_ensemble",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s11_focal_plus_t2b_20260928T185220Z",
+   "task": "sed_ensemble",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s11_focal_t2b_20260928T185207Z",
+   "task": "sed_ensemble",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_d_20260929T045021Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_e_20260929T045030Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_f1_20260929T045044Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_f2_20260929T045053Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_f3_20260929T045102Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_f4_20260929T045115Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_g1_20260929T045129Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_s13_g2_20260929T045146Z",
+   "task": "sed_ensemble",
+   "date": "20260929",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_t2a_20260927T141952Z",
+   "task": "sed_ensemble",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_t2a_bv2_20260927T142003Z",
+   "task": "sed_ensemble",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_t2b_20260927T200914Z",
+   "task": "sed_ensemble",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_t2b_bv2_20260927T200921Z",
+   "task": "sed_ensemble",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T150934Z",
+   "task": "sed_ensemble",
+   "date": "20260926",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_ensemble_v2_20260926T155630Z",
+   "task": "sed_ensemble",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_filtered_B0_oof_dev_20261107T181008Z",
+   "task": "sed_filtered",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_lbr_B0_20261109T172809Z",
+   "task": "sed_lbr",
+   "date": "20261109",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_lbr_B0v3_20261110T042337Z",
+   "task": "sed_lbr",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_lbr_oofevents_sed_lbr_B0_20261109T172809Z_f1_20261110T062901Z",
+   "task": "sed_lbr_oof_events",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_lbr_oofevents_sed_lbr_B0v3_20261110T042337Z_recall_first_20261110T063606Z",
+   "task": "sed_lbr_oof_events",
+   "date": "20261110",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_B0_h10_20261008T130820Z",
+   "task": "sed_oof",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_B0_h5_20261008T130849Z",
+   "task": "sed_oof",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_ENS_B0_OD_h5_20261013T221030Z",
+   "task": "sed_oof",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_ENS_B0_TFKD_h5_20261008T224454Z",
+   "task": "sed_oof",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_OD_h5_20261013T220951Z",
+   "task": "sed_oof",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_P1_B0x3_h5_20261107T224434Z",
+   "task": "sed_oof",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_P1_s2_h5_20261107T202700Z",
+   "task": "sed_oof",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_P1_s3_h5_20261107T224356Z",
+   "task": "sed_oof",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_P4_h5_20261108T064630Z",
+   "task": "sed_oof",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_TF_h10_20261009T035119Z",
+   "task": "sed_oof",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_TF_h5_20261009T035153Z",
+   "task": "sed_oof",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_TFKD_h10_20261008T224140Z",
+   "task": "sed_oof",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_oof_TFKD_h5_20261008T224209Z",
+   "task": "sed_oof",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_polyphonic_20260922T115137Z",
+   "task": "sed_polyphonic",
+   "date": "20260922",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "656c1851de7c22a5eb6b2c2dc2b20397ad1bce98b136c591b7fe68b88cd130b1",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260922T115340Z",
+   "task": "sed_polyphonic",
+   "date": "20260922",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "656c1851de7c22a5eb6b2c2dc2b20397ad1bce98b136c591b7fe68b88cd130b1",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260923T173234Z",
+   "task": "sed_polyphonic",
+   "date": "20260923",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T015736Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T021958Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T031616Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T033537Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T054531Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T061000Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T070927Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T072736Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T074656Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260924T080715Z",
+   "task": "sed_polyphonic",
+   "date": "20260924",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260925T205837Z",
+   "task": "sed_polyphonic",
+   "date": "20260925",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260925T211704Z",
+   "task": "sed_polyphonic",
+   "date": "20260925",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260925T213732Z",
+   "task": "sed_polyphonic",
+   "date": "20260925",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T033312Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T053024Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T064832Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T075611Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T085233Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T100315Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T161726Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T172229Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260926T185208Z",
+   "task": "sed_polyphonic",
+   "date": "20260926",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T053736Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T054845Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T060523Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T062247Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T064341Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T092605Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T113910Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T164617Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T171752Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T172128Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T172539Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T172924Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T180358Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260927T185137Z",
+   "task": "sed_polyphonic",
+   "date": "20260927",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T154005Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T154448Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T154919Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": true,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T155421Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T155829Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T160343Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": false,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T161127Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T161532Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T162033Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T162609Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": false,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T165635Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T173526Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20260928T181509Z",
+   "task": "sed_polyphonic",
+   "date": "20260928",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T062333Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T083632Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T092903Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T102530Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T111605Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T115845Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T123531Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T131138Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T135047Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T145841Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T162136Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T185245Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T193842Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T202607Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T211301Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T215900Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T224300Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261008T234743Z",
+   "task": "sed_polyphonic",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261009T005328Z",
+   "task": "sed_polyphonic",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261009T015949Z",
+   "task": "sed_polyphonic",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261009T030150Z",
+   "task": "sed_polyphonic",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261009T093617Z",
+   "task": "sed_polyphonic",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261009T123544Z",
+   "task": "sed_polyphonic",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261009T135845Z",
+   "task": "sed_polyphonic",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261009T153325Z",
+   "task": "sed_polyphonic",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261013T180511Z",
+   "task": "sed_polyphonic",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261013T185600Z",
+   "task": "sed_polyphonic",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261013T194339Z",
+   "task": "sed_polyphonic",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261013T203013Z",
+   "task": "sed_polyphonic",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261013T211846Z",
+   "task": "sed_polyphonic",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261013T221803Z",
+   "task": "sed_polyphonic",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T180239Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T183618Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T190510Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T193214Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T195949Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T202742Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T205502Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T212237Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T214945Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261107T221657Z",
+   "task": "sed_polyphonic",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T010008Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": false,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T010931Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T021058Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": false,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T022408Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T032306Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T042323Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T045106Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T051954Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T054758Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_polyphonic_20261108T061720Z",
+   "task": "sed_polyphonic",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU"
+  },
+  {
+   "run": "sed_rewindow_B0_f0_h5_20261008T130621Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f0_h5_test_20261014T084758Z",
+   "task": "sed_rewindow",
+   "date": "20261014",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f1_h5_20261008T130644Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f1_h5_test_20261014T084829Z",
+   "task": "sed_rewindow",
+   "date": "20261014",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f2_h5_20261008T130708Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f2_h5_test_20261014T084856Z",
+   "task": "sed_rewindow",
+   "date": "20261014",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f3_h5_20261008T130733Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f3_h5_test_20261014T084923Z",
+   "task": "sed_rewindow",
+   "date": "20261014",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f4_h5_20261008T130755Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_B0_f4_h5_test_20261014T084950Z",
+   "task": "sed_rewindow",
+   "date": "20261014",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h2.5_triangular0.3_m1_20261008T060426Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h2.5_triangular0.3_m2_20261008T060530Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h2.5_triangular0.3_m3_20261008T060629Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h2.5_uniform_m1_20261008T073910Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h2.5_uniform_m2_20261008T074045Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h2.5_uniform_m3_20261008T074220Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h5_triangular0.3_m1_20261008T064524Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h5_triangular0.3_m2_20261008T064611Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_f2_h5_triangular0.3_m3_20261008T064653Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_OD_f0_h5_20261013T220452Z",
+   "task": "sed_rewindow",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_OD_f1_h5_20261013T220548Z",
+   "task": "sed_rewindow",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_OD_f2_h5_20261013T220645Z",
+   "task": "sed_rewindow",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_OD_f3_h5_20261013T220747Z",
+   "task": "sed_rewindow",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_OD_f4_h5_20261013T220845Z",
+   "task": "sed_rewindow",
+   "date": "20261013",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s2_f0_h5_20261107T183549Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s2_f1_h5_20261107T190443Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s2_f2_h5_20261107T193148Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s2_f3_h5_20261107T195924Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s2_f4_h5_20261107T202632Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s3_f0_h5_20261107T205437Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s3_f1_h5_20261107T212212Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s3_f2_h5_20261107T214920Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s3_f3_h5_20261107T221632Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P1_s3_f4_h5_20261107T224330Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P2S_OB_train_20261107T183958Z",
+   "task": "sed_rewindow",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P2S_OD_20261108T010505Z",
+   "task": "sed_rewindow",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P4_f0_h5_20261108T045041Z",
+   "task": "sed_rewindow",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P4_f1_h5_20261108T051929Z",
+   "task": "sed_rewindow",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P4_f2_h5_20261108T054731Z",
+   "task": "sed_rewindow",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P4_f3_h5_20261108T061656Z",
+   "task": "sed_rewindow",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_P4_f4_h5_20261108T064601Z",
+   "task": "sed_rewindow",
+   "date": "20261108",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TF_f0_h5_20261009T034839Z",
+   "task": "sed_rewindow",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TF_f1_h5_20261009T034909Z",
+   "task": "sed_rewindow",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TF_f2_h5_20261009T034941Z",
+   "task": "sed_rewindow",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TF_f3_h5_20261009T035014Z",
+   "task": "sed_rewindow",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TF_f4_h5_20261009T035045Z",
+   "task": "sed_rewindow",
+   "date": "20261009",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TFKD_f0_h5_20261008T223935Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TFKD_f1_h5_20261008T223959Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TFKD_f2_h5_20261008T224023Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TFKD_f3_h5_20261008T224049Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_rewindow_TFKD_f4_h5_20261008T224114Z",
+   "task": "sed_rewindow",
+   "date": "20261008",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  },
+  {
+   "run": "sed_served_B0_20261107T175659Z",
+   "task": "sed_served",
+   "date": "20261107",
+   "complete": true,
+   "dirty": false,
+   "split_sha256": "d2924a5e45c2b271bd0c34d21af546317c4e12a1ab14964330672c1b7ec8d4f5",
+   "taxonomy_sha256": "67ca8a8c53278cd438d7d06a4ba09e277f3f9a6df99460bdbec1d3a927729a3a",
+   "gpu": null
+  }
+ ],
+ "git": {
+  "revision": "478e1538ee83194f505d9b14c3f99b452cf33428",
+  "dirty": true
+ },
+ "created_at": "2026-11-23T16:59:16.577801+00:00"
+}

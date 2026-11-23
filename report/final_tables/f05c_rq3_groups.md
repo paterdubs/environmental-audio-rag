@@ -1,6 +1,6 @@
 # RQ3 (test, bộ lọc gold): nDCG@10 hybrid / vector_only theo nhóm câu hỏi
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `2653726`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `478e153`.
 
 | Corpus | Thời lượng | Một lớp | Nhiều lớp | Quan hệ thời gian |
 |---|---:|---:|---:|---:|

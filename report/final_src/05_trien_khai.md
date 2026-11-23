@@ -111,6 +111,20 @@ Hệ thống có hai giới hạn: chưa có xác thực người dùng nên **k
 
 Trước khi viết báo cáo, mọi tệp được trích dẫn đã được "đóng băng": một script kiểm sự tồn tại và ghi SHA-256 của 129 lần chạy hoặc ensemble, 5 checkpoint ngoài và 8 tệp đầu vào cố định (tập chia, hệ lớp, từ điển, ngữ pháp, bộ truy vấn). Không thiếu tệp nào (Phụ lục B). Ba bộ kiểm tài liệu chạy trước mỗi lần commit: một bộ đối chiếu các con số chính trong tài liệu với tệp kết quả (87 số, 157 chỗ nhắc), một bộ kiểm lệnh trong hướng dẫn tái lập so với mã nguồn (96 lệnh) và một bộ kiểm liên kết (370 liên kết). Tài liệu `docs/REPRODUCE.md` tách hai quy trình: kiểm toán an toàn chạy trong bản sao hiện tại, và tái tạo số test chỉ làm trong một bản sao mới có phê duyệt, để không tạo thêm lượt chạm test ngoài sổ ghi. Các bảng số và hình trong báo cáo đều do script sinh từ các tệp trên, ghi rõ tệp nguồn và phiên bản git; chính tệp DOCX này được dựng từ nguồn Markdown bằng một script.
 
-**Kiểm thử.** Bộ kiểm thử Python dùng pytest, kiểm tra mã bằng ruff. Ở lần kiểm cuối cùng (11/11/2026), ruff không báo lỗi và pytest đạt 1192 kiểm thử, bỏ qua 4 và có 1 kiểm thử xfail có chủ ý (bản kê run cũ thiếu trường `environment`). Bộ kiểm thử phủ hợp đồng dữ liệu, ranh giới API–torch, các cổng dữ liệu (kể cả phép thử chứng minh cổng D4 không đạt rỗng), điều kiện thời gian SQL và Python, chỉ số bám sát sự kiện, ba ràng buộc G1–G3, tính trùng từng bit của đường sinh dự đoán, và tích hợp PostgreSQL. CI trên GitHub Actions chạy ruff, pytest, kiểm tra cấm `torch` trong API, kiểm thử và build giao diện.
+**Theo dõi thí nghiệm.** Vì mọi lần chạy đều có manifest, có thể dựng lại toàn bộ sổ thí nghiệm mà không cần công cụ theo dõi ngoài. ⟪tbl:registry⟫ tổng hợp 218 lần chạy trong `ml/runs/` theo loại, và ⟪fig:runtimeline⟫ cho thấy chúng phân bố theo ngày tạo. 103 lần là huấn luyện SED, 99 lần hoàn tất; 4 lần không hoàn tất đều có lý do đã ghi (một lần loss focal ra NaN, ba lần dừng giữa chừng ở giai đoạn P). 17 lần chạy trên cây làm việc chưa sạch, tất cả trước ngày 29/09: sáu lần thử bộ phân loại, hai lần dò đường ngày 22/09, ba lần thăm dò nhánh B và C (đã loại khỏi phân tích RQ1 chính, vốn chỉ dùng 7 lần chạy sạch), hai lần thử focal loss 3 epoch, một ensemble v2 chỉ dùng cho demo trước S8, và ba ensemble công thức v1 ngày 25/09. Ensemble C trong số đó là mốc v1 trong bảng tiến triển; nhóm đã dựng lại ba ensemble này trên cây sạch và nhận được dữ liệu trùng từng byte, nên con số không đổi, nhưng manifest gốc vẫn ghi cờ bẩn và được giữ nguyên. Mọi lần chạy SED cùng dùng một mã băm tập chia DataSED, trừ hai lần dò đường ngày 22/09 chạy trước khi tập chia được sinh lại sau bước khử trùng lặp; mọi lần huấn luyện bộ phân loại dùng mã băm tập chia DataSEC. Hình cũng cho thấy công việc tập trung theo đợt: phần lớn các lần chạy rơi vào bốn giai đoạn, và không có lần chạy mới nào từ 15/10 đến 06/11.
+
+@@CAP:tbl:registry|Sổ đăng ký các lần chạy theo loại@@
+
+@@COLWIDTHS:40,8,12,11,13,16@@
+
+@@INCLUDE:report/final_tables/f14_run_registry.md@@
+
+![](report/research_figures/r12_run_timeline.png){width=15cm}
+
+@@CAP:fig:runtimeline|Số lần chạy được tạo theo ngày và loại, kèm bốn giai đoạn thí nghiệm@@
+
+@@NOTE:Nguồn: docs/measurements/run_registry_20261123.json (scripts.report_run_registry, đọc manifest của mọi run); ngày lấy từ mã run.@@
+
+**Kiểm thử.** Bộ kiểm thử Python dùng pytest, kiểm tra mã bằng ruff. Ở lần kiểm ngày 24/11/2026, ruff không báo lỗi và pytest đạt 1228 kiểm thử, có 1 kiểm thử xfail có chủ ý (bản kê run cũ thiếu trường `environment`) và bỏ qua 4 kiểm thử tích hợp PostgreSQL vì lúc đó cơ sở dữ liệu tắt; bốn kiểm thử này đạt ở lần chạy ngày 23/11 khi cơ sở dữ liệu bật. Bộ kiểm thử phủ hợp đồng dữ liệu, ranh giới API–torch, các cổng dữ liệu (kể cả phép thử chứng minh cổng D4 không đạt rỗng), điều kiện thời gian SQL và Python, chỉ số bám sát sự kiện, ba ràng buộc G1–G3, tính trùng từng bit của đường sinh dự đoán, và tích hợp PostgreSQL. CI trên GitHub Actions chạy ruff, pytest, kiểm tra cấm `torch` trong API, kiểm thử và build giao diện.
 
 Nhiều lỗi thật chỉ bị bắt nhờ chạy toàn bộ quy trình trên dữ liệu thật, trong đó lỗi ghép cửa sổ dự đoán (khoảng 10 s cuối mỗi bản ghi bị nhân đôi) làm đổi mọi số SED đã có; sau khi sửa, toàn bộ 11 lần chạy được tính lại và kết luận RQ1 không đổi.
