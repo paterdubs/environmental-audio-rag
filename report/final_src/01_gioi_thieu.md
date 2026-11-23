@@ -28,6 +28,28 @@ $$\operatorname{mention}(y) \subseteq \{\, c_i : (c_i, t^{on}_i, t^{off}_i, s_i)
 
 Điều kiện ⟪eq:grounding⟫ giúp phân biệt đề tài với việc viết mô tả âm thanh tự do, vì máy có thể kiểm tra được điều kiện này. Tuy nhiên điều kiện chỉ bảo đảm mô tả **khớp với danh sách sự kiện mà hệ thống dự đoán**, chứ không bảo đảm khớp với âm thanh thật: nếu bước phát hiện sai thì mô tả cũng sai theo. Nhóm luôn tách riêng hai mức đúng này khi đánh giá (Chương 4 và 6).
 
+## Bối cảnh ứng dụng tại Việt Nam
+
+Tiếng ồn ở Việt Nam được điều chỉnh bởi **QCVN 26:2025/BNNMT** về tiếng ồn, thay QCVN 26:2010/BTNMT theo Lời nói đầu của văn bản; nhóm chỉ trích từ bản quy chuẩn gốc. Quy chuẩn đặt giới hạn theo ba yếu tố: **loại nguồn** (cơ sở có thiết bị, loa, công trường xây dựng đang thi công, giao thông đường bộ và đường sắt), **khung giờ** (ban ngày 06:00 đến 18:00, buổi tối 18:00 đến 22:00, ban đêm 22:00 đến 06:00; riêng giao thông chia thành hai khung, trước và sau 22:00) và **thời gian phát ra tiếng ồn**. Ví dụ, giới hạn đối với công trường ở khu vực A, B, C là 65, 60 và 50 dBA theo ba khung giờ (Bảng 3), và Bảng 2 cho phép nới ngưỡng của cơ sở sản xuất, kinh doanh, dịch vụ thêm 15 dBA khi tiếng ồn phát ra không quá 1 giờ ban ngày, giảm dần qua các mức 10, 5 và 3 dBA khi thời gian dài hơn, và về 0 khi trên 6 giờ ban ngày [@qcvn262025]. "Nguồn nào, vào lúc nào, kéo dài bao lâu" chính là những gì dòng thời gian sự kiện của hệ thống trả lời được.
+
+Quy chuẩn cũng vạch ra giới hạn của đề tài. Mục 3.2 yêu cầu đo bằng **máy đo mức âm loại 1** theo TCVN 12527-1:2018, đã kiểm định và hiệu chuẩn [@qcvn262025]. Hệ thống của nhóm xử lý tệp âm thanh thông thường, **không đo mức ồn bằng dBA**, nên chỉ là công cụ **sàng lọc và khoanh vùng**: giúp chọn bản ghi và khoảng thời gian có nguồn đáng chú ý để đo hoặc nghe lại, và không phải bằng chứng vi phạm. Tương tự, hệ thống chỉ gọi tên nguồn âm quan sát được (ví dụ "có nhạc"), không kết luận loại hình cơ sở (ví dụ "có karaoke") hay hành vi vi phạm, theo ADR-0001. Mục "Tình huống sử dụng và yêu cầu" ở Chương 5 nêu người dùng giả định và yêu cầu tương ứng; ⟪tbl:qcvnmap⟫ nêu ánh xạ do nhóm đề xuất từ lớp âm thanh sang hạng mục nguồn của quy chuẩn.
+
+@@CAP:tbl:qcvnmap|Ánh xạ đề xuất từ lớp âm thanh sang hạng mục nguồn của QCVN 26:2025/BNNMT@@
+
+@@COLWIDTHS:34,40,26@@
+
+| Lớp của hệ thống | Hạng mục nguồn trong quy chuẩn | Vai trò |
+|---|---|---|
+| `workshop` | Công trường xây dựng đang thi công, thiết bị máy móc (Bảng 3) | Nguồn có thể bị quản lý |
+| `music` | Loa; cơ sở trong cùng tòa nhà (Bảng 3) | Nguồn có thể bị quản lý; chỉ nói "có nhạc" |
+| `vehicle_pass_by`, `vehicle_idling`, `horn` | Phương tiện giao thông đường bộ (Bảng 5) | Nguồn có thể bị quản lý |
+| `train` | Đường sắt (Bảng 5) | Nguồn có thể bị quản lý |
+| Các lớp sinh vật (`birds`, `dog_barkings_and_howlings`, …) | Không phải nguồn bị quản lý | Ồn nền cần loại khi chọn thời điểm đo |
+
+@@NOTE:Nguồn: QCVN 26:2025/BNNMT (đọc trực tiếp bản gốc, 23/11/2026). Ánh xạ là đề xuất của nhóm, không phải phân loại của quy chuẩn. Ngày hiệu lực và điều khoản chuyển tiếp nằm ở Thông tư ban hành, nhóm chưa kiểm trực tiếp.@@
+
+Để đo hệ thống ở góc nhìn này, nhóm báo thêm một **tập 19 lớp** bỏ hai lớp ít gặp ở đô thị Việt Nam (`propeller_aircrafts` và `crows_seagulls_magpies`; ADR-0046) và hai thước dễ đọc hơn event-F1 chặt: phát hiện theo giao nhau và F1 theo đoạn 1 s. Tập lớp được chọn theo tiêu chí thực tế, không theo điểm, nhưng số OOF của các tập lớp đã được xem trước khi viết quyết định này (ADR-0046). Trên 19 lớp, event-F1 micro (collar 0,2 s) của B0 là 0,1892 và của LBR V2 là 0,3120; ở điểm vận hành ưu tiên phát hiện, LBR V3 bắt được 83,2% sự kiện tham chiếu theo thước giao nhau với precision 78,1% (test annotated). Nhóm **chưa có phép đo định lượng nào trên bản ghi thu ở Việt Nam**: cả hai bộ dữ liệu đều là dữ liệu công bố sẵn, nhóm chưa kiểm nơi thu và không khẳng định chúng đại diện cho âm thanh đô thị Việt Nam; giới hạn này được nêu ở Chương 6 và Chương 7.
+
 ## Mục tiêu và câu hỏi nghiên cứu
 
 Mục tiêu chung là dựng một quy trình tái lập được, đi từ dữ liệu công bố đến câu trả lời có bằng chứng, và đo ba điều mà các hệ thống mô tả âm thanh thường bỏ qua: học chuyển giao có thật sự giúp không, mô tả có bị ảo giác không, và bộ lọc có cấu trúc đóng góp gì cho việc truy hồi. Cụ thể gồm bảy việc: (1) chuẩn bị dữ liệu có nguồn gốc rõ và tập chia cố định; (2) huấn luyện mô hình phân loại 22 lớp trên DataSEC; (3) huấn luyện mô hình SED 21 lớp trên DataSED và tinh chỉnh biên sự kiện sau bước ghép; (4) đo hiệu quả của việc chuyển giao DataSEC sang DataSED; (5) sinh mô tả có căn cứ và đo ảo giác; (6) truy hồi kết hợp lọc và tìm theo ngữ nghĩa; (7) làm ứng dụng web minh họa từ đầu đến cuối.

@@ -92,3 +92,12 @@ def test_calibration_table_places_systems_next_to_label_agreement():
     text = bft.build_calibration(data, "abcdef0", CALIBRATION)
     assert "| B0 | 0.1806 | 0.3889 | 0.7260 |" in text
     assert "0.5785 | 0.7603 | 0.7425" in text
+
+
+def test_workload_table_formats_counts_from_the_measurement():
+    data = {"commits": 400, "first_commit": "2026-09-22", "last_commit": "2026-11-23",
+            "python_lines": {"ml": 1000, "scripts": 2000, "tests": 3000, "services": 4},
+            "frontend_lines": 1234, "test_functions": 9, "adr": 48, "measurement_reports": 270,
+            "runs": {"sed": 103, "classifier": 8}, "json_schemas": 8}
+    text = bft.build_workload(data, "abcdef0", ROOT / "docs" / "measurements" / "w.json")
+    assert "400 commit" in text and "6.004 dòng" in text and "103 run SED" in text

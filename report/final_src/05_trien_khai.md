@@ -2,11 +2,62 @@
 
 Chương này mô tả phần đã làm thành phần mềm: cách tổ chức mã nguồn, các dịch vụ, giao diện, cách chạy demo và cách bảo đảm tái lập. Nội dung chỉ gồm những gì đã có mã nguồn và đã được kiểm chứng bằng lệnh và tệp kết quả.
 
+## Tình huống sử dụng và yêu cầu
+
+**Người dùng giả định.** Nhóm thiết kế cho ba nhóm người dùng, đều là **giả định của nhóm**; nhóm chưa phỏng vấn người dùng thật (đây là việc để sau, Chương 7). Thứ nhất, cán bộ hoặc kỹ sư quan trắc môi trường ở địa phương, nhận phản ánh tiếng ồn và cần biết trong bản ghi vài phút có những nguồn nào, vào lúc nào, kéo dài bao lâu, mà không phải nghe hết. Thứ hai, ban quản lý tòa nhà hoặc khu dân cư, cần chỉ ra khoảng giờ có tiếng nhạc hay máy móc trong lịch sử bản ghi. Thứ ba, nhóm nghiên cứu cảnh âm, cần truy vấn một tập bản ghi lớn theo lớp, thời gian và quan hệ trước–sau. Bối cảnh quy chuẩn và giới hạn của sản phẩm nêu ở Chương 1.
+
+**Ba tác vụ đi qua giao diện.** (1) Tải một bản ghi WAV và đọc dòng thời gian cùng mô tả (tiếng Việt cho giao diện, tiếng Anh cho đánh giá). (2) Hỏi bằng câu tự nhiên về lịch sử, ví dụ về nguồn âm này xuất hiện trước nguồn âm kia, hay về sự kiện kéo dài quá một khoảng, rồi sửa các thẻ bộ lọc nếu bộ phân tích hiểu sai. (3) Kiểm chứng một câu trả lời bằng cách bấm trích dẫn để mở đúng bản ghi và nghe lại đúng khoảng thời gian. Tác vụ thứ ba quan trọng: hệ thống không đòi người dùng tin vào mô tả mà đưa bằng chứng để tự kiểm.
+
+@@CAP:tbl:requirements|Yêu cầu, tính năng đáp ứng và bằng chứng@@
+
+@@COLWIDTHS:8,30,30,32@@
+
+| Mã | Yêu cầu | Tính năng | Bằng chứng trong báo cáo |
+|---|---|---|---|
+| F1 | Nhận bản ghi WAV, từ chối đầu vào sai | Tải lên; từ chối sai định dạng, trên 50 MB hoặc trên 600 s | Mục "Các dịch vụ" |
+| F2 | Cho biết nguồn nào, lúc nào, bao lâu | SED đa âm 21 lớp trả sự kiện có onset và offset | Event-F1 micro 0,2965 (V2); recall giao nhau 0,82 và precision 0,78 (V3, ưu tiên phát hiện) |
+| F3 | Mô tả bằng hai ngôn ngữ, bám sát sự kiện | Mô tả template tiếng Anh và tiếng Việt kèm bằng chứng | Không vi phạm ba ràng buộc G1–G3 ở mô tả template (Chương 6, RQ2) |
+| F4 | Hỏi bằng tiếng Việt hoặc tiếng Anh | Bộ phân tích câu hỏi thành bộ lọc, thẻ sửa được | Hợp lược đồ 240/240; đúng hoàn toàn 0,855 (template) và 0,925 (diễn đạt lại) |
+| F5 | Kết quả đúng điều kiện và có bằng chứng | Bộ lọc cứng; câu trả lời kèm trích dẫn bấm được | Độ đúng bộ lọc 1,000; khẳng định thiếu bằng chứng 0,000 (Chương 6, RQ3) |
+| N1 | Chạy trên máy cá nhân, dữ liệu không rời máy | Docker Compose, chế độ ngoại tuyến, mô hình chạy cục bộ | Mục "Chạy demo" |
+| N2 | Thời gian xử lý chấp nhận được | Suy luận một lần, cơ sở dữ liệu có chỉ mục | Một bản ghi train: 3,7 s; truy vấn kết hợp: 0,27 s (một lượt đo, chưa có thống kê) |
+| N3 | Không đưa kết luận ngoài bằng chứng | Từ cấm ở G3; không suy tội phạm, khẩn cấp (ADR-0001) | Từ cấm bằng 0 với mô tả có ràng buộc |
+| N4 | Truy nguồn được | Manifest, mã băm, đóng băng artifact | Mục "Tái lập và kiểm thử" |
+
+@@NOTE:Nguồn: các số lấy từ Chương 6 và final_numbers_20261110.json; yêu cầu do nhóm đặt ra từ tình huống giả định ở trên, không từ khảo sát người dùng.@@
+
+Những gì sản phẩm **không** làm cũng thuộc yêu cầu: không đo mức ồn dBA, không cảnh báo thời gian thực, không có xác thực người dùng, và chưa thử trên bản ghi thu ngoài hai bộ dữ liệu.
+
 ## Tổ chức mã nguồn
 
 Mã nguồn chia ba tầng: `ml/` chứa phần xử lý dữ liệu, mô hình, huấn luyện, đánh giá, sinh mô tả và truy hồi; `scripts/` chỉ gọi các chức năng đó từ dòng lệnh và sinh báo cáo đo; `services/` chứa các dịch vụ phục vụ.
 
 Hai nguyên tắc ranh giới được kiểm bằng máy chứ không chỉ là quy ước. Thứ nhất, dịch vụ API không được dùng PyTorch hay nạp checkpoint; một kiểm thử trong quy trình tích hợp liên tục (CI) chặn việc này, để API khởi động nhanh và kiểm thử được mà không cần GPU. Thứ hai, dữ liệu trao đổi giữa các thành phần tuân theo các hợp đồng JSON Schema trong `contracts/` (bản ghi, sự kiện, dòng thời gian, phản hồi suy luận, kết quả truy hồi, tham số hậu xử lý, bộ truy vấn, manifest của lần chạy), mỗi hợp đồng có kiểm thử riêng.
+
+## Khối lượng thực hiện
+
+⟪tbl:workload⟫ tóm tắt khối lượng công việc bằng số đếm từ chính kho mã, để người đọc đo được độ lớn của phần hiện thực mà các chương kết quả chỉ nói gián tiếp. Số run đếm thư mục trong `ml/runs/` của máy làm việc (thư mục này không nằm trong git); các số còn lại đếm được từ kho mã tại phiên bản ghi ở chân bảng.
+
+@@CAP:tbl:workload|Khối lượng thực hiện, đếm từ kho mã@@
+
+@@COLWIDTHS:34,66@@
+
+@@INCLUDE:report/final_tables/f12_workload.md@@
+
+⟪tbl:services⟫ liệt kê các thành phần chạy khi triển khai bằng Docker Compose. Mô hình ngôn ngữ không nằm trong Compose mà chạy trên máy chủ để dùng GPU.
+
+@@CAP:tbl:services|Các thành phần triển khai@@
+
+@@COLWIDTHS:22,26,52@@
+
+| Thành phần | Cách chạy | Vai trò |
+|---|---|---|
+| Cơ sở dữ liệu | Container `pgvector/pgvector:pg16`, có kiểm tra sức khỏe | Sự kiện, mô tả, tài liệu truy hồi, chỉ mục vector |
+| Dịch vụ suy luận | Container (CPU), hồ sơ `app` | Nạp SED, bộ sinh mô tả, BGE-M3; trả sự kiện và mô tả |
+| Dịch vụ API và giao diện | Container, cổng 8088 | Nhận tệp, điều phối, truy hồi, phục vụ giao diện web |
+| Mô hình ngôn ngữ (Qwen3.5-9B) | llama.cpp trên máy chủ, GPU | Chỉ phân tích câu hỏi thành bộ lọc |
+
+@@NOTE:Nguồn: docker-compose.yml; docs/measurements/workload_20261123.json.@@
 
 ## Các dịch vụ
 

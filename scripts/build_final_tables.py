@@ -271,6 +271,27 @@ def build_calibration(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_workload(data: dict[str, Any], revision: str, source: Path) -> str:
+    """Khối lượng thực hiện, đếm từ repo bởi `report_workload`."""
+    py, runs = data["python_lines"], data["runs"]
+    rows = [
+        ["Lịch sử làm việc", f"{data['commits']} commit, {data['first_commit']} đến "
+                              f"{data['last_commit']}"],
+        ["Mã Python", f"{sum(py.values()):,} dòng (ml {py['ml']:,}; scripts {py['scripts']:,}; "
+                      f"tests {py['tests']:,}; services {py['services']:,})".replace(",", ".")],
+        ["Giao diện web (TS/TSX)", f"{data['frontend_lines']:,} dòng".replace(",", ".")],
+        ["Kiểm thử", f"{data['test_functions']} hàm kiểm thử (pytest) và vitest cho giao diện"],
+        ["Quyết định thiết kế", f"{data['adr']} ADR"],
+        ["Báo cáo đo sinh tự động", f"{data['measurement_reports']} tệp Markdown"],
+        ["Huấn luyện", f"{runs['sed']} run SED và {runs['classifier']} run phân loại"],
+        ["Hợp đồng dữ liệu", f"{data['json_schemas']} JSON Schema"],
+    ]
+    return table(
+        "Khối lượng thực hiện (đếm từ repo)", ["Hạng mục", "Số đếm"], rows, [source], revision,
+        ["---", "---"],
+    )
+
+
 def build_psds(data: dict[str, Any], revision: str, source: Path) -> str:
     d = data["psds_diagnosis"]
     rows = [
@@ -374,6 +395,7 @@ def main() -> None:
     parser.add_argument("--rq3-modes", type=Path, help="rq3_modes_*.json")
     parser.add_argument("--lbr-context", type=Path, help="lbr_context_*.json")
     parser.add_argument("--calibration", type=Path, help="calibration_*.json")
+    parser.add_argument("--workload", type=Path, help="workload_*.json")
     parser.add_argument("--run-dir", type=Path, help="run B0 final test (bảng theo lớp)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
@@ -408,6 +430,7 @@ def main() -> None:
         ("f05c_rq3_groups.md", build_rq3_groups, args.rq3_modes),
         ("f10_lbr_context.md", build_lbr_context, args.lbr_context),
         ("f11_calibration.md", build_calibration, args.calibration),
+        ("f12_workload.md", build_workload, args.workload),
     )
     for name, builder, path in extra:
         if path is None:

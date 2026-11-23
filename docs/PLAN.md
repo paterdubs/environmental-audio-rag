@@ -452,8 +452,8 @@ lại từ JSON đã đóng băng. Số mới nào cũng vào `docs/claims.yaml`
 | 1 | T0-07 | Bảng định cỡ B0/V2/V3 so đồng thuận người (8 cặp) và mốc DCASE; trước đó nâng nguồn DCASE lên V3 trong RELATED_WORK §10 | agent | ✅ 23/11 (DCASE lên V3, S72, f11) |
 | 1 | T0-08 | Viết lại RQ2 trung thực: 0 vi phạm có được do cấu tạo, constrained ≈ template, κ ≈ −0.03, LLM thật sự có ích ở parser | agent | ✅ 23/11 |
 | 1 | T0-05 | Sửa lỗi K02/K03/K04/K07/K09/K11/K12/K13/K16 và câu về λ (`04` L38); đoạn tái sử dụng test (42 lượt); cận trên RQ1 | agent | ✅ 23/11 (K02/K03/K04/K09/K12/K13/K14/K16, λ, mục "Tái sử dụng tập test") |
-| 1 | T0-09 | Mục tình huống sử dụng: persona, 3 tác vụ, bảng yêu cầu ↔ tính năng ↔ bằng chứng; QCVN 26:2025/BNNMT (trích từ PDF gốc) kèm giới hạn "không thay máy đo Class 1"; số tập 19 lớp Việt Nam (B0 0.1892, V2 0.3120, V3 0.8319/0.7810) | agent | ○ |
-| 1 | T0-11, T0-16 | Bảng khối lượng hiện thực, sơ đồ triển khai Compose; accuracy bộ phân loại 0.9135 cạnh FA2025 kèm cảnh báo không cùng điều kiện | agent | ○ |
+| 1 | T0-09 | Mục tình huống sử dụng: persona, 3 tác vụ, bảng yêu cầu ↔ tính năng ↔ bằng chứng; QCVN 26:2025/BNNMT (trích từ PDF gốc) kèm giới hạn "không thay máy đo Class 1"; số tập 19 lớp Việt Nam (B0 0.1892, V2 0.3120, V3 0.8319/0.7810) | agent | ✅ 23/11 (Chương 1 QCVN từ PDF gốc + bảng ánh xạ; Chương 5 persona, tác vụ, bảng yêu cầu) |
+| 1 | T0-11, T0-16 | Bảng khối lượng hiện thực, sơ đồ triển khai Compose; accuracy bộ phân loại 0.9135 cạnh FA2025 kèm cảnh báo không cùng điều kiện | agent | ◐ 23/11: bảng khối lượng (f12, đếm lại ở T0-13) và bảng dịch vụ thay cho sơ đồ; accuracy 0,9135 có, so FA2025 bỏ vì nguồn mới ở mức V2 |
 | 2 | T0-10 | Bảng hiệu năng (CPU/GPU, RTF, RAM, khởi động, độ trễ truy vấn) + field test định tính trên clip tự thu, hai SV nghe chấm độc lập | agent + người dùng | ○ |
 | 3 | T0-12 | Badge StatusBar đọc `served_run`/`operating_point` thay chuỗi ghi cứng; chụp lại ảnh; tách Hình 5.1 | agent | ○ |
 | 4 | T0-02 | Hình thức: trang nhận xét GVPB (`@@REVIEWPAGE@@`), danh mục viết tắt, sửa "15 → 20 bản ghi" và `official=true`, SYSTEM.md L666, DEMO.md L50 | agent + người dùng | ○ |

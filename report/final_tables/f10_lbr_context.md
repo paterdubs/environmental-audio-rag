@@ -1,6 +1,6 @@
 # LBR trong bối cảnh (dự đoán ngoài mẫu, 564 bản ghi, 21 lớp)
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `9dec769`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `358c8dd`.
 
 | Cấu hình | Micro | Macro | Δ micro [95% CI] so với mốc cùng nhóm |
 |---|---:|---:|---|
