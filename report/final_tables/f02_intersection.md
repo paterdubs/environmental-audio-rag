@@ -1,6 +1,6 @@
 # Thước ứng dụng trên test annotated (n = 139)
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `2806f31`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `c67d8b6`.
 
 | Hệ thống | Recall giao nhau | Precision giao nhau | Segment-F1 1 s | Nsys/Nref |
 |---|---:|---:|---:|---:|

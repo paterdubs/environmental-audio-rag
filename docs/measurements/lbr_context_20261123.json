@@ -1,0 +1,66 @@
+{
+  "rows": {
+    "B0": {
+      "micro": 0.23422354104846688,
+      "macro": 0.17967467487565753
+    },
+    "P1x3": {
+      "micro": 0.23441108545034642,
+      "macro": 0.17936497957049044
+    },
+    "LBR_v1": {
+      "micro": 0.30431403031480764,
+      "macro": 0.2343186922984229
+    },
+    "LBR_v2": {
+      "micro": 0.3331973898858075,
+      "macro": 0.24541790504236582
+    },
+    "LBR_v2_on_P1x3": {
+      "micro": 0.3504506392789771,
+      "macro": 0.26223633211116204
+    }
+  },
+  "deltas": {
+    "LBR_v1": {
+      "estimate": 0.07009048926634076,
+      "lower": 0.04963004261215221,
+      "upper": 0.08957194660318725,
+      "baseline": "B0"
+    },
+    "LBR_v2": {
+      "estimate": 0.09897384883734062,
+      "lower": 0.07610689264847173,
+      "upper": 0.11999089800267752,
+      "baseline": "B0"
+    },
+    "LBR_v1_on_P1x3": {
+      "estimate": 0.08466452776676284,
+      "lower": 0.062224170124773506,
+      "upper": 0.1045678037768693,
+      "baseline": "P1x3"
+    },
+    "LBR_v2_on_P1x3": {
+      "estimate": 0.11603955382863071,
+      "lower": 0.09332815571817525,
+      "upper": 0.13727484961925362,
+      "baseline": "P1x3"
+    }
+  },
+  "exploratory": {
+    "per_class_lambda": 0.2335,
+    "global_onset_shift": 0.2469
+  },
+  "oracle_ceiling_1s": 0.4641,
+  "recall_first_threshold_folds_at_floor": 5,
+  "n_folds": 5,
+  "sources": [
+    "docs/measurements/oof_selection_20261109_LBR.json",
+    "docs/measurements/lbr_diagnosis_20261109.md"
+  ],
+  "git": {
+    "revision": "c67d8b60b5463ad48910b8394ab58adf8cb518a2",
+    "dirty": true
+  },
+  "created_at": "2026-11-23T12:06:26.078348+00:00"
+}

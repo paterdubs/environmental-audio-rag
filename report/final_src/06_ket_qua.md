@@ -77,6 +77,14 @@ Giai đoạn P thử thêm bốn hướng tăng khả năng phát hiện: thêm 
 
 Phân tích lỗi của B0 (Chương 4) dẫn tới LBR. Trên dự đoán ngoài mẫu, V2 nâng event-F1 micro từ 0,2342 lên 0,3332, hiệu +0,0990 [+0,0761; +0,1200]. Test annotated chỉ được mở một lần cho các cấu hình đã khóa (⟪tbl:sedfinal⟫). V2 đạt macro 0,2356 và micro 0,2965 [0,2293; 0,3603]; hiệu micro so với B0 là +0,1159 [+0,0741; +0,1593], khoảng tin cậy không chứa 0. V3 ở điểm vận hành f1 cho micro 0,2731, hiệu +0,0925 [+0,0549; +0,1331]. **Hệ cuối của đề tài là B0 cộng LBR; V2 là số chính.**
 
+**LBR trong bối cảnh.** ⟪tbl:lbrcontext⟫ đặt LBR cạnh các mốc trên dự đoán ngoài mẫu (564 bản ghi), để người đọc thấy mức tăng này không đến từ một chỉnh sửa tầm thường. Hai can thiệp đơn giản hơn không giúp được nhiều: ngưỡng riêng từng lớp cho 0,2335, ngang B0 (0,2342), và dịch onset toàn cục cho 0,2469, thấp hơn hẳn LBR; hai số này đo bằng script nháp trước khi có ADR-0045 và chưa có artifact sinh bằng script của repo, nên được ghi là thăm dò. Nếu sửa được biên của mọi hộp khớp 1-1 trong ±1 s thì micro đạt 0,4641; LBR V2 (0,3332) đi được khoảng 43% quãng từ B0 tới trần đó. Kiểm chuyển: bộ tinh chỉnh học trên dự đoán của một mô hình và áp lên ensemble 3 seed vẫn tăng +0,1160 [+0,0933; +0,1373] (0,2344 lên 0,3505), nên mức tăng không phụ thuộc vào đúng mô hình dùng để học. Ba điều cần nói thẳng: thiết kế LBR (đặc trưng, siêu tham số, điểm vận hành) được thăm dò trên chính tập ngoài mẫu này, nên các khoảng tin cậy ở đây có điều kiện trên thiết kế đó; cross-fit lồng nhau chỉ bảo vệ việc *học* bộ tinh chỉnh khỏi nhìn thấy bản ghi đang chấm, không bảo vệ khỏi việc chọn thiết kế; ngưỡng của điểm "ưu tiên phát hiện" nằm ở đáy lưới (0,005) ở 5/5 fold. Test mở một lần cho cấu hình đã khóa cho hiệu cùng hướng (+0,1159 so với +0,0990 ngoài mẫu).
+
+@@CAP:tbl:lbrcontext|LBR cạnh các mốc đơn giản hơn và trần sửa biên, trên dự đoán ngoài mẫu (21 lớp)@@
+
+@@COLWIDTHS:38,12,12,38@@
+
+@@INCLUDE:report/final_tables/f10_lbr_context.md@@
+
 @@CAP:tbl:sedfinal|SED trên test annotated: từ f2 đến LBR@@
 
 @@COLWIDTHS:19,9,18,17,10,14,13@@

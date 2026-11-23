@@ -69,3 +69,15 @@ def test_rq3_modes_tables_report_hybrid_minus_vector_and_groups():
     assert "+0.040 [+0.004, +0.079]" in paired  # V3 đảo chiều
     groups = bft.build_rq3_groups(modes, "abcdef0", MODES)
     assert "0.126 / 0.426" in groups  # f2, quan hệ thời gian
+
+
+CONTEXT = ROOT / "docs" / "measurements" / "lbr_context_20261123.json"
+
+
+@pytest.mark.skipif(not CONTEXT.is_file(), reason="chưa có lbr_context")
+def test_lbr_context_table_has_baselines_ceiling_and_robustness_row():
+    context = json.loads(CONTEXT.read_text(encoding="utf-8"))
+    text = bft.build_lbr_context(context, "abcdef0", CONTEXT)
+    assert "0.3332" in text and "+0.0990 [+0.0761, +0.1200]" in text
+    assert "0.4641" in text  # trần ±1 s
+    assert "0.3505" in text  # kiểm chuyển sang ensemble 3 seed

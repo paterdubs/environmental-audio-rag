@@ -54,9 +54,9 @@ Một số hướng bị loại có chủ ý vì dữ liệu không đủ cơ s�
 
 ## Đóng góp dự kiến
 
-Đề cương nêu bốn đóng góp. ⟪tbl:contrib⟫ cho biết bằng chứng của từng đóng góp và mức khẳng định về tính mới sau đợt tra văn liệu tháng 11/2026 (Chương 2). Kết quả tra cho thấy đã có công trình gần với cả ba điểm C2, C3, C4, nên báo cáo diễn đạt chúng là **áp dụng và mở rộng**, không phải "lần đầu". Phạm vi tra ở mức khóa luận, không phải tổng quan hệ thống đầy đủ.
+Đề cương nêu bốn đóng góp (C1–C4); trong quá trình làm, kết quả thực nghiệm hình thành thêm hai đóng góp (C5, C6) mà đề cương chưa có. ⟪tbl:contrib⟫ cho biết bằng chứng của từng đóng góp và mức khẳng định về tính mới sau đợt tra văn liệu tháng 11/2026 (Chương 2). Kết quả tra cho thấy đã có công trình gần với cả ba điểm C2, C3, C4, nên báo cáo diễn đạt chúng là **áp dụng và mở rộng**, không phải "lần đầu". Phạm vi tra ở mức khóa luận, không phải tổng quan hệ thống đầy đủ.
 
-@@CAP:tbl:contrib|Bốn đóng góp, bằng chứng và mức khẳng định về tính mới@@
+@@CAP:tbl:contrib|Sáu đóng góp, bằng chứng và mức khẳng định về tính mới@@
 
 | Mã | Đóng góp dự kiến | Bằng chứng đã có | Chưa khẳng định |
 |---|---|---|---|
@@ -64,6 +64,8 @@ Một số hướng bị loại có chủ ý vì dữ liệu không đủ cơ s�
 | C2 | Bộ chỉ số đo mức bám sát của mô tả theo dòng thời gian | Đo ảo giác, bỏ sót, thứ tự, từ cấm, có khoảng tin cậy; đối chiếu 60 mô tả với một người đọc | Đã có chỉ số gần (ECHO, TAC): C2 là áp dụng và mở rộng; mẫu đối chiếu nhỏ |
 | C3 | Đo chuyển giao có kiểm soát trùng lặp giữa hai bộ dữ liệu | Tìm ra ba nhóm trùng, loại 11 đoạn; RQ1 cho kết quả âm tính | Đã có kiểm tra trùng trong một bộ dữ liệu và khảo sát chồng lấn giữa nhiều bộ: C3 là áp dụng vào cặp DataSEC–DataSED |
 | C4 | RAG trên dòng thời gian sự kiện, có điều kiện thời gian | Bốn điều kiện thời gian viết bằng SQL; mọi kết quả trả về thỏa bộ lọc đã áp trên sự kiện lưu trong kho (độ đúng bộ lọc 1,000, không đo đúng với âm thanh); câu trả lời không có khẳng định thiếu bằng chứng | Đã có hệ thống event store + RAG dùng cửa sổ thời gian tuyệt đối (LA-RAG): C4 là đóng góp kỹ thuật |
+| C5 | Cải thiện SED dựa trên chẩn đoán lỗi, kết thúc bằng LBR: tầng hậu xử lý học được, sửa biên và chấm lại hộp trên xác suất ngoài mẫu, độc lập với mô hình gốc | Event-F1 micro trên test 0,1806 lên 0,2965, hiệu +0,1159 [+0,0741; +0,1593]; trên dự đoán ngoài mẫu 0,2342 lên 0,3332, cùng hướng; kiểm chuyển sang ensemble 3 seed 0,3505; hai mốc đơn giản hơn thấp hơn hẳn (ngưỡng riêng từng lớp 0,2335, dịch onset toàn cục 0,2469) | Là cách khác tiếp cận bài toán biên mà SEBB và RED/EPN đã nêu, chưa so trực tiếp với EPN; thiết kế được thăm dò trên chính tập ngoài mẫu dùng để chọn; đổi lại PSDS-2 và độ phủ thấp hơn; chưa kiểm trên bộ dữ liệu khác |
+| C6 | Giao thức đánh giá chống chọn theo test: chọn hai tầng trên dự đoán ngoài mẫu, sổ ghi mọi lần chạm test, đóng băng artifact bằng SHA-256, kiểm số trong tài liệu bằng máy | Sổ test 42 lượt đánh giá SED, đóng băng không thiếu artifact nào; xếp hạng trên dev dự báo test kém (ρ = 0,62 ở vòng S13) và cả ba ứng viên qua sàng lọc dev đều đảo chiều khi đo ngoài mẫu, nên nhóm đổi cách chọn | Là quy trình của dự án, không phải phương pháp mới; vẫn còn tái sử dụng thích nghi được công khai (Chương 6) |
 
 @@NOTE:Nguồn: docs/PAPER_NOTES.md S69; docs/RELATED_WORK.md §2.4, §9.@@
 

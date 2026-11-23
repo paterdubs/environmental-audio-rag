@@ -22,7 +22,7 @@ Khóa luận xây dựng một quy trình tái lập được, đi từ hai bộ
 
 ## Mức khẳng định cho các đóng góp
 
-Sau đợt tra văn liệu tháng 11/2026 (Chương 2), khóa luận **không** khẳng định "lần đầu" cho đóng góp nào. C2 (chỉ số bám sát) là áp dụng và mở rộng so với các chỉ số ảo giác đã có; C3 (kiểm soát rò rỉ xuyên bộ dữ liệu) là áp dụng quy trình kiểm tra trùng vào cặp DataSEC–DataSED; C4 (RAG có điều kiện thời gian giữa hai sự kiện) là đóng góp kỹ thuật bên cạnh các hệ event store + RAG đã có. Điều khóa luận đóng góp là tích hợp các mắt xích có nguồn gốc xuyên suốt, kiểm chứng được bằng máy, và báo cáo trung thực cả kết quả âm tính và kết quả kém đi.
+Sau đợt tra văn liệu tháng 11/2026 (Chương 2), khóa luận **không** khẳng định "lần đầu" cho đóng góp nào. C2 (chỉ số bám sát) là áp dụng và mở rộng so với các chỉ số ảo giác đã có; C3 (kiểm soát rò rỉ xuyên bộ dữ liệu) là áp dụng quy trình kiểm tra trùng vào cặp DataSEC–DataSED; C4 (RAG có điều kiện thời gian giữa hai sự kiện) là đóng góp kỹ thuật bên cạnh các hệ event store + RAG đã có. C5 (LBR) là cách khác tiếp cận bài toán biên mà SEBB và RED/EPN đã nêu, với bằng chứng tốt nhất của đề tài (hiệu micro +0,1159 trên test, cùng hướng ngoài mẫu) nhưng có đánh đổi PSDS-2 và độ phủ, thiết kế thăm dò trên tập ngoài mẫu dùng để chọn, và chưa được kiểm trên bộ dữ liệu khác. C6 (giao thức đánh giá) là quy trình của dự án, còn tái sử dụng thích nghi được công khai (Chương 6). Điều khóa luận đóng góp là tích hợp các mắt xích có nguồn gốc xuyên suốt, kiểm chứng được bằng máy, và báo cáo trung thực cả kết quả âm tính và kết quả kém đi.
 
 ## Hạn chế
 

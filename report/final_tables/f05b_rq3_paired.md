@@ -1,6 +1,6 @@
 # RQ3 (test, bộ lọc gold): hiệu nDCG@10 ghép cặp giữa các chế độ và độ đúng bộ lọc
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `2806f31`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `c67d8b6`.
 
 | Corpus | hybrid − vector | hybrid − structured | Độ đúng bộ lọc (vector) | Độ đúng bộ lọc (hybrid) |
 |---|---:|---:|---:|---:|

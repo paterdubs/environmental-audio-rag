@@ -448,7 +448,7 @@ lại từ JSON đã đóng băng. Số mới nào cũng vào `docs/claims.yaml`
 | 0 | T0-10a | Thu 6–10 clip điện thoại 1–5 phút (đường xe máy/còi, công trường, mưa, quán nhạc, công viên, quạt), tránh lời nói rõ | người dùng, trước tối 24/11 | ○ |
 | 0 | T0-03 | Bảng phân công, khai báo dùng AI, nhật ký tuần 5–7 (và 9–10), ngày báo cáo GVHD — chỉ nhóm viết được | người dùng | ○ |
 | 1 | T0-04 | Đoạn RQ3 nói thẳng hybrid < vector_only (Δ −0.111/−0.075/−0.087), cơ chế lọc cứng bị chặn bởi recall SED; sửa `06` L137–147, `07` L21, `00` L9, L23 | agent | ✅ 23/11 (PAPER_NOTES S70; `report_rq3_modes`, f05b/f05c) |
-| 1 | T0-06 | Đóng góp C5 (LBR) và C6 (giao thức OOF/ledger/freeze); bảng "LBR trong bối cảnh" trên OOF; nói rõ đã thăm dò trên OOF, ngưỡng chạm mép lưới | agent | ○ |
+| 1 | T0-06 | Đóng góp C5 (LBR) và C6 (giao thức OOF/ledger/freeze); bảng "LBR trong bối cảnh" trên OOF; nói rõ đã thăm dò trên OOF, ngưỡng chạm mép lưới | agent | ✅ 23/11 (C5/C6, f10, Chương 2 định vị RED/EPN, PAPER_NOTES S71) |
 | 1 | T0-07 | Bảng định cỡ B0/V2/V3 so đồng thuận người (8 cặp) và mốc DCASE; trước đó nâng nguồn DCASE lên V3 trong RELATED_WORK §10 | agent | ○ |
 | 1 | T0-08 | Viết lại RQ2 trung thực: 0 vi phạm có được do cấu tạo, constrained ≈ template, κ ≈ −0.03, LLM thật sự có ích ở parser | agent | ✅ 23/11 |
 | 1 | T0-05 | Sửa lỗi K02/K03/K04/K07/K09/K11/K12/K13/K16 và câu về λ (`04` L38); đoạn tái sử dụng test (42 lượt); cận trên RQ1 | agent | ✅ 23/11 (K02/K03/K04/K09/K12/K13/K14/K16, λ, mục "Tái sử dụng tập test") |

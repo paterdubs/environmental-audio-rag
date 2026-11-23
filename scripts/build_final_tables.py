@@ -222,6 +222,35 @@ def build_rq3_groups(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_lbr_context(data: dict[str, Any], revision: str, source: Path) -> str:
+    """LBR cạnh các mốc đơn giản hơn và trần sửa biên, trên OOF (từ `report_lbr_context`)."""
+    r, d, ex = data["rows"], data["deltas"], data["exploratory"]
+
+    def cells(name: str) -> list[str]:
+        return [f"{r[name]['micro']:.4f}", f"{r[name]['macro']:.4f}"]
+
+    def delta(key: str) -> str:
+        c = d[key]
+        return f"{c['estimate']:+.4f} [{c['lower']:+.4f}, {c['upper']:+.4f}]"
+
+    rows = [
+        ["B0 (mốc)"] + cells("B0") + ["—"],
+        ["Ngưỡng riêng từng lớp (thăm dò)", f"{ex['per_class_lambda']:.4f}", "—", "—"],
+        ["Dịch onset toàn cục (thăm dò)", f"{ex['global_onset_shift']:.4f}", "—", "—"],
+        ["LBR V1"] + cells("LBR_v1") + [delta("LBR_v1")],
+        ["LBR V2 (số chính)"] + cells("LBR_v2") + [delta("LBR_v2")],
+        ["P1×3 (ensemble 3 seed, mốc)"] + cells("P1x3") + ["—"],
+        ["LBR V2 học trên một mô hình, áp lên P1×3"] + cells("LBR_v2_on_P1x3")
+        + [delta("LBR_v2_on_P1x3")],
+        ["Trần: sửa biên mọi hộp 1-1 trong ±1 s", f"{data['oracle_ceiling_1s']:.4f}", "—", "—"],
+    ]
+    return table(
+        "LBR trong bối cảnh (dự đoán ngoài mẫu, 564 bản ghi, 21 lớp)",
+        ["Cấu hình", "Micro", "Macro", "Δ micro [95% CI] so với mốc cùng nhóm"],
+        rows, [source], revision, ["---", "---:", "---:", "---"],
+    )
+
+
 def build_psds(data: dict[str, Any], revision: str, source: Path) -> str:
     d = data["psds_diagnosis"]
     rows = [
@@ -323,6 +352,7 @@ def main() -> None:
     parser.add_argument("--ledger", type=Path, help="test_ledger_*.json")
     parser.add_argument("--freeze", type=Path, help="artifact_freeze_*.json")
     parser.add_argument("--rq3-modes", type=Path, help="rq3_modes_*.json")
+    parser.add_argument("--lbr-context", type=Path, help="lbr_context_*.json")
     parser.add_argument("--run-dir", type=Path, help="run B0 final test (bảng theo lớp)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
@@ -355,6 +385,7 @@ def main() -> None:
         ("f08_freeze.md", build_freeze, args.freeze),
         ("f05b_rq3_paired.md", build_rq3_paired, args.rq3_modes),
         ("f05c_rq3_groups.md", build_rq3_groups, args.rq3_modes),
+        ("f10_lbr_context.md", build_lbr_context, args.lbr_context),
     )
     for name, builder, path in extra:
         if path is None:
