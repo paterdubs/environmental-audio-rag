@@ -455,7 +455,7 @@ lại từ JSON đã đóng băng. Số mới nào cũng vào `docs/claims.yaml`
 | 1 | T0-09 | Mục tình huống sử dụng: persona, 3 tác vụ, bảng yêu cầu ↔ tính năng ↔ bằng chứng; QCVN 26:2025/BNNMT (trích từ PDF gốc) kèm giới hạn "không thay máy đo Class 1"; số tập 19 lớp Việt Nam (B0 0.1892, V2 0.3120, V3 0.8319/0.7810) | agent | ✅ 23/11 (Chương 1 QCVN từ PDF gốc + bảng ánh xạ; Chương 5 persona, tác vụ, bảng yêu cầu) |
 | 1 | T0-11, T0-16 | Bảng khối lượng hiện thực, sơ đồ triển khai Compose; accuracy bộ phân loại 0.9135 cạnh FA2025 kèm cảnh báo không cùng điều kiện | agent | ◐ 23/11: bảng khối lượng (f12, đếm lại ở T0-13) và bảng dịch vụ thay cho sơ đồ; accuracy 0,9135 có, so FA2025 bỏ vì nguồn mới ở mức V2 |
 | 2 | T0-10 | Bảng hiệu năng (CPU/GPU, RTF, RAM, khởi động, độ trễ truy vấn) + field test định tính trên clip tự thu, hai SV nghe chấm độc lập | agent + người dùng | ○ |
-| 3 | T0-12 | Badge StatusBar đọc `served_run`/`operating_point` thay chuỗi ghi cứng; chụp lại ảnh; tách Hình 5.1 | agent | ○ |
+| 3 | T0-12 | Badge StatusBar đọc `served_run`/`operating_point` thay chuỗi ghi cứng; chụp lại ảnh; tách Hình 5.1 | agent | ◐ 23/11: badge đọc `lbr_run`/`operating_point`/`served_run` (vitest 14/14); còn chụp lại ảnh sau khi build lại image api |
 | 4 | T0-02 | Hình thức: trang nhận xét GVPB (`@@REVIEWPAGE@@`), danh mục viết tắt, sửa "15 → 20 bản ghi" và `official=true`, SYSTEM.md L666, DEMO.md L50 | agent + người dùng | ○ |
 | 5 | T0-13 | Dựng lại DOCX/PDF, `check_midterm_docx`, gate đầy đủ, đọc chéo hai người | agent + người dùng | ○ |
 

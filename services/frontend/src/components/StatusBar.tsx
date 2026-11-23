@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { api, ApiError } from "../api/client";
 import type { Health, Language, ModelsStatus } from "../api/types";
+import { describeModel } from "../lib/modelBadge";
 
 const TEXT = {
   vi: { ready: "Sẵn sàng", down: "Chưa sẵn sàng", db: "CSDL", model: "Mô hình" },
@@ -26,6 +27,7 @@ export function StatusBar({ language, onLanguage }: { language: Language; onLang
   const t = TEXT[language];
   const data = health.data;
   const ready = data?.status === "ready";
+  const badge = models.data ? describeModel(models.data, language) : null;
   return (
     <header className="statusbar">
       <div className="brand">
@@ -50,7 +52,7 @@ export function StatusBar({ language, onLanguage }: { language: Language; onLang
           )}
         </span>
         {data?.model_version && <code className="provenance" title="model_version">{data.model_version}</code>}
-        {models.data && <span className={`model-badge ${models.data.official ? "" : "demo"}`} role="status">{models.data.official ? (language === "vi" ? "SED f2 — T2b×3 + cSEBB, hệ thống chính thức" : "SED f2 — T2b×3 + cSEBB, official system") : (language === "vi" ? "Demo — SED v2, chưa phải hệ thống chính thức" : "Demo — SED v2, not the official system")}</span>}
+        {badge && <span className={`model-badge ${badge.demo ? "demo" : ""}`} role="status">{badge.text}</span>}
         <div className="segmented" role="group" aria-label="Ngôn ngữ / Language">
           {(["vi", "en"] as const).map((lang) => (
             <button key={lang} type="button" aria-pressed={language === lang} onClick={() => onLanguage(lang)}>

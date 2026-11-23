@@ -135,5 +135,7 @@ export interface ModelsStatus {
   taxonomy_version: string;
   taxonomy_sha256: string;
   device: string;
+  lbr_run?: string | null;
+  operating_point?: string | null;
   [key: string]: unknown;
 }
