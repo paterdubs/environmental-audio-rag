@@ -45,6 +45,14 @@ Vì huấn luyện SED không tất định (ADR-0021), câu trả lời dựa t
 
 Để kiểm tra kết quả âm tính có phải do kiến trúc v1 quá thô, nhóm lặp lại phép so sánh với công thức v2 (3 lần chạy B-v2 so với 3 lần C-v2). Phân tích này được ghi trước và chỉ mở test sau khi hệ thống cuối đã được khóa (ADR-0031). Trên test `annotated`, event-F1 macro của B-v2 và C-v2 là 0,1221 và 0,1147, micro là 0,1324 và 0,1294. Hiệu C − B về micro là −0,0029 [−0,0254; +0,0199], Welch p = 0,6965 (macro p = 0,4220). Riêng PSDS-2 tăng +0,0279 với p = 0,0193, nên kết luận phụ thuộc vào chỉ số.
 
+⟪fig:rq1seeds⟫ cho thấy vì sao không kết luận được: dao động giữa các seed lớn ngang hoặc lớn hơn hiệu giữa hai nhánh. Ở công thức v1, khoảng giá trị của nhánh C (0,0472 đến 0,0660 qua 4 seed) phủ trọn khoảng của nhánh B (0,0557 đến 0,0651), trong khi hiệu trung bình chỉ −0,0071. Ở công thức v2, hai khoảng (B 0,1275 đến 0,1401; C 0,1185 đến 0,1378) chồng gần hết và hiệu trung bình còn −0,0029. Với 3 đến 4 seed mỗi nhánh, một hiệu cỡ 0,01 không thể tách khỏi dao động do huấn luyện không tất định.
+
+![](report/research_figures/r09_rq1_seeds.png){width=14cm}
+
+@@CAP:fig:rq1seeds|RQ1: event-F1 micro của nhánh B và C qua nhiều seed (chấm: trung bình; vạch màu: ±1 độ lệch chuẩn; vạch xám: nhỏ nhất đến lớn nhất)@@
+
+@@NOTE:Nguồn: rq1_multiseed_clean_20260924.json và rq1_v2_multiseed_20260929.json (đọc lại thống kê đã lưu).@@
+
 **Kết luận RQ1:** với cả hai công thức, nhóm **không** có bằng chứng rằng huấn luyện thêm trên DataSEC cải thiện event-F1 so với chỉ dùng AudioSet. Điều này không có nghĩa DataSEC "vô ích" nói chung: PSDS-2 của công thức v2 tăng có ý nghĩa khi xét riêng, dù chưa hiệu chỉnh cho việc so sánh nhiều chỉ số. Đây là kết quả âm tính hợp lệ và được giữ nguyên; trọng tâm đóng góp vì vậy chuyển sang C1, C2 và C4 (ADR-0021).
 
 ## Mô hình SED tiến bộ ra sao?
@@ -187,6 +195,14 @@ Phép so bốn cách sinh được lặp cho từng hệ SED trên test annotate
 
 @@INCLUDE:report/final_tables/f04_rq2.md@@
 
+⟪fig:rq2errors⟫ vẽ lại ba cột quan trọng nhất của bảng. Dấu tam giác ở mức 0 đánh dấu các ô bằng đúng 0: mẫu cố định và LLM ràng buộc + phủ bằng 0 ở cả ba loại lỗi trên cả bốn hệ SED; LLM ràng buộc không bịa và không suy diễn bối cảnh nhưng bỏ sót, nhiều nhất trên dòng thời gian dày của LBR V3 (0,081); chỉ LLM tự do có suy diễn bối cảnh, ở 26% đến 40% mô tả.
+
+![](report/research_figures/r10_rq2_errors.png){width=15cm}
+
+@@CAP:fig:rq2errors|RQ2: tỷ lệ bỏ sót, bịa sự kiện và suy diễn bối cảnh theo cách sinh và hệ SED (test annotated, đầu–cuối)@@
+
+@@NOTE:Nguồn: rq2_llm_systems_20261110_test_annotated.json; tam giác = giá trị 0.@@
+
 **Thứ nhất,** cách template cho 0 ở mọi chỉ số, cả tiếng Anh lẫn tiếng Việt và cả bốn hệ SED; đây là kiểm chứng rằng bộ đo không báo lỗi giả trên mô tả tất định.
 
 **Thứ hai,** viết tự do hiếm khi bịa nguồn âm nhưng hay thêm thứ không có trong bằng chứng. Tỷ lệ ảo giác của unconstrained là 0,011 (f2), 0,005 (B0), 0,016 (V2) và 0,022 (V3). Lỗi thật nằm ở bối cảnh (0,259 đến 0,403 số mô tả thêm bối cảnh không có trong bằng chứng) và gọi tên quá cụ thể (0,126 đến 0,140). Ràng buộc ngữ pháp (constrained và constrained-cover) đưa ảo giác, bối cảnh, gọi tên quá mức và từ cấm về 0 ở cả bốn hệ SED.
@@ -223,6 +239,14 @@ Với f2, B0 và V2, khoảng tin cậy chồng lấn mạnh: nDCG@10 của hybr
 @@COLWIDTHS:14,24,24,19,19@@
 
 @@INCLUDE:report/final_tables/f05b_rq3_paired.md@@
+
+Hiệu trung bình che mất cách nó phân bố trên từng câu hỏi (⟪fig:rq3queries⟫). Với kho f2, trong 97 truy vấn có bản ghi liên quan, hybrid thua vector_only ở 49 câu, hòa ở 33 câu và thắng ở 15 câu; B0 và LBR V2 có cùng hình dạng (39/43/15 và 41/40/16). Kho LBR V3 đảo chiều: thua 18, hòa 35, thắng 44. Các câu hòa là những câu mà bộ lọc cứng và xếp hạng ngữ nghĩa trả về cùng danh sách đầu bảng. Như vậy hiệu âm không đến từ vài truy vấn ngoại lai mà là xu hướng chung trên kho có độ phủ thấp, khớp với giải thích về độ phủ ở dưới.
+
+![](report/research_figures/r11_rq3_queries.png){width=14cm}
+
+@@CAP:fig:rq3queries|RQ3: hiệu nDCG@10 hybrid − vector_only theo từng truy vấn (xám) và trung bình kèm khoảng tin cậy 95% ghép cặp (cam); số trên cùng: thua / hòa / thắng@@
+
+@@NOTE:Nguồn: per_query trong bốn tệp retrieval_benchmark_test (rq3_modes_20261123.json, mục sources), tiếng Anh, bộ lọc gold; trung bình theo truy vấn khớp ước lượng đã khóa.@@
 
 Ba điều cần đọc cùng nhau. **Một,** vector_only không tôn trọng ràng buộc: chỉ khoảng 27% kết quả nó trả về thỏa bộ lọc của câu hỏi (49% với V3), so với 1,000 của hybrid. Độ liên quan trong nDCG được tính từ nhãn gốc bằng đúng ngữ nghĩa của bộ lọc, nên vector_only vẫn được điểm khi trả về bản ghi thật sự liên quan dù không thỏa bộ lọc trên sự kiện *dự đoán*. Hai thước đo hai thứ khác nhau: nDCG cao hơn của vector_only không có nghĩa là nó đáp ứng câu hỏi có ràng buộc tốt hơn cho người dùng. **Hai,** ⟪tbl:rq3groups⟫ cho thấy chênh lệch tập trung ở hai nhóm câu hỏi. Ở nhóm quan hệ thời gian (đúng chỗ đóng góp C4 nhắm tới), hybrid thấp hơn vector_only rõ trên f2, B0 và V2 (ví dụ f2: 0,126 so với 0,426), và ở nhóm nhiều lớp cũng vậy. Ngược lại, ở nhóm thời lượng hybrid cao hơn trên cả bốn kho, còn nhóm một lớp hai chế độ ngang nhau. **Ba,** cách giải thích hợp lý nhất là bộ lọc cứng chạy trên sự kiện *dự đoán*, nên chỉ bản ghi mà SED đã dự đoán đủ mọi lớp và quan hệ trong câu hỏi mới qua được bộ lọc. Điều kiện này càng chặt khi câu hỏi có nhiều lớp hoặc quan hệ trước–sau, và SED bỏ sót phần lớn sự kiện tham chiếu (V2 dự đoán 373 trên 740). Khi độ phủ tăng (V3 dự đoán 668 sự kiện trên 139 bản ghi), chênh lệch ở nhóm quan hệ thời gian biến mất (0,501 so với 0,501) và hybrid vượt vector_only ở nhóm thời lượng. Cách giải thích này khớp với số liệu nhưng chưa được kiểm bằng thí nghiệm kiểm soát (ví dụ tăng dần độ phủ của SED trên cùng bộ truy vấn).
 

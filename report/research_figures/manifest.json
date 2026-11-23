@@ -7,7 +7,10 @@
     "r05_fn_breakdown.png",
     "r06_onset_bias.png",
     "r07_per_class.png",
-    "r08_dev_vs_test.png"
+    "r08_dev_vs_test.png",
+    "r09_rq1_seeds.png",
+    "r10_rq2_errors.png",
+    "r11_rq3_queries.png"
   ],
   "sources": [
     "docs/measurements/data_profile_20261008_lf.json",
@@ -18,11 +21,53 @@
     "docs/measurements/calibration_20261123.json",
     "docs/measurements/lbr_diagnosis_20261109.json",
     "ml/runs/sed_served_B0_20261107T175659Z/manifest.json",
-    "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z"
+    "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z",
+    "docs/measurements/rq1_multiseed_clean_20260924.json",
+    "docs/measurements/rq1_v2_multiseed_20260929.json",
+    "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
+    "docs/measurements/rq3_modes_20261123.json"
   ],
   "spearman_dev_test": 0.6181818181818182,
+  "rq3_query_counts": [
+    {
+      "key": "f2",
+      "neg": 49,
+      "zero": 33,
+      "pos": 15,
+      "estimate": -0.11134088943238184,
+      "lower": -0.16622530806748492,
+      "upper": -0.059447116641375745
+    },
+    {
+      "key": "B0",
+      "neg": 39,
+      "zero": 43,
+      "pos": 15,
+      "estimate": -0.07462598830200158,
+      "lower": -0.12061254026681646,
+      "upper": -0.027535044060132595
+    },
+    {
+      "key": "lbrv2",
+      "neg": 41,
+      "zero": 40,
+      "pos": 16,
+      "estimate": -0.08708893928398362,
+      "lower": -0.13618696575930347,
+      "upper": -0.037381850511867154
+    },
+    {
+      "key": "lbrv3",
+      "neg": 18,
+      "zero": 35,
+      "pos": 44,
+      "estimate": 0.03994413589439439,
+      "lower": 0.003944497126414448,
+      "upper": 0.07886959026766213
+    }
+  ],
   "git": {
-    "revision": "c750cb4d75917e886725fd3db553338dfa069f25",
+    "revision": "c84df41ddaf1917fbbda252c68ab57042ac13248",
     "dirty": true
   }
 }

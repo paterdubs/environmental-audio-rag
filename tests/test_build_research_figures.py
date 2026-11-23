@@ -52,3 +52,22 @@ def test_fold_histories_reads_only_member_runs(tmp_path, monkeypatch):
     manifest = {"command": ["python", "--members", "ml/runs/sed_polyphonic_1",
                             "ml/runs/sed_polyphonic_2", "--postproc", "ml/runs/sed_oof_x/s.json"]}
     assert brf.fold_histories(manifest) == [[{"epoch": 1}], [{"epoch": 1}]]
+
+
+def test_query_diffs_pairs_modes_per_query_and_skips_queries_without_relevant_items():
+    rows = [{"query_id": q, "mode": m, "language": lang, "n_relevant": n, "ndcg@10": s}
+            for q, m, lang, n, s in (
+                ("q1", "hybrid", "en", 3, 0.5), ("q1", "vector_only", "en", 3, 0.8),
+                ("q2", "hybrid", "en", 2, 0.4), ("q2", "vector_only", "en", 2, 0.4),
+                ("q3", "hybrid", "en", 0, 0.0), ("q3", "vector_only", "en", 0, 0.0),
+                ("q1", "hybrid", "vi", 3, 0.9), ("q1", "vector_only", "vi", 3, 0.1))]
+    assert brf.query_diffs(rows) == pytest.approx([-0.3, 0.0])
+
+
+def test_rq2_rates_reads_every_method_and_system():
+    rq2 = {"e2e": {m: {s: {"summary": {"omission_rate": i + j / 10}}
+                       for j, s in enumerate(brf.SYSTEM_NAMES)}
+                   for i, m in enumerate(brf.METHOD_NAMES)}}
+    rates = brf.rq2_rates(rq2, "omission_rate")
+    assert set(rates) == set(brf.METHOD_NAMES)
+    assert rates["constrained"]["lbrv3"] == pytest.approx(2.3)

@@ -41,7 +41,14 @@ SOURCES = {
     "lbr_diag": M / "lbr_diagnosis_20261109.json",
     "served": ROOT / "ml/runs/sed_served_B0_20261107T175659Z/manifest.json",
     "eval_dir": ROOT / "ml/runs/sed_ensemble_B0_final_test_20261014T085016Z",
+    "rq1_v1": M / "rq1_multiseed_clean_20260924.json",
+    "rq1_v2": M / "rq1_v2_multiseed_20260929.json",
+    "rq2": M / "rq2_llm_systems_20261110_test_annotated.json",
+    "rq3": M / "rq3_modes_20261123.json",
 }
+SYSTEM_NAMES = {"f2": "f2", "B0": "B0", "lbrv2": "LBR V2", "lbrv3": "LBR V3"}
+METHOD_NAMES = {"template": "Mẫu cố định", "unconstrained": "LLM tự do",
+                "constrained": "LLM ràng buộc", "constrained_cover": "LLM ràng buộc + phủ"}
 FN_KINDS = {
     "miss_nothing": "Không có hộp nào chồng",
     "miss_other_class_overlap": "Chỉ có hộp lớp khác chồng",
@@ -113,6 +120,21 @@ def fold_histories(served_manifest: dict) -> list[list[dict]]:
     members = served_manifest["command"]
     runs = [m for m in members if m.startswith("ml/runs/sed_polyphonic_")]
     return [load(ROOT / run / "logs" / "history.json")["epochs"] for run in runs]
+
+
+def query_diffs(per_query: list[dict], a: str = "hybrid", b: str = "vector_only",
+                language: str = "en") -> list[float]:
+    """Hiệu nDCG@10 (a − b) theo từng truy vấn có bản ghi liên quan, cùng ngôn ngữ."""
+    scores: dict[str, dict[str, float]] = {}
+    for row in per_query:
+        if row["language"] == language and row["n_relevant"] > 0:
+            scores.setdefault(row["query_id"], {})[row["mode"]] = row["ndcg@10"]
+    return [s[a] - s[b] for s in scores.values() if a in s and b in s]
+
+
+def rq2_rates(rq2: dict, metric: str) -> dict[str, dict[str, float]]:
+    return {method: {sys: rq2["e2e"][method][sys]["summary"][metric] for sys in SYSTEM_NAMES}
+            for method in METHOD_NAMES}
 
 
 # ---------- hình ----------
@@ -287,6 +309,75 @@ def fig_dev_vs_test(s13_test: dict, s13_rank: dict, path: Path) -> float:
     return rho
 
 
+def fig_rq1_seeds(v1: dict, v2: dict, path: Path) -> None:
+    fig, axes = plt.subplots(1, 2, figsize=(6.6, 2.8))
+    for ax, data, title in ((axes[0], v1, "Công thức v1, test all"),
+                            (axes[1], v2, "Công thức v2, test annotated")):
+        for i, branch in enumerate(("B", "C")):
+            s = data["branches"][branch]["event_f1"]
+            ax.plot([i, i], [s["min"], s["max"]], color=GRAY, linewidth=1)
+            color = BLUE if branch == "B" else ORANGE
+            ax.errorbar(i, s["mean"], yerr=s["sd"], fmt="o", color=color, capsize=4)
+            ax.text(i + 0.08, s["mean"], f"n={s['n']}", fontsize=7, va="center")
+        p = data["welch"]["event_f1"]["p"]
+        ax.set_xticks([0, 1], ["B: AudioSet", "C: AudioSet → DataSEC"], fontsize=7.5)
+        ax.set_xlim(-0.5, 1.6)
+        ax.set_title(f"{title}; Welch p = {p:.2f}".replace(".", ","), fontsize=8.5)
+        ax.set_ylabel("Event-F1 micro")
+        _style(ax)
+    fig.tight_layout()
+    _save(fig, path)
+
+
+def fig_rq2_errors(rq2: dict, path: Path) -> None:
+    metrics = (("omission_rate", "Tỷ lệ bỏ sót sự kiện"),
+               ("hallucination_rate", "Tỷ lệ bịa sự kiện"),
+               ("context_term_rate", "Tỷ lệ mô tả có suy diễn bối cảnh"))
+    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.9), sharey=False)
+    colors = [GRAY, BLUE, ORANGE, GREEN]
+    width = 0.2
+    for ax, (metric, title) in zip(axes, metrics, strict=True):
+        rates = rq2_rates(rq2, metric)
+        for j, (method, label) in enumerate(METHOD_NAMES.items()):
+            xs = [i + (j - 1.5) * width for i in range(len(SYSTEM_NAMES))]
+            values = [rates[method][s] for s in SYSTEM_NAMES]
+            ax.bar(xs, values, width, color=colors[j], label=label)
+            zeros = [x for x, v in zip(xs, values, strict=True) if v == 0]
+            ax.plot(zeros, [0] * len(zeros), "^", color=colors[j], markersize=3.5)
+        ax.set_xticks(range(len(SYSTEM_NAMES)), list(SYSTEM_NAMES.values()), fontsize=7)
+        ax.set_ylim(bottom=-0.04 * ax.get_ylim()[1])
+        ax.set_title(title, fontsize=8.5)
+        _style(ax)
+    axes[0].legend(frameon=False, fontsize=6.5, loc="upper left")
+    fig.tight_layout()
+    _save(fig, path)
+
+
+def fig_rq3_queries(rq3: dict, path: Path) -> list[dict]:
+    stores = []
+    for key, source in rq3["sources"].items():
+        diffs = query_diffs(load(ROOT / source)["per_query"])
+        est = rq3["systems"][key]["paired"]["hybrid−vector_only/en"]
+        stores.append({"key": key, "diffs": diffs, "neg": sum(d < -1e-9 for d in diffs),
+                       "zero": sum(abs(d) <= 1e-9 for d in diffs),
+                       "pos": sum(d > 1e-9 for d in diffs), **est})
+    fig, ax = plt.subplots(figsize=(6.4, 3.2))
+    for i, s in enumerate(stores):
+        jitter = [(k % 9 - 4) * 0.035 for k in range(len(s["diffs"]))]
+        ax.scatter([i + j for j in jitter], s["diffs"], s=6, color=GRAY, alpha=0.6, zorder=2)
+        yerr = [[s["estimate"] - s["lower"]], [s["upper"] - s["estimate"]]]
+        ax.errorbar(i, s["estimate"], yerr=yerr, fmt="D", color=ORANGE, capsize=4, zorder=3)
+        ax.text(i, 1.08, f"−{s['neg']} / ={s['zero']} / +{s['pos']}", ha="center", fontsize=7)
+    ax.axhline(0, color=INK, linewidth=0.8)
+    ax.set_xticks(range(len(stores)), [SYSTEM_NAMES[s["key"]] for s in stores])
+    ax.set_ylim(-1.05, 1.18)
+    ax.set_ylabel("nDCG@10: hybrid − vector_only")
+    _style(ax)
+    fig.tight_layout()
+    _save(fig, path)
+    return [{k: v for k, v in s.items() if k != "diffs"} for s in stores]
+
+
 def build(output: Path) -> dict[str, Any]:
     from scripts.build_midterm_tables import annotated_test_counts
 
@@ -306,9 +397,13 @@ def build(output: Path) -> dict[str, Any]:
     fig_per_class(per_class_pairs(b0, v2, annotated_test_counts(), 10),
                   output / "r07_per_class.png")
     rho = fig_dev_vs_test(data["s13_test"], data["s13_rank"], output / "r08_dev_vs_test.png")
+    fig_rq1_seeds(data["rq1_v1"], data["rq1_v2"], output / "r09_rq1_seeds.png")
+    fig_rq2_errors(data["rq2"], output / "r10_rq2_errors.png")
+    rq3_counts = fig_rq3_queries(data["rq3"], output / "r11_rq3_queries.png")
     manifest = {"figures": sorted(p.name for p in output.glob("r*.png")),
                 "sources": [p.relative_to(ROOT).as_posix() for p in SOURCES.values()],
-                "spearman_dev_test": rho, "git": git_state(ROOT)}
+                "spearman_dev_test": rho, "rq3_query_counts": rq3_counts,
+                "git": git_state(ROOT)}
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False),
                                           encoding="utf-8")
     return manifest
