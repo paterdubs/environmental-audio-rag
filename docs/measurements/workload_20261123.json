@@ -1,17 +1,17 @@
 {
-  "commits": 403,
+  "commits": 414,
   "first_commit": "2026-09-22",
   "last_commit": "2026-11-23",
   "adr": 48,
-  "measurement_reports": 273,
+  "measurement_reports": 276,
   "python_lines": {
     "ml": 13603,
-    "scripts": 27557,
-    "tests": 13244,
+    "scripts": 27997,
+    "tests": 13384,
     "services": 639
   },
-  "frontend_lines": 1059,
-  "test_functions": 877,
+  "frontend_lines": 1185,
+  "test_functions": 890,
   "json_schemas": 8,
   "runs": {
     "sed": 103,
@@ -19,8 +19,8 @@
     "total_dirs": 218
   },
   "git": {
-    "revision": "358c8dd18871ce4c7028b90f95429828e5a7dc92",
-    "dirty": true
+    "revision": "2653726ae2a6a1fc2e8873d578025e5a5392c0b8",
+    "dirty": false
   },
-  "created_at": "2026-11-23T12:18:23.867906+00:00"
+  "created_at": "2026-11-23T16:37:04.067026+00:00"
 }
