@@ -1,0 +1,179 @@
+{
+  "systems": {
+    "f2": {
+      "n_queries_scored": 97,
+      "paired": {
+        "hybrid−vector_only/en": {
+          "estimate": -0.11134088943238184,
+          "lower": -0.16622530806748492,
+          "upper": -0.059447116641375745
+        },
+        "hybrid−structured_only/en": {
+          "estimate": -0.00137616620140706,
+          "lower": -0.007975658190931798,
+          "upper": 0.004087245480409965
+        }
+      },
+      "by_group": {
+        "structured_only": {
+          "duration": 0.7610168723660823,
+          "single_class": 0.775688793388601,
+          "multi_class": 0.1514112258103426,
+          "temporal": 0.12122077372673506
+        },
+        "vector_only": {
+          "duration": 0.6205798410535308,
+          "single_class": 0.7331123762933227,
+          "multi_class": 0.38708950316769347,
+          "temporal": 0.4256015733692496
+        },
+        "hybrid": {
+          "duration": 0.7621772914078251,
+          "single_class": 0.7612556980692582,
+          "multi_class": 0.1514112258103426,
+          "temporal": 0.12636640448571262
+        }
+      },
+      "filter_exactness": {
+        "structured_only": 1.0,
+        "vector_only": 0.27422680412371137,
+        "hybrid": 1.0
+      },
+      "git_dirty": true
+    },
+    "B0": {
+      "n_queries_scored": 97,
+      "paired": {
+        "hybrid−vector_only/en": {
+          "estimate": -0.07462598830200158,
+          "lower": -0.12061254026681646,
+          "upper": -0.027535044060132595
+        },
+        "hybrid−structured_only/en": {
+          "estimate": -0.008315038853821064,
+          "lower": -0.01617706421395363,
+          "upper": -0.0011666984111106937
+        }
+      },
+      "by_group": {
+        "structured_only": {
+          "duration": 0.7323234626694689,
+          "single_class": 0.752306026198011,
+          "multi_class": 0.0901802248363875,
+          "temporal": 0.13359294495287516
+        },
+        "vector_only": {
+          "duration": 0.583431453293703,
+          "single_class": 0.7370502271476186,
+          "multi_class": 0.2641294813933453,
+          "temporal": 0.33021713824993587
+        },
+        "hybrid": {
+          "duration": 0.7005032692238048,
+          "single_class": 0.747233906530581,
+          "multi_class": 0.0901802248363875,
+          "temporal": 0.13359294495287516
+        }
+      },
+      "filter_exactness": {
+        "structured_only": 1.0,
+        "vector_only": 0.2711340206185567,
+        "hybrid": 1.0
+      },
+      "git_dirty": false
+    },
+    "lbrv2": {
+      "n_queries_scored": 97,
+      "paired": {
+        "hybrid−vector_only/en": {
+          "estimate": -0.08708893928398362,
+          "lower": -0.13618696575930347,
+          "upper": -0.037381850511867154
+        },
+        "hybrid−structured_only/en": {
+          "estimate": -0.007561535697637431,
+          "lower": -0.01597990048144214,
+          "upper": 0.00010946278210710371
+        }
+      },
+      "by_group": {
+        "structured_only": {
+          "duration": 0.6188583564751808,
+          "single_class": 0.7973518137633877,
+          "multi_class": 0.14145770963424048,
+          "temporal": 0.20877784912278705
+        },
+        "vector_only": {
+          "duration": 0.5337594913499437,
+          "single_class": 0.7740300050054045,
+          "multi_class": 0.32475074882332816,
+          "temporal": 0.3984375686096501
+        },
+        "hybrid": {
+          "duration": 0.6106241066321118,
+          "single_class": 0.7727648625447107,
+          "multi_class": 0.14007349845996764,
+          "temporal": 0.20877784912278705
+        }
+      },
+      "filter_exactness": {
+        "structured_only": 1.0,
+        "vector_only": 0.2731958762886598,
+        "hybrid": 1.0
+      },
+      "git_dirty": false
+    },
+    "lbrv3": {
+      "n_queries_scored": 97,
+      "paired": {
+        "hybrid−vector_only/en": {
+          "estimate": 0.03994413589439439,
+          "lower": 0.003944497126414448,
+          "upper": 0.07886959026766213
+        },
+        "hybrid−structured_only/en": {
+          "estimate": -0.012527461037472301,
+          "lower": -0.03368514893321435,
+          "upper": 0.008517047951445117
+        }
+      },
+      "by_group": {
+        "structured_only": {
+          "duration": 0.7926805092684953,
+          "single_class": 0.8496674062143845,
+          "multi_class": 0.6181610083990707,
+          "temporal": 0.5304898245052049
+        },
+        "vector_only": {
+          "duration": 0.650424365081666,
+          "single_class": 0.8282753918842721,
+          "multi_class": 0.5923170513502636,
+          "temporal": 0.5005278764309379
+        },
+        "hybrid": {
+          "duration": 0.8274419586529063,
+          "single_class": 0.84696984668359,
+          "multi_class": 0.575976796679716,
+          "temporal": 0.5009727762108496
+        }
+      },
+      "filter_exactness": {
+        "structured_only": 1.0,
+        "vector_only": 0.4927835051546392,
+        "hybrid": 1.0
+      },
+      "git_dirty": false
+    }
+  },
+  "sources": {
+    "f2": "docs/measurements/retrieval_benchmark_test_20261002.json",
+    "B0": "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+    "lbrv2": "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+    "lbrv3": "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json"
+  },
+  "git": {
+    "revision": "2806f317e9f36a5ff4d77eea36b166b7f4fb7b54",
+    "dirty": true
+  },
+  "created_at": "2026-11-23T11:53:28.511505+00:00"
+}

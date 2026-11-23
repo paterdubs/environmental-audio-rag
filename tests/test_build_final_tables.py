@@ -56,3 +56,16 @@ def test_per_class_table_hides_f1_for_small_classes():
     text = bft.build_per_class(RUN_B0, "abcdef0")
     assert "| `cat_fights_and_moans` | 9 | khớp 0/9 | khớp 3/9 | — | — |" in text
     assert "| `workshop` | 69 | 0.4505 | 0.6992 | 0.7963 | 0.6232 |" in text
+
+
+MODES = ROOT / "docs" / "measurements" / "rq3_modes_20261123.json"
+
+
+@pytest.mark.skipif(not MODES.is_file(), reason="chưa có rq3_modes")
+def test_rq3_modes_tables_report_hybrid_minus_vector_and_groups():
+    modes = json.loads(MODES.read_text(encoding="utf-8"))
+    paired = bft.build_rq3_paired(modes, "abcdef0", MODES)
+    assert "-0.075 [-0.121, -0.028]" in paired  # B0
+    assert "+0.040 [+0.004, +0.079]" in paired  # V3 đảo chiều
+    groups = bft.build_rq3_groups(modes, "abcdef0", MODES)
+    assert "0.126 / 0.426" in groups  # f2, quan hệ thời gian

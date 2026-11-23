@@ -491,3 +491,41 @@ claims:
     source: docs/measurements/final_numbers_20261110.json
     key: [rq1, v2, bootstrap_c_minus_b, estimate, value]
     mentions: [{file: docs/SYSTEM.md, text: "v2 (3 + 3 seed): {value} [−0.0254, +0.0199]"}]
+
+  # ---------- RQ3: so ba chế độ (PAPER_NOTES S70; docs/measurements/rq3_modes_20261123.json) ----------
+  - id: rq3_f2_hybrid_minus_vector
+    source: docs/measurements/rq3_modes_20261123.json
+    key: [systems, f2, paired, "hybrid−vector_only/en", estimate]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "hybrid − vector_only: f2 {value} ["}
+  - id: rq3_b0_hybrid_minus_vector
+    source: docs/measurements/rq3_modes_20261123.json
+    key: [systems, B0, paired, "hybrid−vector_only/en", estimate]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "B0 {value} [-0.121"}
+  - id: rq3_v2_hybrid_minus_vector
+    source: docs/measurements/rq3_modes_20261123.json
+    key: [systems, lbrv2, paired, "hybrid−vector_only/en", estimate]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "V2 {value} [-0.136"}
+  - id: rq3_v3_hybrid_minus_vector
+    source: docs/measurements/rq3_modes_20261123.json
+    key: [systems, lbrv3, paired, "hybrid−vector_only/en", estimate]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "V3 {value} [+0.004"}
+  - id: rq3_f2_temporal_vector
+    source: docs/measurements/rq3_modes_20261123.json
+    key: [systems, f2, by_group, vector_only, temporal]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "quan hệ thời gian f2 0.126 / {value},"}
+  - id: rq3_vector_exactness_b0
+    source: docs/measurements/rq3_modes_20261123.json
+    key: [systems, B0, filter_exactness, vector_only]
+    decimals: 3
+    mentions:
+      - {file: docs/PAPER_NOTES.md, text: "vector_only 0.274 / {value} /"}

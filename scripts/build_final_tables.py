@@ -180,6 +180,48 @@ def build_rq3(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def _signed(cell: dict[str, float]) -> str:
+    return (f"{cell['estimate']:+.3f} [{cell['lower']:+.3f}, {cell['upper']:+.3f}]")
+
+
+def build_rq3_paired(data: dict[str, Any], revision: str, source: Path) -> str:
+    """Hiệu ghép cặp giữa ba chế độ truy hồi và độ đúng bộ lọc (từ `report_rq3_modes`)."""
+    rows = []
+    for key, label in SYSTEMS.items():
+        s = data["systems"][key]
+        rows.append([
+            label,
+            _signed(s["paired"]["hybrid−vector_only/en"]),
+            _signed(s["paired"]["hybrid−structured_only/en"]),
+            f"{s['filter_exactness']['vector_only']:.3f}",
+            f"{s['filter_exactness']['hybrid']:.3f}",
+        ])
+    return table(
+        "RQ3 (test, bộ lọc gold): hiệu nDCG@10 ghép cặp giữa các chế độ và độ đúng bộ lọc",
+        ["Corpus", "hybrid − vector", "hybrid − structured", "Độ đúng bộ lọc (vector)",
+         "Độ đúng bộ lọc (hybrid)"],
+        rows, [source], revision, ["---", "---:", "---:", "---:", "---:"],
+    )
+
+
+def build_rq3_groups(data: dict[str, Any], revision: str, source: Path) -> str:
+    """nDCG@10 hybrid / vector_only theo nhóm câu hỏi."""
+    groups = ("duration", "single_class", "multi_class", "temporal")
+    names = {"duration": "Thời lượng", "single_class": "Một lớp",
+             "multi_class": "Nhiều lớp", "temporal": "Quan hệ thời gian"}
+    rows = []
+    for key, label in SYSTEMS.items():
+        s = data["systems"][key]
+        rows.append([label] + [
+            f"{s['by_group']['hybrid'][g]:.3f} / {s['by_group']['vector_only'][g]:.3f}"
+            for g in groups])
+    return table(
+        "RQ3 (test, bộ lọc gold): nDCG@10 hybrid / vector_only theo nhóm câu hỏi",
+        ["Corpus"] + [names[g] for g in groups],
+        rows, [source], revision, ["---", "---:", "---:", "---:", "---:"],
+    )
+
+
 def build_psds(data: dict[str, Any], revision: str, source: Path) -> str:
     d = data["psds_diagnosis"]
     rows = [
@@ -280,6 +322,7 @@ def main() -> None:
     parser.add_argument("--final-numbers", type=Path, required=True)
     parser.add_argument("--ledger", type=Path, help="test_ledger_*.json")
     parser.add_argument("--freeze", type=Path, help="artifact_freeze_*.json")
+    parser.add_argument("--rq3-modes", type=Path, help="rq3_modes_*.json")
     parser.add_argument("--run-dir", type=Path, help="run B0 final test (bảng theo lớp)")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
@@ -310,6 +353,8 @@ def main() -> None:
     extra = (
         ("f07_ledger.md", build_ledger, args.ledger),
         ("f08_freeze.md", build_freeze, args.freeze),
+        ("f05b_rq3_paired.md", build_rq3_paired, args.rq3_modes),
+        ("f05c_rq3_groups.md", build_rq3_groups, args.rq3_modes),
     )
     for name, builder, path in extra:
         if path is None:

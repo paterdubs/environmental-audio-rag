@@ -144,6 +144,24 @@ Về độ tin cậy của lượt chạy: trong lúc sinh mô tả cho V3 trên
 
 Với f2, B0 và V2, khoảng tin cậy chồng lấn mạnh: nDCG@10 của hybrid tiếng Anh là 0,415, 0,383 và 0,404; nhóm không phân biệt được ba hệ này. Điều này đáng lưu ý vì V2 tăng event-F1 micro khoảng 1,6 lần so với B0 (hiệu +0,1159) mà truy hồi gần như không đổi: truy hồi bị chặn bởi việc sự kiện nào được dự đoán chứ không phải bởi độ chính xác biên. Riêng LBR V3 cao hơn hẳn: hybrid 0,670 [0,610; 0,729], structured 0,683, và trả lời được 95/97 truy vấn so với 58 đến 65 của ba hệ kia. Đây là **hiệu ứng độ phủ**: V3 dự đoán nhiều sự kiện hơn nên bộ lọc cứng ít loại nhầm bản ghi thật sự liên quan. Cái giá thể hiện ở tỷ lệ trích dẫn trùng với bản ghi liên quan theo nhãn gốc: 0,712 với V3 so với 0,915 (B0), tức nhiều kết quả được trích hơn nhưng nhiều trong số đó không thật sự liên quan. Vì vậy mức tăng nDCG của V3 không phải bằng chứng xếp hạng tốt hơn.
 
+**Kết hợp có tốt hơn từng thành phần không?** Đây là câu hỏi gốc của RQ3 (Chương 1), và câu trả lời trên dữ liệu này là **không về nDCG@10**. ⟪tbl:rq3paired⟫ báo hiệu ghép cặp theo truy vấn. Với ba kho có độ phủ thấp (f2, B0, V2), hybrid **thấp hơn** vector_only có ý nghĩa: −0,111 [−0,166; −0,059], −0,075 [−0,121; −0,028] và −0,087 [−0,136; −0,037]. Riêng kho V3 chiều này đảo lại, +0,040 [+0,004; +0,079]. Hybrid so với structured_only gần như trùng, mọi hiệu có độ lớn không quá 0,013: xếp hạng ngữ nghĩa bên trong tập đã lọc không đổi thứ hạng đáng kể so với chỉ lọc. Nhóm vì vậy **không** kết luận hybrid cho xếp hạng tốt hơn; điều chắc chắn của bộ lọc cứng là độ đúng ràng buộc (cột cuối), không phải nDCG.
+
+@@CAP:tbl:rq3paired|RQ3 trên test với bộ lọc gold: hiệu nDCG@10 ghép cặp giữa các chế độ và độ đúng bộ lọc@@
+
+@@COLWIDTHS:14,24,24,19,19@@
+
+@@INCLUDE:report/final_tables/f05b_rq3_paired.md@@
+
+Ba điều cần đọc cùng nhau. **Một,** vector_only không tôn trọng ràng buộc: chỉ khoảng 27% kết quả nó trả về thỏa bộ lọc của câu hỏi (49% với V3), so với 1,000 của hybrid. Độ liên quan trong nDCG được tính từ nhãn gốc bằng đúng ngữ nghĩa của bộ lọc, nên vector_only vẫn được điểm khi trả về bản ghi thật sự liên quan dù không thỏa bộ lọc trên sự kiện *dự đoán*. Hai thước đo hai thứ khác nhau: nDCG cao hơn của vector_only không có nghĩa là nó đáp ứng câu hỏi có ràng buộc tốt hơn cho người dùng. **Hai,** ⟪tbl:rq3groups⟫ cho thấy chênh lệch tập trung ở hai nhóm câu hỏi. Ở nhóm quan hệ thời gian (đúng chỗ đóng góp C4 nhắm tới), hybrid thấp hơn vector_only rõ trên f2, B0 và V2 (ví dụ f2: 0,126 so với 0,426), và ở nhóm nhiều lớp cũng vậy. Ngược lại, ở nhóm thời lượng hybrid cao hơn trên cả bốn kho, còn nhóm một lớp hai chế độ ngang nhau. **Ba,** cách giải thích hợp lý nhất là bộ lọc cứng chạy trên sự kiện *dự đoán*, nên chỉ bản ghi mà SED đã dự đoán đủ mọi lớp và quan hệ trong câu hỏi mới qua được bộ lọc. Điều kiện này càng chặt khi câu hỏi có nhiều lớp hoặc quan hệ trước–sau, và SED bỏ sót phần lớn sự kiện tham chiếu (V2 dự đoán 373 trên 740). Khi độ phủ tăng (V3 dự đoán 668 sự kiện trên 139 bản ghi), chênh lệch ở nhóm quan hệ thời gian biến mất (0,501 so với 0,501) và hybrid vượt vector_only ở nhóm thời lượng. Cách giải thích này khớp với số liệu nhưng chưa được kiểm bằng thí nghiệm kiểm soát (ví dụ tăng dần độ phủ của SED trên cùng bộ truy vấn).
+
+@@CAP:tbl:rq3groups|RQ3 trên test với bộ lọc gold: nDCG@10 hybrid / vector_only theo nhóm câu hỏi@@
+
+@@COLWIDTHS:16,21,21,21,21@@
+
+@@INCLUDE:report/final_tables/f05c_rq3_groups.md@@
+
+Hệ quả cho việc dùng hệ thống: khi người dùng cần kết quả đúng ràng buộc (đúng lớp, đúng khoảng thời lượng, đúng quan hệ trước–sau), hybrid và structured_only là lựa chọn phù hợp với độ phủ đủ cao; khi chỉ cần gợi ý gần nghĩa, xếp hạng ngữ nghĩa đứng riêng cho nDCG cao hơn nhưng không bảo đảm ràng buộc. Một hướng chưa thử là dùng bộ lọc như điểm cộng thay cho điều kiện cứng; nhóm nêu hướng này ở Chương 7 và không khẳng định nó tốt hơn.
+
 Độ đúng bộ lọc của structured_only và hybrid là 1,000 như kiến trúc yêu cầu. Ở mọi cấu hình trả lời, tỷ lệ khẳng định thiếu bằng chứng là 0,000: câu trả lời không vượt ra ngoài những gì kho chứa; đổi lại, kho thiếu thì câu trả lời cũng thiếu. Bộ lọc gold giả định câu hỏi luôn được phân tích đúng nên chỉ là cận trên: với bộ lọc do bộ phân tích câu hỏi sinh ra (parsed), nDCG@10 của hybrid tiếng Anh là 0,409 (f2), 0,377 (B0), 0,398 (V2) và 0,655 (V3), thấp hơn gold từ 0,006 đến 0,015.
 
 ## Bộ phân tích câu hỏi và độ khớp khi phục vụ
@@ -158,7 +176,7 @@ Hệ thống phục vụ cũng được kiểm xem có tái tạo đúng đầu 
 
 ## Thảo luận và hạn chế
 
-Tóm lại, nhóm có một hệ thống đầu–cuối chạy được, cùng bằng chứng cho từng câu hỏi nghiên cứu. RQ1 âm tính với nhiều seed và hai công thức. RQ2 cho thấy ràng buộc ngữ pháp loại bỏ các dạng ảo giác và suy diễn đo được ở cả bốn hệ SED, với cái giá là bỏ sót khi danh sách sự kiện dày, mà biến thể cover giải quyết. RQ3 cho thấy bộ lọc cứng bảo đảm đúng ràng buộc tuyệt đối, và chất lượng xếp hạng bị chặn bởi việc SED dự đoán những sự kiện nào. Điểm tiến bộ lớn nhất của SED là LBR (event-F1 micro 0,1806 lên 0,2965), nhưng cái giá là PSDS-2 và độ phủ giảm. Các hạn chế chính:
+Tóm lại, nhóm có một hệ thống đầu–cuối chạy được, cùng bằng chứng cho từng câu hỏi nghiên cứu. RQ1 âm tính với nhiều seed và hai công thức. RQ2 cho thấy ràng buộc ngữ pháp loại bỏ các dạng ảo giác và suy diễn đo được ở cả bốn hệ SED, với cái giá là bỏ sót khi danh sách sự kiện dày, mà biến thể cover giải quyết. RQ3 cho thấy bộ lọc cứng bảo đảm đúng ràng buộc tuyệt đối (1,000 so với 0,27 của chỉ ngữ nghĩa), nhưng hybrid không hơn chỉ xếp hạng ngữ nghĩa về nDCG@10 trên ba kho có độ phủ thấp (thấp hơn có ý nghĩa), vì chất lượng xếp hạng bị chặn bởi việc SED dự đoán những sự kiện nào; riêng kho độ phủ cao V3 thì hybrid hơn. Điểm tiến bộ lớn nhất của SED là LBR (event-F1 micro 0,1806 lên 0,2965), nhưng cái giá là PSDS-2 và độ phủ giảm. Các hạn chế chính:
 
 - **Tập đánh giá nhỏ.** Dev có 137 (134 annotated) và test có 142 (139 annotated) bản ghi, nên khoảng tin cậy rộng. Bootstrap theo bản ghi chỉ phản ánh bất định do mẫu bản ghi, không phản ánh dao động giữa các seed.
 - **Huấn luyện SED không tất định.** Cùng mã và cùng seed, F1 macro theo khung của nhánh B vẫn đổi từ 0,5850 sang 0,5705; mọi so sánh SED cần nhiều seed, trong khi các thử nghiệm bỏ-từng-phần của v2 chỉ có một seed.
