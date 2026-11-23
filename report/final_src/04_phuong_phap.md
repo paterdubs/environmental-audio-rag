@@ -35,7 +35,7 @@ Hệ thống gồm năm khối nối tiếp (⟪fig:architecture⟫). Bản ghi 
 
 Mô hình phân loại có hai vai trò: là bước giữa của nhánh C trong RQ1, và trả lời câu hỏi phụ về việc tách lớp con. Mô hình gồm bộ mã hóa CNN14 khởi tạo từ checkpoint AudioSet và hai đầu tuyến tính, một cho 22 lớp gộp và một cho 28 lớp con (ADR-0016). Checkpoint gốc có các khối tiền xử lý và đầu phân loại mà bộ mã hóa của nhóm không có, nên chỉ sáu khối tích chập được chuyển sang, chiếm 92,23% tham số (ADR-0018). Lớp chuẩn hóa đầu vào được thay bằng chuẩn hóa theo thống kê tập huấn luyện DataSEC.
 
-Hàm mất mát có thêm một số hạng "nhất quán" phạt việc đặt xác suất lớp con vào sai lớp gộp — điều mà cross-entropy 28 lớp một mình không phạt khi lớp đúng vẫn có xác suất cao nhất. Hệ số của số hạng này là 0,5, chọn bằng quét trên dev với điều kiện không làm giảm macro-F1. Vì `voices` và `music` chiếm 57,5% dữ liệu, huấn luyện dùng lấy mẫu cân bằng lớp. Khi huấn luyện hai lần cùng seed, hai checkpoint có SHA-256 giống hệt nhau.
+Hàm mất mát có thêm một số hạng "nhất quán" phạt việc đặt xác suất lớp con vào sai lớp gộp. Cross-entropy 28 lớp vẫn phạt khi xác suất của lớp đúng thấp, nhưng không biểu diễn tường minh cấu trúc nhóm: nó không phân biệt phần xác suất còn lại rơi vào nhóm đúng hay nhóm sai. Hệ số của số hạng này được chọn trên dev theo luật nêu trong đặc tả task trước khi chạy: trong các giá trị không làm macro-F1 dev giảm quá 0,02 so với không dùng số hạng này, lấy giá trị có nhất quán cha–con cao nhất, tức 0,5. Ở giá trị đó macro-F1 dev giảm 0,0145 (0,8375 xuống 0,8230) và nhất quán cha–con tăng 0,0070 (0,9514 lên 0,9583); mỗi giá trị chỉ chạy một lần, nên nhóm không khẳng định số hạng này có lợi, chỉ nói nó thỏa luật chọn. Vì `voices` và `music` chiếm 57,5% dữ liệu, huấn luyện dùng lấy mẫu cân bằng lớp. Khi huấn luyện hai lần cùng seed, hai checkpoint có SHA-256 giống hệt nhau.
 
 ## Mô hình phát hiện sự kiện (SED)
 
@@ -52,7 +52,7 @@ Phân tích sau đó cho thấy v1 có một giới hạn cấu trúc: CNN14 tro
 - **T2a** dùng BEATs [@chen2022beats] **đóng băng** hoàn toàn (khoảng 90,4 triệu tham số), cộng đầu BiGRU của v2 (khoảng 3,3 triệu tham số được huấn luyện).
 - **T2b** dùng Frame-MobileNet (`frame_mn10`, khoảng 3 triệu tham số), **tinh chỉnh toàn bộ**, không có mô hình chuỗi. Đầu vào là sóng âm 16 kHz; đầu ra 250 bước cho 10 s qua một lớp tuyến tính 21 lớp, rồi nội suy lên lưới nhãn 10 ms.
 
-Checkpoint ngoài được kiểm SHA-256 và giấy phép (MIT) trước khi dùng. Một nhánh phụ thay mất mát bằng focal loss trên T2b (ADR-0038) tạo ra ứng viên g1 và g2.
+Checkpoint ngoài được kiểm SHA-256 trước khi dùng. Mã BEATs và PretrainedSED theo giấy phép MIT; checkpoint PANNs trên Zenodo không ghi giấy phép (ADR-0015), nên chỉ dùng nội bộ và không phát hành lại. Một nhánh phụ thay mất mát bằng focal loss trên T2b (ADR-0038) tạo ra ứng viên g1 và g2.
 
 **Gộp nhiều mô hình.** Vì huấn luyện SED không tất định kể cả khi cùng seed, mỗi cấu hình chạy ba seed và ứng viên là trung bình xác suất của các mô hình (ensemble), chỉ được gộp khi bản ghi, mặt nạ, nhãn và hệ lớp khớp tuyệt đối. Danh sách 11 ứng viên và luật chọn được ghi **trước** khi có kết quả (ADR-0031): chọn ứng viên có event-F1 micro cao nhất theo kiểm chứng chéo 5 fold trên dev, chia fold theo nhóm trùng.
 
@@ -72,7 +72,7 @@ Có hai cách ghép, và cách nào cũng được chọn trên dev.
 
 ## Sinh mô tả bám sát sự kiện
 
-**Ba ràng buộc.** Bộ sinh mô tả chỉ nhận danh sách sự kiện sau khi ghép, không nhận âm thanh hay thông tin bối cảnh. Thiết kế này có chủ ý: bộ sinh không thể bịa một nguồn âm mà nó chưa thấy bằng chứng. Mỗi mô tả phải thỏa ba ràng buộc, đều có kiểm thử tự động:
+**Ba ràng buộc.** Bộ sinh mô tả chỉ nhận danh sách sự kiện sau khi ghép, không nhận âm thanh hay thông tin bối cảnh. Thiết kế này có chủ ý: bộ sinh không có nguồn thông tin nào khác ngoài danh sách sự kiện. Đó là điều kiện cần, không phải bảo đảm: mô hình viết tự do vẫn thêm bối cảnh và gọi tên nguồn cụ thể hơn bằng chứng (Chương 6), nên cần cả ràng buộc ở bước giải mã. Mỗi mô tả phải thỏa ba ràng buộc, đều có kiểm thử tự động:
 
 - **G1:** mọi nguồn âm được nhắc đều thuộc danh sách sự kiện (kiểm bằng từ điển cụm từ → lớp).
 - **G2:** mỗi lần nhắc đều gắn với mã sự kiện làm bằng chứng.
@@ -86,6 +86,8 @@ Hai lớp gộp phải giữ mức mơ hồ (Chương 3). Danh sách rỗng đư
 - **Unconstrained**: mô hình ngôn ngữ Qwen3.5-9B (bản nén Q4_K_M, chạy cục bộ bằng llama.cpp, nhiệt độ 0) viết tự do (ADR-0022).
 - **Constrained**: cùng mô hình và lời nhắc, nhưng bị giới hạn bằng một ngữ pháp giải mã (ADR-0023). Ngữ pháp chỉ cho phép một câu liệt kê một dãy con các sự kiện theo thứ tự bắt đầu, mỗi sự kiện tối đa một lần, với tên nguồn âm lấy từ từ điển và thời điểm lấy đúng từ sự kiện. Nhờ vậy ảo giác nguồn âm, từ cấm, thời điểm bịa và sai thứ tự bị loại *theo cấu tạo*; mô hình chỉ còn chọn nhắc sự kiện nào và dừng ở đâu.
 - **Constrained-cover**: như constrained, nhưng bắt buộc nhắc sự kiện đầu tiên của mỗi lớp (ADR-0026), nên bỏ sót lớp cũng bị loại theo cấu tạo.
+
+**Vai trò thật của từng cách sinh.** Cần nói rõ để không đọc RQ2 quá mức. Thứ nhất, với ngữ pháp ở trên, việc constrained và constrained-cover không có ảo giác nguồn âm, từ cấm hay thời điểm bịa là hệ quả của cấu tạo, nên RQ2 đo *cái giá* của ràng buộc (bỏ sót) và *mức lệch* của cách viết tự do, không phải một khám phá bất ngờ. Thứ hai, câu constrained gần như câu template: so với mô tả template của cùng danh sách sự kiện, constrained đạt BLEU-4 0,358 và CIDEr 3,60 còn unconstrained chỉ 0,015 và 0,116 (Chương 6; tham chiếu là template nên đây chỉ đo độ giống văn phong). Thứ ba, vì vậy **ứng dụng không dùng mô hình ngôn ngữ để viết mô tả**: mô tả hiển thị và câu trả lời truy hồi đều sinh bằng template tất định, vì template bằng 0 ở mọi chỉ số lỗi và không tốn tính toán. Mô hình ngôn ngữ trong hệ thống chạy cục bộ chỉ giữ vai trò bộ phân tích câu hỏi (phần dưới). Phần so sánh bốn cách sinh là thí nghiệm về độ tin cậy của mô tả sinh tự do và giá của việc ràng buộc, chứ không phải mô tả cấu hình phục vụ.
 
 Mô tả tiếng Anh dùng cho đánh giá; mô tả tiếng Việt dùng cho giao diện, sinh bằng template với từ điển tiếng Việt riêng và khớp có giữ dấu (ADR-0025). Từ điển tách riêng để mã băm của từ điển tiếng Anh dùng cho RQ2 không đổi; giữ dấu vì bỏ dấu sẽ khiến G3 khớp nhầm, như "tới phạm vi" bị đọc thành "tội phạm".
 
@@ -120,7 +122,7 @@ Mô tả tiếng Anh dùng cho đánh giá; mô tả tiếng Việt dùng cho gi
 
 ## Cách đánh giá
 
-**Chọn trên dev, kiểm tra một lần.** Tập train dùng để tối ưu mô hình và suy giới hạn độ dài. Tập dev dùng để chọn ngưỡng, checkpoint và cấu hình. Tập test chỉ dùng để đo cấu hình đã chọn, **một lần**. Từ SED v2, quy trình được siết thêm: các lần huấn luyện không sinh dự đoán test; lựa chọn trên dev được commit vào git **trước** khi sinh dự đoán test bằng một đường riêng, và một tùy chọn kiểm chứng đường này tái tạo trùng từng bit dự đoán dev. Mọi lần chạm test được ghi vào một sổ sinh tự động. Mọi cấu hình đã chạy trên test đều được báo cáo, kể cả cấu hình kém, và không cấu hình nào được chọn lại sau khi xem test.
+**Chọn trên dev, kiểm tra một lần.** Tập train dùng để tối ưu mô hình và suy giới hạn độ dài. Tập dev dùng để chọn ngưỡng, checkpoint và cấu hình. Tập test chỉ dùng để đo cấu hình đã khóa, và **mỗi cấu hình đã khóa chỉ được mở test một lần**; đây không có nghĩa tập test chỉ được dùng một lần, vì nhiều cấu hình lần lượt qua cùng tập test (xem "Tái sử dụng tập test" ở Chương 6). Từ SED v2, quy trình được siết thêm: các lần huấn luyện không sinh dự đoán test; lựa chọn trên dev được commit vào git **trước** khi sinh dự đoán test bằng một đường riêng, và một tùy chọn kiểm chứng đường này tái tạo trùng từng bit dự đoán dev. Mọi lần chạm test được ghi vào một sổ sinh tự động. Mọi cấu hình đã chạy trên test đều được báo cáo, kể cả cấu hình kém, và không cấu hình nào được chọn lại sau khi xem test.
 
 **Chỉ số cho mô tả.** Gọi $\mathcal{M}$ là tập nguồn âm được nhắc trong một mô tả (trích bằng từ điển) và $\mathcal{C}$ là tập lớp trong danh sách sự kiện. Tỷ lệ ảo giác $H$ và tỷ lệ bỏ sót $O$ là
 
@@ -128,7 +130,7 @@ $$H = 1 - \frac{|\{m \in \mathcal{M} : m \in \mathcal{C}\}|}{|\mathcal{M}|}, \qq
 
 ⟪eqno:halluc⟫
 
-rồi lấy trung bình trên các bản ghi. Bỏ sót tính theo **lớp**, không theo sự kiện. Khi một cụm từ mơ hồ ứng với nhiều lớp, cách tính nghiêng về phía có lợi cho mô tả, nên hiệu số giữa hai cách sinh là một cận dưới. Nhóm còn báo tỷ lệ cặp nhắc đúng thứ tự thời gian, tỷ lệ gọi tên quá cụ thể (ví dụ nói "xe cứu thương" khi lớp chỉ là `sirens_and_alarms`), tỷ lệ thêm bối cảnh và tỷ lệ dùng từ cấm.
+rồi lấy trung bình trên các bản ghi. Bỏ sót tính theo **lớp**, không theo sự kiện. Khi một cụm từ mơ hồ ứng với nhiều lớp, cách tính nghiêng về phía có lợi cho mô tả. Hướng và độ lớn sai số của từ điển giữa các cách sinh chưa được kiểm, nên hiệu số giữa hai cách sinh được đọc như kết quả của một phép đo dựa trên từ điển, không phải một cận. Nhóm còn báo tỷ lệ cặp nhắc đúng thứ tự thời gian, tỷ lệ gọi tên quá cụ thể (ví dụ nói "xe cứu thương" khi lớp chỉ là `sirens_and_alarms`), tỷ lệ thêm bối cảnh và tỷ lệ dùng từ cấm.
 
 **Phạm vi diễn giải cần nêu rõ.** Ở mức đầu–cuối, $\mathcal{C}$ là tập lớp của danh sách **dự đoán**. Vì vậy $H = 0$ chỉ có nghĩa là mô tả trung thành với đầu ra SED, không có nghĩa là đúng với âm thanh: một sự kiện SED phát hiện sai vẫn được mô tả "có căn cứ" nhưng sai so với thực tế. Mức oracle, dùng nhãn gốc làm danh sách, tách riêng phần lỗi do bộ sinh mô tả.
 

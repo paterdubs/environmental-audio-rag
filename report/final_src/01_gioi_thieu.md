@@ -60,10 +60,10 @@ Một số hướng bị loại có chủ ý vì dữ liệu không đủ cơ s�
 
 | Mã | Đóng góp dự kiến | Bằng chứng đã có | Chưa khẳng định |
 |---|---|---|---|
-| C1 | Bộ sinh mô tả có điều kiện bám sát sự kiện, máy kiểm tra được | Ràng buộc có kiểm thử tự động; trên tập test, bộ sinh có ràng buộc không còn ảo giác nguồn âm ở cả bốn hệ thống SED | Chưa so trực tiếp với bộ sinh có timestamp của công trình khác |
+| C1 | Bộ sinh mô tả có điều kiện bám sát sự kiện, máy kiểm tra được | Ràng buộc có kiểm thử tự động; trên tập test, bộ sinh có ràng buộc không còn ảo giác nguồn âm ở cả bốn hệ thống SED (theo cấu tạo ngữ pháp; câu sinh gần như câu template) | Chưa so trực tiếp với bộ sinh có timestamp của công trình khác; giao diện dùng template, không dùng mô hình ngôn ngữ để viết mô tả |
 | C2 | Bộ chỉ số đo mức bám sát của mô tả theo dòng thời gian | Đo ảo giác, bỏ sót, thứ tự, từ cấm, có khoảng tin cậy; đối chiếu 60 mô tả với một người đọc | Đã có chỉ số gần (ECHO, TAC): C2 là áp dụng và mở rộng; mẫu đối chiếu nhỏ |
 | C3 | Đo chuyển giao có kiểm soát trùng lặp giữa hai bộ dữ liệu | Tìm ra ba nhóm trùng, loại 11 đoạn; RQ1 cho kết quả âm tính | Đã có kiểm tra trùng trong một bộ dữ liệu và khảo sát chồng lấn giữa nhiều bộ: C3 là áp dụng vào cặp DataSEC–DataSED |
-| C4 | RAG trên dòng thời gian sự kiện, có điều kiện thời gian | Bốn điều kiện thời gian viết bằng SQL; bộ lọc đúng 100%; câu trả lời không có khẳng định thiếu bằng chứng | Đã có hệ thống event store + RAG dùng cửa sổ thời gian tuyệt đối (LA-RAG): C4 là đóng góp kỹ thuật |
+| C4 | RAG trên dòng thời gian sự kiện, có điều kiện thời gian | Bốn điều kiện thời gian viết bằng SQL; mọi kết quả trả về thỏa bộ lọc đã áp trên sự kiện lưu trong kho (độ đúng bộ lọc 1,000, không đo đúng với âm thanh); câu trả lời không có khẳng định thiếu bằng chứng | Đã có hệ thống event store + RAG dùng cửa sổ thời gian tuyệt đối (LA-RAG): C4 là đóng góp kỹ thuật |
 
 @@NOTE:Nguồn: docs/PAPER_NOTES.md S69; docs/RELATED_WORK.md §2.4, §9.@@
 

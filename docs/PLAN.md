@@ -450,8 +450,8 @@ lại từ JSON đã đóng băng. Số mới nào cũng vào `docs/claims.yaml`
 | 1 | T0-04 | Đoạn RQ3 nói thẳng hybrid < vector_only (Δ −0.111/−0.075/−0.087), cơ chế lọc cứng bị chặn bởi recall SED; sửa `06` L137–147, `07` L21, `00` L9, L23 | agent | ✅ 23/11 (PAPER_NOTES S70; `report_rq3_modes`, f05b/f05c) |
 | 1 | T0-06 | Đóng góp C5 (LBR) và C6 (giao thức OOF/ledger/freeze); bảng "LBR trong bối cảnh" trên OOF; nói rõ đã thăm dò trên OOF, ngưỡng chạm mép lưới | agent | ○ |
 | 1 | T0-07 | Bảng định cỡ B0/V2/V3 so đồng thuận người (8 cặp) và mốc DCASE; trước đó nâng nguồn DCASE lên V3 trong RELATED_WORK §10 | agent | ○ |
-| 1 | T0-08 | Viết lại RQ2 trung thực: 0 vi phạm có được do cấu tạo, constrained ≈ template, κ ≈ −0.03, LLM thật sự có ích ở parser | agent | ○ |
-| 1 | T0-05 | Sửa lỗi K02/K03/K04/K07/K09/K11/K12/K13/K16 và câu về λ (`04` L38); đoạn tái sử dụng test (42 lượt); cận trên RQ1 | agent | ○ |
+| 1 | T0-08 | Viết lại RQ2 trung thực: 0 vi phạm có được do cấu tạo, constrained ≈ template, κ ≈ −0.03, LLM thật sự có ích ở parser | agent | ✅ 23/11 |
+| 1 | T0-05 | Sửa lỗi K02/K03/K04/K07/K09/K11/K12/K13/K16 và câu về λ (`04` L38); đoạn tái sử dụng test (42 lượt); cận trên RQ1 | agent | ✅ 23/11 (K02/K03/K04/K09/K12/K13/K14/K16, λ, mục "Tái sử dụng tập test") |
 | 1 | T0-09 | Mục tình huống sử dụng: persona, 3 tác vụ, bảng yêu cầu ↔ tính năng ↔ bằng chứng; QCVN 26:2025/BNNMT (trích từ PDF gốc) kèm giới hạn "không thay máy đo Class 1"; số tập 19 lớp Việt Nam (B0 0.1892, V2 0.3120, V3 0.8319/0.7810) | agent | ○ |
 | 1 | T0-11, T0-16 | Bảng khối lượng hiện thực, sơ đồ triển khai Compose; accuracy bộ phân loại 0.9135 cạnh FA2025 kèm cảnh báo không cùng điều kiện | agent | ○ |
 | 2 | T0-10 | Bảng hiệu năng (CPU/GPU, RTF, RAM, khởi động, độ trễ truy vấn) + field test định tính trên clip tự thu, hai SV nghe chấm độc lập | agent + người dùng | ○ |

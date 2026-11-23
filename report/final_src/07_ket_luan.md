@@ -9,7 +9,7 @@ Khóa luận xây dựng một quy trình tái lập được, đi từ hai bộ
 - **Dữ liệu.** Kiểm tra trùng lặp ba tầng tìm ra ba nhóm bản ghi chung nguồn giữa DataSEC và DataSED; 11 đoạn DataSEC (0,22%) bị loại trước khi huấn luyện và mọi tập chia được khóa bằng mã băm. Chuyển giao vì vậy được đo trong điều kiện rò rỉ đã được kiểm soát.
 - **Phát hiện sự kiện.** Hệ cuối là B0 kèm tầng tinh chỉnh biên và chấm lại hộp (LBR). Trên tập test có nhãn (139 bản ghi), LBR V2 đạt event-F1 micro 0,2965 và macro 0,2356, so với 0,1806 và 0,1366 của B0; hiệu micro +0,1159 [+0,0741; +0,1593]. Cấu hình ứng dụng V3 đạt recall giao nhau 0,8203 với precision 0,7812 và được dùng cho demo.
 - **Mô tả có căn cứ.** Ràng buộc bằng ngữ pháp giải mã đưa ảo giác nguồn âm, suy diễn bối cảnh, gọi tên quá cụ thể và từ cấm về 0 ở cả bốn hệ SED được thử; nhánh constrained-cover còn đưa bỏ sót về 0.
-- **Truy hồi.** Bốn điều kiện quan hệ thời gian giữa hai sự kiện được cài thành SQL; bộ lọc cứng đúng 100% và không có câu trả lời nào chứa khẳng định thiếu bằng chứng.
+- **Truy hồi.** Bốn điều kiện quan hệ thời gian giữa hai sự kiện được cài thành SQL; mọi kết quả trả về thỏa bộ lọc đã áp trên sự kiện lưu trong kho (độ đúng bộ lọc 1,000; không đo đúng với âm thanh) và không có câu trả lời nào chứa khẳng định thiếu bằng chứng.
 - **Ứng dụng.** Một ứng dụng web chạy cục bộ bằng Docker Compose cho phép tải bản ghi, xem dòng thời gian, mô tả song ngữ Anh–Việt và hỏi bằng câu tự nhiên, với bằng chứng bấm được về đúng khoảng thời gian.
 
 ## Trả lời các câu hỏi nghiên cứu
