@@ -9,11 +9,29 @@ Chương này báo cáo các kết quả có được tại mốc đóng băng (
 
 ## Mô hình phân loại DataSEC
 
-Mô hình phân loại đạt macro-F1 0,8466 trên 22 lớp gộp của tập test DataSEC (⟪tbl:classifier⟫), độ chính xác tổng 0,9135 (676 trên 740 đoạn; tính từ bảng đúng/tổng theo lớp, `per_class_metrics_datasec_20260923`). Nhóm không so số này với bài phân loại cùng nhóm tác giả dữ liệu, vì chưa đọc đủ để chắc hai bên cùng phiên bản dữ liệu, tập lớp và tập đo. Ở cấp lớp con, macro-F1 trên cả 28 nút chỉ là 0,6266 vì bị kéo xuống bởi các nút có rất ít mẫu test; chỉ tính 5 nút có ít nhất 10 mẫu test thì được 0,8453. Theo quy ước, nút ít mẫu chỉ báo số tuyệt đối (Phụ lục C), chẳng hạn `vacuum_cleaner` đúng 0/4 và `air_compressor` đúng 0/5. Tỷ lệ nhất quán cha–con là 0,9526: 95% lần, lớp con được đoán thuộc đúng nhóm của lớp gộp được đoán. Hai lớp gộp yếu nhất là `vehicle_idling` (F1 0,6154) và `vehicle_pass_by` (0,6538), có âm thanh gần nhau.
+Mô hình phân loại đạt macro-F1 0,8466 trên 22 lớp gộp của tập test DataSEC (⟪tbl:classifier⟫), độ chính xác tổng 0,9135 (676 trên 740 đoạn; tính từ bảng đúng/tổng theo lớp, `per_class_metrics_datasec_20260923`). Ở cấp lớp con, macro-F1 trên cả 28 nút chỉ là 0,6266 vì bị kéo xuống bởi các nút có rất ít mẫu test; chỉ tính 5 nút có ít nhất 10 mẫu test thì được 0,8453. Theo quy ước, nút ít mẫu chỉ báo số tuyệt đối (Phụ lục C), chẳng hạn `vacuum_cleaner` đúng 0/4 và `air_compressor` đúng 0/5. Tỷ lệ nhất quán cha–con là 0,9526: 95% lần, lớp con được đoán thuộc đúng nhóm của lớp gộp được đoán. Hai lớp gộp yếu nhất là `vehicle_idling` (F1 0,6154) và `vehicle_pass_by` (0,6538), có âm thanh gần nhau.
 
 @@CAP:tbl:classifier|Kết quả mô hình phân loại DataSEC trên tập test@@
 
 @@INCLUDE:report/tables/m01_classifier.md@@
+
+⟪tbl:clshistory⟫ đặt kết quả này cạnh các kết quả phân loại đã công bố, xếp theo phiên bản dữ liệu, để thấy lịch sử kết quả qua các phiên bản chứ không phải để xếp hạng. Bài của nhóm tác giả dữ liệu dùng dữ liệu tiền thân 21 lớp và chỉ báo trên tập validation [@artuso2025clap]: CLAP zero-shot đạt 72,93%, thêm một lớp tuyến tính lên 91,83%. Đề tài dùng bản 3 (22 lớp, có lỗi thừa tệp Music) và đạt độ chính xác 91,35% trên test. Kết quả mới nhất nhóm tìm được trên bản 4 (đã sửa lỗi này) là một dự án mã nguồn trên GitHub, không qua bình duyệt [@goyumsamuditha2026datasec]: PANNs CNN14 đạt 95,72% và CLAP linear probe đạt 97,09% trên 654 đoạn test. Ba điều kiện khác nhau khiến các số này không so trực tiếp được. Thứ nhất là **phiên bản dữ liệu**: số tệp và tỷ lệ lớp `music` khác nhau giữa bản 3 và bản 4. Thứ hai là **tập đo**: bài năm 2025 chỉ báo trên validation. Thứ ba là **cách chia**: đề tài chia theo nhóm trùng sau khi kiểm rò rỉ (đã tìm thấy cặp trùng có độ tương đồng 1,000; Chương 3), còn dự án trên bản 4 tự ghi rằng không dựng được cách chia theo nguồn vì DataSEC không có mã nguồn gốc cho từng tệp. Với cùng kiến trúc CNN14, bản 4 cao hơn đề tài khoảng 4,4 điểm phần trăm về độ chính xác. Nhóm chưa kiểm phần chênh này đến từ phiên bản dữ liệu, cách chia hay cách huấn luyện, nên chỉ ghi nhận, không kết luận.
+
+@@CAP:tbl:clshistory|Kết quả phân loại đã công bố theo phiên bản dữ liệu DataSEC (không so trực tiếp được)@@
+
+@@COLWIDTHS:20,22,22,16,10,10@@
+
+| Nguồn | Dữ liệu | Tập đo, cách chia | Mô hình | Độ chính xác | Macro-F1 |
+|---|---|---|---|---:|---:|
+| Artuso và cs., 2025 (bình duyệt) | Tiền thân DataSEC, 21 lớp, đoạn 4 s; bài không gọi tên DataSEC | Validation; 500/100/100/100 mẫu | CLAP zero-shot | 72,93% | — |
+| | | | CLAP + lớp tuyến tính | 91,83% | — |
+| Khóa luận | DataSEC bản 3 (Zenodo 17033970), 5.048 tệp, 22 lớp | Test 740 đoạn; chia theo nhóm trùng | PANNs CNN14, hai đầu phân cấp | 91,35% | 84,66% |
+| Dự án GitHub, 11/2026 (không bình duyệt) | DataSEC bản 4 (Zenodo 23097290), 4.292 tệp, 22 lớp | Test 654 đoạn; không chia theo nguồn | CLAP linear probe | 97,09% | 95,34% |
+| | | | PANNs CNN14 | 95,72% | 92,03% |
+| | | | CLAP zero-shot | 85,32% | 83,21% |
+| | | | SVM trên MFCC | 85,63% | 75,71% |
+
+@@NOTE:Nguồn: Artuso và cs. (2025), tr. 2292–2293, đọc trực tiếp PDF; README của dự án GitHub, đọc trực tiếp ngày 23/11/2026 (RELATED_WORK §10); số của khóa luận từ per_class_metrics_datasec_20260923 và metrics.json của run classifier_datasec_20260923T121808Z.@@
 
 Việc hiệu chuẩn xác suất cho kết quả âm tính: nhiệt độ $T = 1{,}5681$ chọn trên dev làm sai số hiệu chuẩn (ECE) trên test **tăng** từ 0,0332 lên 0,0564. Nhóm báo đúng như vậy, không chỉnh $T$ theo test. Mô hình phân loại tái lập trùng từng bit khi huấn luyện lại cùng seed; mô hình SED thì không (xem phần hạn chế).
 

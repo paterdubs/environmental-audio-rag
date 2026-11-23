@@ -457,8 +457,20 @@ không sửa ADR thuộc Claude. Các hàng Scaper/pseudo-label theo tag dùng n
   tiếp** với đề tài. — **V2**
 - **(22) Artuso F. và cộng sự (2025).** *Enhanced Environmental Sound Event Classification through
   Transfer Learning with CLAP Model.* Forum Acusticum Euronoise 2025, DOI `10.61782/fa.2025.0340`.
-  Cùng nhóm tác giả DataSEC; bài **phân loại** (CLAP/HTS-AT), không phải SED. Đọc trực tiếp trang
-  1–3 PDF. — **V2** (chưa trích xuất vào §8)
+  Cùng nhóm tác giả DataSEC; bài **phân loại** (CLAP/HTS-AT), không phải SED. 8 tác giả: Francesco
+  Artuso, Geremia Pompei, Andac Akbaba, Gino Iannace, Francesco D'Alessandro, Francesco Fidecaro,
+  Gaetano Licitra, Luca Fredianelli; tr. 2289–2294. Dữ liệu 21 lớp (Airplane/Helicopter thay cho
+  jet/propeller), đoạn 1–10 s, mỗi phiên bản độ dài 500/100/100/100 mẫu (train/validation/early
+  stopping/test), bài không gọi tên DataSEC. CLAP zero-shot tốt nhất 72.93% (4 s, Bảng 2), CLAP + lớp
+  tuyến tính 91.83% (4 s, Bảng 3), **cả hai trên validation**; không báo số test. Đọc trực tiếp PDF
+  23/11 (tr. 1, 4–5). — **V3**; trích trong Chương 6 (bảng lịch sử phân loại), bib `artuso2025clap`
+- **(22b) goyumsamuditha (2026).** *Uncertainty-Aware and Explainable Neural Network Classification
+  of Environmental Sounds Using DataSEC*, dự án GitHub (tạo 04/11/2026, không bình duyệt). Dùng
+  **DataSEC v4** (4,292 clip, 22 lớp), 654 clip test (loại 1 clip đã lộ). Accuracy / macro-F1: CLAP
+  linear probe 97.09% / 95.34%, PANNs CNN14 95.72% / 92.03%, CLAP zero-shot 85.32% / 83.21%, SVM MFCC
+  85.63% / 75.71%. Tự ghi: DataSEC "does not provide reliable original per-file source identifiers",
+  nên không dựng được split theo nguồn. Đọc trực tiếp README qua GitHub API 23/11. — **V3** (nguồn
+  không bình duyệt); bib `goyumsamuditha2026datasec`
 - **(23) DataSEC v4**, Zenodo record 23097290 (02/10/2026), MD5 `11e0ae0098ecf3d982ab5f7375c56844`,
   4,292 file / 18 h 26 m. Ghi chú phiên bản (nguyên văn trên trang record): *"V.4 fixes a bug in
   the uploaded file, where the number of Music files was not correct respect to what described in
@@ -722,6 +734,7 @@ Tra bằng `WebSearch`/`WebFetch` là **tóm tắt**, không phải đọc trự
 | 03/10 | Crossref API `works?query.bibliographic=…`; thẻ `citation_*` nature.com | 11 tiêu đề | Xác minh tập/số/trang/DOI; phát hiện **sai tên tác giả** trong `bibliography.bib` (Artuso, Pompei, Akbaba, Morocutti) → đã sửa | §2.2 |
 | 26/09 (tối) | GitHub API `/repos/*/license` + đọc LICENSE | microsoft/unilm, Audio-WestlakeU/audiossl, nttcslab/m2d, fschmid56/EfficientAT, kkoutini/PaSST, facebookresearch/deit | MIT / code MIT + checkpoint CC BY 4.0 / PDF riêng / MIT / Apache-2.0 / Apache-2.0 | §2.1 (2) |
 | 23/11 | curl + **đọc trực tiếp** (HTML đã tách thẻ, số tính bằng script) | dcase.community/{challenge2016/task-sound-event-detection-in-real-life-audio-results, challenge2022/task-sound-event-detection-in-domestic-environments-results, challenge2023/task-sound-event-detection-with-weak-labels-and-synthetic-soundscapes-results, challenge2023/task-sound-event-detection-with-soft-labels-results} | Nâng mốc DCASE lên **V3** cho báo cáo cuối. 2016 T3: event-F1 chỉ onset toàn bảng 16 hệ 1.5–8.1%, baseline 6.3%. 2022 T4: baseline PSDS-1/2 0.315/0.543, baseline AudioSet 0.345/0.540. 2023 T4a: baseline 0.327/0.538, baseline AudioSet+BEATs 0.510/0.798. 2023 T4b (MAESTRO Real): baseline F1_m 74.13, F1_M 35.28. **Sửa ghi chú rà soát 23/11:** dải "0.315–0.510 / 0.538–0.798 (2022 T4)" trộn baseline 2022 với baseline 2023 có BEATs; các trang kết quả 2023 T4a không có cột F-score collar 200 ms nên không đưa dải "0.373–0.411" vào báo cáo. |
+| 23/11 | curl + **đọc trực tiếp** (PDF tr. 1, 4–5; README qua GitHub API) | dael.euracoustics.org/confs/fa2025/data/articles/000340.pdf; github.com/goyumsamuditha/datasec-uncertainty-aware-sound-classification | Người dùng yêu cầu giữ so sánh phân loại và thêm kết quả trên phiên bản DataSEC mới nhất. FA2025 lên V3 (72.93% / 91.83% trên validation, 21 lớp). Dự án trên v4: CNN14 95.72%, CLAP linear probe 97.09% trên 654 clip test, không chia theo nguồn. **Sửa Chương 3:** câu "bản trong bài (4.292 tệp) cũ hơn bản đã tải" sai; bản 3 thừa tệp Music, bản 4 sửa về 4.292 tệp khớp bài. | §2.3 (22), (22b) |
 | 03/10 (rà soát L3) | Web, đọc trực tiếp mã nguồn tác giả | https://raw.githubusercontent.com/qiuqiangkong/audioset_tagging_cnn/master/pytorch/models.py | Xác nhận lại `Cnn14`: khối 1–5 pool (2,2), khối 6 (1,1); câu “mỗi khối 2×2” ở báo cáo 2.4.1 cần sửa. Xác minh code, không nâng mức đọc bài báo | report/danh_gia_bao_cao_20261003.md K01 |
 | 08/10 | WebSearch (extended) | `DCASE 2024 Task 4 … top ranked system …`; `DCASE 2026 challenge tasks sound event detection`; `sound event detection 2025 state of the art …`; `… boundary regression onset offset …`; `synthetic soundscapes isolated events …`; `… sliding window overlap …`; `copy-paste event mixing …`; `weakly labeled clips pseudo strong labels …` | DCASE 2024 hạng 1 CP-JKU; DCASE 2026 **không** có task SED đơn kênh (Task 4 là S5); boundary-aware SPL 2026; RealDESED; ATST-SEDv2 | §2.3 (15)–(20) |
 | 08/10 | WebFetch | arxiv.org/abs/2601.04178 + /html; arxiv.org/abs/2503.11373 + /html; github.com/theMoro/EfficientSED; arxiv.org/abs/2607.16736 + /html; arxiv.org/abs/2407.12997 | Số bảng trích qua tóm tắt (V2) | §2.3 (15)–(18) |
