@@ -22,10 +22,12 @@ const question = page.locator("input.question");
 await question.fill("Có tiếng chim trước tiếng còi xe không?");
 await question.press("Enter");
 await page.locator(".parsed-filters").waitFor({ timeout: 30000 });
-await page.screenshot({ path: path.join(output, "03-filter-chip.png"), fullPage: false });
+// Chụp riêng khung truy vấn để thấy trọn bộ lọc đã hiểu, không phụ thuộc vị trí cuộn của trang.
+const searchPanel = page.locator("section.panel.search");
+await searchPanel.screenshot({ path: path.join(output, "03-filter-chip.png") });
 const run = page.locator(".parsed-filters button.primary");
 await run.click();
 await page.locator(".answer").waitFor({ timeout: 30000 });
-await page.screenshot({ path: path.join(output, "04-rag-evidence.png"), fullPage: false });
+await searchPanel.screenshot({ path: path.join(output, "04-rag-evidence.png") });
 await browser.close();
 console.log(`Đã chụp 4 ảnh fallback tại ${output}`);

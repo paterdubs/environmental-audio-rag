@@ -21,7 +21,6 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 from ml.provenance import git_state  # noqa: E402
 from scripts.build_midterm_figures import figure_architecture  # noqa: E402
-from scripts.build_thesis_figures import demo_interface  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "report" / "final_figures"
@@ -104,6 +103,30 @@ def figure_sed_final(data: dict[str, Any], path: Path) -> None:
     plt.close(fig)
 
 
+def demo_figures(output: Path) -> list[str]:
+    """Tách ảnh demo thành hai hình (hai ảnh xếp dọc, rồi một ảnh) để chữ còn đọc được."""
+    shots = ROOT / "docs" / "demo_screenshots"
+    groups = {
+        "f03a_demo_upload_timeline.png": (("01-start.png", "Tải lên và danh sách bản ghi"),
+                                          ("02-timeline.png", "Dòng thời gian và mô tả")),
+        "f03b_demo_query_evidence.png": (("04-rag-evidence.png",
+                                          "Câu hỏi, bộ lọc đã hiểu, câu trả lời và bằng chứng"),),
+    }
+    for name, pair in groups.items():
+        fig, axes = plt.subplots(len(pair), 1, figsize=(7.2, 4.7 * len(pair)), squeeze=False)
+        for ax, (shot, title) in zip(axes.flat, pair, strict=True):
+            path = shots / shot
+            if not path.is_file():
+                raise FileNotFoundError(f"Thiếu ảnh demo: {path.relative_to(ROOT)}")
+            ax.imshow(plt.imread(path))
+            ax.set_title(title, fontsize=10, fontweight="bold")
+            ax.axis("off")
+        fig.tight_layout()
+        fig.savefig(output / name, dpi=DPI, bbox_inches="tight", facecolor="white")
+        plt.close(fig)
+    return list(groups)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--final-numbers", type=Path, required=True)
@@ -114,14 +137,12 @@ def main() -> None:
     out = args.output / "f01_sed_final.png"
     figure_sed_final(data, out)
     figure_architecture(args.output / "f02_architecture.png", "SED B0 + LBR V3, mô tả")
-    revision = git_state(ROOT)["revision"]
-    demo_interface(args.output, revision)
-    (args.output / "07_demo_interface.png").replace(args.output / "f03_demo_interface.png")
+    demo = demo_figures(args.output)
     manifest = {
         "git": git_state(ROOT),
         "dpi": DPI,
         "source": args.final_numbers.resolve().relative_to(ROOT).as_posix(),
-        "figures": ["f01_sed_final.png", "f02_architecture.png", "f03_demo_interface.png"],
+        "figures": ["f01_sed_final.png", "f02_architecture.png", *demo],
     }
     (args.output / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"

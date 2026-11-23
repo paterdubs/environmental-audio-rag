@@ -1,6 +1,6 @@
 {
   "git": {
-    "revision": "80270ef8831dca89c2459b6b810f97fac88a7ac1",
+    "revision": "7bbaf1bc9f0f2986f9633c253d8f6f90429d1be8",
     "dirty": true
   },
   "dpi": 300,
@@ -8,6 +8,7 @@
   "figures": [
     "f01_sed_final.png",
     "f02_architecture.png",
-    "f03_demo_interface.png"
+    "f03a_demo_upload_timeline.png",
+    "f03b_demo_query_evidence.png"
   ]
 }

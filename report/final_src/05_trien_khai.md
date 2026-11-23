@@ -67,13 +67,19 @@ Hai nguyên tắc ranh giới được kiểm bằng máy chứ không chỉ là
 
 **Cơ sở dữ liệu** PostgreSQL gồm bảy bảng. Ba quyết định thiết kế có ý nghĩa phương pháp: bảng `caption_evidence` nối mô tả với sự kiện — đó chính là định nghĩa của "có căn cứ", một mô tả không có dòng bằng chứng nào là vi phạm; bảng tài liệu truy hồi tách khỏi bảng mô tả để đổi mô hình embedding mà không phải sinh lại mô tả; và cột nguồn gốc trên bảng sự kiện phân biệt nhãn gốc với dự đoán. Truy vấn dùng chỉ mục thường cho lớp và thời gian, chỉ mục GIN cho mảng lớp, và chỉ mục đồ thị HNSW cho khoảng cách cosine.
 
-**Giao diện web** (React) có sáu phần: khung tải lên; danh sách bản ghi; dòng thời gian sự kiện (bấm vào sự kiện để nghe đúng đoạn); mô tả song ngữ Anh–Việt kèm bằng chứng; khung hỏi bằng câu tự nhiên, hiển thị bộ lọc đã phân tích dưới dạng thẻ sửa được; và thanh trạng thái mô hình. Bấm vào một trích dẫn trong câu trả lời sẽ mở đúng bản ghi và tua tới đúng khoảng thời gian (⟪fig:demo⟫).
+**Giao diện web** (React) có sáu phần: khung tải lên; danh sách bản ghi; dòng thời gian sự kiện (bấm vào sự kiện để nghe đúng đoạn); mô tả song ngữ Anh–Việt kèm bằng chứng; khung hỏi bằng câu tự nhiên, hiển thị bộ lọc đã phân tích dưới dạng thẻ sửa được; và thanh trạng thái mô hình. Thanh trạng thái ghi rõ mô hình đang phục vụ đọc từ dịch vụ suy luận; với LBR V3 thanh này ghi "cấu hình ứng dụng, không phải số chính" (⟪fig:demo1⟫). Bấm vào một trích dẫn trong câu trả lời sẽ mở đúng bản ghi và tua tới đúng khoảng thời gian (⟪fig:demo2⟫).
 
-![](report/final_figures/f03_demo_interface.png){width=13cm}
+![](report/final_figures/f03a_demo_upload_timeline.png){width=12cm}
 
-@@CAP:fig:demo|Giao diện demo: tải lên, dòng thời gian, bộ lọc từ câu hỏi và bằng chứng@@
+@@CAP:fig:demo1|Giao diện demo: thanh trạng thái mô hình, danh sách bản ghi, dòng thời gian và mô tả@@
 
-@@NOTE:Nguồn: docs/demo_screenshots/ (Playwright, 1440×900, chụp trên LBR V3 ngày 11/11/2026), ghép bằng scripts/build_final_figures.py; bản ghi trong lịch sử demo chỉ lấy từ tập train.@@
+@@NOTE:Nguồn: docs/demo_screenshots/ (Playwright, 1440×900, chụp trên LBR V3 ngày 23/11/2026), ghép bằng scripts/build_final_figures.py; bản ghi trong lịch sử demo chỉ lấy từ tập train.@@
+
+![](report/final_figures/f03b_demo_query_evidence.png){width=13cm}
+
+@@CAP:fig:demo2|Giao diện demo: câu hỏi tự nhiên thành bộ lọc, câu trả lời kèm bằng chứng@@
+
+@@NOTE:Nguồn: như hình trước; câu hỏi "Có tiếng chim trước tiếng còi xe không?" do bộ phân tích câu hỏi chuyển thành bộ lọc `before`, còn câu trả lời lấy từ mẫu cố định của hệ thống.@@
 
 ## Độ trễ
 
