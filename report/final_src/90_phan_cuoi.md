@@ -94,9 +94,9 @@ Hai thành viên chia các mảng công việc thành hai phần có khối lư�
 | 2 | 29/09/2026 | 03/10/2026 | 04/10/2026 | Focal loss (S11); vòng chọn cuối S13 khóa f2 và test một lần; RQ1-v2; chạy lại RQ2/RQ3 trên f2 (S8); hoàn thiện demo, đóng băng artifact, tài liệu tái lập; báo cáo giữa kỳ | |
 | 3 | 04/10/2026 | 10/10/2026 | | Dựng lại slide và biên tập báo cáo giữa kỳ; lập kế hoạch giai đoạn tối ưu SED (chẩn đoán RQ1, rà dữ liệu và suy luận); sàng lọc trên dev: suy luận chồng lấn, sửa dữ liệu huấn luyện, GRU tiền huấn luyện; chọn bằng dự đoán ngoài mẫu vòng 1 | |
 | 4 | 11/10/2026 | 17/10/2026 | | Chọn bằng dự đoán ngoài mẫu vòng 2 (BEATs tinh chỉnh, ensemble); chọn B0 theo luật ghi trước và test một lần (14/10) | |
-| 5 | 18/10/2026 | 24/10/2026 | | (chưa có ghi chép trong nhật ký dự án; nhóm bổ sung trước khi nộp) | |
-| 6 | 25/10/2026 | 31/10/2026 | | (chưa có ghi chép trong nhật ký dự án; nhóm bổ sung trước khi nộp) | |
-| 7 | 01/11/2026 | 07/11/2026 | | (chưa có ghi chép trong nhật ký dự án; nhóm bổ sung trước khi nộp) | |
+| 5 | 18/10/2026 | 24/10/2026 | | Chưa có thay đổi mã hoặc kết quả mới nào được ghi vào kho mã trong tuần này (lịch sử commit không có bản ghi từ 15/10 đến 07/11) | |
+| 6 | 25/10/2026 | 31/10/2026 | | Chưa có thay đổi mã hoặc kết quả mới nào được ghi vào kho mã trong tuần này (lịch sử commit không có bản ghi từ 15/10 đến 07/11) | |
+| 7 | 01/11/2026 | 07/11/2026 | | Chưa có thay đổi mã hoặc kết quả mới nào được ghi vào kho mã trong tuần này (lịch sử commit không có bản ghi từ 15/10 đến 07/11) | |
 | 8 | 08/11/2026 | 14/11/2026 | | Phục vụ B0 và mô tả/truy hồi trên B0; giai đoạn P (bốn hướng, đều âm tính); LBR (tinh chỉnh biên, chấm lại hộp), test một lần; RQ2/RQ3 trên LBR; chẩn đoán PSDS; tra văn liệu; đồng bộ tài liệu | |
-| 9 | 15/11/2026 | 21/11/2026 | | Kế hoạch: báo cáo cuối, slide bảo vệ, đóng băng ngày 18/11 | |
+| 9 | 15/11/2026 | 21/11/2026 | | Chưa có thay đổi nào trong kho mã trong tuần này; báo cáo cuối và slide bảo vệ đã dựng ngày 11/11 (tuần 8) chờ nhóm đọc lại | |
 | 10 | 22/11/2026 | 28/11/2026 | | Rà soát độc lập trước khi nộp; sửa nội dung báo cáo (RQ3, giải thích kết quả, bối cảnh quy chuẩn, đóng góp, thước định cỡ); đo độ trễ demo; chụp lại ảnh giao diện; hoàn thiện hình thức; nộp ngày 28/11 (kế hoạch) | |
