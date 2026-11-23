@@ -429,6 +429,40 @@ mọi lệnh trong tài liệu qua `check_doc_commands`.
 19–28/11: đọc lại, sửa theo nhận xét GVHD, nộp. Không mở test mới sau R2/R3 trừ khi ghi trước và
 người dùng duyệt.
 
+### Giai đoạn F · 23–28/11 · Rà soát trước nộp và sửa báo cáo (người dùng duyệt 23/11)
+
+Nguồn: rà soát độc lập 23/11 (5 hướng nghiên cứu + báo cáo tổng hợp),
+[reports/Đánh giá khóa luận audio RAG.md](../reports/Đánh%20giá%20khóa%20luận%20audio%20RAG.md); ghi chú gốc ở
+[research_notes/Đánh giá khóa luận audio RAG/](../research_notes/Đánh%20giá%20khóa%20luận%20audio%20RAG/).
+Kết luận: khối lượng vượt mức khóa luận thông thường (397 commit, ~111 lượt train, 48 ADR, 1.192 test);
+rủi ro nằm ở **cách trình bày và kết quả chưa được nói ra**, không phải "làm ít".
+
+**Quyết định của người dùng 23/11:** mở lại bản báo cáo đã đóng băng 18/11 (R7) để làm bộ T0 ★ bên dưới.
+Giữ nguyên: không train lại, không mở test mới, không thêm ứng viên SED, không viết "lần đầu", ADR-0001
+(không tuyên bố tội phạm/khẩn cấp). Đo thêm chỉ dùng recording TRAIN hoặc clip tự thu; số test chỉ đọc
+lại từ JSON đã đóng băng. Số mới nào cũng vào `docs/claims.yaml`.
+
+| Phase | Mã | Việc | Chủ | Trạng thái |
+|---|---|---|---|---|
+| 0 | T0-01 | Hỏi GVHD 6 điều: khai báo dùng AI, ngưỡng Turnitin, thời lượng trình bày, hội đồng/poster, lịch riêng ngành KHDL, tháng ghi trên bìa | người dùng | ○ |
+| 0 | T0-10a | Thu 6–10 clip điện thoại 1–5 phút (đường xe máy/còi, công trường, mưa, quán nhạc, công viên, quạt), tránh lời nói rõ | người dùng, trước tối 24/11 | ○ |
+| 0 | T0-03 | Bảng phân công, khai báo dùng AI, nhật ký tuần 5–7 (và 9–10), ngày báo cáo GVHD — chỉ nhóm viết được | người dùng | ○ |
+| 1 | T0-04 | Đoạn RQ3 nói thẳng hybrid < vector_only (Δ −0.111/−0.075/−0.087), cơ chế lọc cứng bị chặn bởi recall SED; sửa `06` L137–147, `07` L21, `00` L9, L23 | agent | ○ |
+| 1 | T0-06 | Đóng góp C5 (LBR) và C6 (giao thức OOF/ledger/freeze); bảng "LBR trong bối cảnh" trên OOF; nói rõ đã thăm dò trên OOF, ngưỡng chạm mép lưới | agent | ○ |
+| 1 | T0-07 | Bảng định cỡ B0/V2/V3 so đồng thuận người (8 cặp) và mốc DCASE; trước đó nâng nguồn DCASE lên V3 trong RELATED_WORK §10 | agent | ○ |
+| 1 | T0-08 | Viết lại RQ2 trung thực: 0 vi phạm có được do cấu tạo, constrained ≈ template, κ ≈ −0.03, LLM thật sự có ích ở parser | agent | ○ |
+| 1 | T0-05 | Sửa lỗi K02/K03/K04/K07/K09/K11/K12/K13/K16 và câu về λ (`04` L38); đoạn tái sử dụng test (42 lượt); cận trên RQ1 | agent | ○ |
+| 1 | T0-09 | Mục tình huống sử dụng: persona, 3 tác vụ, bảng yêu cầu ↔ tính năng ↔ bằng chứng; QCVN 26:2025/BNNMT (trích từ PDF gốc) kèm giới hạn "không thay máy đo Class 1"; số tập 19 lớp Việt Nam (B0 0.1892, V2 0.3120, V3 0.8319/0.7810) | agent | ○ |
+| 1 | T0-11, T0-16 | Bảng khối lượng hiện thực, sơ đồ triển khai Compose; accuracy bộ phân loại 0.9135 cạnh FA2025 kèm cảnh báo không cùng điều kiện | agent | ○ |
+| 2 | T0-10 | Bảng hiệu năng (CPU/GPU, RTF, RAM, khởi động, độ trễ truy vấn) + field test định tính trên clip tự thu, hai SV nghe chấm độc lập | agent + người dùng | ○ |
+| 3 | T0-12 | Badge StatusBar đọc `served_run`/`operating_point` thay chuỗi ghi cứng; chụp lại ảnh; tách Hình 5.1 | agent | ○ |
+| 4 | T0-02 | Hình thức: trang nhận xét GVPB (`@@REVIEWPAGE@@`), danh mục viết tắt, sửa "15 → 20 bản ghi" và `official=true`, SYSTEM.md L666, DEMO.md L50 | agent + người dùng | ○ |
+| 5 | T0-13 | Dựng lại DOCX/PDF, `check_midterm_docx`, gate đầy đủ, đọc chéo hai người | agent + người dùng | ○ |
+
+Không cắt: T0-02, T0-04, T0-05. Thứ tự cắt khi trễ: T0-14/15/16/17 (tùy chọn) → T0-11 → rút T0-10 còn 6 clip.
+Việc T1 sau nộp (slide mới, video demo, tập Q&A, baseline zero-shot AudioSet-Strong, so Qwen2.5-Omni trên dev,
+CLAP, SUS, dBFS) nằm ở báo cáo rà soát, không làm trước 28/11. Lịch GVPB 07–18/12 và hội đồng ~23/12 chưa xác nhận.
+
 ---
 
 ## Cut-list — thứ tự hy sinh khi trễ

@@ -58,6 +58,15 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 23/11/2026 — Giai đoạn F: rà soát độc lập, mở lại báo cáo để sửa (PLAN, khối "Giai đoạn F").**
+Người dùng lo "làm ít" và bị hỏi "không thực tế". Rà soát năm hướng (nội bộ, SOTA, thực tiễn, hội đồng) kết luận khối
+lượng đủ tầm; rủi ro là trình bày và kết quả chưa nói ra: hybrid thua vector_only ở RQ3 mà Chương 6–7 không nhắc, LBR
+(micro test 0.18 → 0.30) vắng khỏi danh sách đóng góp, "0 ảo giác" của RQ2 có được do cấu tạo, báo cáo không nhắc Việt
+Nam, thiếu trang GVPB/nhật ký/phân công. Người dùng duyệt kế hoạch: **mở lại bản đóng băng 18/11** để làm bộ T0 ★
+(T0-01…T0-13, PLAN), không train lại, không mở test, không "lần đầu". Báo cáo:
+[reports/Đánh giá khóa luận audio RAG.md](reports/Đánh%20giá%20khóa%20luận%20audio%20RAG.md). **Tiếp theo:** Phase 1
+(sửa nội dung báo cáo), Phase 2 cần clip tự thu của người dùng; việc chỉ nhóm viết được: phân công, khai báo AI, nhật ký.
+
 **Cập nhật 11/11/2026 (khuya) — R5/R6 có bản đầy đủ.** Báo cáo cuối `report/Khoa_luan_environmental_audio_rag.{docx,pdf}` (nguồn `report/final_src/`, bảng `report/final_tables/`, hình `report/final_figures/`; dựng bằng `scripts.build_final_tables`, `scripts.build_final_figures`, `scripts.build_midterm_report --source report/final_src`), 75 trang, `check_midterm_docx` đạt. Slide bảo vệ `report/slide_bao_ve.pptx` (`scripts.build_final_slides`), kịch bản `report/slide/kich_ban_bao_ve.md`; ảnh demo chụp lại trên LBR V3. Còn: người dùng đọc lại, điền nhật ký tuần 5–7 và ngày GVHD; đóng băng 18/11 (R7).
 
 **Cập nhật 11/11/2026 (tối) — R4 văn liệu xong.** Ba claim khoảng trống đã tra: C2 và C3 rút lại thành "áp dụng và mở rộng" (ECHO, TAC; Weck & Serra 2023, Wijngaard 2025), C4 giữ có điều kiện (LA-RAG 2026 đã có event store SQL + cửa sổ thời gian tuyệt đối, không thấy predicate giữa hai sự kiện); claim "chưa ai làm cả chuỗi" bị rút. DOI Mesaros/PSDS và vol/pages PANNs đóng qua Crossref. RELATED_WORK §2.4/§9/§10, PAPER_NOTES S69. **Tiếp theo:** báo cáo cuối (R5), slide (R6), đóng băng 18/11 (R7).
@@ -813,6 +822,14 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-23 — Rà soát độc lập trước nộp; lập kế hoạch giai đoạn F
+
+Người dùng yêu cầu kiểm tra tổng quát (sợ "làm ít", "không thực tế"). Chạy năm hướng nghiên cứu song song, lưu ghi chú
+ở `research_notes/Đánh giá khóa luận audio RAG/` và báo cáo tổng hợp ở `reports/`. Kiểm hạ tầng dựng báo cáo:
+`@@REVIEWPAGE@@` đã có ở `00_phan_dau.md:43`, badge `StatusBar.tsx` ghi cứng "SED f2/v2". Móc thực tiễn chính:
+QCVN 26:2025/BNNMT (thay QCVN 26:2010, hiệu lực 14/11/2025). Người dùng duyệt kế hoạch và việc mở lại bản đóng băng;
+ghi vào PLAN "Giai đoạn F". Chưa sửa báo cáo, chưa chạy đo nào, không train, không chạm test.
 
 ### 2026-11-11 (khuya) — R5/R6: báo cáo cuối, slide bảo vệ, ảnh demo LBR V3
 
