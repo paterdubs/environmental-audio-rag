@@ -60,9 +60,9 @@ Hai thành viên chia các mảng công việc thành hai phần có khối lư�
 
 @@CAP:tbl:division|Phân công công việc@@
 
-@@COLWIDTHS:6,44,25,25@@
+@@COLWIDTHS:9,41,25,25@@
 
-| STT | Mảng công việc | Phụ trách chính | Kiểm chéo |
+| TT | Mảng công việc | Phụ trách chính | Kiểm chéo |
 |---:|---|---|---|
 | 1 | Dữ liệu: kiểm chứng tệp nén, kiểm kê, khử trùng lặp, chia tập, cổng rò rỉ | Phạm Hoàng Phát | Thân Trọng Tính |
 | 2 | Bộ phân loại DataSEC, hiệu chuẩn và câu hỏi RQ1 | Thân Trọng Tính | Phạm Hoàng Phát |
