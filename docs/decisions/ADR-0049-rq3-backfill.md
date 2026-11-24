@@ -74,4 +74,18 @@ vector_only ở bốn kho. Số đó không được dùng; script dưới đây
 
 ## Kết quả
 
-(điền sau khi chạy, từ measurement sinh tự động)
+Validation `retrieval_backfill_validation_20261124` (commit `exp` sau `9c4b41a`), test
+`retrieval_backfill_test_20261124` chạy một lần trên tree sạch. Bộ lọc gold, tiếng Anh, nDCG@10 test:
+
+| Kho | vector_only | hybrid | backfill | backfill − vector [CI 95%] | backfill − hybrid [CI 95%] | tầng 1 |
+|---|---:|---:|---:|---|---|---:|
+| f2 | 0.526 | 0.415 | 0.575 | +0.049 [+0.023, +0.079] | +0.160 [+0.120, +0.204] | 0.309 |
+| B0 | 0.458 | 0.383 | 0.500 | +0.042 [+0.019, +0.069] | +0.116 [+0.082, +0.154] | 0.291 |
+| lbrv2 | 0.491 | 0.404 | 0.532 | +0.041 [+0.021, +0.066] | +0.129 [+0.089, +0.172] | 0.286 |
+| lbrv3 | 0.630 | 0.670 | 0.727 | +0.097 [+0.070, +0.126] | +0.057 [+0.036, +0.081] | 0.572 |
+
+- Theo §3: backfill tốt hơn cả vector_only lẫn hybrid ở cả bốn kho; mọi CI chính không chứa 0, p hoán vị
+  ≤ 0.0002. Hybrid không thua ở câu nào (thua 0/97 ở mọi kho), vì tầng 1 giữ nguyên danh sách hybrid.
+- Phụ (tiếng Việt, bộ lọc parser) cùng chiều; RRF k = 60 thấp hơn backfill ở mọi ô.
+- Đánh đổi: chỉ 29–57% kết quả top-10 thỏa bộ lọc; phần còn lại là gợi ý gần nghĩa, phải gắn nhãn.
+- Số hybrid trên test trùng số đã khóa (`rq3_modes_20261123`).
