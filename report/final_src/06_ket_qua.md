@@ -286,7 +286,7 @@ Phân tích trên chỉ ra rằng hybrid thua không phải vì xếp sai mà v�
 
 @@CAP:tbl:rq3backfill|RQ3 trên test với bộ lọc gold: backfill so với vector_only và hybrid@@
 
-@@COLWIDTHS:12,10,10,11,20,20,17@@
+@@COLWIDTHS:11,9,9,10,25,25,11@@
 
 @@INCLUDE:report/final_tables/f05d_rq3_backfill.md@@
 
