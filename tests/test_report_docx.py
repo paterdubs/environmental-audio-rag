@@ -14,8 +14,10 @@ from scripts.report_docx.markdown import (
     replace_citations,
 )
 from scripts.report_docx.ooxml import (
+    KEEP_TABLE_ROWS,
     TEXT_WIDTH,
     _column_widths,
+    keep_with_next,
     replace_inline_refs,
     top_level_elements,
     transform_table,
@@ -190,9 +192,23 @@ def test_include_rejects_filter_that_matches_nothing(tmp_path: Path):
 def test_front_info_cover_label_defaults_to_midterm_and_can_be_overridden():
     from scripts.report_docx.package import FrontInfo
 
-    base = {name: "x" for name in (
-        "title_vi", "title_en", "student_1", "student_2", "student_1_en", "student_2_en",
-        "supervisor", "supervisor_en", "city_date", "city_date_en", "header", "footer")}
+    base = {
+        name: "x"
+        for name in (
+            "title_vi",
+            "title_en",
+            "student_1",
+            "student_2",
+            "student_1_en",
+            "student_2_en",
+            "supervisor",
+            "supervisor_en",
+            "city_date",
+            "city_date_en",
+            "header",
+            "footer",
+        )
+    }
     assert FrontInfo(**base).cover_label == "BÁO CÁO GIỮA KỲ KHÓA LUẬN TỐT NGHIỆP"
     labels = {"cover_label": "KHÓA LUẬN TỐT NGHIỆP", "cover_label_en": "GRADUATION THESIS"}
     final = FrontInfo(**base, **labels)
@@ -206,3 +222,31 @@ def test_cover_elements_use_front_info_labels_in_source():
 
     source = inspect.getsource(package.cover_elements)
     assert "info.cover_label" in source and "GIỮA KỲ" not in source
+
+
+def _table_with_rows(count: int) -> str:
+    row = "<w:tr><w:tc><w:p><w:r><w:t>{0}</w:t></w:r></w:p></w:tc></w:tr>"
+    return "<w:tbl>" + "".join(row.format(i) for i in range(count)) + "</w:tbl>"
+
+
+def test_long_table_keeps_only_last_row_with_source_note():
+    long_table = transform_table(_table_with_rows(KEEP_TABLE_ROWS + 3))
+    assert long_table.count("<w:keepNext/>") == 0
+    kept = keep_with_next(long_table)
+    assert kept.count("<w:keepNext/>") == 1
+    assert '<w:pStyle w:val="TableText"/><w:keepNext/>' in kept
+    assert all(ord(ch) >= 32 for ch in kept)
+    assert kept.rfind("<w:keepNext/>") > kept.rfind("<w:tr>")
+
+
+def test_seventeen_row_table_stays_on_one_page():
+    out = transform_table(_table_with_rows(17))
+    assert out.count("<w:keepNext/>") == 17
+    assert keep_with_next(out).count("<w:keepNext/>") == 17
+
+
+def test_caption_before_source_note_gets_keep_next_once():
+    caption = '<w:p><w:pPr><w:pStyle w:val="Caption"/></w:pPr><w:r><w:t>H</w:t></w:r></w:p>'
+    kept = keep_with_next(caption)
+    assert kept == caption.replace("</w:pPr>", "<w:keepNext/></w:pPr>")
+    assert keep_with_next(kept) == kept

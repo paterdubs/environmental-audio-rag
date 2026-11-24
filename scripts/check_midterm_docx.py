@@ -1,6 +1,7 @@
-"""Kiểm tra cấu trúc tệp DOCX báo cáo giữa kỳ theo quy cách mẫu khoa (task L3).
+"""Kiểm tra cấu trúc tệp DOCX báo cáo theo quy cách mẫu khoa (L3, bản chính thức giai đoạn F).
 
-Chỉ đọc tệp DOCX (và PDF nếu có); in kết quả dạng Markdown để chép vào report/kiem_tra_bao_cao.md.
+Chỉ đọc tệp DOCX, PDF cùng tên (nếu có) và nguồn Markdown; in kết quả dạng Markdown. Mặc định
+kiểm bản chính thức; truyền `--docx` để kiểm bản giữa kỳ.
 
     .venv/Scripts/python.exe -m scripts.check_midterm_docx
 """
@@ -16,7 +17,12 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DOCX = ROOT / "report" / "Bao_cao_KLTN_giua_ky_environmental_audio_rag.docx"
+DOCX = ROOT / "report" / "Khoa_luan_environmental_audio_rag.docx"
+SOURCE = ROOT / "report" / "final_src"
+# Ràng buộc dự án: không khẳng định "lần đầu", kể cả trong câu phủ định.
+BANNED_WORDS = re.compile(r"lần đầu|\bfirsts?\b", re.I)
+# Mẫu ¶29/¶39: Abstract và Tóm tắt mỗi bản trình bày trong một trang A4.
+ONE_PAGE_PARTS = (("ABSTRACT", "Keywords:"), ("TÓM TẮT", "Từ khóa:"))
 TWIP_PER_CM = 567
 EXPECTED_MARGINS = {"top": 1701, "bottom": 1701, "left": 1985, "right": 1134}
 # (cỡ chữ half-point, before, after, line) theo hướng dẫn chữ của mẫu; None = không kiểm.
@@ -166,7 +172,40 @@ def check(docx: Path) -> list[tuple[str, str, bool]]:
     )
     drawings = document.count("<w:drawing>")
     rows.append(("Ảnh trong thân (gồm logo bìa)", str(drawings), True))
+    lonely = single_child_headings(document)
+    rows.append(("Mục chỉ có một tiểu mục (mẫu ¶219)", ", ".join(lonely) or "không", not lonely))
     return rows
+
+
+def single_child_headings(document: str) -> list[str]:
+    """Đề mục cấp 1/2 có đúng một đề mục con trực tiếp (mẫu: mỗi mục phải có ≥ 2 tiểu mục)."""
+    levels = []
+    for paragraph in re.findall(r"<w:p>.*?</w:p>|<w:p .*?</w:p>", document, re.S):
+        style = re.search(r'<w:pStyle w:val="Heading([123])"/>', paragraph)
+        if style:
+            text = "".join(re.findall(r"<w:t[^>]*>([^<]*)</w:t>", paragraph)).strip()
+            levels.append((int(style.group(1)), text))
+    lonely = []
+    for index, (level, title) in enumerate(levels):
+        children = 0
+        for child_level, _ in levels[index + 1 :]:
+            if child_level <= level:
+                break
+            children += child_level == level + 1
+        if children == 1:
+            lonely.append(title[:40])
+    return lonely
+
+
+def source_checks(source: Path) -> list[tuple[str, str, bool]]:
+    if not source.is_dir():
+        return [("Nguồn Markdown", f"không thấy {source}", False)]
+    hits = []
+    for path in sorted(source.glob("*.md")):
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            if BANNED_WORDS.search(line):
+                hits.append(f"{path.name}:{number}")
+    return [('Nguồn: chữ "lần đầu"/"first(s)"', ", ".join(hits) or "không", not hits)]
 
 
 def pdf_checks(pdf: Path) -> list[tuple[str, str, bool]]:
@@ -175,25 +214,70 @@ def pdf_checks(pdf: Path) -> list[tuple[str, str, bool]]:
     info = subprocess.run(["pdfinfo", str(pdf)], capture_output=True, text=True, check=False).stdout
     pages = re.search(r"Pages:\s+(\d+)", info)
     text = subprocess.run(
-        ["pdftotext", "-layout", str(pdf), "-"], capture_output=True, check=False
+        ["pdftotext", "-enc", "UTF-8", "-layout", str(pdf), "-"], capture_output=True, check=False
     ).stdout.decode("utf-8", errors="replace")
     broken = sum(text.count(s) for s in ("Error! Reference", "Lỗi! Không tìm thấy", "Error! No"))
     escaped = sum(text.count(s) for s in ("&lt;", "&gt;", "&amp;"))
-    return [
+    page_texts = text.split("\f")
+    orphans = orphan_source_pages(page_texts)
+    rows = [
         ("PDF: số trang", pages.group(1) if pages else "?", bool(pages)),
         ("PDF: lỗi tham chiếu field", str(broken), broken == 0),
         ("PDF: thực thể XML lọt ra chữ", str(escaped), escaped == 0),
+        (
+            'PDF: trang mở đầu bằng dòng "Nguồn:"',
+            ", ".join(map(str, orphans)) or "không",
+            not orphans,
+        ),
     ]
+    for title, closing in ONE_PAGE_PARTS:
+        span = part_page_span(page_texts, title, closing)
+        rows.append((f"PDF: {title} trong một trang", span, span == "1 trang"))
+    return rows
+
+
+def _content_lines(page: str) -> list[str]:
+    lines = [line.strip() for line in page.splitlines() if line.strip()]
+    return [line for line in lines if not line.startswith("Khóa luận tốt nghiệp")]
+
+
+def orphan_source_pages(pages: list[str]) -> list[int]:
+    """Trang PDF (đếm từ 1) mở đầu bằng "Nguồn:": dòng nguồn bị tách khỏi hình hoặc bảng."""
+    return [
+        index
+        for index, page in enumerate(pages, start=1)
+        if (lines := _content_lines(page)) and lines[0].startswith("Nguồn:")
+    ]
+
+
+def part_page_span(pages: list[str], title: str, closing: str) -> str:
+    start = next(
+        (
+            i
+            for i, page in enumerate(pages)
+            if (lines := _content_lines(page)) and lines[0] == title
+        ),
+        None,
+    )
+    if start is None:
+        return "không thấy"
+    end = next((i for i in range(start, len(pages)) if closing in pages[i]), None)
+    return "không thấy dòng kết" if end is None else f"{end - start + 1} trang"
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--docx", type=Path, default=DOCX)
+    parser.add_argument("--source", type=Path, default=SOURCE)
     args = parser.parse_args()
-    rows = check(args.docx) + pdf_checks(args.docx.with_suffix(".pdf"))
+    rows = check(args.docx) + pdf_checks(args.docx.with_suffix(".pdf")) + source_checks(args.source)
     print("| Kiểm tra | Kết quả | Đạt |\n|---|---|:---:|")
     for name, value, ok in rows:
         print(f"| {name} | {value.replace('|', '/')} | {'✅' if ok else '❌'} |")
+    failed = sum(not ok for _, _, ok in rows)
+    print(f"\n{len(rows) - failed}/{len(rows)} đạt")
+    if failed:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

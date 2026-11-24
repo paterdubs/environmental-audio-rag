@@ -17,6 +17,27 @@ _WT = re.compile(r"<[wm]:t(?:\s[^>]*)?>([^<]*)</[wm]:t>")  # chữ thường và
 _PARAGRAPH_MARKER = re.compile(r"^@@(\w+)(?::(.*))?@@$", re.S)
 _EQNO_ONLY = re.compile(r"^⟪eqno:([\w-]+)⟫$")
 BODY_STYLES = {"FirstParagraph", "BodyText", "Normal"}
+# Bảng không quá chừng này hàng được giữ trọn một trang (mẫu khoa ¶297: không ngắt giữa bảng).
+KEEP_TABLE_ROWS = 24
+
+
+def keep_with_next(element: str) -> str:
+    """Gắn phần tử với đoạn đi sau nó: đoạn văn thêm keepNext; bảng thêm keepNext cho hàng cuối.
+
+    Dùng khi dòng "Nguồn:" đứng sau chú thích hình hoặc sau bảng, để Word không đẩy riêng
+    dòng nguồn sang trang mới.
+    """
+    if element.startswith("<w:tbl"):
+        last = element.rfind("<w:tr>")
+        tail = re.sub(
+            r"<w:pPr>(?!<w:pStyle[^>]*/><w:keepNext/>)(<w:pStyle[^>]*/>)",
+            r"<w:pPr>\1<w:keepNext/>",
+            element[last:],
+        )
+        return element[:last] + tail
+    if "<w:keepNext/>" in element or "<w:pPr>" not in element:
+        return element
+    return re.sub(r"(<w:pPr>(?:<w:pStyle[^>]*/>)?)", r"\1<w:keepNext/>", element, count=1)
 
 
 def top_level_elements(body: str) -> list[str]:
@@ -232,7 +253,7 @@ def transform_table(xml: str, percents: list[float] | None = None) -> str:
             fill = "E7E6E6" if header else ("D9D9D9" if used else "")
             shade = f'<w:shd w:val="clear" w:color="auto" w:fill="{fill}"/>' if fill else ""
             # Bảng ngắn: giữ mọi hàng cùng trang với hàng sau (và với tiêu đề bảng ở trên).
-            keep = "<w:keepNext/>" if len(rows_xml) <= 16 else ""
+            keep = "<w:keepNext/>" if len(rows_xml) <= KEEP_TABLE_ROWS else ""
             new_cells.append(
                 f'<w:tc><w:tcPr><w:tcW w:w="{widths[col]}" w:type="dxa"/>{shade}'
                 f'<w:vAlign w:val="center"/></w:tcPr>'
@@ -277,6 +298,8 @@ def transform_body(body: str, registry: Registry, handlers: dict[str, Callable[[
                 continue
             if name not in handlers:
                 raise KeyError(f"Marker chưa hỗ trợ: {name}")
+            if name == "NOTE" and out:
+                out[-1] = keep_with_next(out[-1])
             out.append(handlers[name](argument))
             continue
         out.append(replace_inline_refs(restyle_paragraph(element), registry))
