@@ -16,9 +16,9 @@ Chương này mô tả phần đã làm thành phần mềm: cách tổ chức m
 |---|---|---|---|
 | F1 | Nhận bản ghi WAV, từ chối đầu vào sai | Tải lên; từ chối sai định dạng, trên 50 MB hoặc trên 600 s | Mục "Các dịch vụ" |
 | F2 | Cho biết nguồn nào, lúc nào, bao lâu | SED đa âm 21 lớp trả sự kiện có onset và offset | Event-F1 micro 0,2965 (V2); recall giao nhau 0,82 và precision 0,78 (V3, ưu tiên phát hiện) |
-| F3 | Mô tả bằng hai ngôn ngữ, bám sát sự kiện | Mô tả template tiếng Anh và tiếng Việt kèm bằng chứng | Không vi phạm ba ràng buộc G1–G3 ở mô tả template (Chương 6, RQ2) |
+| F3 | Mô tả bằng hai ngôn ngữ, bám sát sự kiện | Mô tả mẫu gộp theo lớp (đếm số lần, rào đón theo điểm tin cậy) tiếng Anh và tiếng Việt kèm bằng chứng | Không vi phạm ba ràng buộc G1–G3 ở mô tả template (Chương 6, RQ2) |
 | F4 | Hỏi bằng tiếng Việt hoặc tiếng Anh | Bộ phân tích câu hỏi thành bộ lọc, thẻ sửa được | Hợp lược đồ 240/240; đúng hoàn toàn 0,855 (template) và 0,925 (diễn đạt lại) |
-| F5 | Kết quả đúng điều kiện và có bằng chứng | Bộ lọc cứng; câu trả lời kèm trích dẫn bấm được | Độ đúng bộ lọc 1,000; khẳng định thiếu bằng chứng 0,000 (Chương 6, RQ3) |
+| F5 | Kết quả đúng điều kiện và có bằng chứng | Bộ lọc cứng, nối thêm kết quả gần nghĩa có nhãn (backfill); câu trả lời chỉ trích dẫn kết quả thỏa bộ lọc | Độ đúng bộ lọc 1,000; khẳng định thiếu bằng chứng 0,000 (Chương 6, RQ3) |
 | N1 | Chạy trên máy cá nhân, dữ liệu không rời máy | Docker Compose, chế độ ngoại tuyến, mô hình chạy cục bộ | Mục "Chạy demo" |
 | N2 | Thời gian xử lý chấp nhận được | Suy luận một lần, cơ sở dữ liệu có chỉ mục | Một bản ghi train: 3,7 s; truy vấn kết hợp: 0,27 s (một lượt đo, chưa có thống kê) |
 | N3 | Không đưa kết luận ngoài bằng chứng | Từ cấm ở G3; không suy tội phạm, khẩn cấp (ADR-0001) | Từ cấm bằng 0 với mô tả có ràng buộc |
@@ -67,7 +67,7 @@ Hai nguyên tắc ranh giới được kiểm bằng máy chứ không chỉ là
 
 **Cơ sở dữ liệu** PostgreSQL gồm bảy bảng. Ba quyết định thiết kế có ý nghĩa phương pháp: bảng `caption_evidence` nối mô tả với sự kiện — đó chính là định nghĩa của "có căn cứ", một mô tả không có dòng bằng chứng nào là vi phạm; bảng tài liệu truy hồi tách khỏi bảng mô tả để đổi mô hình embedding mà không phải sinh lại mô tả; và cột nguồn gốc trên bảng sự kiện phân biệt nhãn gốc với dự đoán. Truy vấn dùng chỉ mục thường cho lớp và thời gian, chỉ mục GIN cho mảng lớp, và chỉ mục đồ thị HNSW cho khoảng cách cosine.
 
-**Giao diện web** (React) có sáu phần: khung tải lên; danh sách bản ghi; dòng thời gian sự kiện (bấm vào sự kiện để nghe đúng đoạn); mô tả song ngữ Anh–Việt kèm bằng chứng; khung hỏi bằng câu tự nhiên, hiển thị bộ lọc đã phân tích dưới dạng thẻ sửa được; và thanh trạng thái mô hình. Thanh trạng thái ghi rõ mô hình đang phục vụ đọc từ dịch vụ suy luận; với LBR V3 thanh này ghi "cấu hình ứng dụng, không phải số chính" (⟪fig:demo1⟫). Bấm vào một trích dẫn trong câu trả lời sẽ mở đúng bản ghi và tua tới đúng khoảng thời gian (⟪fig:demo2⟫).
+**Giao diện web** (React) có sáu phần: khung tải lên; danh sách bản ghi; dòng thời gian sự kiện (bấm vào sự kiện để nghe đúng đoạn); mô tả song ngữ Anh–Việt kèm bằng chứng; khung hỏi bằng câu tự nhiên, hiển thị bộ lọc đã phân tích dưới dạng thẻ sửa được; và thanh trạng thái mô hình. Thanh trạng thái ghi rõ mô hình đang phục vụ đọc từ dịch vụ suy luận; với LBR V3 thanh này ghi "cấu hình ứng dụng, không phải số chính" (⟪fig:demo1⟫). Bấm vào một trích dẫn trong câu trả lời sẽ mở đúng bản ghi và tua tới đúng khoảng thời gian (⟪fig:demo2⟫). Truy hồi mặc định chạy ở chế độ backfill (ADR-0049): các bản ghi thỏa bộ lọc đứng đầu và là phần duy nhất được trích làm bằng chứng; các bản ghi gần nghĩa nhưng không thỏa bộ lọc được liệt kê riêng dưới nhãn "gần khớp", câu trả lời chỉ nêu tên chúng mà không khẳng định lớp hay thời gian. Mô tả trong giao diện dùng bộ sinh gộp theo lớp (ADR-0050): mỗi lớp một mệnh đề, lớp lặp lại được đếm ("nghe thấy tiếng chim 2 lần trong khoảng …"), và lớp có điểm tin cậy thấp được mở đầu bằng "có lẽ". Bộ sinh mẫu cố định của RQ2 giữ nguyên để số đã khóa tái lập được.
 
 ![](report/final_figures/f03a_demo_upload_timeline.png){width=12cm}
 
