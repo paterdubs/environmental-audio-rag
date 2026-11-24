@@ -13,6 +13,10 @@
 
 sed_eval>=0.2.1,<1
 psds_eval>=0.5.3,<1
+# `dcase_util` (phụ thuộc của sed_eval) còn `import pkg_resources`; setuptools mới không còn
+# module này nên môi trường cài mới (CI Linux) vỡ ở mọi test dùng sed_eval. Kiểm 24/11 trong
+# container Linux: thiếu ghim → lỗi, ghim → qua.
+setuptools<81
 
 # Caption n-gram (BLEU/CIDEr) — chỉ để tham khảo, evaluation_protocol §8.3. Dùng scorer
 # Bleu/Cider (Python thuần); tách từ PTB và METEOR/SPICE của gói cần Java nên không dùng.
