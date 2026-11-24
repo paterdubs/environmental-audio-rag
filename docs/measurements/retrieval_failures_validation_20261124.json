@@ -1,0 +1,201 @@
+{
+ "split": "validation",
+ "k": 10,
+ "results": {
+  "f2": {
+   "by_group": {
+    "all": {
+     "sed_miss": 346,
+     "hit": 266,
+     "sed_false_match": 15,
+     "retrieved": 281,
+     "beyond_top10_or_miss": 94
+    },
+    "duration": {
+     "beyond_top10_or_miss": 26,
+     "hit": 96,
+     "sed_false_match": 10,
+     "retrieved": 106,
+     "sed_miss": 81
+    },
+    "multi_class": {
+     "sed_miss": 93,
+     "sed_false_match": 0,
+     "retrieved": 17,
+     "hit": 17,
+     "beyond_top10_or_miss": 2
+    },
+    "single_class": {
+     "sed_miss": 98,
+     "hit": 114,
+     "sed_false_match": 4,
+     "retrieved": 118,
+     "beyond_top10_or_miss": 60
+    },
+    "temporal": {
+     "sed_miss": 74,
+     "sed_false_match": 1,
+     "retrieved": 40,
+     "hit": 39,
+     "beyond_top10_or_miss": 6
+    }
+   },
+   "parser_vs_gold": {
+    "n": 96,
+    "different": 5
+   }
+  },
+  "B0": {
+   "by_group": {
+    "all": {
+     "beyond_top10_or_miss": 120,
+     "hit": 286,
+     "sed_false_match": 18,
+     "retrieved": 304,
+     "sed_miss": 300
+    },
+    "duration": {
+     "hit": 107,
+     "beyond_top10_or_miss": 33,
+     "sed_false_match": 10,
+     "retrieved": 117,
+     "sed_miss": 63
+    },
+    "multi_class": {
+     "sed_miss": 92,
+     "sed_false_match": 1,
+     "retrieved": 19,
+     "hit": 18,
+     "beyond_top10_or_miss": 2
+    },
+    "single_class": {
+     "beyond_top10_or_miss": 77,
+     "hit": 127,
+     "sed_false_match": 3,
+     "retrieved": 130,
+     "sed_miss": 68
+    },
+    "temporal": {
+     "sed_miss": 77,
+     "sed_false_match": 4,
+     "retrieved": 38,
+     "hit": 34,
+     "beyond_top10_or_miss": 8
+    }
+   },
+   "parser_vs_gold": {
+    "n": 96,
+    "different": 7
+   }
+  },
+  "lbrv2": {
+   "by_group": {
+    "all": {
+     "sed_miss": 417,
+     "hit": 229,
+     "sed_false_match": 10,
+     "retrieved": 239,
+     "beyond_top10_or_miss": 60
+    },
+    "duration": {
+     "sed_miss": 114,
+     "hit": 77,
+     "sed_false_match": 5,
+     "retrieved": 82,
+     "beyond_top10_or_miss": 12
+    },
+    "multi_class": {
+     "sed_miss": 95,
+     "sed_false_match": 0,
+     "retrieved": 15,
+     "hit": 15,
+     "beyond_top10_or_miss": 2
+    },
+    "single_class": {
+     "sed_miss": 131,
+     "hit": 101,
+     "sed_false_match": 5,
+     "retrieved": 106,
+     "beyond_top10_or_miss": 40
+    },
+    "temporal": {
+     "sed_miss": 77,
+     "sed_false_match": 0,
+     "retrieved": 36,
+     "hit": 36,
+     "beyond_top10_or_miss": 6
+    }
+   },
+   "parser_vs_gold": {
+    "n": 96,
+    "different": 6
+   }
+  },
+  "lbrv3": {
+   "by_group": {
+    "all": {
+     "beyond_top10_or_miss": 201,
+     "hit": 397,
+     "sed_false_match": 222,
+     "retrieved": 619,
+     "sed_miss": 108
+    },
+    "duration": {
+     "hit": 134,
+     "beyond_top10_or_miss": 53,
+     "sed_false_match": 32,
+     "retrieved": 166,
+     "sed_miss": 16
+    },
+    "multi_class": {
+     "hit": 56,
+     "beyond_top10_or_miss": 15,
+     "sed_false_match": 73,
+     "retrieved": 129,
+     "sed_miss": 41
+    },
+    "single_class": {
+     "beyond_top10_or_miss": 127,
+     "hit": 136,
+     "sed_false_match": 48,
+     "retrieved": 184,
+     "sed_miss": 9
+    },
+    "temporal": {
+     "hit": 71,
+     "sed_miss": 42,
+     "sed_false_match": 69,
+     "retrieved": 140,
+     "beyond_top10_or_miss": 6
+    }
+   },
+   "parser_vs_gold": {
+    "n": 96,
+    "different": 10
+   }
+  }
+ },
+ "sources": {
+  "f2": [
+   "docs/measurements/retrieval_benchmark_validation_20261002.json",
+   "docs/measurements/retrieval_benchmark_validation_parsed_20261002.json"
+  ],
+  "B0": [
+   "docs/measurements/retrieval_benchmark_validation_s8lite_b0_gold_20261108.json",
+   "docs/measurements/retrieval_benchmark_validation_s8lite_b0_parsed_20261108.json"
+  ],
+  "lbrv2": [
+   "docs/measurements/retrieval_benchmark_validation_lbrv2_gold_20261110.json",
+   "docs/measurements/retrieval_benchmark_validation_lbrv2_parsed_20261110.json"
+  ],
+  "lbrv3": [
+   "docs/measurements/retrieval_benchmark_validation_lbrv3_gold_20261110.json",
+   "docs/measurements/retrieval_benchmark_validation_lbrv3_parsed_20261110.json"
+  ]
+ },
+ "git": {
+  "revision": "0679dea87c55232deff8cab4f943430ee43ebbea",
+  "dirty": true
+ },
+ "created_at": "2026-11-24T04:41:42.204307+00:00"
+}
