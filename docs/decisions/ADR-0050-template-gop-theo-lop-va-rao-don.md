@@ -1,6 +1,6 @@
 # ADR-0050 — Mô tả phục vụ: gộp sự kiện theo lớp, đếm số lần, rào đón theo điểm tin cậy
 
-**Status:** Accepted (người dùng duyệt 24/11/2026 làm Pha 4; câu chữ tiếng Việt chờ người dùng đọc lại)
+**Status:** Accepted (người dùng duyệt 24/11/2026 làm Pha 4; câu chữ đổi sang kiểu thông báo theo yêu cầu người dùng cùng ngày, xem Bổ sung)
 **Date:** 2026-11-24
 
 ## Context
@@ -71,3 +71,19 @@ Trên dòng thời gian dev đã lưu của bốn hệ SED (134 bản ghi có nh
   202/228; hiệu +0.712 [+0.628, +0.796], CI trên 0 → rào đón mang
   thông tin. V2 cùng chiều (+0.080 [+0.027, +0.140]). f2 và B0 không có mệnh đề nào
   bị rào đón vì thang điểm của chúng khác (θ chỉ áp cho hệ phục vụ).
+
+## Bổ sung 24/11 — câu chữ kiểu thông báo (người dùng yêu cầu)
+
+Người dùng yêu cầu câu chữ EN và VI theo phong cách thông báo. Mỗi lớp thành một dòng có nhãn đứng đầu:
+
+| | Một sự kiện | Nhiều sự kiện |
+|---|---|---|
+| EN | `Detected: {lớp}, {a}–{b} s.` | `Detected: {lớp}, {n} times, {a}–{b} s.` |
+| EN, rào đón | `Possible (low confidence): {lớp}, {a}–{b} s.` | tương tự, thêm `{n} times` |
+| VI | `Phát hiện: {lớp}, {a}–{b} giây.` | `Phát hiện: {lớp}, {n} lần, {a}–{b} giây.` |
+| VI, rào đón | `Có thể có (độ tin cậy thấp): {lớp}, {a}–{b} giây.` | tương tự, thêm `{n} lần` |
+
+Không dùng "warning"/"cảnh báo": cả hai nằm trong danh sách từ cấm G3 (không tuyên bố mức nguy hiểm,
+ADR-0001), đã kiểm bằng `forbidden_terms` trước khi đổi. θ_hedge, quy tắc gộp và luật diễn giải không
+đổi; measurement dev sinh lại vì độ dài ký tự thay đổi (các chỉ số ảo giác, bỏ sót, thứ tự, rào đón
+không phụ thuộc câu chữ).

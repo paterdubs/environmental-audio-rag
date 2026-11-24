@@ -24,15 +24,16 @@ TIMELINE = {"recording_id": "datased:S-1", "events": [
 
 def test_groups_repeated_class_with_count_and_span_in_onset_order():
     text = GroupedTemplateCaptioner(EN).caption(TIMELINE)["text"]
-    assert text == ("A birds is audible 2 times between 0.0 and 20.0 seconds. "
-                    "A train is audible from 3.0 to 9.0 seconds.")
+    assert text == "Detected: birds, 2 times, 0.0–20.0 s. Detected: train, 3.0–9.0 s."
 
 
 def test_hedges_only_classes_whose_best_score_is_below_threshold():
     en = GroupedTemplateCaptioner(EN, hedge_threshold=0.5).caption(TIMELINE)["text"]
-    assert "train is possibly audible" in en and "birds is possibly" not in en
+    assert en.endswith("Possible (low confidence): train, 3.0–9.0 s.")
+    assert en.startswith("Detected: birds")
     vi = GroupedTemplateCaptioner(VI, hedge_threshold=0.5).caption(TIMELINE, "vi")["text"]
-    assert vi.startswith("Nghe thấy") and "Có lẽ nghe thấy" in vi
+    assert vi == ("Phát hiện: tiếng chim, 2 lần, 0,0–20,0 giây. "
+                  "Có thể có (độ tin cậy thấp): tiếng tàu hỏa, 3,0–9,0 giây.")
 
 
 def test_grouped_caption_keeps_zero_hallucination_and_omission_and_order():

@@ -13,15 +13,15 @@ from typing import Any
 from .lexicon import CaptionLexicon
 from .template import SENTENCES, TemplateCaptioner
 
-# {hedge} is filled only for hedged classes; English inserts it mid-sentence, Vietnamese
-# swaps the opening verb ("Nghe thấy" → "Có lẽ nghe thấy").
+# Notification style (user, 24/11): one line per class, a label then the facts. The label never
+# says "warning"/"cảnh báo" — both are G3 terms (no danger claims, ADR-0001).
 CLAUSES = {
-    "en": {"one": "A {phrase} is {hedge}audible from {onset} to {offset} seconds.",
-           "many": "A {phrase} is {hedge}audible {n} times between {onset} and {offset} seconds.",
-           "hedge": ("", "possibly ")},
-    "vi": {"one": "{hedge} {phrase} từ {onset} đến {offset} giây.",
-           "many": "{hedge} {phrase} {n} lần trong khoảng {onset} đến {offset} giây.",
-           "hedge": ("Nghe thấy", "Có lẽ nghe thấy")},
+    "en": {"one": "{label}: {phrase}, {onset}–{offset} s.",
+           "many": "{label}: {phrase}, {n} times, {onset}–{offset} s.",
+           "label": ("Detected", "Possible (low confidence)")},
+    "vi": {"one": "{label}: {phrase}, {onset}–{offset} giây.",
+           "many": "{label}: {phrase}, {n} lần, {onset}–{offset} giây.",
+           "label": ("Phát hiện", "Có thể có (độ tin cậy thấp)")},
 }
 
 
@@ -55,9 +55,9 @@ class GroupedTemplateCaptioner(TemplateCaptioner):
         evidence: list[dict[str, Any]] = []
         for clause in self.clauses(timeline):
             events = clause["events"]
-            hedge = words["hedge"][clause["hedged"]]
             text = words["one" if len(events) == 1 else "many"].format(
-                phrase=self._phrase(clause["class_id"]), hedge=hedge, n=len(events),
+                label=words["label"][clause["hedged"]], phrase=self._phrase(clause["class_id"]),
+                n=len(events),
                 onset=self._seconds(events[0]["onset_s"]),
                 offset=self._seconds(max(e["offset_s"] for e in events)))
             start = sum(len(part) for part in parts) + len(parts)
