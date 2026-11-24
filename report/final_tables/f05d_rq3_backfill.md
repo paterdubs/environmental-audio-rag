@@ -1,6 +1,6 @@
 # RQ3 (test, bộ lọc gold): chế độ backfill so với vector_only và hybrid
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `4195369`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `6422322`.
 
 | Corpus | vector | hybrid | backfill | backfill − vector | backfill − hybrid | Tỷ lệ thỏa bộ lọc |
 |---|---:|---:|---:|---:|---:|---:|

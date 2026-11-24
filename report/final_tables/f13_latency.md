@@ -1,6 +1,6 @@
 # Độ trễ của demo trên CPU (LBR V3, bản ghi TRAIN)
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `4195369`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `6422322`.
 
 | Đại lượng | n | Trung vị | p95 |
 |---|---:|---:|---:|

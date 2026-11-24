@@ -1,13 +1,13 @@
 # Sổ ghi các lần chạm tập test
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `4195369`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `6422322`.
 
 | Nhóm | Số mục |
 |---|---:|
 | Đánh giá SED trên test | 42 |
 | Caption (RQ2) | 35 |
 | Caption: lớp gộp / wiring | 5 |
-| Retrieval (RQ3) / câu trả lời | 19 |
+| Retrieval (RQ3) / câu trả lời | 20 |
 | Ablation / chẩn đoán SED trên test | 13 |
 | LBR (ADR-0045/0047): PSDS, chẩn đoán | 3 |
 | Classifier DataSEC | 2 |

@@ -1,6 +1,6 @@
 # Event-F1 theo lớp của B0 và LBR V2 trên test annotated (n = 139 bản ghi)
 
-> Sinh tự động bởi `scripts.build_final_tables` tại git `4195369`.
+> Sinh tự động bởi `scripts.build_final_tables` tại git `6422322`.
 
 | Lớp | Sự kiện tham chiếu | B0 F1 | LBR V2 F1 | LBR V2 precision | LBR V2 recall |
 |---|---:|---:|---:|---:|---:|
