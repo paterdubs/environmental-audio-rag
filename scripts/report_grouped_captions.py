@@ -76,14 +76,19 @@ def precision_gap(per_rec: list[list[tuple[bool, bool]]], seed: int = SEED,
 
 def evaluate(captioner: TemplateCaptioner, timelines: dict[str, dict], gt: dict[str, dict],
              lexicon: CaptionLexicon) -> dict[str, Any]:
-    pred, truth, chars = [], [], []
+    pred, truth, chars, wrong_classes = [], [], [], []
     for rid, timeline in timelines.items():
         caption = captioner.caption(timeline)
         pred.append(evaluate_grounding(timeline, caption, lexicon).as_dict())
         truth.append(evaluate_grounding(gt[rid], caption, lexicon).as_dict())
         chars.append(len(caption["text"]))
+        named = {e["class_id"] for e in timeline["events"]}
+        if named:  # per class, not per mention: repeated mentions do not dilute it
+            wrong_classes.append(len(named - {e["class_id"] for e in gt[rid]["events"]})
+                                 / len(named))
     return {"vs_pred": {m: mean(r[m] for r in pred) for m in METRICS},
             "vs_gt": {m: mean(r[m] for r in truth) for m in METRICS[:2]},
+            "vs_gt_class_hallucination": mean(wrong_classes),
             "chars_mean": mean(chars), "chars_max": max(chars), "n": len(chars)}
 
 
@@ -117,7 +122,8 @@ def render(data: dict[str, Any]) -> str:
              f"{data['hedge_threshold']:.4f}", "",
              "> Sinh bởi `scripts.report_grouped_captions`.", "",
              "| Hệ | Bộ sinh | Ảo giác / bỏ sót (dự đoán) | Thứ tự | Ảo giác / bỏ sót (nhãn gốc) "
-             "| Ký tự TB | Ký tự max |", "|---|---|---:|---:|---:|---:|---:|"]
+             "| Ảo giác theo lớp (nhãn gốc) | Ký tự TB | Ký tự max |",
+             "|---|---|---:|---:|---:|---:|---:|---:|"]
     for system, r in data["results"].items():
         for name in ("template", "grouped"):
             x = r[name]
@@ -126,7 +132,8 @@ def render(data: dict[str, Any]) -> str:
                 f"{x['vs_pred']['omission_rate']:.3f} | "
                 f"{x['vs_pred']['temporal_order_accuracy']:.3f} | "
                 f"{x['vs_gt']['hallucination_rate']:.3f} / {x['vs_gt']['omission_rate']:.3f} | "
-                f"{x['chars_mean']:.0f} | {x['chars_max']} |")
+                f"{x['vs_gt_class_hallucination']:.3f} | {x['chars_mean']:.0f} | "
+                f"{x['chars_max']} |")
     lines += ["", "| Hệ | Mệnh đề rào đón (đúng/tổng) | Không rào đón (đúng/tổng) | "
               "Hiệu độ chính xác [CI 95%] |", "|---|---:|---:|---:|"]
     for system, r in data["results"].items():
