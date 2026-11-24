@@ -1,58 +1,76 @@
 # Grounded Environmental Audio Monitoring and RAG-based Event Retrieval
 
-Khóa luận Khoa học dữ liệu về phát hiện sự kiện âm thanh môi trường, sinh mô tả có căn cứ và truy xuất sự kiện bằng RAG.
+Khóa luận Khoa học dữ liệu (IUH K18): **"Xây dựng hệ thống phát hiện, sinh mô tả và truy vấn sự kiện
+âm thanh môi trường dựa trên RAG"**.
 
-> **Trạng thái:** dữ liệu đã kiểm soát trùng lặp xuyên dataset và đóng băng split
-> (`data-v1.0`). Classifier DataSEC (coarse macro-F1 0.847) và SED ba nhánh A/B/C
-> đã train, đánh giá bằng event-based F1 + PSDS trên nhiều run. **RQ1 cho kết quả
-> âm tính** (ADR-0021). SED tối ưu không train lại, chọn trên dev (ADR-0024). Caption có
-> căn cứ đã đánh giá trên test (ADR-0022/0023); RAG đang phát triển.
-> Chi tiết có bằng chứng: [STATUS](docs/STATUS.md).
+> **Trạng thái (24/11/2026):** hệ thống hoàn chỉnh, mọi số đã khóa và báo cáo chính thức đã dựng
+> ([PDF](report/Khoa_luan_environmental_audio_rag.pdf)). Chỉ còn field test bằng clip điện thoại và
+> đọc lại trước hạn nộp 28/11. Không train lại, không mở thêm test. Tiến độ chi tiết:
+> [CLAUDE.md §3](CLAUDE.md).
+
+## 0. Người mới: đọc theo thứ tự này
+
+Mục tiêu là trong khoảng nửa ngày nắm được hệ thống làm gì, vì sao làm vậy, và số nào nói lên điều gì.
+
+| Bước | Đọc | Để hiểu |
+|---|---|---|
+| 1 | README này (mục 1–3) | Bài toán, kết quả chính, hệ thống cuối |
+| 2 | [Báo cáo khóa luận (PDF)](report/Khoa_luan_environmental_audio_rag.pdf): tóm tắt, Chương 1, Chương 7 | Câu hỏi nghiên cứu và kết luận, đọc trước để biết đích |
+| 3 | Báo cáo Chương 3–5 | Dữ liệu, phương pháp, triển khai |
+| 4 | Báo cáo Chương 6 | Kết quả RQ1–RQ3 và cách đọc từng bảng |
+| 5 | [docs/evaluation_protocol.md](docs/evaluation_protocol.md) | Số nào có nghĩa, số nào **không** được diễn giải |
+| 6 | [docs/DEMO.md](docs/DEMO.md), rồi chạy demo (mục 9) | Thấy hệ thống chạy thật: tải lên, dòng thời gian, mô tả, truy vấn |
+| 7 | [docs/SYSTEM.md](docs/SYSTEM.md) | Đặc tả kỹ thuật đầy đủ khi cần chi tiết |
+| 8 | [docs/decisions/](docs/decisions/) (ADR) | Vì sao chọn mỗi quyết định; ADR mới nhất là 0041–0050 |
+| 9 | [docs/PAPER_NOTES.md](docs/PAPER_NOTES.md) | Mọi thí nghiệm, kể cả kết quả âm tính, kèm file bằng chứng |
+| 10 | [report/slide/kich_ban_bao_ve.md](report/slide/kich_ban_bao_ve.md), [report/slide_bao_ve.pptx](report/slide_bao_ve.pptx) | Kịch bản bảo vệ (bản 11/11, chưa có backfill và mô tả gộp) |
+
+Câu hỏi hội đồng hay hỏi và chỗ trả lời: hybrid có hơn vector không (Chương 6, mục backfill, ADR-0049);
+"0 ảo giác" có phải do cấu tạo không (Chương 6, mục mô tả so với nhãn gốc); vì sao RQ1 âm tính
+(ADR-0021); vì sao SED event-F1 thấp (Chương 6, phân rã lỗi; ADR-0045).
 
 ## 1. Bài toán
 
-Hệ thống nhận recording môi trường dài, phát hiện class cùng onset/offset, tạo caption chỉ từ event timeline, lưu event có cấu trúc và trả lời truy vấn dựa trên bằng chứng đã lưu.
+Hệ thống nhận recording môi trường dài, phát hiện lớp sự kiện cùng onset/offset, sinh mô tả chỉ từ
+dòng thời gian sự kiện, lưu sự kiện có cấu trúc và trả lời truy vấn dựa trên bằng chứng đã lưu.
 
 ```text
-audio → SED → event timeline → grounded caption → event store → hybrid retrieval
+audio → SED (B0 + LBR) → event timeline → mô tả có căn cứ → event store (PostgreSQL + pgvector) → truy hồi + câu trả lời có trích dẫn
 ```
 
 Phạm vi dữ liệu:
 
 - **DataSEC:** clip sự kiện tách rời; dùng cho pretraining, classification và subclass refinement.
-- **DataSED:** recording thực tế liên tục; dùng cho temporal/polyphonic SED và benchmark chính.
+- **DataSED:** recording thực tế liên tục; dùng cho temporal/polyphonic SED và benchmark chính (21 lớp).
 
-Hệ thống không tuyên bố phát hiện tội phạm, ý định, tình trạng khẩn cấp hay sự cố trường học. Output mô tả nguồn âm quan sát được.
+Hệ thống không tuyên bố phát hiện tội phạm, ý định, tình trạng khẩn cấp hay mức nguy hiểm. Output chỉ
+mô tả nguồn âm quan sát được ([ADR-0001](docs/decisions/ADR-0001-scope-and-datasets.md)).
 
-## 2. Câu hỏi nghiên cứu
+## 2. Câu hỏi nghiên cứu và kết quả
 
-1. Pretraining trên DataSEC cải thiện SED trên DataSED đến mức nào?
-2. Caption bị ràng buộc bởi event timeline giảm hallucination đến mức nào so với caption không ràng buộc?
-3. Kết hợp metadata filtering và semantic retrieval cải thiện Recall@k/MRR cho truy vấn sự kiện ra sao?
-4. Classifier phân cấp có tách được subclass DataSEC trong các coarse class gộp hay không?
+| RQ | Câu hỏi | Kết quả (chi tiết ở Chương 6) |
+|---|---|---|
+| RQ1 | Pretraining thêm trên DataSEC có cải thiện SED trên DataSED? | **Âm tính:** pretraining AudioSet giúp rõ, thêm DataSEC không tạo khác biệt đo được ([ADR-0021](docs/decisions/ADR-0021-rq1-ket-qua-am-tinh.md)) |
+| RQ2 | Mô tả ràng buộc vào dòng thời gian có giảm ảo giác so với sinh tự do? | Ràng buộc đưa suy diễn bối cảnh, gọi tên quá mức và từ cấm về 0; so với **nhãn gốc** thì lỗi còn lại đến từ SED, không từ bộ sinh |
+| RQ3 | Lọc cấu trúc + truy hồi vector có tốt hơn từng cách riêng? | Hybrid thuần thua vector_only khi SED bỏ sót; chế độ **backfill** (ADR-0049) thắng cả hai ở bốn kho trên test |
 
-**Kết quả hiện tại cho câu 1:** pretraining trên AudioSet giúp rõ (event-based F1
-~1.7× và PSDS-2 +0.2 so với train từ đầu), nhưng pretraining **thêm** trên DataSEC
-không tạo khác biệt đo được (5 run/nhánh, Welch p = 0.12–0.91). Xem
-[ADR-0021](docs/decisions/ADR-0021-rq1-ket-qua-am-tinh.md).
+SED: hệ thống cuối là **B0** (frame_mn, ensemble 5 fold, suy luận chồng lấn) cộng **LBR** (tinh chỉnh
+biên và chấm lại box học trên OOF). Trên test có nhãn (139 recording), event-F1 micro B0 0.1806 →
+LBR V2 0.2965. Demo phục vụ LBR V3 (điểm ưu tiên phát hiện), là cấu hình ứng dụng chứ không phải số
+chính ([ADR-0045](docs/decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md),
+[ADR-0047](docs/decisions/ADR-0047-rq2-rq3-tren-event-lbr.md)).
 
-**Kết quả hiện tại cho câu 2:** khi chỉ nhận event timeline, LLM (Qwen3.5-9B) gần
-như không bịa nguồn âm; sinh tự do vi phạm ở suy diễn bối cảnh, gọi tên quá mức
-bằng chứng và từ cấm. Nhánh ràng buộc bằng grammar đưa ba loại vi phạm đó về 0 nhưng
-bỏ sót nhiều event hơn (omission end-to-end 6% → 28%). Với hai lớp gộp, sinh tự do gọi
-subclass như sự thật ở 11/18 và 22/39 caption, nhánh ràng buộc ở 0. Biến thể buộc nhắc
-mọi lớp (ADR-0026) đưa omission về 0 và không thua sinh tự do ở metric nào, đổi lại caption
-gần như template. Xem
-[ADR-0022](docs/decisions/ADR-0022-llm-va-lexicon-cho-rq2.md),
-[ADR-0023](docs/decisions/ADR-0023-nhanh-caption-constrained.md).
+Demo: truy hồi mặc định ở chế độ backfill (kết quả thỏa bộ lọc là bằng chứng; kết quả gần nghĩa chỉ
+được nêu tên). Mô tả gộp theo lớp, kiểu thông báo, có nhãn "độ tin cậy thấp" theo điểm SED
+([ADR-0050](docs/decisions/ADR-0050-template-gop-theo-lop-va-rao-don.md)).
 
-## 3. Đóng góp dự kiến
+## 3. Đóng góp
 
-- Pipeline tái lập từ archive công bố đến classification và polyphonic SED.
-- Mô hình chuyển giao DataSEC → DataSED, có kiểm tra duplicate xuyên dataset.
-- Caption có căn cứ, đo event hallucination và temporal-order agreement.
-- RAG truy xuất recording theo class, thời gian, duration và quan hệ trước–sau.
-- Ứng dụng web minh họa upload, timeline, caption và truy vấn.
+- **C1** Bộ sinh mô tả có căn cứ, với hợp đồng kiểm được bằng máy (G1–G3).
+- **C2** Bộ chỉ số đo mức bám sát sự kiện của mô tả âm thanh, kèm phép thử độ nhạy của chính bộ chấm.
+- **C3** Đo chuyển giao clip rời → recording liên tục, có kiểm soát trùng lặp xuyên dataset.
+- **C4** RAG trên dòng thời gian sự kiện có điều kiện thời gian (trước/sau, thời lượng).
+- **LBR** Tinh chỉnh biên học được, nâng event-F1 test mà không train lại SED.
 
 ## 4. Kiến trúc
 
@@ -148,20 +166,15 @@ python -m venv .venv
 
 Lệnh tái lập pipeline: [CLAUDE.md §7](CLAUDE.md).
 
-### Chạy demo (W7, [ADR-0029](docs/decisions/ADR-0029-inference-va-api-service.md))
+### Chạy demo ([docs/DEMO.md](docs/DEMO.md))
 
-Cần Docker (PostgreSQL + pgvector), checkpoint các run của ensemble C trong `ml/runs/`,
-BGE-M3 trong `artifacts/hf/`, và Node 24 nếu chưa có `services/frontend/dist`.
+Cần Docker Desktop (PostgreSQL + pgvector), các run B0/LBR trong `ml/runs/`, BGE-M3 trong
+`artifacts/hf/` (không có trong git; xin bản sao từ máy của nhóm).
 
-```bash
-.venv/Scripts/python.exe -m scripts.serve_demo        # db → inference → api; mở http://127.0.0.1:8010/
-```
-
-Hoặc api trong Docker, inference trên host (GPU):
-
-```bash
-.venv/Scripts/python.exe -m uvicorn services.inference.app.main:app --host 0.0.0.0 --port 8001
-docker compose --profile app up -d --build             # mở http://localhost:8088/
+```powershell
+.\scripts\demo_up.ps1      # build và bật db, inference, api + giao diện; mở http://127.0.0.1:8088
+.\scripts\demo_check.ps1   # kiểm nhanh các dịch vụ
+.\scripts\demo_down.ps1    # tắt khi xong
 ```
 
 Phát triển giao diện: `cd services/frontend && npm ci && npm run dev` (proxy `/api` tới
