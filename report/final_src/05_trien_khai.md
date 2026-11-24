@@ -73,7 +73,7 @@ Hai nguyên tắc ranh giới được kiểm bằng máy chứ không chỉ là
 
 @@CAP:fig:demo1|Giao diện demo: thanh trạng thái mô hình, danh sách bản ghi, dòng thời gian và mô tả@@
 
-@@NOTE:Nguồn: docs/demo_screenshots/ (Playwright, 1440×900, chụp trên LBR V3 ngày 23/11/2026), ghép bằng scripts/build_final_figures.py; bản ghi trong lịch sử demo chỉ lấy từ tập train.@@
+@@NOTE:Nguồn: docs/demo_screenshots/ (Playwright, 1440×900, chụp trên LBR V3 ngày 24/11/2026), ghép bằng scripts/build_final_figures.py; bản ghi trong lịch sử demo chỉ lấy từ tập train.@@
 
 ![](report/final_figures/f03b_demo_query_evidence.png){width=13cm}
 
@@ -125,6 +125,6 @@ Trước khi viết báo cáo, mọi tệp được trích dẫn đã được "
 
 @@NOTE:Nguồn: docs/measurements/run_registry_20261123.json (scripts.report_run_registry, đọc manifest của mọi run); ngày lấy từ mã run.@@
 
-**Kiểm thử.** Bộ kiểm thử Python dùng pytest, kiểm tra mã bằng ruff. Ở lần kiểm ngày 24/11/2026, ruff không báo lỗi và pytest đạt 1228 kiểm thử, có 1 kiểm thử xfail có chủ ý (bản kê run cũ thiếu trường `environment`) và bỏ qua 4 kiểm thử tích hợp PostgreSQL vì lúc đó cơ sở dữ liệu tắt; bốn kiểm thử này đạt ở lần chạy ngày 23/11 khi cơ sở dữ liệu bật. Bộ kiểm thử phủ hợp đồng dữ liệu, ranh giới API–torch, các cổng dữ liệu (kể cả phép thử chứng minh cổng D4 không đạt rỗng), điều kiện thời gian SQL và Python, chỉ số bám sát sự kiện, ba ràng buộc G1–G3, tính trùng từng bit của đường sinh dự đoán, và tích hợp PostgreSQL. CI trên GitHub Actions chạy ruff, pytest, kiểm tra cấm `torch` trong API, kiểm thử và build giao diện.
+**Kiểm thử.** Bộ kiểm thử Python dùng pytest, kiểm tra mã bằng ruff. Ở lần kiểm ngày 24/11/2026 (cơ sở dữ liệu bật), ruff không báo lỗi và pytest đạt 1261 kiểm thử, không bỏ qua kiểm thử nào, có 1 kiểm thử xfail có chủ ý (bản kê run cũ thiếu trường `environment`). Bộ kiểm thử phủ hợp đồng dữ liệu, ranh giới API–torch, các cổng dữ liệu (kể cả phép thử chứng minh cổng D4 không đạt rỗng), điều kiện thời gian SQL và Python, chỉ số bám sát sự kiện, ba ràng buộc G1–G3, tính trùng từng bit của đường sinh dự đoán, và tích hợp PostgreSQL. CI trên GitHub Actions chạy ruff, pytest, kiểm tra cấm `torch` trong API, kiểm thử và build giao diện.
 
 Nhiều lỗi thật chỉ bị bắt nhờ chạy toàn bộ quy trình trên dữ liệu thật, trong đó lỗi ghép cửa sổ dự đoán (khoảng 10 s cuối mỗi bản ghi bị nhân đôi) làm đổi mọi số SED đã có; sau khi sửa, toàn bộ 11 lần chạy được tính lại và kết luận RQ1 không đổi.
