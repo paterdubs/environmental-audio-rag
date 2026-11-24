@@ -216,7 +216,19 @@ Cách đọc đúng RQ2 cần thừa nhận ba điều. **Một,** kết quả "
 Hai giới hạn khi đọc kết quả RQ2:
 
 - **Bộ đo dựa trên từ điển, chưa đủ nhạy với lỗi hiếm.** Trên mẫu 60 mô tả test do **một** người đọc mù đối chiếu (với hệ trước đó), việc trích nguồn âm bằng từ điển đạt precision 0,896 và recall 0,936 so với người đọc. Với lỗi gọi tên quá cụ thể, từ điển chỉ bắt được 0,568 số ca người đánh dấu (precision 1,000). Với cờ "mô tả có bịa nguồn âm", từ điển và người đọc gần như không trùng: mỗi bên gắn cờ 2 trên 60 mô tả nhưng không ca nào trùng nhau, nên hệ số κ xấp xỉ −0,03 (tính từ bảng 2×2: 0, 2, 2, 56). Số ca quá ít để kết luận hướng, nhưng cho thấy tỷ lệ ảo giác thấp của viết tự do (0,005 đến 0,022) là ước lượng bảo thủ và chưa được người đọc xác nhận từng ca. Từ điển dễ dãi hơn người ở một số chỗ: một kiểu bịa "tiếng búa gõ" bị che sau từ chỉ địa điểm "xưởng" mà từ điển không bắt được, và ở chỗ khác nó gắn cờ nhầm. Mẫu nhỏ và chỉ một người đọc, nên đây là kiểm tra sơ bộ.
-- **"Không ảo giác" ở mức đầu–cuối không có nghĩa là mô tả đúng với âm thanh.** Mô tả trung thành với danh sách sự kiện *dự đoán*, mà hệ tốt nhất có event-F1 micro chỉ 0,2965 và bỏ sót phần lớn sự kiện tham chiếu (V2 dự đoán 373 trên 740). Ràng buộc bảo đảm mọi sai sót truy được về một sự kiện cụ thể của SED; nó không loại bỏ được sai sót đó.
+- **"Không ảo giác" ở mức đầu–cuối không có nghĩa là mô tả đúng với âm thanh.** Mô tả trung thành với danh sách sự kiện *dự đoán*, mà hệ tốt nhất có event-F1 micro chỉ 0,2965 và bỏ sót phần lớn sự kiện tham chiếu (V2 dự đoán 373 trên 740). Ràng buộc bảo đảm mọi sai sót truy được về một sự kiện cụ thể của SED; nó không loại bỏ được sai sót đó. Mục dưới đây đo phần này.
+
+### Mô tả so với nhãn gốc: tách lỗi của bộ sinh khỏi lỗi của SED
+
+Để trả lời câu hỏi "0 ảo giác có phải chỉ do cấu tạo", nhóm chấm lại chính các mô tả đầu–cuối đã sinh trên dev, lần này so với dòng thời gian của nhãn gốc thay vì dòng thời gian dự đoán (`scripts.report_caption_vs_gt`, 134 bản ghi có nhãn, không gọi lại mô hình ngôn ngữ, không mở test). ⟪tbl:captiontiers⟫ đặt hai cách chấm cạnh nhau.
+
+@@CAP:tbl:captiontiers|Ảo giác và bỏ sót của mô tả đầu–cuối: so với dòng thời gian dự đoán / so với nhãn gốc (dev annotated)@@
+
+@@COLWIDTHS:18,32,25,25@@
+
+@@INCLUDE:report/final_tables/f04b_caption_tiers.md@@
+
+Ba điều rút ra. **Một,** so với nhãn gốc, mọi cách sinh đều bỏ sót khoảng 34% đến 42% số lớp có thật ở f2, B0 và V2, kể cả template và constrained-cover vốn bằng 0 khi so với dự đoán; ở V3, độ phủ cao kéo bỏ sót xuống khoảng 0,11 (trừ constrained) nhưng ảo giác so với nhãn gốc lên 0,18 đến 0,23. **Hai,** chênh lệch giữa các cách sinh nhỏ hơn nhiều so với chênh lệch giữa các hệ SED: trong cùng một hệ, ảo giác so với nhãn gốc của bốn cách sinh lệch nhau nhiều nhất 0,056 (V3: 0,178 đến 0,234; B0 chỉ 0,017 đến 0,034), còn cùng một cách sinh lệch 0,16 đến 0,20 khi đổi từ V2 sang V3. Độ đúng của mô tả đối với âm thanh vì vậy do SED quyết định; phần bộ sinh đóng góp là không *thêm* lỗi ngoài lỗi của SED, đúng điều ràng buộc hứa. **Ba,** LLM tự do luôn có ảo giác so với nhãn gốc cao nhất trong cùng hệ, còn constrained chỉ thua template ở bỏ sót trên V3 (0,204 so với 0,107), đúng chỗ bảng test đã chỉ ra. Lưu ý: mô tả dev của f2 sinh trên dự đoán gần như trong mẫu của vòng chọn S13, nên hàng f2 chỉ để mô tả.
 
 Về độ tin cậy của lượt chạy: trong lúc sinh mô tả cho V3 trên dev, máy chủ llama.cpp gặp lỗi hết bộ nhớ GPU một lần; nhóm khởi động lại máy chủ và chạy tiếp, các tệp đã xong được giữ nguyên. Chuỗi yêu cầu sau khi khởi động lại khác chuỗi ban đầu, và vì llama.cpp chỉ tất định theo chuỗi yêu cầu, mô tả của các tệp chạy sau điểm này không chắc tái tạo được từng ký tự nếu chạy lại từ đầu. Sự việc được ghi ở ADR-0048.
 

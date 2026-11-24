@@ -82,6 +82,16 @@ def test_rq3_backfill_table_reports_locked_hybrid_and_paired_gain():
     assert "+0.097 [+0.070, +0.126]" in text  # V3, backfill − vector
 
 
+TIERS = ROOT / "docs" / "measurements" / "caption_vs_gt_dev_20261124.json"
+
+
+@pytest.mark.skipif(not TIERS.is_file(), reason="chưa có caption_vs_gt")
+def test_caption_tiers_table_pairs_prediction_and_ground_truth_scores():
+    text = bft.build_caption_tiers(json.loads(TIERS.read_text(encoding="utf-8")), "abcdef0",
+                                   TIERS)
+    assert "| LBR V3 | Constrained | 0.000 / 0.192 | 0.145 / 0.204 |" in text
+
+
 CONTEXT = ROOT / "docs" / "measurements" / "lbr_context_20261123.json"
 
 

@@ -222,6 +222,22 @@ def build_rq3_groups(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_caption_tiers(data: dict[str, Any], revision: str, source: Path) -> str:
+    """Ảo giác và bỏ sót so với dòng thời gian dự đoán và với nhãn gốc (`report_caption_vs_gt`)."""
+    rows = []
+    for key, label in SYSTEMS.items():
+        for branch, name in MODES.items():
+            cell = data["results"][f"{key}/{branch}"]
+            rows.append([label, name] + [
+                f"{cell['e2e_vs_pred'][m]['estimate']:.3f} / {cell['e2e_vs_gt'][m]['estimate']:.3f}"
+                for m in ("hallucination_rate", "omission_rate")])
+    return table(
+        "RQ2 (dev annotated): ảo giác và bỏ sót so với dòng thời gian dự đoán / so với nhãn gốc",
+        ["Hệ SED", "Cách sinh", "Ảo giác", "Bỏ sót"],
+        rows, [source], revision, ["---", "---", "---:", "---:"],
+    )
+
+
 def build_rq3_backfill(data: dict[str, Any], revision: str, source: Path) -> str:
     """nDCG@10 bốn chế độ và hiệu ghép cặp của backfill (từ `report_rq3_backfill`, ADR-0049)."""
     rows = []
@@ -452,6 +468,7 @@ def main() -> None:
     parser.add_argument("--ledger", type=Path, help="test_ledger_*.json")
     parser.add_argument("--freeze", type=Path, help="artifact_freeze_*.json")
     parser.add_argument("--rq3-modes", type=Path, help="rq3_modes_*.json")
+    parser.add_argument("--caption-tiers", type=Path, help="caption_vs_gt_dev_*.json")
     parser.add_argument("--rq3-backfill", type=Path, help="retrieval_backfill_test_*.json")
     parser.add_argument("--lbr-context", type=Path, help="lbr_context_*.json")
     parser.add_argument("--calibration", type=Path, help="calibration_*.json")
@@ -490,6 +507,7 @@ def main() -> None:
         ("f08_freeze.md", build_freeze, args.freeze),
         ("f05b_rq3_paired.md", build_rq3_paired, args.rq3_modes),
         ("f05c_rq3_groups.md", build_rq3_groups, args.rq3_modes),
+        ("f04b_caption_tiers.md", build_caption_tiers, args.caption_tiers),
         ("f05d_rq3_backfill.md", build_rq3_backfill, args.rq3_backfill),
         ("f10_lbr_context.md", build_lbr_context, args.lbr_context),
         ("f11_calibration.md", build_calibration, args.calibration),
