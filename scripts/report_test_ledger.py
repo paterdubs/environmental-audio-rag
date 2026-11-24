@@ -26,7 +26,7 @@ COMPONENTS = {  # measurement file pattern → component (non-SED test artifacts
     "Caption (RQ2)": (r"^(caption_(grounding|ngram|per_class|vi_template|template|lexicon_audit)"
                       r".*test|rq2_llm_systems_.*_test)"),
     "Caption: lớp gộp / wiring": r"(grouped_class_wording.*test|caption_wiring_test)",
-    "Retrieval (RQ3) / câu trả lời": r"^retrieval_(benchmark|answers|backfill)_test",
+    "Retrieval (RQ3) / câu trả lời": r"^retrieval_(benchmark|answers|backfill|failures)_test",
     "Ablation / chẩn đoán SED trên test": r"(threshold_ablation|median_filter|duration_prior|"
                                            r"collar_sensitivity|duration_polyphony|branch_per_class)",
     "LBR (ADR-0045/0047): PSDS, chẩn đoán": r"^lbr_(psds_grid|diagnosis)",
