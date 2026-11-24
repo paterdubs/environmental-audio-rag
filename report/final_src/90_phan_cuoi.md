@@ -56,7 +56,7 @@ Theo giao thức đánh giá, lớp có dưới 10 mẫu test chỉ được bá
 
 @@HEADING2N:Phụ lục D. Phân công công việc và công cụ hỗ trợ@@
 
-Hai thành viên chia các mảng công việc thành hai phần có khối lượng tương đương; mỗi mảng có một người phụ trách chính và một người kiểm chéo, nên cả hai đều đọc, chạy lại và có thể trình bày mọi phần của đề tài. Các quyết định thiết kế (48 ADR), mọi lần mở tập test và mọi kết luận đều do cả hai cùng duyệt. Mã nguồn được commit từ một tài khoản chung, nên lịch sử git không phản ánh việc phân công này.
+Hai thành viên chia các mảng công việc thành hai phần có khối lượng tương đương; mỗi mảng có một người phụ trách chính và một người kiểm chéo, nên cả hai đều đọc, chạy lại và có thể trình bày mọi phần của đề tài. Các quyết định thiết kế (50 ADR), mọi lần mở tập test và mọi kết luận đều do cả hai cùng duyệt. Mã nguồn được commit từ một tài khoản chung, nên lịch sử git không phản ánh việc phân công này.
 
 @@CAP:tbl:division|Phân công công việc@@
 

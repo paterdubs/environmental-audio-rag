@@ -23,7 +23,7 @@ Hệ lớp (phiên bản 0.1, SHA-256 `67ca8a8c…`) có 22 lớp với tên ti�
 
 Kết quả trên 21 lớp đa âm và trên 22 lớp đơn âm **không so sánh trực tiếp được**, vì khác tập lớp, khác định nghĩa nhãn và khác mẫu số khi tính macro.
 
-Hai lớp gộp `sirens_and_alarms` và `thunder_fireworks_gunshot` chứa các nguồn âm khác bản chất (còi báo động khác chuông báo; sấm khác pháo hoa và tiếng súng). DataSED chỉ có nhãn ở cấp gộp, nên mô tả về hai lớp này phải giữ đúng mức mơ hồ: viết "một âm thanh xung giống sấm, pháo hoa hoặc tiếng súng", không viết "một tiếng súng". Điều này được kiểm thử trong phần sinh mô tả (Chương 4).
+Hai lớp gộp `sirens_and_alarms` và `thunder_fireworks_gunshot` chứa các nguồn âm khác bản chất (còi báo động khác chuông báo; sấm khác pháo hoa và tiếng súng). DataSED chỉ có nhãn ở cấp gộp, nên mô tả về hai lớp này phải giữ đúng mức mơ hồ: viết "một âm thanh xung giống sấm, pháo hoa hoặc tiếng súng", không viết "một tiếng súng". Bộ sinh mô tả ở Chương 4 có quy tắc và kiểm thử riêng cho hai lớp này.
 
 ⟪fig:dataprofile⟫ cho thấy hai kiểu mất cân bằng khác nhau. Ở DataSEC, số tệp theo lớp trải từ 50 (`cat_fights_and_moans`) đến 1.900 (`voices`), lệch khoảng 38 lần. Ở DataSED, 4.034 sự kiện đa âm chia thành 2.408 ở train, 886 ở dev và 740 ở test; lớp nhiều nhất (`workshop`) có số sự kiện gấp khoảng năm lần lớp ít nhất (`jet_aircrafts`), và lớp nào cũng có mặt ở cả ba tập.
 
@@ -77,4 +77,4 @@ Cổng D4 kiểm năm điều kiện trước khi khóa: không nhóm nào nằm
 
 **Hai lần gán nhãn cho cùng một bản ghi.** DataSED có 8 cặp bản ghi giống hệt byte nhưng được gán nhãn hai lần (nhóm không có thông tin người gán nên không khẳng định hai lần do hai người khác nhau), cho một phép đo độ nhất quán có sẵn. Trên 8 cặp này, 67/94 biên sự kiện lệch không quá 0,2 s, độ lệch biên lớn nhất là 12,72 s, và 2/8 cặp bất đồng về lớp hoặc số sự kiện. Coi một lần gán là "dự đoán" của lần kia, event-F1 giữa người với người ở collar 0,2 s là 0,5785. Gần một phần ba số biên (27/94) lệch hơn collar 0,2 s giữa hai lần gán, nên collar này chặt so với độ nhất quán của chính nhãn. Báo cáo gọi 0,5785 là **mức đồng thuận quan sát trên 8 cặp**: không phải trần tuyệt đối của mô hình, và không dùng làm ngưỡng ý nghĩa thống kê (ý nghĩa được đánh giá bằng khoảng tin cậy). Do chỉ có 8 cặp, đây là tín hiệu cảnh báo chứ không phải một nghiên cứu về độ nhất quán.
 
-Các rủi ro dữ liệu còn lại — trùng nguồn với AudioSet (không định lượng được), tập dev và test nhỏ, bốn nút lớp con ít mẫu và âm thanh thêm bằng tay [@fredianelli2025environmental] — được nêu ở phần hạn chế của Chương 6.
+Các rủi ro dữ liệu còn lại — trùng nguồn với AudioSet (không định lượng được), tập dev và test nhỏ, bốn nút lớp con ít mẫu và âm thanh thêm bằng tay [@fredianelli2025environmental] — được nêu ở mục hạn chế của Chương 6. Chương 4 tiếp theo trình bày phương pháp dựng trên hai tập chia đã khóa này.

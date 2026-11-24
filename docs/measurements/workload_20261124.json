@@ -1,0 +1,26 @@
+{
+  "commits": 456,
+  "first_commit": "2026-09-22",
+  "last_commit": "2026-11-25",
+  "adr": 50,
+  "measurement_reports": 285,
+  "python_lines": {
+    "ml": 13717,
+    "scripts": 30639,
+    "tests": 13920,
+    "services": 640
+  },
+  "frontend_lines": 1185,
+  "test_functions": 938,
+  "json_schemas": 8,
+  "runs": {
+    "sed": 103,
+    "classifier": 8,
+    "total_dirs": 218
+  },
+  "git": {
+    "revision": "0e8680f216bbff8d84877ec0c331e8a90de1f610",
+    "dirty": true
+  },
+  "created_at": "2026-11-24T18:33:57.686181+00:00"
+}

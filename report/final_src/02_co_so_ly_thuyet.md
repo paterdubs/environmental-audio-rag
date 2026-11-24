@@ -8,9 +8,9 @@ Phát hiện sự kiện âm thanh (SED) trả lời câu hỏi "cái gì xảy 
 
 Có hai kiểu nhãn [@mesaros2021tutorial]. Nhãn mạnh ghi rõ đoạn thời gian của từng sự kiện. Nhãn yếu chỉ cho biết lớp nào có mặt trong bản ghi. Nhãn mạnh tốn công hơn vì người gán nhãn phải nghe lại và đặt biên cho từng sự kiện, mà biên của âm thanh môi trường vốn không rõ nét. Hai bộ dữ liệu của đề tài phản ánh sự khác biệt này: DataSEC có các đoạn rời với nhãn mức đoạn, còn DataSED có bản ghi dài với nhãn mạnh [@fredianelli2025environmental].
 
-Đầu vào thường dùng là phổ log-mel, một "ảnh" thời gian–tần số của tín hiệu. Kiến trúc phổ biến là mạng tích chập hồi quy (CRNN) [@mesaros2021tutorial]: phần tích chập (CNN) trích đặc trưng từ ảnh phổ, phần hồi quy (ở đây là BiGRU, mạng hồi quy hai chiều) học quan hệ theo thời gian. Mô hình cho ra xác suất của từng lớp tại từng khung. Chuỗi xác suất này chưa phải là sự kiện: nó phải qua bước ghép thành các đoạn (mục "Từ xác suất thành sự kiện" bên dưới). Vì thế chất lượng phát hiện phụ thuộc cả mô hình lẫn bước ghép, và hai phần này đều phải được chọn trên tập dev, không phải trên tập test.
+Đầu vào thường dùng là phổ log-mel, một "ảnh" thời gian–tần số của tín hiệu. Kiến trúc phổ biến là mạng tích chập hồi quy (CRNN) [@mesaros2021tutorial]: phần tích chập (CNN) trích đặc trưng từ ảnh phổ, phần hồi quy (ở đây là BiGRU, mạng hồi quy hai chiều) học quan hệ theo thời gian. Mô hình cho ra xác suất của từng lớp tại từng khung. Chuỗi xác suất này chưa phải là sự kiện: nó phải qua bước ghép thành các đoạn (mục "Hậu xử lý xác suất thành sự kiện" bên dưới). Vì thế chất lượng phát hiện phụ thuộc cả mô hình lẫn bước ghép, và hai phần này đều phải được chọn trên tập dev, không phải trên tập test.
 
-## Cách đánh giá
+## Chỉ số đánh giá SED
 
 **Metric theo sự kiện.** Mesaros và cộng sự phân biệt metric theo đoạn (chia trục thời gian thành các đoạn cố định như 1 s rồi so từng đoạn) với metric theo sự kiện (so từng sự kiện dự đoán với sự kiện tham chiếu cùng lớp) [@mesaros2016metrics]. Một cặp được coi là khớp khi thời điểm bắt đầu lệch không quá một dung sai (collar). Đề tài dùng collar $\tau = 0{,}2$ s cho thời điểm bắt đầu và, cho thời điểm kết thúc, dung sai
 
@@ -36,9 +36,9 @@ Hai con số trả lời hai câu hỏi khác nhau nên nhóm báo cả hai. T�
 
 **PSDS.** Event-F1 gắn với một ngưỡng duy nhất. Điểm PSDS (Polyphonic Sound Detection Score) đánh giá trên cả **dải** ngưỡng, dùng tỷ lệ giao thời gian thay cho collar [@bilen2020psds]. Nhóm dùng hai kịch bản cố định trước khi chạy test: PSDS-1 nhấn mạnh việc định vị đúng thời điểm, PSDS-2 nhấn mạnh việc tránh nhầm lớp (docs/evaluation_protocol.md §3.3). Một hệ thống có thể tốt ở kịch bản này mà kém ở kịch bản kia; chênh lệch đó là thông tin cần báo.
 
-**Mức khó.** Ở thử thách DCASE 2016 (nhiệm vụ 3, ghi âm đời thực), ba hệ dẫn đầu theo xếp hạng đoạn và hệ cơ sở đạt event-F1 chỉ xét onset 4,7–6,3%, và cả 16 hệ nộp từ 1,5% đến 8,1% [@dcase2016task3]. Con số này chỉ để **định cỡ** độ khó, không so trực tiếp được với kết quả của đề tài vì khác dữ liệu, số lớp và quy tắc collar.
+**Mức khó.** Ở thử thách DCASE (Detection and Classification of Acoustic Scenes and Events) 2016 (nhiệm vụ 3, ghi âm đời thực), ba hệ dẫn đầu theo xếp hạng đoạn và hệ cơ sở đạt event-F1 chỉ xét onset 4,7–6,3%, và cả 16 hệ nộp từ 1,5% đến 8,1% [@dcase2016task3]. Con số này chỉ để **định cỡ** độ khó, không so trực tiếp được với kết quả của đề tài vì khác dữ liệu, số lớp và quy tắc collar.
 
-## Từ xác suất thành sự kiện
+## Hậu xử lý xác suất thành sự kiện
 
 Cách ghép phổ biến là làm mượt chuỗi xác suất bằng lọc trung vị, so với một ngưỡng $\theta_c$, gộp các khoảng trống ngắn và bỏ sự kiện quá ngắn. Các giới hạn độ dài suy từ thống kê nhãn; nhóm chỉ suy chúng từ tập huấn luyện và quét ngưỡng trên dev (ADR-0003), vì suy từ chính tập đang chấm là một dạng rò rỉ khó thấy.
 
@@ -48,7 +48,7 @@ Một hướng khác sửa biên ngay trong lúc huấn luyện. Schmid và cộ
 
 ## Học chuyển giao
 
-**Tiền huấn luyện trên AudioSet.** Kong và cộng sự công bố họ mạng PANNs, huấn luyện trên AudioSet (hơn 5.000 giờ, 527 lớp) rồi chuyển sang sáu tác vụ âm thanh khác [@kong2020panns]. Mạng CNN14 của họ là điểm xuất phát của nhánh B và C trong RQ1. Một chi tiết quan trọng với SED là các lớp gộp (pooling) làm giảm độ phân giải theo thời gian của đầu ra; Chương 4 cho thấy điều này đặt giới hạn trên đo được cho event-F1.
+**Tiền huấn luyện trên AudioSet.** Kong và cộng sự công bố họ mạng PANNs, huấn luyện trên AudioSet (hơn 5.000 giờ, 527 lớp) rồi chuyển sang sáu tác vụ âm thanh khác [@kong2020panns]. Mạng CNN14 của họ là điểm xuất phát của nhánh B và C trong RQ1. Một chi tiết quan trọng với SED là các lớp gộp (pooling) làm giảm độ phân giải theo thời gian của đầu ra; Chương 6 cho thấy điều này đặt giới hạn trên đo được cho event-F1.
 
 **Tiền huấn luyện theo khung.** Schmid và cộng sự tiền huấn luyện transformer âm thanh trên nhãn **theo khung** của AudioSet Strong (đầu ra mỗi 40 ms); trên DESED, đóng băng bộ mã hóa và chỉ huấn luyện một lớp tuyến tính đã đạt PSDS1 45,4–49,2, gần với tinh chỉnh toàn bộ (47,6–49,2) [@schmid2025effective]. Vì vậy nhóm thử bộ mã hóa đóng băng trước, do rẻ trên GPU 8 GB; một trong số đó là BEATs, mô hình tự giám sát [@chen2022beats]. Các con số trên đo trên DESED, không phải DataSED, nên chỉ là lý do để thử chứ không phải dự báo kết quả.
 
@@ -70,11 +70,33 @@ Lewis và cộng sự đề xuất RAG: kết hợp một mô hình sinh với m
 
 Hệ thống gần nhất với hướng này là LA-RAG: chuyển âm thanh dài thành bản ghi sự kiện có mốc thời gian lưu trong cơ sở dữ liệu SQL, phân loại ý định câu hỏi, đổi biểu thức thời gian tuyệt đối (ví dụ "trước buổi trưa") thành cửa sổ thời gian rồi truy xuất theo độ tương đồng embedding kèm bộ lọc có cấu trúc trước khi để mô hình ngôn ngữ trả lời [@hegde2026larag]. Trong phần phương pháp của công trình đó, nhóm không thấy toán tử quan hệ **giữa hai sự kiện** (trước, chồng lấn, trong lúc); đề tài bổ sung bốn điều kiện loại này bằng SQL.
 
-Chất lượng truy hồi được đo bằng các chỉ số xếp hạng chuẩn: Recall@k (tỷ lệ kết quả liên quan nằm trong $k$ kết quả đầu), MRR và nDCG@10 (chỉ số thưởng cho kết quả liên quan được xếp cao); công thức ở Chương 4.
+Chất lượng truy hồi được đo bằng chỉ số xếp hạng chuẩn nDCG@10, chỉ số thưởng cho kết quả liên quan được xếp cao; công thức ở Chương 4.
+
+## Ba kỹ thuật dùng trong hệ thống cuối
+
+Ba kỹ thuật dưới đây là cơ chế của các phần chính ở Chương 4 (mô tả có ràng buộc, LBR, so sánh có khoảng tin cậy). Nhóm mô tả chúng theo cách đã cài đặt trong đề tài, không trình bày như một tổng quan văn liệu.
+
+**Giải mã có ràng buộc bằng ngữ pháp.** Mô hình ngôn ngữ sinh từng token $y_t$ theo phân phối $p(y_t \mid y_{<t}, x)$. Giải mã có ràng buộc chỉ giữ những token mà sau khi thêm vào, chuỗi vẫn còn là tiền tố của một câu thuộc ngôn ngữ $L(G)$ của ngữ pháp $G$:
+
+$$p_G(y_t \mid y_{<t}, x) \propto p(y_t \mid y_{<t}, x)\cdot \mathbb{1}\big[\,y_{\le t} \in \operatorname{prefix}(L(G))\,\big]$$
+
+⟪eqno:constrained⟫
+
+Máy chủ llama.cpp cài đặt cơ chế này bằng ngữ pháp dạng GBNF. Trong đề tài, ngữ pháp được sinh lại cho từng bản ghi từ chính danh sách sự kiện, nên mô hình chỉ có thể nhắc những lớp có trong danh sách và theo thứ tự onset (Chương 4). Điều kiện ⟪eq:grounding⟫ vì vậy được bảo đảm theo cấu tạo, đổi lại câu văn bị bó hẹp và có thể bỏ sót khi danh sách dài.
+
+**Cây tăng cường gradient và cross-fit lồng nhau.** Mô hình tăng cường gradient là tổng $F_M(x) = \sum_{m=1}^{M} \nu\, h_m(x)$, trong đó mỗi cây quyết định $h_m$ được khớp với gradient âm của hàm mất mát tại $F_{m-1}$ và $\nu$ là hệ số học. LBR dùng bản theo histogram của scikit-learn: một mô hình hồi quy (mất mát tuyệt đối) dự đoán độ dời biên, một mô hình phân loại chấm lại điểm giữ hộp. Vì cả hai được học và chấm trên dự đoán ngoài mẫu, nhóm dùng **cross-fit**: chia bản ghi thành $K$ phần, mô hình áp cho phần $k$ chỉ học trên $K-1$ phần còn lại; nhãn dùng để chọn điểm vận hành và gán nhãn cho bộ chấm lại cũng đến từ một vòng chia lồng bên trong. Nhờ đó nhãn của một phần không đi vào mô hình hay ngưỡng nào được áp lên chính phần đó.
+
+**Bootstrap ghép cặp theo bản ghi.** Để so hai hệ $A$, $B$ chấm trên cùng $n$ bản ghi, mỗi lần lặp lấy mẫu có hoàn lại $n$ bản ghi, cộng dồn $TP$, $FP$, $FN$ của mỗi hệ trên mẫu đó và tính
+
+$$\Delta^{*} = F_1^{micro}(B^{*}) - F_1^{micro}(A^{*})$$
+
+⟪eqno:bootstrap⟫
+
+Sau 1.000 lần lặp, khoảng tin cậy 95% (KTC 95%) là phân vị 2,5% và 97,5% của các $\Delta^{*}$. Đơn vị lấy mẫu là bản ghi chứ không phải sự kiện, vì các sự kiện trong cùng một bản ghi tương quan với nhau; ghép cặp (cùng một mẫu cho cả hai hệ) làm triệt tiêu phần dao động do độ khó riêng của từng bản ghi. Báo cáo chỉ gọi một hiệu là có ý nghĩa khi KTC không chứa 0.
 
 ## Vị trí của đề tài
 
-Các nguồn đã đọc cung cấp nền cho từng mắt xích: dữ liệu môi trường có nhãn mạnh [@fredianelli2025environmental], chỉ số SED và PSDS [@mesaros2016metrics; @bilen2020psds], ghép biên sự kiện [@ebbers2024sound], tiền huấn luyện theo đoạn và theo khung [@kong2020panns; @schmid2025effective], ảo giác [@ji2023hallucination] và RAG [@lewis2020rag]. Bài mô tả DataSED không báo cáo mô hình hay chỉ số cơ sở nào [@fredianelli2025environmental]. Trong phạm vi tra cứu (Chương 1), nhóm không thấy công trình nào khác báo số SED theo sự kiện trên DataSED, nhưng "không thấy" không đồng nghĩa với "không tồn tại", nên báo cáo không khẳng định kết quả của mình là baseline đầu tiên.
+Các nguồn đã đọc cung cấp nền cho từng mắt xích: dữ liệu môi trường có nhãn mạnh [@fredianelli2025environmental], chỉ số SED và PSDS [@mesaros2016metrics; @bilen2020psds], ghép biên sự kiện [@ebbers2024sound], tiền huấn luyện theo đoạn và theo khung [@kong2020panns; @schmid2025effective], ảo giác [@ji2023hallucination] và RAG [@lewis2020rag]. Bài mô tả DataSED không báo cáo mô hình hay chỉ số cơ sở nào [@fredianelli2025environmental]. Trong phạm vi tra cứu (nêu ở cuối mục này), nhóm không thấy công trình nào khác báo số SED theo sự kiện trên DataSED, nhưng "không thấy" không đồng nghĩa với "không tồn tại", nên báo cáo không khẳng định kết quả của mình là baseline đầu tiên.
 
 Về rò rỉ dữ liệu, Weck và Serra dùng dấu vân âm thanh để tìm các bản trùng giữa tập huấn luyện và tập đánh giá của SoundDesc và chỉ ra điểm truy hồi bị thổi phồng [@weck2023leakage]; Wijngaard và cộng sự đo mức chồng lấn giữa nhiều bộ dữ liệu âm thanh–ngôn ngữ bằng độ tương đồng embedding [@wijngaard2025survey]. Kiểm tra trùng trong một bộ dữ liệu và đo chồng lấn giữa các bộ đều đã có.
 

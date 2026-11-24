@@ -2,11 +2,9 @@
 
 **Title:** Grounded Environmental Sound Event Detection, Captioning, and RAG-based Retrieval
 
-Outdoor noise monitoring needs to know which sound sources occur, when, and for how long. This thesis presents an end-to-end system that detects environmental sound events with temporal localization, captions recordings using only the detected event timeline, and answers natural-language questions over recording history with Retrieval-Augmented Generation (RAG), citing recordings and time spans as evidence.
+Outdoor noise monitoring needs to know which sound sources occur, when, and for how long; Vietnam's noise regulation QCVN 26:2025/BNNMT makes this a practical need. This thesis builds a four-block system: sound event detection (SED) with onset and offset, captions written only from the detected event timeline, an event store in PostgreSQL with a vector index, and question answering with Retrieval-Augmented Generation (RAG) that cites recordings and time spans as evidence. It uses two public datasets, DataSEC (5,048 clips) and DataSED (717 recordings, 21 classes); a three-tier deduplication audit found shared source recordings, so 11 clips were excluded and all splits were frozen before training.
 
-The system uses two public datasets from the same authors: DataSEC (5,048 clips) and DataSED (717 recordings, 21 polyphonic classes). A three-tier deduplication audit found shared source recordings, so 11 DataSEC clips (0.22%) were excluded before pre-training and all splits were frozen by hash. Every choice was made on development data or out-of-fold predictions and committed before the test set was evaluated.
-
-Additional pre-training on DataSEC did not improve event-based F1 over AudioSet pre-training (paired difference −0.003, 95% CI [−0.025, +0.020]). Sound event detection (SED) errors lie mainly in boundaries and missed events; a learned boundary refinement and box rescoring stage (LBR) raised event-based micro-F1 on the annotated test set from 0.181 to 0.297 (paired difference +0.116, 95% CI [+0.074, +0.159]), at the cost of a lower PSDS-2 and lower coverage. Grammar-constrained captioning removed hallucinated sources and context inference relative to the predicted timeline for all four SED systems tested, at a cost in omissions on dense timelines that a coverage constraint removes. Hard filters kept every retrieved result consistent with the query (exactness 1.000, against about 0.27 for semantic-only ranking) and no answer contained unsupported claims, but hybrid retrieval did not beat semantic-only ranking in nDCG@10 on the three low-coverage stores (paired differences −0.075 to −0.111), because ranking quality is bounded by which events SED predicts; on the high-coverage store it did (+0.040). Keeping the hard filter and filling the remaining slots with labelled semantic results (backfill, pre-registered before the test run) beat both original modes on all four stores (+0.041 to +0.097 over semantic-only). A literature check found related work close to each claimed contribution, so they are presented as application and extension rather than firsts.
+The main finding is that caption and answer correctness are bounded by SED. Grammar constraints and hard filters add no errors of their own, so effective improvements lie in SED and in event coverage at retrieval time. Extra pre-training on DataSEC did not help (paired difference −0.003, 95% CI [−0.025, +0.020]). A learned boundary refinement and box rescoring stage (LBR) raised test event-based micro-F1 from 0.181 to 0.297 (+0.116 [+0.074, +0.159]), at the cost of lower segment-F1 and PSDS-2. Constrained captions contained no hallucinated sources relative to the predicted timeline. Hybrid retrieval was significantly worse than semantic-only ranking on three of four event stores, while a backfill mode beat both on all four. The web application runs locally with a median of 3.9 s per recording. Future work: field recordings in Vietnam and a stronger detector.
 
 **Keywords:** sound event detection, environmental noise, grounded captioning, hallucination, retrieval-augmented generation, transfer learning, data leakage.
 
@@ -16,11 +14,9 @@ Additional pre-training on DataSEC did not improve event-based F1 over AudioSet 
 
 **Tên đề tài:** Xây dựng hệ thống phát hiện, sinh mô tả và truy vấn sự kiện âm thanh môi trường dựa trên RAG
 
-Giám sát tiếng ồn môi trường cần biết nguồn âm nào xuất hiện, lúc nào và kéo dài bao lâu. Khóa luận trình bày một hệ thống từ đầu đến cuối: phát hiện sự kiện âm thanh kèm thời gian, viết mô tả chỉ dựa trên các sự kiện đã phát hiện, và trả lời câu hỏi tự nhiên về lịch sử bản ghi bằng sinh tăng cường truy hồi (RAG), có nêu bản ghi và khoảng thời gian làm bằng chứng.
+Giám sát tiếng ồn môi trường cần biết nguồn âm nào xuất hiện, lúc nào và kéo dài bao lâu; quy chuẩn QCVN 26:2025/BNNMT về tiếng ồn cho thấy nhu cầu này ở Việt Nam. Khóa luận xây dựng một hệ thống bốn khối: phát hiện sự kiện âm thanh (SED) kèm thời điểm bắt đầu và kết thúc, sinh mô tả chỉ từ danh sách sự kiện đã phát hiện, lưu sự kiện vào kho PostgreSQL có chỉ mục vector, và trả lời câu hỏi tự nhiên bằng sinh tăng cường truy hồi (RAG) có trích bản ghi và khoảng thời gian làm bằng chứng. Dữ liệu là DataSEC (5.048 đoạn) và DataSED (717 bản ghi, 21 lớp); kiểm trùng ba tầng cho thấy hai bộ có chung bản ghi gốc, nên 11 đoạn bị loại và các tập chia được khóa trước khi huấn luyện.
 
-Nhóm dùng hai bộ dữ liệu công bố của cùng nhóm tác giả: DataSEC (5.048 đoạn) và DataSED (717 bản ghi, 21 lớp). Kiểm tra trùng lặp ba tầng cho thấy hai bộ có chung bản ghi gốc, nên 11 đoạn DataSEC (0,22%) bị loại trước khi huấn luyện và các tập chia được khóa bằng mã băm. Mọi lựa chọn đều làm trên dữ liệu dev hoặc dự đoán ngoài mẫu và được ghi lại trước khi đánh giá tập test.
-
-Huấn luyện thêm trên DataSEC không giúp event-F1 tốt hơn so với chỉ dùng mô hình tiền huấn luyện AudioSet (hiệu −0,003, khoảng tin cậy 95% [−0,025; +0,020]). Lỗi phát hiện sự kiện âm thanh (SED) chủ yếu là lệch biên và bỏ sót; tầng tinh chỉnh biên và chấm lại hộp học được (LBR) nâng event-F1 micro trên tập test có nhãn từ 0,181 lên 0,297 (hiệu ghép cặp +0,116, khoảng tin cậy 95% [+0,074; +0,159]), đổi lại PSDS-2 và độ phủ thấp hơn. Khi bắt mô tả bám sát danh sách sự kiện bằng ngữ pháp giải mã, mô tả không còn ảo giác nguồn âm hay suy diễn bối cảnh so với danh sách đó ở cả bốn hệ SED được thử, đổi lại là bỏ sót nhiều hơn khi danh sách dày; thêm ràng buộc phải nhắc đủ các lớp thì hết bỏ sót. Bộ lọc cứng giữ mọi kết quả truy hồi đúng điều kiện (độ đúng 1,000, so với khoảng 0,27 khi chỉ xếp hạng theo ngữ nghĩa) và câu trả lời không có khẳng định thiếu bằng chứng, nhưng truy hồi kết hợp không hơn chỉ xếp hạng ngữ nghĩa về nDCG@10 trên ba kho có độ phủ thấp (hiệu ghép cặp từ −0,075 đến −0,111), vì chất lượng xếp hạng bị giới hạn bởi việc SED dự đoán những sự kiện nào; ở kho có độ phủ cao thì kết hợp hơn (+0,040). Giữ bộ lọc cứng rồi lấp chỗ trống bằng kết quả ngữ nghĩa có gắn nhãn (backfill, ghi trước khi chạy test) cho nDCG@10 cao hơn cả hai chế độ gốc ở cả bốn kho (so với chỉ ngữ nghĩa: +0,041 đến +0,097). Tra cứu văn liệu cho thấy đã có công trình gần với từng đóng góp, nên các đóng góp được trình bày là áp dụng và mở rộng, không phải lần đầu.
+Luận điểm chính của khóa luận là độ đúng của mô tả và của câu trả lời bị chặn bởi bước SED. Ràng buộc ngữ pháp và bộ lọc cứng không thêm lỗi riêng, nên cải tiến có tác dụng nằm ở SED và ở độ phủ sự kiện khi truy hồi. Huấn luyện thêm trên DataSEC không giúp (hiệu −0,003, KTC 95% [−0,025; +0,020]). Tầng tinh chỉnh biên và chấm lại hộp học được (LBR) nâng event-F1 micro trên test từ 0,181 lên 0,297 (hiệu +0,116 [+0,074; +0,159]), đổi lại F1 theo đoạn và PSDS-2 thấp hơn. Mô tả có ràng buộc không còn ảo giác nguồn âm so với danh sách sự kiện. Truy hồi kết hợp thấp hơn có ý nghĩa so với chỉ xếp hạng ngữ nghĩa ở ba trên bốn kho sự kiện, còn chế độ backfill hơn cả hai ở cả bốn kho. Ứng dụng web chạy cục bộ, trung vị 3,9 giây cho mỗi bản ghi. Hướng phát triển: thử trên bản ghi thu thực địa tại Việt Nam và cải thiện bộ phát hiện.
 
 **Từ khóa:** phát hiện sự kiện âm thanh, tiếng ồn môi trường, mô tả có căn cứ, ảo giác, sinh tăng cường truy hồi, học chuyển giao, rò rỉ dữ liệu.
 
@@ -44,7 +40,13 @@ Cuối cùng, nhóm cảm ơn gia đình và bạn bè đã luôn động viên 
 
 @@PAGEBREAK@@
 
-@@TITLE:NHẬN XÉT CỦA GIÁO VIÊN PHẢN BIỆN@@
+@@TITLE:NHẬN XÉT CỦA GIÁO VIÊN PHẢN BIỆN 1@@
+
+@@REVIEWPAGE@@
+
+@@PAGEBREAK@@
+
+@@TITLE:NHẬN XÉT CỦA GIÁO VIÊN PHẢN BIỆN 2@@
 
 @@REVIEWPAGE@@
 
@@ -74,30 +76,45 @@ Cuối cùng, nhóm cảm ơn gia đình và bạn bè đã luôn động viên 
 |---|---|---|
 | AAC | Automated Audio Captioning | Mô tả âm thanh tự động |
 | ADR | Architecture Decision Record | Bản ghi quyết định kiến trúc |
+| AP | Average Precision | Độ chính xác trung bình |
 | API | Application Programming Interface | Giao diện lập trình ứng dụng |
+| BGE-M3 | BAAI General Embedding (Multi-Linguality, Multi-Functionality, Multi-Granularity) | Mô hình nhúng văn bản đa ngữ dùng cho truy hồi |
 | BiGRU | Bidirectional Gated Recurrent Unit | Mạng hồi quy có cổng hai chiều |
-| CI | Continuous Integration | Tích hợp liên tục |
+| BLEU | Bilingual Evaluation Understudy | Chỉ số trùng n-gram giữa câu sinh và câu tham chiếu |
+| CI | Confidence Interval; Continuous Integration | Khoảng tin cậy (trong bảng ghi “CI 95%”, văn bản ghi KTC 95%); tích hợp liên tục (Chương 5) |
+| CIDEr | Consensus-based Image Description Evaluation | Chỉ số đồng thuận n-gram có trọng số TF-IDF |
+| CLAP | Contrastive Language-Audio Pretraining | Tiền huấn luyện đối sánh âm thanh–văn bản |
 | CNN | Convolutional Neural Network | Mạng nơ-ron tích chập |
 | CPU | Central Processing Unit | Bộ xử lý trung tâm |
 | CRNN | Convolutional Recurrent Neural Network | Mạng nơ-ron tích chập hồi quy |
 | cSEBB | change-detection-based Sound Event Bounding Boxes | Biến thể SEBB dùng phát hiện điểm đổi để chọn biên hộp bao |
+| dBA | A-weighted decibel | Mức áp suất âm theo đặc tuyến A |
 | DCASE | Detection and Classification of Acoustic Scenes and Events | Chuỗi thử thách phát hiện và phân loại cảnh, sự kiện âm thanh |
+| DESED | Domestic Environment Sound Event Detection | Bộ dữ liệu SED trong nhà của DCASE |
 | ECE | Expected Calibration Error | Sai số hiệu chuẩn kỳ vọng |
+| EPN | (tên mạng trong bài của Schmid và cộng sự) | Mạng ước lượng thời gian từ onset tới offset của sự kiện |
+| ERD | Entity-Relationship Diagram | Sơ đồ thực thể–quan hệ |
 | GPU | Graphics Processing Unit | Bộ xử lý đồ họa |
 | HNSW | Hierarchical Navigable Small World | Chỉ mục đồ thị cho tìm kiếm vector gần đúng |
 | JSON | JavaScript Object Notation | Định dạng dữ liệu có cấu trúc |
+| KTC | Khoảng tin cậy | Khoảng tin cậy bootstrap 95% |
 | LBR | Learned Boundary Refinement | Tinh chỉnh biên học được: bộ tinh chỉnh biên và bộ chấm lại hộp, học bằng cross-fit |
 | LLM | Large Language Model | Mô hình ngôn ngữ lớn |
 | MFCC | Mel-Frequency Cepstral Coefficients | Hệ số cepstral thang mel |
-| MRR | Mean Reciprocal Rank | Hạng nghịch đảo trung bình |
 | nDCG | normalized Discounted Cumulative Gain | Lợi ích tích lũy chiết khấu chuẩn hóa |
 | OOF | Out-of-Fold | Dự đoán ngoài mẫu, tạo bằng kiểm chứng chéo |
 | PANNs | Pretrained Audio Neural Networks | Mạng nơ-ron âm thanh tiền huấn luyện |
 | PSDS | Polyphonic Sound Detection Score | Điểm phát hiện âm thanh đa âm |
+| QCVN | Quy chuẩn kỹ thuật quốc gia | Quy chuẩn kỹ thuật quốc gia Việt Nam |
 | RAG | Retrieval-Augmented Generation | Sinh tăng cường truy hồi |
+| RED | Recurrent Event Detection | Phép truy hồi xác suất khả vi chuyển xác suất bắt đầu/kết thúc thành onset, offset |
 | RQ | Research Question | Câu hỏi nghiên cứu |
+| RRF | Reciprocal Rank Fusion | Gộp xếp hạng theo hạng nghịch đảo |
 | SEBB | Sound Event Bounding Boxes | Hộp bao sự kiện âm thanh |
 | SED | Sound Event Detection | Phát hiện sự kiện âm thanh |
+| SHA | Secure Hash Algorithm | Hàm băm (SHA-256) dùng khóa dữ liệu và artifact |
 | SQL | Structured Query Language | Ngôn ngữ truy vấn có cấu trúc |
+| TCVN | Tiêu chuẩn quốc gia | Tiêu chuẩn quốc gia Việt Nam |
+| UI | User Interface | Giao diện người dùng |
 
 @@SECTION:front@@

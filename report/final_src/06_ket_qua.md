@@ -7,6 +7,14 @@ Chương này báo cáo các kết quả có được tại mốc đóng băng (
 - **Khoảng tin cậy** 95% được bootstrap theo bản ghi (Chương 4).
 - Số trên **dev** dùng để chọn cấu hình; số trên **test** chỉ dùng để đo cấu hình đã chọn và không bao giờ dùng để chọn lại.
 
+⟪tbl:keyresults⟫ gom kết quả chính của cả chương vào một chỗ, mỗi câu hỏi một dòng kèm kết luận; các mục sau trình bày chi tiết và cách đọc từng con số. Đọc theo chiều dọc, bảng cho thấy cùng một mạch: lỗi của mô tả và của truy hồi đều quy về bước phát hiện sự kiện, còn hai cải tiến có tác dụng là LBR ở SED và backfill ở truy hồi.
+
+@@CAP:tbl:keyresults|Kết quả chính theo câu hỏi nghiên cứu@@
+
+@@COLWIDTHS:18,18,40,24@@
+
+@@INCLUDE:report/final_tables/f00_key_results.md@@
+
 ## Mô hình phân loại DataSEC
 
 Mô hình phân loại đạt macro-F1 0,8466 trên 22 lớp gộp của tập test DataSEC (⟪tbl:classifier⟫), độ chính xác tổng 0,9135 (676 trên 740 đoạn; tính từ bảng đúng/tổng theo lớp, `per_class_metrics_datasec_20260923`). Ở cấp lớp con, macro-F1 trên cả 28 nút chỉ là 0,6266 vì bị kéo xuống bởi các nút có rất ít mẫu test; chỉ tính 5 nút có ít nhất 10 mẫu test thì được 0,8453. Theo quy ước, nút ít mẫu chỉ báo số tuyệt đối (Phụ lục C), chẳng hạn `vacuum_cleaner` đúng 0/4 và `air_compressor` đúng 0/5. Tỷ lệ nhất quán cha–con là 0,9526: 95% lần, lớp con được đoán thuộc đúng nhóm của lớp gộp được đoán. Hai lớp gộp yếu nhất là `vehicle_idling` (F1 0,6154) và `vehicle_pass_by` (0,6538), có âm thanh gần nhau.
@@ -53,9 +61,11 @@ Vì huấn luyện SED không tất định (ADR-0021), câu trả lời dựa t
 
 @@NOTE:Nguồn: rq1_multiseed_clean_20260924.json và rq1_v2_multiseed_20260929.json (đọc lại thống kê đã lưu).@@
 
-**Kết luận RQ1:** với cả hai công thức, nhóm **không** có bằng chứng rằng huấn luyện thêm trên DataSEC cải thiện event-F1 so với chỉ dùng AudioSet. Điều này không có nghĩa DataSEC "vô ích" nói chung: PSDS-2 của công thức v2 tăng có ý nghĩa khi xét riêng, dù chưa hiệu chỉnh cho việc so sánh nhiều chỉ số. Đây là kết quả âm tính hợp lệ và được giữ nguyên; trọng tâm đóng góp vì vậy chuyển sang C1, C2 và C4 (ADR-0021).
+**Kết luận RQ1:** với cả hai công thức, nhóm **không** có bằng chứng rằng huấn luyện thêm trên DataSEC cải thiện event-F1 so với chỉ dùng AudioSet. Điều này không có nghĩa DataSEC "vô ích" nói chung: PSDS-2 của công thức v2 tăng có ý nghĩa khi xét riêng, dù chưa hiệu chỉnh cho việc so sánh nhiều chỉ số. Đây là kết quả âm tính hợp lệ và được giữ nguyên; tại thời điểm đó, trọng tâm đóng góp vì vậy chuyển sang C1, C2 và C4 (ADR-0021); về sau LBR trở thành kết quả định lượng mạnh nhất của đề tài (mục tiếp theo).
 
 ## Mô hình SED tiến bộ ra sao?
+
+Mục này kể lại các thế hệ SED theo thứ tự thời gian, vì mỗi bước cải tiến được chọn dựa trên chẩn đoán lỗi của bước trước. Người đọc chỉ cần hệ cuối có thể đi thẳng tới mục "LBR và hệ thống cuối"; ⟪fig:journey⟫ tóm tắt cả hành trình trong một hình.
 
 ### Vì sao event-F1 của v1 thấp?
 
@@ -73,7 +83,7 @@ Về ghép sự kiện trên ba nhánh v1: từ dev sang test, event-F1 với ng
 
 ### Vòng chọn S13 và hệ f2 (mốc so sánh)
 
-Vòng chọn S13 gồm 11 ứng viên đã ghi trước (Chương 4); sau vòng này, giai đoạn O (phần tiếp theo) thay cách chọn. Các ứng viên được xếp hạng bằng kiểm chứng chéo trên dev `annotated`, và lựa chọn được commit trước khi sinh dự đoán test cho các ứng viên chưa từng chạm test (commit `c3f0033`). Hệ f2 (T2b×3 với cSEBB) đứng đầu với event-F1 micro 0,2383 ± 0,0562. Chênh lệch với f4 chỉ 0,0029, nhỏ hơn độ lệch chuẩn của f2, nên f2 được *chọn* theo luật nhưng không được gọi là *tốt hơn* f4 (⟪tbl:s13⟫).
+Vòng chọn S13 gồm 11 ứng viên đã ghi trước (Chương 4); sau vòng này, giai đoạn O (phần tiếp theo) thay cách chọn. Các ứng viên được xếp hạng bằng kiểm chứng chéo trên dev `annotated`, và lựa chọn được commit trước khi sinh dự đoán test cho các ứng viên chưa từng chạm test (mã commit được ghi trong tệp đo của vòng chọn). Hệ f2 (T2b×3 với cSEBB) đứng đầu với event-F1 micro 0,2383 ± 0,0562. Chênh lệch với f4 chỉ 0,0029, nhỏ hơn độ lệch chuẩn của f2, nên f2 được *chọn* theo luật nhưng không được gọi là *tốt hơn* f4 (⟪tbl:s13⟫).
 
 @@CAP:tbl:s13|Xếp hạng 11 ứng viên trên dev và kết quả test annotated (một lần)@@
 
@@ -95,7 +105,7 @@ Phân tích theo lớp (Phụ lục C) cho thấy f2 còn rất yếu: 7/21 lớ
 
 ### Giai đoạn O: chọn bằng dự đoán ngoài mẫu và hệ B0
 
-Sau S13, nhóm đổi cách chọn (Chương 4). Trên 564 bản ghi có nhãn của train và dev, cả ba ứng viên qua vòng sàng lọc trên dev đều đảo chiều khi đo ngoài mẫu (PAPER_NOTES S56), nghĩa là xếp hạng bằng kiểm chứng chéo trên 134 bản ghi dev không đáng tin. Hệ **B0** đạt event-F1 micro ngoài mẫu 0,2342 (macro 0,1797) và được mở test một lần: macro 0,1366, micro 0,1806 [0,1261; 0,2384], so với 0,1206 và 0,1643 của f2. Hiệu B0 − f2 về micro là +0,0164 [−0,0128; +0,0495]; khoảng tin cậy chứa 0 nên báo cáo **không** gọi B0 tốt hơn f2 có ý nghĩa. B0 được giữ vì là hệ chọn được theo luật ghi trước trên tiêu chí ngoài mẫu.
+Sau S13, nhóm đổi cách chọn (Chương 4). Trên 564 bản ghi có nhãn của train và dev, cả ba ứng viên qua vòng sàng lọc trên dev đều đảo chiều khi đo ngoài mẫu, nghĩa là xếp hạng bằng kiểm chứng chéo trên 134 bản ghi dev không đáng tin. Hệ **B0** đạt event-F1 micro ngoài mẫu 0,2342 (macro 0,1797) và được mở test một lần: macro 0,1366, micro 0,1806 [0,1261; 0,2384], so với 0,1206 và 0,1643 của f2. Hiệu B0 − f2 về micro là +0,0164 [−0,0128; +0,0495]; khoảng tin cậy chứa 0 nên báo cáo **không** gọi B0 tốt hơn f2 có ý nghĩa. B0 được giữ vì là hệ chọn được theo luật ghi trước trên tiêu chí ngoài mẫu.
 
 Giai đoạn P thử thêm bốn hướng tăng khả năng phát hiện: thêm seed, chưng cất tri thức, cửa sổ 20 s và tăng cường gain/EQ. Không hướng nào vượt B0 ở vòng ngoài mẫu: thêm hai seed cho hiệu micro +0,0002 [−0,0142; +0,0141]; tăng cường gain/EQ qua sàng lọc trên dev (0,2402) nhưng hiệu ngoài mẫu là −0,0082 [−0,0258; +0,0088], lần thứ tư một ứng viên đảo chiều giữa hai tầng chọn. Test không được mở trong giai đoạn này.
 
@@ -147,6 +157,8 @@ Có hai cách đọc ⟪tbl:sedfinal⟫ mà số liệu không cho phép bỏ qu
 
 @@INCLUDE:report/final_tables/f02_intersection.md@@
 
+Trên **tập 19 lớp** đặt ra cho bối cảnh đô thị Việt Nam (Chương 1; bỏ `propeller_aircrafts` và `crows_seagulls_magpies`), event-F1 micro của B0 là 0,1892 và của LBR V2 là 0,3120; ở điểm ưu tiên phát hiện, LBR V3 có recall giao nhau 0,8319 với precision giao nhau 0,7810 (test annotated, 690 sự kiện tham chiếu; nguồn: sed_ensemble_B0_final_test_20261014T085016Z_eval_phase_lbr_annotated.md). Tập 19 lớp chỉ là phép lọc lớp trên DataSED, không phải dữ liệu thu tại Việt Nam.
+
 ### PSDS và lưới ngưỡng
 
 PSDS-1 và PSDS-2 là hai chỉ số theo dải ngưỡng nên phụ thuộc tập điểm vận hành. Lưới tuyến tính mặc định cắt phần lớn hộp của LBR (V2: 0,2146 / 0,2960), vì điểm của bộ chấm lại phân bố rất lệch. Với lưới log ghi trước, V2 đạt 0,3512 / 0,6116 và V3 đạt 0,3369 / 0,6167; B0 đo lại trên cùng lưới log đạt 0,3061 / 0,7452. Như vậy LBR có PSDS-1 cao hơn B0 nhưng PSDS-2 **thấp hơn rõ**, nhất quán với việc LBR đổi độ phủ lấy độ chính xác. Với hệ f2, 19 trên 48 điểm của lưới log bị bỏ vì vượt trần 50.000 sự kiện ghi trước (bộ nhớ của thư viện); nên PSDS lưới log của f2 không được báo.
@@ -169,7 +181,7 @@ Một con số event-F1 đứng riêng khó đọc, nên báo cáo đặt nó c�
 
 @@INCLUDE:report/final_tables/f11_calibration.md@@
 
-**Thang thứ hai: các mốc DCASE.** ⟪tbl:dcase⟫ liệt kê các mốc công bố trên trang kết quả của DCASE, đọc trực tiếp ngày 23/11/2026. Ở ghi âm đời thực DCASE 2016, event-F1 chỉ xét thời điểm bắt đầu chỉ từ 1,5% đến 8,1% trên 16 hệ nộp [@dcase2016task3]; event-F1 0,2965 của đề tài nghiêm hơn (phải khớp cả bắt đầu lẫn kết thúc) nhưng khác dữ liệu và số lớp. Với DESED, PSDS-1 và PSDS-2 của hệ cơ sở là 0,315 và 0,543 năm 2022, 0,327 và 0,538 năm 2023 [@dcase2022task4; @dcase2023task4a]; PSDS của đề tài (0,3061 đến 0,3512 với PSDS-1 và 0,6116 đến 0,7452 với PSDS-2, tùy lưới ngưỡng) cùng cỡ về độ lớn nhưng DESED là clip 10 s, 10 lớp, phần lớn tổng hợp, còn DataSED là bản ghi trung bình 94 s với 21 lớp và chỉ 564 bản ghi có nhãn cho huấn luyện và dev. Nhóm không viết "tương đương DESED".
+**Thang thứ hai: các mốc DCASE.** ⟪tbl:dcase⟫ liệt kê các mốc công bố trên trang kết quả của DCASE, đọc trực tiếp ngày 23/11/2026. Ở ghi âm đời thực DCASE 2016, event-F1 chỉ xét thời điểm bắt đầu chỉ từ 1,5% đến 8,1% trên 16 hệ nộp [@dcase2016task3]; event-F1 0,2965 của đề tài nghiêm hơn (phải khớp cả bắt đầu lẫn kết thúc) nhưng khác dữ liệu và số lớp. Với DESED, PSDS-1 và PSDS-2 của hệ cơ sở là 0,315 và 0,543 năm 2022, 0,327 và 0,538 năm 2023 [@dcase2022task4; @dcase2023task4a]; PSDS của đề tài (0,3061 đến 0,3512 với PSDS-1 và 0,6116 đến 0,7452 với PSDS-2, tùy hệ B0 hay LBR, cùng lưới log) cùng cỡ về độ lớn nhưng DESED là clip 10 s, 10 lớp, phần lớn tổng hợp, còn DataSED là bản ghi trung bình 94 s với 21 lớp và chỉ 564 bản ghi có nhãn cho huấn luyện và dev. Nhóm không viết "tương đương DESED".
 
 @@CAP:tbl:dcase|Các mốc công bố dùng để định cỡ (không so trực tiếp được)@@
 
@@ -228,7 +240,7 @@ Hai giới hạn khi đọc kết quả RQ2:
 
 @@INCLUDE:report/final_tables/f04b_caption_tiers.md@@
 
-Ba điều rút ra. **Một,** so với nhãn gốc, mọi cách sinh đều bỏ sót khoảng 34% đến 42% số lớp có thật ở f2, B0 và V2, kể cả template và constrained-cover vốn bằng 0 khi so với dự đoán; ở V3, độ phủ cao kéo bỏ sót xuống khoảng 0,11 (trừ constrained) nhưng ảo giác so với nhãn gốc lên 0,18 đến 0,23. **Hai,** chênh lệch giữa các cách sinh nhỏ hơn nhiều so với chênh lệch giữa các hệ SED: trong cùng một hệ, ảo giác so với nhãn gốc của bốn cách sinh lệch nhau nhiều nhất 0,056 (V3: 0,178 đến 0,234; B0 chỉ 0,017 đến 0,034), còn cùng một cách sinh lệch 0,16 đến 0,20 khi đổi từ V2 sang V3. Độ đúng của mô tả đối với âm thanh vì vậy do SED quyết định; phần bộ sinh đóng góp là không *thêm* lỗi ngoài lỗi của SED, đúng điều ràng buộc hứa. **Ba,** LLM tự do luôn có ảo giác so với nhãn gốc cao nhất trong cùng hệ, còn constrained chỉ thua template ở bỏ sót trên V3 (0,204 so với 0,107), đúng chỗ bảng test đã chỉ ra. Lưu ý: mô tả dev của f2 sinh trên dự đoán gần như trong mẫu của vòng chọn S13, nên hàng f2 chỉ để mô tả.
+Ba điều rút ra. **Một,** so với nhãn gốc, mọi cách sinh đều bỏ sót khoảng 34% đến 42% số lớp có thật ở f2, B0 và V2, kể cả template và constrained-cover vốn bằng 0 khi so với dự đoán; ở V3, độ phủ cao kéo bỏ sót xuống khoảng 0,11 (trừ constrained) nhưng ảo giác so với nhãn gốc lên 0,18 đến 0,23. **Hai,** chênh lệch giữa các cách sinh nhỏ hơn nhiều so với chênh lệch giữa các hệ SED: trong cùng một hệ, ảo giác so với nhãn gốc của bốn cách sinh lệch nhau nhiều nhất 0,056 (V3: 0,178 đến 0,234; B0 chỉ 0,017 đến 0,034), còn cùng một cách sinh lệch 0,16 đến 0,20 khi đổi từ V2 sang V3. Độ đúng của mô tả đối với âm thanh vì vậy do SED quyết định; phần bộ sinh đóng góp là không *thêm* lỗi ngoài lỗi của SED, đúng điều ràng buộc hứa. **Ba,** LLM tự do luôn có ảo giác so với nhãn gốc cao nhất trong cùng hệ, còn constrained bỏ sót nhiều hơn template ở cả bốn hệ, rõ nhất trên V3 (0,204 so với 0,107); ở ba hệ còn lại chênh lệch dưới 0,014, đúng chỗ bảng test đã chỉ ra. Lưu ý: mô tả dev của f2 sinh trên dự đoán gần như trong mẫu của vòng chọn S13, nên hàng f2 chỉ để mô tả.
 
 ### Mô tả gộp theo lớp và rào đón theo điểm tin cậy
 
@@ -236,13 +248,15 @@ Vì độ đúng của mô tả do SED quyết định, phần còn cải thiệ
 
 - Ảo giác và bỏ sót so với dòng thời gian dự đoán vẫn bằng 0 và thứ tự đúng 1,000 ở cả bốn hệ. Độ dài của V3 giảm còn trung bình 119 ký tự (dài nhất 449); ba hệ còn lại ngắn đi khoảng 2,9 đến 3,6 lần.
 - So với nhãn gốc, bỏ sót và tỷ lệ lớp được nêu sai không đổi (V3: 0,240 cho cả hai bộ sinh). Tỷ lệ ảo giác tính theo số lần nhắc thì tăng (V3: 0,178 lên 0,240), nhưng đây là do cách đếm: mô tả mẫu nhắc lặp các lớp đúng nên làm loãng tỷ lệ, còn mô tả gộp nhắc mỗi lớp một lần.
-- Rào đón mang thông tin. Ở V3, mệnh đề có rào đón chỉ đúng với nhãn gốc 17/98 lần, còn mệnh đề không rào đón đúng 202/228; hiệu độ chính xác +0,712 [+0,628; +0,796]. Như vậy nhãn "độ tin cậy thấp" trong giao diện báo đúng chỗ SED hay sai, và vì nó lấy từ điểm của bộ phát hiện chứ không do mô hình ngôn ngữ tự đặt, người dùng có thể dựa vào nó. f2 và B0 không có mệnh đề nào bị rào đón vì thang điểm của chúng khác thang của V3.
+- Rào đón mang thông tin. Ở V3, mệnh đề có rào đón chỉ đúng với nhãn gốc 17/98 lần, còn mệnh đề không rào đón đúng 202/228; hiệu độ chính xác +0,712 [+0,628; +0,796]. Ngưỡng rào đón được chọn trên chính tập dev này (phân vị của điểm sự kiện, không dùng nhãn), nên đây là phép đo trong mẫu và chưa được đo trên test. Như vậy nhãn "độ tin cậy thấp" trong giao diện báo đúng chỗ SED hay sai, và vì nó lấy từ điểm của bộ phát hiện chứ không do mô hình ngôn ngữ tự đặt, người dùng có thể dựa vào nó. f2 và B0 không có mệnh đề nào bị rào đón vì thang điểm của chúng khác thang của V3.
 
 
 
 Về độ tin cậy của lượt chạy: trong lúc sinh mô tả cho V3 trên dev, máy chủ llama.cpp gặp lỗi hết bộ nhớ GPU một lần; nhóm khởi động lại máy chủ và chạy tiếp, các tệp đã xong được giữ nguyên. Chuỗi yêu cầu sau khi khởi động lại khác chuỗi ban đầu, và vì llama.cpp chỉ tất định theo chuỗi yêu cầu, mô tả của các tệp chạy sau điểm này không chắc tái tạo được từng ký tự nếu chạy lại từ đầu. Sự việc được ghi ở ADR-0048.
 
 ## RQ3: truy hồi và câu trả lời có bằng chứng
+
+### Ba chế độ truy hồi
 
 ⟪tbl:rq3final⟫ báo kết quả truy hồi trên test với bộ lọc chuẩn (gold) lấy từ bộ truy vấn, cho bốn kho sự kiện dựng từ dự đoán của f2, B0, LBR V2 và LBR V3 (V3 ở điểm `recall_first`). Cùng bộ 100 truy vấn dùng cho mọi kho, trong đó 97 câu có ít nhất một bản ghi liên quan.
 
@@ -282,7 +296,7 @@ Hệ quả cho việc dùng hệ thống: khi người dùng cần kết quả �
 
 ### Chế độ backfill: giữ bộ lọc cứng và lấp chỗ trống
 
-Phân tích trên chỉ ra rằng hybrid thua không phải vì xếp sai mà vì trả quá ít kết quả: ở kho f2, 32/97 truy vấn có danh sách hybrid rỗng. Văn liệu về truy hồi lai cũng cho thấy cách trộn hai nguồn xếp hạng tốt nhất phụ thuộc miền dữ liệu [@bruch2023fusion]. Từ đó nhóm thử một chế độ thứ tư, gọi là backfill: giữ nguyên danh sách hybrid ở đầu (tầng 1, mọi kết quả thỏa bộ lọc), rồi nối các kết quả của vector_only chưa có trong danh sách cho đủ 10 (tầng 2, gắn nhãn "gần khớp, không thỏa bộ lọc"). Chế độ này không có tham số nào để chỉnh. Định nghĩa, so sánh chính và luật diễn giải được ghi trước ở ADR-0049, chạy trên validation rồi mới chạy test đúng một lần. Kết quả tính từ chính danh sách đã lưu của các lượt đánh giá trước, không dựng lại kho hay embed lại. Trước khi ghi ADR, nhóm kiểm rằng chỉ mục HNSW không cắt bớt kết quả lọc: ở cả tám báo cáo gold, mọi câu hybrid trả dưới 10 kết quả đều trả đúng tập của structured_only.
+Phân tích trên chỉ ra rằng hybrid thua không phải vì xếp sai mà vì trả quá ít kết quả: ở kho f2, 32/97 truy vấn có danh sách hybrid rỗng. Cần nói rõ đây là quan sát trên **test**: ý tưởng backfill đến từ phân rã lỗi RQ3 sau khi số test của ba chế độ đã có. Văn liệu về truy hồi lai cũng cho thấy cách trộn hai nguồn xếp hạng tốt nhất phụ thuộc miền dữ liệu [@bruch2023fusion]. Từ đó nhóm thử một chế độ thứ tư, gọi là backfill: giữ nguyên danh sách hybrid ở đầu (tầng 1, mọi kết quả thỏa bộ lọc), rồi nối các kết quả của vector_only chưa có trong danh sách cho đủ 10 (tầng 2, gắn nhãn "gần khớp, không thỏa bộ lọc"). Chế độ này không có tham số nào để chỉnh. Định nghĩa, so sánh chính và luật diễn giải được ghi trước ở ADR-0049, chạy trên validation rồi mới chạy test đúng một lần. Kết quả tính từ chính danh sách đã lưu của các lượt đánh giá trước, không dựng lại kho hay embed lại. Trước khi ghi ADR, nhóm kiểm rằng chỉ mục HNSW không cắt bớt kết quả lọc: ở cả tám báo cáo gold, mọi câu hybrid trả dưới 10 kết quả đều trả đúng tập của structured_only.
 
 @@CAP:tbl:rq3backfill|RQ3 trên test với bộ lọc gold: backfill so với vector_only và hybrid@@
 
@@ -300,7 +314,7 @@ Phân tích trên chỉ ra rằng hybrid thua không phải vì xếp sai mà v�
 
 Cái giá là độ đúng bộ lọc: chỉ 29% đến 31% kết quả top-10 của backfill thỏa bộ lọc ở ba kho độ phủ thấp (57% ở V3); phần còn lại là gợi ý gần nghĩa. Vì vậy nhóm không thay số RQ3 đã khóa của hybrid bằng backfill, mà dùng backfill trong ứng dụng với hai tầng tách bạch: câu trả lời chỉ khẳng định trên tầng 1, tầng 2 được hiển thị như gợi ý. Lượt chạy test này chỉ đọc danh sách đã lưu và được ghi vào sổ test như một lượt riêng.
 
-Độ đúng bộ lọc của structured_only và hybrid là 1,000 như kiến trúc yêu cầu. Con số này đo sự nhất quán với bộ lọc đã áp và với các sự kiện *dự đoán* lưu trong kho, không phải sự đúng đắn đối với ý người hỏi hay với âm thanh (bộ phân tích câu hỏi và SED đều có thể sai); truy vấn không có kết quả được tính bằng 1 theo quy ước, nên cần đọc cùng số truy vấn có trả lời ở bảng trên (58 đến 65 trên 97 với f2, B0 và V2). Ở mọi cấu hình trả lời, tỷ lệ khẳng định thiếu bằng chứng là 0,000: câu trả lời không vượt ra ngoài những gì kho chứa; đổi lại, kho thiếu thì câu trả lời cũng thiếu. Bộ lọc gold giả định câu hỏi luôn được phân tích đúng nên chỉ là cận trên: với bộ lọc do bộ phân tích câu hỏi sinh ra (parsed), nDCG@10 của hybrid tiếng Anh là 0,409 (f2), 0,377 (B0), 0,398 (V2) và 0,655 (V3), thấp hơn gold từ 0,006 đến 0,015.
+Độ đúng bộ lọc của structured_only và hybrid là 1,000 như kiến trúc yêu cầu. Con số này đo sự nhất quán với bộ lọc đã áp và với các sự kiện *dự đoán* lưu trong kho, không phải sự đúng đắn đối với ý người hỏi hay với âm thanh (bộ phân tích câu hỏi và SED đều có thể sai); truy vấn không có kết quả được tính bằng 1 theo quy ước, nên cần đọc cùng số truy vấn có trả lời ở bảng trên (58 đến 65 trên 97 với f2, B0 và V2). Ở mọi cấu hình trả lời, tỷ lệ khẳng định thiếu bằng chứng là 0,000: câu trả lời không vượt ra ngoài những gì kho chứa; đổi lại, kho thiếu thì câu trả lời cũng thiếu. Bộ lọc gold giả định câu hỏi luôn được phân tích đúng, tức kịch bản bộ phân tích không mắc lỗi: với bộ lọc do bộ phân tích câu hỏi sinh ra (parsed), nDCG@10 của hybrid tiếng Anh là 0,409 (f2), 0,377 (B0), 0,398 (V2) và 0,655 (V3), thấp hơn gold từ 0,006 đến 0,015 trên test; trên validation thì parsed lại cao hơn gold +0,012 (mục sau), nên gold không phải cận trên chặt.
 
 ## Bộ phân tích câu hỏi và độ khớp khi phục vụ
 
@@ -310,7 +324,7 @@ Bộ phân tích câu hỏi cho đầu ra hợp lược đồ ở 240/240 câu (
 
 @@INCLUDE:docs/thesis/tables/10_parser_l2.md|cols=1,2,3,4,5,6,7@@
 
-Hệ thống phục vụ cũng được kiểm xem có tái tạo đúng đầu ra đã đóng băng không, bằng cách so sự kiện (không chấm điểm lại trên test). Với B0, 351/352 sự kiện trùng khít trên GPU. Với LBR V3 `recall_first`, 573/692 sự kiện trùng khít, 665 lệch không quá một khung và 691 nằm trong collar 0,2 s; sai khác xác suất lớn nhất là 0,0020 và bộ tinh chỉnh khuếch đại nó thành dịch biên một khung. Khi chạy trong container CPU, phép tính số thực khác nên mức trùng còn thấp hơn; chênh lệch được định lượng ở các tệp đo của từng hệ.
+Hệ thống phục vụ cũng được kiểm xem có tái tạo đúng đầu ra đã đóng băng không, bằng cách so sự kiện (không chấm điểm lại trên test). Với B0, 351/352 sự kiện trùng khít trên GPU. Với LBR V3 `recall_first`, cũng trên GPU, 573/692 sự kiện trùng khít, 665 lệch không quá một khung và 691 nằm trong collar 0,2 s; sai khác xác suất lớn nhất là 0,0020 và bộ tinh chỉnh khuếch đại nó thành dịch biên một khung. Bản demo chạy trong container CPU, nơi phép tính số thực khác GPU; nhóm đã đo parity CPU cho các hệ cũ (v2, f2) nhưng **chưa đo parity CPU cho LBR V3**, nên mức trùng của bản demo chưa có số.
 
 ## Tái sử dụng tập test và mức tin cậy của các so sánh
 
@@ -318,8 +332,8 @@ Tập test annotated (139 bản ghi) không phải "dùng một lần" theo ngh�
 
 - **Dev không dự báo tốt test, nên vòng chọn được chuyển sang ngoài mẫu.** Ở vòng S13, tương quan hạng Spearman giữa micro kiểm chứng chéo trên dev và micro test của 11 ứng viên là ρ = 0,62 (0,49 nếu bỏ ứng viên a), tính lại từ bảng xếp hạng S13 (⟪fig:devtest⟫). Ví dụ, ứng viên d đứng thứ năm trên dev nhưng thứ chín trên test, còn f1 đứng thứ tư trên dev nhưng cao nhất trên test. Đây là lý do nhóm chuyển sang chọn trên 564 bản ghi dự đoán ngoài mẫu từ giai đoạn O.
 - **Ngoài mẫu và test cùng hướng.** Với LBR V2, hiệu micro ngoài mẫu so với B0 là +0,0990 và hiệu trên test là +0,1159; cả hai khoảng tin cậy đều không chứa 0. Sự nhất quán này là bằng chứng chống quá khớp mạnh hơn bất kỳ lượt test đơn lẻ nào.
-- **Có ba chỗ tái sử dụng thích nghi, được công khai.** Một, các thí nghiệm bỏ-từng-phần A2 (ngưỡng chung so với ngưỡng riêng từng lớp) và A5 (phân vị của khoảng trống tối đa) từng được đo trên test của các hệ cũ và gợi ý hướng chọn; ADR-0024 sau đó chọn lại hai thứ này bằng kiểm chứng chéo trên dev theo luật ghi trước, nhưng ý tưởng đến từ quan sát trên test. Hai, thiết kế của LBR (đặc trưng, siêu tham số, điểm vận hành) được thăm dò trên chính tập dự đoán ngoài mẫu dùng để chọn, và điểm "ưu tiên phát hiện" chạm đáy lưới ngưỡng; số trên test được mở một lần cho cấu hình đã khóa. Ba, 10 trong 42 lượt có cờ `dirty` như nêu ở phần hạn chế.
-- **Khoảng tin cậy không hiệu chỉnh cho so sánh bội.** Mỗi khoảng tin cậy trong báo cáo là bootstrap theo bản ghi cho một so sánh đã định trước, không hiệu chỉnh khi xét nhiều ứng viên hay nhiều chỉ số cùng lúc. Kết luận chính của đề tài (LBR so với B0) là một so sánh ghép cặp đã khóa trước, khoảng tin cậy không chứa 0 và cùng hướng với số ngoài mẫu; các so sánh phụ (ví dụ PSDS-2 của RQ1 ở công thức v2, p = 0,0193) không nên đọc là kết luận. Với RQ1, cận trên của khoảng tin cậy loại được lợi ích của DataSEC lớn hơn +0,0021 (công thức v1) và +0,0199 (công thức v2) về event-F1 micro; kết quả âm tính này không loại trừ lợi ích nhỏ hơn mức đó.
+- **Có bốn chỗ tái sử dụng thích nghi, được công khai.** Một, các thí nghiệm bỏ-từng-phần A2 (ngưỡng chung so với ngưỡng riêng từng lớp) và A5 (phân vị của khoảng trống tối đa) từng được đo trên test của các hệ cũ và gợi ý hướng chọn; ADR-0024 sau đó chọn lại hai thứ này bằng kiểm chứng chéo trên dev theo luật ghi trước, nhưng ý tưởng đến từ quan sát trên test. Hai, thiết kế của LBR (đặc trưng, siêu tham số, điểm vận hành) được thăm dò trên chính tập dự đoán ngoài mẫu dùng để chọn, và điểm "ưu tiên phát hiện" chạm đáy lưới ngưỡng; số trên test được mở một lần cho cấu hình đã khóa. Ba, 10 trong 42 lượt có cờ `dirty` như nêu ở phần hạn chế. Bốn, ý tưởng backfill đến từ phân rã lỗi RQ3 trên test; định nghĩa được ghi trước (ADR-0049), không có tham số và được kiểm trên validation trước khi chạy test một lần, nhưng hướng thử vẫn do test gợi ý.
+- **Khoảng tin cậy không hiệu chỉnh cho so sánh bội.** Mỗi khoảng tin cậy trong báo cáo là bootstrap theo bản ghi cho một so sánh đã định trước, không hiệu chỉnh khi xét nhiều ứng viên hay nhiều chỉ số cùng lúc. So sánh định lượng chính của phần SED (LBR so với B0) là một so sánh ghép cặp đã khóa trước, khoảng tin cậy không chứa 0 và cùng hướng với số ngoài mẫu; các so sánh phụ (ví dụ PSDS-2 của RQ1 ở công thức v2, p = 0,0193) không nên đọc là kết luận. Với RQ1, cận trên của khoảng tin cậy loại được lợi ích của DataSEC lớn hơn +0,0021 (công thức v1) và +0,0199 (công thức v2) về event-F1 micro; kết quả âm tính này không loại trừ lợi ích nhỏ hơn mức đó.
 
 ![](report/research_figures/r08_dev_vs_test.png){width=10cm}
 
@@ -329,7 +343,7 @@ Tập test annotated (139 bản ghi) không phải "dùng một lần" theo ngh�
 
 ## Thảo luận và hạn chế
 
-Tóm lại, nhóm có một hệ thống đầu–cuối chạy được, cùng bằng chứng cho từng câu hỏi nghiên cứu. RQ1 âm tính với nhiều seed và hai công thức. RQ2 cho thấy ràng buộc ngữ pháp loại bỏ các dạng ảo giác và suy diễn đo được ở cả bốn hệ SED, với cái giá là bỏ sót khi danh sách sự kiện dày, mà biến thể cover giải quyết. RQ3 cho thấy bộ lọc cứng bảo đảm đúng ràng buộc tuyệt đối (1,000 so với 0,27 của chỉ ngữ nghĩa), nhưng hybrid không hơn chỉ xếp hạng ngữ nghĩa về nDCG@10 trên ba kho có độ phủ thấp (thấp hơn có ý nghĩa), vì chất lượng xếp hạng bị chặn bởi việc SED dự đoán những sự kiện nào; riêng kho độ phủ cao V3 thì hybrid hơn; chế độ backfill, giữ bộ lọc cứng và lấp chỗ trống bằng kết quả ngữ nghĩa, cao hơn cả hai ở mọi kho. Điểm tiến bộ lớn nhất của SED là LBR (event-F1 micro 0,1806 lên 0,2965), nhưng cái giá là PSDS-2 và độ phủ giảm. Các hạn chế chính:
+Các kết quả trên quy về một luận điểm: **trong hệ thống này, độ đúng của mô tả và của câu trả lời bị chặn bởi bước phát hiện sự kiện; ràng buộc ngữ pháp và bộ lọc cứng không thêm lỗi ngoài lỗi của SED, nên cải tiến có tác dụng nằm ở SED và ở độ phủ khi truy hồi.** Một điểm căng cần nói cùng lúc: LBR cải thiện event-F1 nhưng không cải thiện truy hồi (hybrid 0,383 với B0 so với 0,404 với V2, khoảng tin cậy chồng nhau) và làm F1 theo đoạn giảm từ 0,7260 xuống 0,5965; truy hồi chỉ tăng khi độ phủ tăng (V3, backfill). Tóm lại, nhóm có một hệ thống đầu–cuối chạy được, cùng bằng chứng cho từng câu hỏi nghiên cứu. RQ1 âm tính với nhiều seed và hai công thức. RQ2 cho thấy ràng buộc ngữ pháp loại bỏ các dạng ảo giác và suy diễn đo được ở cả bốn hệ SED, với cái giá là bỏ sót khi danh sách sự kiện dày, mà biến thể cover giải quyết. RQ3 cho thấy bộ lọc cứng bảo đảm đúng ràng buộc tuyệt đối (1,000 so với 0,27 của chỉ ngữ nghĩa), nhưng hybrid không hơn chỉ xếp hạng ngữ nghĩa về nDCG@10 trên ba kho có độ phủ thấp (thấp hơn có ý nghĩa), vì chất lượng xếp hạng bị chặn bởi việc SED dự đoán những sự kiện nào; riêng kho độ phủ cao V3 thì hybrid hơn; chế độ backfill, giữ bộ lọc cứng và lấp chỗ trống bằng kết quả ngữ nghĩa, cao hơn cả hai ở mọi kho. Điểm tiến bộ lớn nhất của SED là LBR (event-F1 micro 0,1806 lên 0,2965), nhưng cái giá là PSDS-2 và độ phủ giảm. Các hạn chế chính:
 
 - **Tập đánh giá nhỏ.** Dev có 137 (134 annotated) và test có 142 (139 annotated) bản ghi, nên khoảng tin cậy rộng. Để có thước đo cụ thể: trên 139 bản ghi test, nửa độ rộng khoảng tin cậy 95% của hiệu micro ghép cặp là khoảng 0,022 ở RQ1 công thức v2 ([−0,0254; +0,0199]) và khoảng 0,043 ở LBR so với B0 ([+0,0741; +0,1593]); khoảng tin cậy riêng của từng hệ còn rộng hơn: khoảng ±0,031 ở v1 và từ ±0,056 đến ±0,066 ở f2, B0 và LBR V2. Một cải tiến nhỏ hơn cỡ 0,02 đến 0,04 event-F1 micro vì vậy không thể phân biệt với nhiễu chọn mẫu trên tập này, và đó là lý do nhóm không gọi các chênh lệch nhỏ giữa v2, f2 và B0 trên test là cải thiện. Bootstrap theo bản ghi chỉ phản ánh bất định do mẫu bản ghi, không phản ánh dao động giữa các seed.
 - **Huấn luyện SED không tất định.** Cùng mã và cùng seed, F1 macro theo khung của nhánh B vẫn đổi từ 0,5850 sang 0,5705; mọi so sánh SED cần nhiều seed, trong khi các thử nghiệm bỏ-từng-phần của v2 chỉ có một seed.
@@ -337,8 +351,9 @@ Tóm lại, nhóm có một hệ thống đầu–cuối chạy được, cùng 
 - **Giới hạn của nhãn.** Mức đồng thuận 0,5785 chỉ đo trên 8 cặp, chưa biết người gán, nên không phải trần của mô hình; collar 0,2 s chặt so với độ nhất quán của nhãn.
 - **Micro và macro.** Việc chọn hệ thống vẫn dùng micro dù macro được báo trước; B0 so với f2 và V2 so với V3 có thể đổi thứ tự theo macro hay micro.
 - **Sai lệch truy nguồn.** Sổ ghi test (Phụ lục B) cho thấy 10 trong 42 lượt đánh giá SED có cờ `dirty` (cây làm việc có tệp chưa commit do chính script sinh ra); mã và cấu hình không đổi và test không chạy lại, nhưng đây vẫn là hạn chế truy nguồn cần công khai. Các lượt của giai đoạn hoàn thiện đều chạy trên cây sạch.
-- **Trùng nguồn với AudioSet** (mức trùng không định lượng được), **chưa xác định được mốc so sánh công bố** trên DataSED trong phạm vi tra cứu của khóa luận và **bản DataSEC dùng chưa phải bản mới nhất** (bản 4 sửa lỗi số tệp của lớp Music).
+- **Trùng nguồn với AudioSet** (mức trùng không định lượng được), âm thanh được cắt ghép hoặc sửa tay theo bài mô tả dữ liệu, bốn nút lớp con DataSEC ít mẫu (dưới 25 tệp), **chưa xác định được mốc so sánh công bố** trên DataSED trong phạm vi tra cứu của khóa luận và **bản DataSEC dùng chưa phải bản mới nhất** (bản 4 sửa lỗi số tệp của lớp Music).
 - **PSDS phụ thuộc lưới ngưỡng**; một phần lưới của f2 bị bỏ vì trần bộ nhớ.
 - **Bộ đo mô tả dựa trên từ điển**, chỉ đối chiếu với một người đọc trên 60 mô tả; một số tệp mô tả V3 trên dev sau lần khởi động lại máy chủ không tái tạo từng ký tự.
-- **Kết quả RQ3 với bộ lọc gold** chỉ là cận trên về độ đúng bộ lọc; câu hỏi tổng quát kiểu "có những sự kiện gì trong âm thanh này?" chưa được bộ phân tích hỗ trợ.
+- **Chưa đo trên bản ghi thu tại Việt Nam** hay bất kỳ dữ liệu nào ngoài họ DataSEC/DataSED; tập 19 lớp chỉ là phép lọc lớp trên DataSED. Field test bằng bản ghi điện thoại chưa thực hiện.
+- **Kết quả RQ3 với bộ lọc gold** giả định bộ phân tích câu hỏi không sai; câu hỏi tổng quát kiểu "có những sự kiện gì trong âm thanh này?" chưa được bộ phân tích hỗ trợ.
 - **Tra cứu văn liệu ở mức khóa luận**, không phải tổng quan hệ thống đầy đủ (Chương 2).

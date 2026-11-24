@@ -4,13 +4,15 @@ Chương này trình bày phương pháp theo luồng dữ liệu của hệ th�
 
 ## Kiến trúc tổng thể
 
-Hệ thống gồm năm khối nối tiếp (⟪fig:architecture⟫). Bản ghi âm đi qua dịch vụ suy luận để thành danh sách sự kiện. Danh sách này được dùng theo hai hướng: sinh mô tả bám sát sự kiện, và lưu vào kho sự kiện để truy hồi. Câu hỏi của người dùng được chuyển thành bộ lọc, truy hồi trong kho, rồi trả lời kèm bằng chứng. Ranh giới quan trọng nhất là **bước ghép xác suất thành sự kiện thuộc dịch vụ suy luận, không thuộc mô hình**: ngưỡng và tham số là kết quả hiệu chuẩn trên dev, lưu cạnh checkpoint và nạp khi phục vụ. Nhờ vậy đổi được điểm vận hành mà không cần huấn luyện lại.
+⟪fig:dataflow⟫ là luồng xử lý dữ liệu của hệ thống cuối, từ tệp âm thanh tới kho sự kiện. Tệp được đổi về đơn kênh 16 kHz, chuyển thành phổ log-mel 128 dải với 100 khung mỗi giây, rồi cắt thành cửa sổ 10 s trượt bước 5 s. Năm mô hình fold của B0 cho xác suất theo khung của 21 lớp; xác suất các cửa sổ chồng nhau được gộp theo trọng số tam giác. cSEBB biến ma trận xác suất thành các hộp sự kiện, LBR dời biên và chấm lại từng hộp, và kết quả là dòng thời gian sự kiện. Từ dòng thời gian, hệ thống sinh mô tả tiếng Anh và tiếng Việt, ghép thành một tài liệu truy hồi, nhúng tài liệu bằng BGE-M3 và lưu tất cả vào kho PostgreSQL. Mọi tham số của chuỗi này (ngưỡng, cSEBB, LBR, ngưỡng rào đón) được chọn ngoại tuyến rồi khóa; khi phục vụ, hệ thống chỉ nạp tham số đã khóa. Mục "Các dịch vụ" ở Chương 5 mô tả cách chuỗi này được chia vào các dịch vụ.
 
-![](report/final_figures/f02_architecture.png){width=13cm}
+Về mặt chức năng, danh sách sự kiện được dùng theo hai hướng. Danh sách này được dùng theo hai hướng: sinh mô tả bám sát sự kiện, và lưu vào kho sự kiện để truy hồi. Câu hỏi của người dùng được chuyển thành bộ lọc, truy hồi trong kho, rồi trả lời kèm bằng chứng. Ranh giới quan trọng nhất là **bước ghép xác suất thành sự kiện thuộc dịch vụ suy luận, không thuộc mô hình**: ngưỡng và tham số là kết quả hiệu chuẩn trên dev, lưu cạnh checkpoint và nạp khi phục vụ. Nhờ vậy đổi được điểm vận hành mà không cần huấn luyện lại.
 
-@@CAP:fig:architecture|Kiến trúc tổng thể của hệ thống@@
+![](report/final_figures/s01_data_flow.png){width=15cm}
 
-@@NOTE:Nguồn: scripts/build_midterm_figures.py; đối chiếu services/, ml/inference/, docker-compose.yml.@@
+@@CAP:fig:dataflow|Luồng xử lý dữ liệu của hệ thống cuối, từ tệp âm thanh tới kho sự kiện@@
+
+@@NOTE:Nguồn: scripts/build_system_figures.py; tham số đọc từ manifest của sed_served_B0_20261107T175659Z và ml/inference/pipeline.py.@@
 
 Đề tài so sánh nhiều thế hệ mô hình nên báo cáo dùng một số mã gọi tắt, giải thích ở ⟪tbl:codes⟫. Mỗi mã ứng với một thư mục huấn luyện có đầy đủ cấu hình để tái lập.
 
@@ -27,7 +29,7 @@ Hệ thống gồm năm khối nối tiếp (⟪fig:architecture⟫). Bản ghi 
 | g1, g2 | Ứng viên dùng focal loss: g1 = T2b focal×3; g2 = g1 kết hợp f2 |
 | S13 | Vòng chọn hệ SED cuối của giai đoạn trước; hệ được khóa là f2, giữ làm mốc so sánh |
 | B0 | Hệ SED cuối giai đoạn O: công thức T2b, sửa dữ liệu huấn luyện, 5 mô hình theo fold, suy luận chồng lấn bước 5 s, cSEBB |
-| LBR V2, V3 | Tinh chỉnh biên và chấm lại hộp học được trên xác suất ngoài mẫu của B0; V2 dùng điểm vận hành f1 (số chính), V3 dùng recall_first (demo) |
+| LBR V2, V3 | Tinh chỉnh biên và chấm lại hộp học được trên xác suất ngoài mẫu của B0; V2 dùng điểm tối đa event-F1 (số chính), V3 dùng điểm ưu tiên phát hiện `recall_first` (demo) |
 
 @@NOTE:Nguồn: ADR-0030, ADR-0031 §4, ADR-0032, ADR-0038, ADR-0041, ADR-0045, ADR-0046; docs/measurements/s13_selection_20261018.md.@@
 
@@ -66,7 +68,7 @@ Checkpoint ngoài được kiểm SHA-256 trước khi dùng. Mã BEATs và Pret
 
 @@NOTE:Nguồn: logs/history.json của năm run thành viên trong ml/runs/sed_served_B0_20261107T175659Z/manifest.json; chỉ số trên dev của từng fold.@@
 
-**Tinh chỉnh biên và chấm lại hộp (LBR).** Phân tích lỗi OOF của B0 (⟪fig:fnbreakdown⟫, ⟪fig:onsetbias⟫) cho thấy B0 chỉ khớp đúng 592 trong 3.294 sự kiện tham chiếu. Trong 2.702 sự kiện bị bỏ sót, 1.477 không có hộp cùng lớp nào chồng lên, nhưng 789 trong số đó (53%) có xác suất khung lớn nhất từ 0,9 trở lên: mô hình đã "nghe thấy", chỉ là hộp do cSEBB sinh ra bị loại. 872 sự kiện khác có hộp cùng lớp nhưng lệch biên, chủ yếu ở biên đầu (656). Biên đầu bị đoán sớm có hệ thống: 8 trong 21 lớp có trung vị lệch vượt ngoài collar 0,2 s, nặng nhất là các lớp dài như `train` và `jet_aircrafts` (khoảng −1,5 s) và `vehicle_pass_by` (−1,06 s). Nút thắt nằm ở biên hộp sau hậu xử lý, không phải ở nhận dạng (ADR-0045). LBR gồm hai mô hình HistGradientBoosting học trên xác suất OOF: bộ **tinh chỉnh** dịch thời điểm bắt đầu và kết thúc của từng hộp cSEBB, và bộ **chấm lại** ước lượng xác suất hộp đúng. Việc học lồng nhau (cross-fit) trên 5 fold bảo đảm không mô hình nào thấy fold nó chấm; khả năng chuyển sang xác suất của mô hình khác được kiểm trên OOF của ba seed. Có hai biến thể. **V2** dùng nhãn khớp collar và điểm vận hành `f1`; đây là số chính, chọn ở tầng C. **V3** dùng nhãn khớp giao nhau và điểm vận hành `recall_first` (recall giao nhau tối đa với precision giao nhau không dưới 0,6, ADR-0046); đây là cấu hình ứng dụng cho demo và được ghi trước khi mở test. Với bài toán giám sát, câu hỏi "sự kiện này có được phát hiện không" nhiều khi quan trọng hơn việc khớp biên chặt, nên hai thước giao nhau được báo kèm; chúng không dùng để chọn hệ thống chính.
+**Tinh chỉnh biên và chấm lại hộp (LBR).** Phân tích lỗi OOF của B0 (⟪fig:fnbreakdown⟫, ⟪fig:onsetbias⟫) cho thấy B0 chỉ khớp đúng 592 trong 3.294 sự kiện tham chiếu. Trong 2.702 sự kiện bị bỏ sót, 1.477 không có hộp cùng lớp nào chồng lên, nhưng 789 trong số đó (53%) có xác suất khung lớn nhất từ 0,9 trở lên: mô hình đã "nghe thấy", chỉ là hộp do cSEBB sinh ra bị loại. 872 sự kiện khác có hộp cùng lớp nhưng lệch biên, chủ yếu ở biên đầu (656). Biên đầu bị đoán sớm có hệ thống: 8 trong 21 lớp có trung vị lệch vượt ngoài collar 0,2 s, nặng nhất là các lớp dài như `train` và `jet_aircrafts` (khoảng −1,5 s) và `vehicle_pass_by` (−1,06 s). Nút thắt nằm ở biên hộp sau hậu xử lý, không phải ở nhận dạng (ADR-0045). LBR gồm hai mô hình HistGradientBoosting học trên xác suất OOF: bộ **tinh chỉnh** dịch thời điểm bắt đầu và kết thúc của từng hộp cSEBB, và bộ **chấm lại** ước lượng xác suất hộp đúng. Việc học lồng nhau (cross-fit) trên 5 fold bảo đảm không mô hình nào thấy fold nó chấm; khả năng chuyển sang xác suất của mô hình khác được kiểm trên OOF của ba seed. Có hai biến thể. Hai mô hình nối tiếp nhau (⟪fig:lbr⟫): bộ chấm lại nhận cả độ dời do bộ tinh chỉnh dự đoán làm đặc trưng. **V2** dùng nhãn khớp collar và điểm tối đa event-F1; đây là số chính, chọn ở tầng C. **V3** dùng nhãn khớp giao nhau và điểm vận hành `recall_first` (recall giao nhau tối đa với precision giao nhau không dưới 0,6, ADR-0046); đây là cấu hình ứng dụng cho demo và được ghi trước khi mở test. Với bài toán giám sát, câu hỏi "sự kiện này có được phát hiện không" nhiều khi quan trọng hơn việc khớp biên chặt, nên hai thước giao nhau được báo kèm; chúng không dùng để chọn hệ thống chính.
 
 ![](report/research_figures/r05_fn_breakdown.png){width=15cm}
 
@@ -80,7 +82,13 @@ Checkpoint ngoài được kiểm SHA-256 trước khi dùng. Mã BEATs và Pret
 
 @@NOTE:Nguồn: như hình trước; tính trên các sự kiện khớp 1-1 cùng lớp.@@
 
-## Ghép xác suất thành sự kiện
+![](report/final_figures/s02_lbr.png){width=14cm}
+
+@@CAP:fig:lbr|Hai bộ học của LBR và cách học lồng nhau trên dự đoán ngoài mẫu@@
+
+@@NOTE:Nguồn: scripts/build_system_figures.py; đối chiếu ml/postprocessing/boundary_refine.py, lbr_crossfit.py.@@
+
+## Hậu xử lý của hệ thống
 
 Có hai cách ghép, và cách nào cũng được chọn trên dev.
 
@@ -109,6 +117,8 @@ Hai lớp gộp phải giữ mức mơ hồ (Chương 3). Danh sách rỗng đư
 
 **Vai trò thật của từng cách sinh.** Cần nói rõ để không đọc RQ2 quá mức. Thứ nhất, với ngữ pháp ở trên, việc constrained và constrained-cover không có ảo giác nguồn âm, từ cấm hay thời điểm bịa là hệ quả của cấu tạo, nên RQ2 đo *cái giá* của ràng buộc (bỏ sót) và *mức lệch* của cách viết tự do, không phải một khám phá bất ngờ. Thứ hai, câu constrained gần như câu template: so với mô tả template của cùng danh sách sự kiện, constrained đạt BLEU-4 0,358 và CIDEr 3,60 còn unconstrained chỉ 0,015 và 0,116 (Chương 6; tham chiếu là template nên đây chỉ đo độ giống văn phong). Thứ ba, vì vậy **ứng dụng không dùng mô hình ngôn ngữ để viết mô tả**: mô tả hiển thị và câu trả lời truy hồi đều sinh bằng template tất định, vì template bằng 0 ở mọi chỉ số lỗi và không tốn tính toán. Mô hình ngôn ngữ trong hệ thống chạy cục bộ chỉ giữ vai trò bộ phân tích câu hỏi (phần dưới). Phần so sánh bốn cách sinh là thí nghiệm về độ tin cậy của mô tả sinh tự do và giá của việc ràng buộc, chứ không phải mô tả cấu hình phục vụ.
 
+**Mô tả gộp theo lớp trong bản phục vụ.** Template của RQ2 viết một mệnh đề cho mỗi sự kiện, nên với dòng thời gian dày của V3 câu rất dài. Bản phục vụ dùng một biến thể (ADR-0050): mỗi lớp một dòng kiểu thông báo theo thứ tự onset đầu tiên, lớp có nhiều sự kiện được đếm số lần trong khoảng từ onset đầu đến offset cuối ("Phát hiện: tiếng chim, 2 lần, 0,0–20,0 giây."). Nếu điểm cao nhất của các sự kiện trong lớp dưới một ngưỡng rào đón, nhãn đầu dòng đổi thành "Có thể có (độ tin cậy thấp)" (tiếng Anh: "Possible (low confidence)"). Ngưỡng là phân vị 33,3% điểm sự kiện trên dev của LBR V3, chọn trước khi đo. Biến thể này vẫn thỏa G1–G3 vì chỉ nhắc lớp có trong danh sách, trích sự kiện đầu tiên của lớp làm bằng chứng, và nhãn không dùng từ như "cảnh báo" (thuộc danh sách từ cấm của G3); số RQ2 vẫn là của template gốc.
+
 Mô tả tiếng Anh dùng cho đánh giá; mô tả tiếng Việt dùng cho giao diện, sinh bằng template với từ điển tiếng Việt riêng và khớp có giữ dấu (ADR-0025). Từ điển tách riêng để mã băm của từ điển tiếng Anh dùng cho RQ2 không đổi; giữ dấu vì bỏ dấu sẽ khiến G3 khớp nhầm, như "tới phạm vi" bị đọc thành "tội phạm".
 
 ⟪fig:timeline⟫ đặt cạnh nhau danh sách sự kiện từ nhãn gốc và từ dự đoán của hệ f2 trên bản ghi dev S-0009. Mô tả constrained-cover sinh từ dự đoán là: *"The sound of jet aircrafts can be heard from 0.3 to 10.0 seconds, followed by the sound of birds from 10.0 to 29.2 seconds and the sound of birds from 90.0 to 108.8 seconds."* Mọi nguồn âm và mốc thời gian trong câu đều có sự kiện dự đoán tương ứng, nên câu hợp lệ theo G1–G3. Nhưng so với nhãn gốc, câu đặt tiếng máy bay phản lực sai chỗ và bỏ qua ba sự kiện xung và một sự kiện xe chạy qua. Đây là khoảng cách giữa "bám sát dự đoán" và "đúng với âm thanh" được phân tích ở phần đánh giá và Chương 6.
@@ -136,13 +146,17 @@ Mô tả tiếng Anh dùng cho đánh giá; mô tả tiếng Việt dùng cho gi
 
 @@NOTE:Nguồn: ml/retrieval/temporal.py (bảng PREDICATES); điều kiện có dung sai τ khai báo trong truy vấn, mặc định 0.@@
 
+**Chế độ thứ tư: backfill.** Khi SED bỏ sót, hybrid trả về ít hơn $k$ kết quả, có khi rỗng, trong khi vector_only vẫn trả đủ danh sách. Backfill giữ nguyên danh sách hybrid làm tầng thứ nhất rồi lấp các chỗ còn trống bằng kết quả vector_only chưa có trong danh sách, cắt ở $k = 10$. Kết quả tầng thứ hai không thỏa bộ lọc nên được gắn nhãn "gần khớp, không thỏa bộ lọc" khi hiển thị và chỉ được nêu tên trong câu trả lời, không làm bằng chứng. Chế độ này không có tham số tự do. Ý tưởng đến từ phân rã lỗi RQ3 sau khi ba chế độ đầu đã có số trên test (Chương 6), nên định nghĩa được ghi trước ở ADR-0049, kiểm trên validation rồi mới đo trên test một lần; số RQ3 của ba chế độ cũ giữ nguyên.
+
 **Bộ phân tích câu hỏi.** Câu hỏi tiếng Việt hoặc tiếng Anh được chuyển thành bộ lọc JSON bằng cùng mô hình ngôn ngữ cục bộ, bị ràng buộc bởi lược đồ sinh từ 21 lớp và bốn điều kiện (ADR-0036), nên không thể tạo lớp hay điều kiện không tồn tại. Lược đồ chỉ bảo đảm *hình thức*, không bảo đảm *nghĩa* (vẫn có thể đảo vai trò a/b), nên độ đúng ngữ nghĩa được đo riêng (Chương 6). Trên giao diện, bộ lọc hiện thành thẻ để người dùng sửa trước khi truy vấn.
 
 **Câu trả lời có bằng chứng** được sinh tất định từ các bản ghi đã truy hồi: mỗi câu nhắc lại một sự kiện bằng chứng (lớp, khoảng thời gian); không có kết quả thì trả danh sách bằng chứng rỗng kèm bộ lọc đã áp, không suy diễn; không nêu nguyên nhân hay mức nguy hiểm. Một bộ kiểm độc lập đếm khẳng định không có bằng chứng tương ứng (tỷ lệ khẳng định thiếu bằng chứng).
 
-## Cách đánh giá
+## Giao thức đánh giá
 
 **Chọn trên dev, kiểm tra một lần.** Tập train dùng để tối ưu mô hình và suy giới hạn độ dài. Tập dev dùng để chọn ngưỡng, checkpoint và cấu hình. Tập test chỉ dùng để đo cấu hình đã khóa, và **mỗi cấu hình đã khóa chỉ được mở test một lần**; đây không có nghĩa tập test chỉ được dùng một lần, vì nhiều cấu hình lần lượt qua cùng tập test (xem "Tái sử dụng tập test" ở Chương 6). Từ SED v2, quy trình được siết thêm: các lần huấn luyện không sinh dự đoán test; lựa chọn trên dev được commit vào git **trước** khi sinh dự đoán test bằng một đường riêng, và một tùy chọn kiểm chứng đường này tái tạo trùng từng bit dự đoán dev. Mọi lần chạm test được ghi vào một sổ sinh tự động. Mọi cấu hình đã chạy trên test đều được báo cáo, kể cả cấu hình kém, và không cấu hình nào được chọn lại sau khi xem test.
+
+**Bốn phép đo phụ.** Ngoài các chỉ số chính, Chương 6 báo bốn phép đo chỉ đọc lại artifact đã có, không huấn luyện và không chạy lại mô hình: (1) chấm mô tả so với **nhãn gốc** thay vì so với dự đoán, để tách lỗi do SED khỏi lỗi do bộ sinh; (2) độ nhạy của chính bộ đo, bằng cách chèn lỗi có chủ đích (thêm lớp, thêm cụm từ ngoài từ điển) vào mô tả và đếm số lỗi bộ đo bắt được; (3) phân rã lỗi truy hồi theo nguyên nhân (truy vấn không có kết quả vì SED bỏ sót, hay có kết quả nhưng xếp sai); (4) độ chính xác của mệnh đề có và không có rào đón trong mô tả gộp.
 
 **Chỉ số cho mô tả.** Gọi $\mathcal{M}$ là tập nguồn âm được nhắc trong một mô tả (trích bằng từ điển) và $\mathcal{C}$ là tập lớp trong danh sách sự kiện. Tỷ lệ ảo giác $H$ và tỷ lệ bỏ sót $O$ là
 
@@ -156,11 +170,11 @@ rồi lấy trung bình trên các bản ghi. Bỏ sót tính theo **lớp**, kh
 
 **Chỉ số cho truy hồi.** Gọi $R_q$ là tập bản ghi liên quan của truy vấn $q$, tính từ **nhãn gốc** bằng đúng ngữ nghĩa của bộ lọc, và $r_i$ là bản ghi xếp thứ $i$. Với độ liên quan nhị phân:
 
-$$\text{Recall@}k = \frac{|\{r_1..r_k\} \cap R_q|}{|R_q|}, \qquad \text{nDCG@}10 = \frac{\sum_{i=1}^{10}\mathbb{1}[r_i \in R_q]/\log_2(i+1)}{\sum_{i=1}^{\min(|R_q|,10)}1/\log_2(i+1)}$$
+$$\text{nDCG@}10 = \frac{\sum_{i=1}^{10}\mathbb{1}[r_i \in R_q]/\log_2(i+1)}{\sum_{i=1}^{\min(|R_q|,10)}1/\log_2(i+1)}$$
 
 ⟪eqno:ndcg⟫
 
-MRR là nghịch đảo hạng của kết quả liên quan đầu tiên. Độ đúng bộ lọc là tỷ lệ kết quả thỏa **mọi** bộ lọc cứng; structured_only và hybrid phải đạt 1,000, thấp hơn là lỗi kiến trúc chứ không phải hiệu năng kém. Bộ truy vấn gồm 100 câu thuộc bốn nhóm (21 một lớp, 27 nhiều lớp, 30 quan hệ thời gian, 22 thời lượng), chọn theo nhãn tập **train** trước khi xem kết quả; trên test có 97/100 câu có ít nhất một bản ghi liên quan.
+Độ đúng bộ lọc là tỷ lệ kết quả thỏa **mọi** bộ lọc cứng; structured_only và hybrid phải đạt 1,000, thấp hơn là lỗi kiến trúc chứ không phải hiệu năng kém. Bộ truy vấn gồm 100 câu thuộc bốn nhóm (21 một lớp, 27 nhiều lớp, 30 quan hệ thời gian, 22 thời lượng), chọn theo nhãn tập **train** trước khi xem kết quả; trên test có 97/100 câu có ít nhất một bản ghi liên quan.
 
 **PSDS và lưới ngưỡng.** PSDS lấy từ đường PSD-ROC do thư viện `psds_eval` dựng trên một tập điểm vận hành, nên giá trị phụ thuộc lưới ngưỡng. Lưới tuyến tính mặc định cắt phần lớn hộp của LBR vì điểm của bộ chấm lại phân bố rất lệch. Nhóm vì vậy ghi trước lưới log `geomspace(1e-5, 0,99; 48)` và đo lại (ADR-0047), rồi đo B0 trên cùng lưới trước khi so (ADR-0048); báo cáo nêu cả hai lưới khi khác nhau và **không** so số PSDS giữa các lưới.
 

@@ -1,5 +1,7 @@
 # GIỚI THIỆU
 
+Chương này nêu vấn đề mà đề tài giải quyết, bối cảnh áp dụng ở Việt Nam, ba câu hỏi nghiên cứu và các đóng góp. Cuối chương tóm tắt kết quả chính và luận điểm xuyên suốt báo cáo, để người đọc biết trước đích đến của các chương sau.
+
 ## Vì sao chọn đề tài
 
 Giám sát tiếng ồn ngoài trời thường chỉ dựa vào mức ồn trung bình. Con số này cho biết khu vực ồn đến đâu, nhưng không cho biết tiếng ồn đến từ nguồn nào, xuất hiện lúc nào và kéo dài bao lâu. Hai đêm có cùng mức ồn có thể do xe cộ hoặc do công trường, và mỗi trường hợp cần cách xử lý khác nhau. Vì vậy, nhóm quan tâm đến bài toán phát hiện sự kiện âm thanh (Sound Event Detection – SED): trong một bản ghi dài, xác định nguồn âm nào xuất hiện, bắt đầu (onset) và kết thúc (offset) lúc nào [@mesaros2021tutorial].
@@ -32,7 +34,7 @@ $$\operatorname{mention}(y) \subseteq \{\, c_i : (c_i, t^{on}_i, t^{off}_i, s_i)
 
 Tiếng ồn ở Việt Nam được điều chỉnh bởi **QCVN 26:2025/BNNMT** về tiếng ồn, thay QCVN 26:2010/BTNMT theo Lời nói đầu của văn bản; nhóm chỉ trích từ bản quy chuẩn gốc. Quy chuẩn đặt giới hạn theo ba yếu tố: **loại nguồn** (cơ sở có thiết bị, loa, công trường xây dựng đang thi công, giao thông đường bộ và đường sắt), **khung giờ** (ban ngày 06:00 đến 18:00, buổi tối 18:00 đến 22:00, ban đêm 22:00 đến 06:00; riêng giao thông chia thành hai khung, trước và sau 22:00) và **thời gian phát ra tiếng ồn**. Ví dụ, giới hạn đối với công trường ở khu vực A, B, C là 65, 60 và 50 dBA theo ba khung giờ (Bảng 3), và Bảng 2 cho phép nới ngưỡng của cơ sở sản xuất, kinh doanh, dịch vụ thêm 15 dBA khi tiếng ồn phát ra không quá 1 giờ ban ngày, giảm dần qua các mức 10, 5 và 3 dBA khi thời gian dài hơn, và về 0 khi trên 6 giờ ban ngày [@qcvn262025]. "Nguồn nào, vào lúc nào, kéo dài bao lâu" chính là những gì dòng thời gian sự kiện của hệ thống trả lời được.
 
-Quy chuẩn cũng vạch ra giới hạn của đề tài. Mục 3.2 yêu cầu đo bằng **máy đo mức âm loại 1** theo TCVN 12527-1:2018, đã kiểm định và hiệu chuẩn [@qcvn262025]. Hệ thống của nhóm xử lý tệp âm thanh thông thường, **không đo mức ồn bằng dBA**, nên chỉ là công cụ **sàng lọc và khoanh vùng**: giúp chọn bản ghi và khoảng thời gian có nguồn đáng chú ý để đo hoặc nghe lại, và không phải bằng chứng vi phạm. Tương tự, hệ thống chỉ gọi tên nguồn âm quan sát được (ví dụ "có nhạc"), không kết luận loại hình cơ sở (ví dụ "có karaoke") hay hành vi vi phạm, theo ADR-0001. Mục "Tình huống sử dụng và yêu cầu" ở Chương 5 nêu người dùng giả định và yêu cầu tương ứng; ⟪tbl:qcvnmap⟫ nêu ánh xạ do nhóm đề xuất từ lớp âm thanh sang hạng mục nguồn của quy chuẩn.
+Quy chuẩn cũng vạch ra giới hạn của đề tài. Mục 3.2 yêu cầu đo bằng **máy đo mức âm loại 1** theo TCVN 12527-1:2018, đã kiểm định và hiệu chuẩn [@qcvn262025]. Hệ thống của nhóm xử lý tệp âm thanh thông thường, **không đo mức ồn bằng dBA**, nên chỉ là công cụ **sàng lọc và khoanh vùng**: giúp chọn bản ghi và khoảng thời gian có nguồn đáng chú ý để đo hoặc nghe lại, và không phải bằng chứng vi phạm. Tương tự, hệ thống chỉ gọi tên nguồn âm quan sát được (ví dụ "có nhạc"), không kết luận loại hình cơ sở (ví dụ "có karaoke") hay hành vi vi phạm, theo ADR-0001 (mỗi quyết định thiết kế được ghi thành một bản ghi quyết định kiến trúc, Architecture Decision Record – ADR, lưu trong repo). Mục "Tình huống sử dụng và yêu cầu" ở Chương 5 nêu người dùng giả định và yêu cầu tương ứng; ⟪tbl:qcvnmap⟫ nêu ánh xạ do nhóm đề xuất từ lớp âm thanh sang hạng mục nguồn của quy chuẩn.
 
 @@CAP:tbl:qcvnmap|Ánh xạ đề xuất từ lớp âm thanh sang hạng mục nguồn của QCVN 26:2025/BNNMT@@
 
@@ -48,7 +50,7 @@ Quy chuẩn cũng vạch ra giới hạn của đề tài. Mục 3.2 yêu cầu 
 
 @@NOTE:Nguồn: QCVN 26:2025/BNNMT (đọc trực tiếp bản gốc, 23/11/2026). Ánh xạ là đề xuất của nhóm, không phải phân loại của quy chuẩn. Ngày hiệu lực và điều khoản chuyển tiếp nằm ở Thông tư ban hành, nhóm chưa kiểm trực tiếp.@@
 
-Để đo hệ thống ở góc nhìn này, nhóm báo thêm một **tập 19 lớp** bỏ hai lớp ít gặp ở đô thị Việt Nam (`propeller_aircrafts` và `crows_seagulls_magpies`; ADR-0046) và hai thước dễ đọc hơn event-F1 chặt: phát hiện theo giao nhau và F1 theo đoạn 1 s. Tập lớp được chọn theo tiêu chí thực tế, không theo điểm, nhưng số OOF của các tập lớp đã được xem trước khi viết quyết định này (ADR-0046). Trên 19 lớp, event-F1 micro (collar 0,2 s) của B0 là 0,1892 và của LBR V2 là 0,3120; ở điểm vận hành ưu tiên phát hiện, LBR V3 bắt được 83,2% sự kiện tham chiếu theo thước giao nhau với precision 78,1% (test annotated). Nhóm **chưa có phép đo định lượng nào trên bản ghi thu ở Việt Nam**: cả hai bộ dữ liệu đều là dữ liệu công bố sẵn, nhóm chưa kiểm nơi thu và không khẳng định chúng đại diện cho âm thanh đô thị Việt Nam; giới hạn này được nêu ở Chương 6 và Chương 7.
+Để đo hệ thống ở góc nhìn này, nhóm báo thêm một **tập 19 lớp** bỏ hai lớp ít gặp ở đô thị Việt Nam (`propeller_aircrafts` và `crows_seagulls_magpies`; ADR-0046) và hai thước dễ đọc hơn event-F1 chặt: phát hiện theo giao nhau và F1 theo đoạn 1 s. Tập lớp được chọn theo tiêu chí thực tế, không theo điểm, nhưng số của các tập lớp trên dự đoán ngoài mẫu đã được xem trước khi viết quyết định này (ADR-0046); kết quả trên tập 19 lớp nằm ở Chương 6. Nhóm **chưa có phép đo định lượng nào trên bản ghi thu ở Việt Nam**: cả hai bộ dữ liệu đều là dữ liệu công bố sẵn, nhóm chưa kiểm nơi thu và không khẳng định chúng đại diện cho âm thanh đô thị Việt Nam; giới hạn này được nêu lại ở mục hạn chế của Chương 6 và ở hướng phát triển của Chương 7.
 
 ## Mục tiêu và câu hỏi nghiên cứu
 
@@ -62,7 +64,7 @@ Ba câu hỏi nghiên cứu (Research Question – RQ) chính được tóm tắ
 |---|---|---|
 | RQ1 | Huấn luyện thêm trên DataSEC có giúp SED tốt hơn so với chỉ dùng mô hình tiền huấn luyện AudioSet không? | So nhánh C (AudioSet rồi DataSEC) với nhánh B (chỉ AudioSet), nhiều lần chạy, có khoảng tin cậy |
 | RQ2 | Bắt mô tả bám sát danh sách sự kiện thì giảm ảo giác bao nhiêu so với viết tự do? | So tỷ lệ ảo giác và bỏ sót giữa các cách sinh, trên cùng một kết quả SED |
-| RQ3 | Truy hồi kết hợp (lọc cứng và xếp hạng theo ngữ nghĩa) so với chỉ lọc hoặc chỉ ngữ nghĩa thì sao? | So nDCG@10, Recall và độ đúng bộ lọc; độ liên quan tính bằng máy từ nhãn gốc |
+| RQ3 | Truy hồi kết hợp (lọc cứng và xếp hạng theo ngữ nghĩa) so với chỉ lọc hoặc chỉ ngữ nghĩa thì sao? | So nDCG@10 (normalized Discounted Cumulative Gain, lợi ích tích lũy chiết khấu chuẩn hóa ở 10 kết quả đầu) và độ đúng bộ lọc; độ liên quan tính bằng máy từ nhãn gốc |
 
 @@NOTE:Nguồn: docs/SYSTEM.md §1.3; ADR-0002; ADR-0021.@@
 
@@ -74,22 +76,28 @@ Với RQ1, nhóm so ba nhánh: A học từ đầu, B dùng trọng số tiền 
 
 Một số hướng bị loại có chủ ý vì dữ liệu không đủ cơ sở (ADR-0001): nhận dạng nội dung lời nói hay người nói; suy ra tội phạm, ý định, tai nạn, tình huống khẩn cấp; chấm điểm nguy hiểm. Mô tả chỉ nói về *nguồn âm quan sát được*, không nói về *tình huống*: "phát hiện tiếng kính vỡ lúc 5,4 s" là hợp lệ, còn "phát hiện đột nhập" thì không. Xử lý thời gian thực và định vị nguồn âm trong không gian cũng nằm ngoài phạm vi.
 
-## Đóng góp dự kiến
+## Đóng góp
 
-Đề cương nêu bốn đóng góp (C1–C4); trong quá trình làm, kết quả thực nghiệm hình thành thêm hai đóng góp (C5, C6) mà đề cương chưa có. ⟪tbl:contrib⟫ cho biết bằng chứng của từng đóng góp và mức khẳng định về tính mới sau đợt tra văn liệu tháng 11/2026 (Chương 2). Kết quả tra cho thấy đã có công trình gần với cả ba điểm C2, C3, C4, nên báo cáo diễn đạt chúng là **áp dụng và mở rộng**, không phải "lần đầu". Phạm vi tra ở mức khóa luận, không phải tổng quan hệ thống đầy đủ.
+Đề cương nêu bốn đóng góp (C1–C4); trong quá trình làm, kết quả thực nghiệm hình thành thêm hai đóng góp (C5, C6) mà đề cương chưa có. ⟪tbl:contrib⟫ cho biết bằng chứng của từng đóng góp và mức khẳng định về tính mới sau đợt tra văn liệu tháng 11/2026 (Chương 2). Kết quả tra cho thấy đã có công trình gần với cả ba điểm C2, C3, C4, nên báo cáo diễn đạt chúng là **áp dụng và mở rộng** của kỹ thuật đã có. Phạm vi tra ở mức khóa luận, không phải tổng quan hệ thống đầy đủ. Các mã hệ thống xuất hiện trong bảng (f2, B0 và hai biến thể V2, V3 của tầng tinh chỉnh biên) được giải thích ở ⟪tbl:codes⟫ (Chương 4).
 
 @@CAP:tbl:contrib|Sáu đóng góp, bằng chứng và mức khẳng định về tính mới@@
 
-| Mã | Đóng góp dự kiến | Bằng chứng đã có | Chưa khẳng định |
+| Mã | Đóng góp | Bằng chứng đã có | Chưa khẳng định |
 |---|---|---|---|
 | C1 | Bộ sinh mô tả có điều kiện bám sát sự kiện, máy kiểm tra được | Ràng buộc có kiểm thử tự động; trên tập test, bộ sinh có ràng buộc không còn ảo giác nguồn âm ở cả bốn hệ thống SED (theo cấu tạo ngữ pháp; câu sinh gần như câu template) | Chưa so trực tiếp với bộ sinh có timestamp của công trình khác; giao diện dùng template, không dùng mô hình ngôn ngữ để viết mô tả |
 | C2 | Bộ chỉ số đo mức bám sát của mô tả theo dòng thời gian | Đo ảo giác, bỏ sót, thứ tự, từ cấm, có khoảng tin cậy; đối chiếu 60 mô tả với một người đọc | Đã có chỉ số gần (ECHO, TAC): C2 là áp dụng và mở rộng; mẫu đối chiếu nhỏ |
 | C3 | Đo chuyển giao có kiểm soát trùng lặp giữa hai bộ dữ liệu | Tìm ra ba nhóm trùng, loại 11 đoạn; RQ1 cho kết quả âm tính | Đã có kiểm tra trùng trong một bộ dữ liệu và khảo sát chồng lấn giữa nhiều bộ: C3 là áp dụng vào cặp DataSEC–DataSED |
-| C4 | RAG trên dòng thời gian sự kiện, có điều kiện thời gian | Bốn điều kiện thời gian viết bằng SQL; mọi kết quả trả về thỏa bộ lọc đã áp trên sự kiện lưu trong kho (độ đúng bộ lọc 1,000, không đo đúng với âm thanh); câu trả lời không có khẳng định thiếu bằng chứng | Đã có hệ thống event store + RAG dùng cửa sổ thời gian tuyệt đối (LA-RAG): C4 là đóng góp kỹ thuật |
-| C5 | Cải thiện SED dựa trên chẩn đoán lỗi, kết thúc bằng LBR: tầng hậu xử lý học được, sửa biên và chấm lại hộp trên xác suất ngoài mẫu, độc lập với mô hình gốc | Event-F1 micro trên test 0,1806 lên 0,2965, hiệu +0,1159 [+0,0741; +0,1593]; trên dự đoán ngoài mẫu 0,2342 lên 0,3332, cùng hướng; kiểm chuyển sang ensemble 3 seed 0,3505; hai mốc đơn giản hơn thấp hơn hẳn (ngưỡng riêng từng lớp 0,2335, dịch onset toàn cục 0,2469) | Là cách khác tiếp cận bài toán biên mà SEBB và RED/EPN đã nêu, chưa so trực tiếp với EPN; thiết kế được thăm dò trên chính tập ngoài mẫu dùng để chọn; đổi lại PSDS-2 và độ phủ thấp hơn; chưa kiểm trên bộ dữ liệu khác |
+| C4 | RAG trên dòng thời gian sự kiện, có điều kiện thời gian | Bốn điều kiện thời gian viết bằng SQL; mọi kết quả trả về thỏa bộ lọc đã áp trên sự kiện lưu trong kho (độ đúng bộ lọc 1,000, không đo đúng với âm thanh); câu trả lời không có khẳng định thiếu bằng chứng; chế độ backfill (giữ bộ lọc cứng, lấp chỗ trống bằng kết quả ngữ nghĩa có gắn nhãn) hơn cả hybrid và vector_only ở bốn kho | Đã có hệ thống event store + RAG dùng cửa sổ thời gian tuyệt đối (LA-RAG): C4 là đóng góp kỹ thuật; ở nhóm câu hỏi quan hệ thời gian, hybrid vẫn thấp hơn vector_only |
+| C5 | Cải thiện SED dựa trên chẩn đoán lỗi, kết thúc bằng tinh chỉnh biên học được (Learned Boundary Refinement – LBR): tầng hậu xử lý học được, sửa biên và chấm lại hộp trên xác suất ngoài mẫu (out-of-fold – OOF, dự đoán của mô hình trên phần dữ liệu nó không được học), độc lập với mô hình gốc | Event-F1 micro trên test 0,1806 lên 0,2965, hiệu +0,1159 [+0,0741; +0,1593]; trên dự đoán ngoài mẫu 0,2342 lên 0,3332, cùng hướng; kiểm chuyển sang ensemble 3 seed 0,3505; hai mốc đơn giản hơn thấp hơn hẳn (ngưỡng riêng từng lớp 0,2335, dịch onset toàn cục 0,2469) | Là cách khác tiếp cận bài toán biên mà hộp bao sự kiện (Sound Event Bounding Boxes – SEBB) và RED/EPN đã nêu, chưa so trực tiếp với EPN; thiết kế được thăm dò trên chính tập ngoài mẫu dùng để chọn; đổi lại PSDS-2 (Polyphonic Sound Detection Score, chỉ số phát hiện đa âm theo dải ngưỡng) và F1 theo đoạn thấp hơn; không cải thiện truy hồi (hybrid 0,383 so với 0,404, KTC chồng nhau); chưa kiểm trên bộ dữ liệu khác |
 | C6 | Giao thức đánh giá chống chọn theo test: chọn hai tầng trên dự đoán ngoài mẫu, sổ ghi mọi lần chạm test, đóng băng artifact bằng SHA-256, kiểm số trong tài liệu bằng máy | Sổ test 42 lượt đánh giá SED, đóng băng không thiếu artifact nào; xếp hạng trên dev dự báo test kém (ρ = 0,62 ở vòng S13) và cả ba ứng viên qua sàng lọc dev đều đảo chiều khi đo ngoài mẫu, nên nhóm đổi cách chọn | Là quy trình của dự án, không phải phương pháp mới; vẫn còn tái sử dụng thích nghi được công khai (Chương 6) |
 
 @@NOTE:Nguồn: docs/PAPER_NOTES.md S69; docs/RELATED_WORK.md §2.4, §9.@@
+
+## Kết quả chính và luận điểm
+
+Kết quả của ba câu hỏi nghiên cứu được trả lời ở Chương 6 và tóm lại ở Chương 7; ở đây chỉ nêu ngắn để làm mốc đọc. Với RQ1, huấn luyện thêm trên DataSEC không tạo khác biệt đo được (KTC 95% của hiệu chứa 0). Với SED, tầng LBR nâng event-F1 micro trên test từ 0,1806 lên 0,2965. Với RQ2, bộ sinh có ràng buộc không còn ảo giác nguồn âm so với danh sách sự kiện ở cả bốn hệ SED được thử, nhưng khi so với nhãn gốc thì lỗi do SED vẫn còn. Với RQ3, bộ lọc cứng luôn đúng điều kiện nhưng truy hồi kết hợp thấp hơn chỉ xếp hạng ngữ nghĩa ở ba trên bốn kho; chế độ backfill hơn cả hai ở cả bốn kho. Ứng dụng web chạy cục bộ trên CPU, trung vị 3,89 giây cho mỗi bản ghi tải lên.
+
+Các kết quả này ghép thành một luận điểm, được nhắc lại ở đầu mục thảo luận của Chương 6 và đầu Chương 7: **trong hệ thống này, độ đúng của mô tả và của câu trả lời bị chặn bởi bước phát hiện sự kiện; ràng buộc ngữ pháp và bộ lọc cứng không thêm lỗi ngoài lỗi của SED, nên cải tiến có tác dụng nằm ở SED và ở độ phủ sự kiện khi truy hồi, không ở việc thêm mô hình ngôn ngữ.** Hướng phát triển chính vì vậy là thử trên bản ghi thu thực địa tại Việt Nam và cải thiện bộ phát hiện (Chương 7).
 
 ## Bố cục báo cáo
 

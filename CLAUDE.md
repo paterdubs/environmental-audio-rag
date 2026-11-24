@@ -58,6 +58,8 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 25/11/2026 — Hoàn thiện báo cáo theo mẫu khoa (Bước 1–5 của kế hoạch rà soát).** Theo `reports/Rà soát báo cáo theo mẫu khoa.md` và yêu cầu người dùng bổ sung phần hệ thống: Tóm tắt/Abstract một trang có câu luận điểm; bỏ mọi "lần đầu"; trang Nhận xét phản biện 1 và 2; bổ sung viết tắt; Ch.1 thêm "Kết quả chính và luận điểm"; Ch.2 thêm ba kỹ thuật (giải mã có ràng buộc, GBM + cross-fit, bootstrap ghép cặp); Ch.4 hình luồng dữ liệu, hình LBR, backfill, mô tả gộp, bốn phép đo phụ; Ch.5 sắp lại (yêu cầu → công nghệ → kiến trúc → hai luồng → ERD + API → giao diện → độ trễ → demo → tái lập); Ch.6 bảng Kết quả chính, tách 6.6, tập 19 lớp, công khai nguồn gốc backfill; Ch.7 luận điểm, bảng mục tiêu. Script mới: `build_system_figures`, `report_system_tables`, `report_key_results`; `check_midterm_docx` kiểm thêm định dạng mẫu. Bản chính thức 130 trang, kiểm 30/30. Nhật ký tuần 5–7, 9 để trống theo người dùng. **Còn:** người dùng tự đổi repo sang private trên GitHub (máy không có gh CLI), đọc bản PDF; field test nếu có clip.
+
 **Cập nhật 23/11/2026 — Giai đoạn F: rà soát độc lập, mở lại báo cáo để sửa (PLAN, khối "Giai đoạn F").**
 Người dùng lo "làm ít" và bị hỏi "không thực tế". Rà soát năm hướng (nội bộ, SOTA, thực tiễn, hội đồng) kết luận khối
 lượng đủ tầm; rủi ro là trình bày và kết quả chưa nói ra: hybrid thua vector_only ở RQ3 mà Chương 6–7 không nhắc, LBR
@@ -825,6 +827,10 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-25 — Hoàn thiện báo cáo theo mẫu khoa và bổ sung phần hệ thống
+
+Người dùng duyệt Bước 1–5 của kế hoạch rà soát, thêm yêu cầu về luồng dữ liệu, luồng hệ thống, công nghệ và hình minh họa hệ thống, rồi giao chạy tự động qua đêm. Mọi hình và bảng hệ thống sinh từ mã (manifest B0, migration SQL, decorator FastAPI, tệp phụ thuộc) và có test chống lệch. Tự bắt: hàm `keep_with_next` ghi ký tự điều khiển thay cho tham chiếu nhóm (heredoc nuốt dấu gạch ngược) làm Word không mở được DOCX; sửa và thêm test ký tự; mô tả gộp ở Ch.4 viết theo văn ADR cũ, lệch với câu kiểu thông báo trong mã, đã sửa theo `ml/captioning/grouped.py`; hình luồng dữ liệu ghi WAV/FLAC trong khi API nhận cả OGG/MP3, nay đọc hằng số từ `services/common/audio.py`. Không train, không mở test, không đo mới ngoài đếm lại khối lượng repo.
 
 ### 2026-11-24 (tối) — Cải thiện RAG và sinh mô tả (ADR-0049, ADR-0050)
 
