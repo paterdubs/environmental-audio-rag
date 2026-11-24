@@ -58,4 +58,16 @@ Trên dòng thời gian dev đã lưu của bốn hệ SED (134 bản ghi có nh
 
 ## Kết quả
 
-(điền sau khi chạy, từ measurement sinh tự động)
+`grouped_captions_dev_20261124` (dev, tree sạch). θ_hedge = 0.4756.
+
+- So với dòng thời gian dự đoán: ảo giác và bỏ sót 0,000, thứ tự 1,000 ở cả bốn hệ, như mẫu cố định.
+- Độ dài: V3 trung bình 400 → 156 ký tự, dài nhất
+  2361 → 560; ba hệ còn lại giảm khoảng 2,4–2,7 lần.
+- So với nhãn gốc: bỏ sót không đổi; ảo giác **theo lớp** không đổi (V3 0.240).
+  Ảo giác **theo số lần nhắc** của mô tả gộp cao hơn (V3 0.178 →
+  0.240) chỉ vì mô tả mẫu nhắc lặp các lớp đúng làm loãng tỷ lệ; lượt đo
+  đầu chưa có chỉ số theo lớp, script được bổ sung trước khi commit measurement.
+- Rào đón (§3): V3 mệnh đề có rào đón đúng 17/98, không rào đón
+  202/228; hiệu +0.712 [+0.628, +0.796], CI trên 0 → rào đón mang
+  thông tin. V2 cùng chiều (+0.080 [+0.027, +0.140]). f2 và B0 không có mệnh đề nào
+  bị rào đón vì thang điểm của chúng khác (θ chỉ áp cho hệ phục vụ).
