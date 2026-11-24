@@ -834,14 +834,15 @@ Tiền tố `/api/v1`. Mọi response dùng envelope `{success, data, error, met
 | Encoder RQ1 | PANNs CNN14 pretrained AudioSet (B) / AudioSet → DataSEC (C) | [ADR-0002](decisions/ADR-0002-encoder-va-nhanh-transfer.md) |
 | Encoder hệ thống cuối | `frame_mn10` (EfficientSED, 3M tham số) fine-tune toàn bộ, 5 fold | [ADR-0032](decisions/ADR-0032-track2-encoder-pretrain-theo-frame.md) §11, [ADR-0041](decisions/ADR-0041-giai-doan-toi-uu-sed.md) |
 | Hậu xử lý | cSEBB (Ebbers 2024) chọn bằng CV; LBR = HistGradientBoosting (scikit-learn) học trên OOF | [ADR-0045](decisions/ADR-0045-lbr-tinh-chinh-bien-va-cham-lai-box.md) |
-| LLM caption / parser / câu trả lời | Qwen3.5-9B Q4_K_M, llama.cpp b11158, greedy, một slot | [ADR-0022](decisions/ADR-0022-llm-va-lexicon-cho-rq2.md), [ADR-0036](decisions/ADR-0036-parser-cau-hoi-thanh-bo-loc-retrieval.md) |
+| LLM caption (RQ2) / parser | Qwen3.5-9B Q4_K_M, llama.cpp b11158, greedy, một slot | [ADR-0022](decisions/ADR-0022-llm-va-lexicon-cho-rq2.md), [ADR-0036](decisions/ADR-0036-parser-cau-hoi-thanh-bo-loc-retrieval.md) |
 | SED metric | `sed_eval`, `psds_eval` | Không tự viết lại metric đã có chuẩn |
 | Caption baseline | Template sinh từ timeline | Grounding đúng 100% theo thiết kế, làm sàn so sánh |
+| Caption phục vụ | Template gộp theo lớp, đếm số lần, rào đón theo điểm SED (θ trong `ml/configs/serving_caption.yaml`) | [ADR-0050](decisions/ADR-0050-template-gop-theo-lop-va-rao-don.md) |
 | Embedding | BGE-M3, 1024-dim | [ADR-0004](decisions/ADR-0004-embedding-cho-retrieval.md) |
 | Backend | FastAPI + Pydantic v2 + SQLAlchemy 2.0 | Async-native; một framework cho api + inference |
 | Database | PostgreSQL 16 + pgvector | [ADR-0005](decisions/ADR-0005-database-va-vector-store.md) |
 | Frontend | React + Vite + TanStack Query | Timeline cần state phức tạp |
-| LLM cho answer | Interface pluggable; triển khai bằng Qwen cục bộ ở trên | Answer phải bị ràng buộc bởi evidence, không phụ thuộc model cụ thể |
+| Answer | Template tất định (`ml/retrieval/answer.py`), không dùng LLM; bộ kiểm `unsupported_claims` đọc lại độc lập | Answer phải bị ràng buộc bởi evidence, không phụ thuộc model cụ thể |
 | Triển khai | Docker Compose | Một node, đủ cho demo khóa luận |
 | GPU | RTX 3070 Laptop, 8 GB | Giới hạn thật: batch size và model size phải vừa 8 GB |
 
@@ -1231,6 +1232,11 @@ Ba tầng, thứ tự **không đổi được**:
 kiện dài hơn 30 giây" thì một event 5 giây không được xuất hiện, dù caption của nó
 giống câu hỏi đến mấy. Đây là ràng buộc kiến trúc, và nó phải có test.
 
+**Chế độ phục vụ mặc định là `backfill`** (ADR-0049): danh sách hybrid (tầng 1, thỏa bộ lọc) đứng
+đầu, sau đó nối kết quả `vector_only` chưa có cho đủ k (tầng 2, `documents[].tier = "near"`). Câu
+trả lời chỉ trích dẫn và khẳng định trên tầng 1; tầng 2 chỉ được nêu tên bản ghi. Ràng buộc ở trên
+vẫn đúng: không kết quả tầng 2 nào được trình bày như thỏa bộ lọc.
+
 ## 7.3 Temporal predicate — phần C4
 
 Truy vấn "A trước B trong cùng recording" dịch thành SQL tự chứa:
@@ -1332,7 +1338,8 @@ retrieval một cách khó chẩn đoán.
 | `hybrid` | Có | Có |
 
 `vector_only` sẽ vi phạm hard filter theo thiết kế — đó chính là thứ cần đo, và
-`filter exactness` là metric bắt được nó (xem 8.5).
+`filter exactness` là metric bắt được nó (xem 8.5). Chế độ thứ tư `backfill` (ADR-0049) được tính từ
+danh sách đã lưu của `hybrid` và `vector_only`, không nằm trong `store.MODES` của benchmark gốc.
 
 Filter có hai nguồn: **gold** (filter đúng của query set) và **parsed** (parser LLM sinh từ câu hỏi,
 ADR-0036 — JSON Schema top-level, enum 21 lớp + bốn predicate). Corpus validation/test được dựng
@@ -1456,8 +1463,13 @@ event) làm nhánh `constrained` bỏ sót nhiều lớp hơn (hiệu so f2 +0.0
 | `vector_only` | 0.526 [0.467, 0.582] | 0.458 [0.391, 0.522] | 0.491 [0.432, 0.553] | 0.630 [0.579, 0.679] |
 | `hybrid` | 0.415 [0.344, 0.485] | 0.383 [0.307, 0.461] | 0.404 [0.332, 0.478] | 0.670 [0.610, 0.729] |
 
+| `backfill` (ADR-0049) | 0.575 | 0.500 | 0.532 | 0.727 |
+
 Unsupported-claim 0.000 ở mọi cấu hình. Bước nhảy của V3 là hiệu ứng độ phủ (nhiều event hơn); tỷ lệ
-trích đúng GT giảm 0.915 → 0.712, không đọc như retrieval tốt hơn.
+trích đúng GT giảm 0.915 → 0.712, không đọc như retrieval tốt hơn. Backfill − vector_only +0.041 đến
++0.097, backfill − hybrid +0.057 đến +0.160, mọi CI không chứa 0; đổi lại chỉ 29–57% top-10 thỏa bộ
+lọc ([retrieval_backfill_test_20261124](measurements/retrieval_backfill_test_20261124.md)). Phân rã
+lỗi: [retrieval_failures_test_20261124](measurements/retrieval_failures_test_20261124.md).
 
 ### RQ1 — C − B (event-F1 micro, test)
 

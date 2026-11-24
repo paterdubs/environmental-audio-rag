@@ -65,7 +65,7 @@ lượng đủ tầm; rủi ro là trình bày và kết quả chưa nói ra: hy
 Nam, thiếu trang GVPB/nhật ký/phân công. Người dùng duyệt kế hoạch: **mở lại bản đóng băng 18/11** để làm bộ T0 ★
 (T0-01…T0-13, PLAN), không train lại, không mở test, không "lần đầu". Báo cáo:
 [reports/Đánh giá khóa luận audio RAG.md](reports/Đánh%20giá%20khóa%20luận%20audio%20RAG.md). **Tiến độ tối 23/11:** Phase 1, 3 và phần agent của Phase 2, 4 đã xong và push (độ trễ demo, ảnh demo, Hình 5.1 tách đôi,
-trang GVPB, viết tắt, Phụ lục D phân công chia đều, nhật ký theo lịch sử commit). Ngày 24/11 thêm 12 hình phân tích và sổ đăng ký run; bản chính thức 104 trang
+trang GVPB, viết tắt, Phụ lục D phân công chia đều, nhật ký theo lịch sử commit). Ngày 24/11 thêm 12 hình phân tích và sổ đăng ký run; tối 24/11 cải thiện RAG và mô tả theo báo cáo `reports/Cải thiện RAG và sinh mô tả.md`: backfill (ADR-0049, test một lần, thắng cả hybrid lẫn vector_only ở bốn kho, demo phục vụ hai tầng), phân rã lỗi truy hồi, RQ2 ba tầng so với nhãn gốc, độ nhạy bộ chấm, mô tả gộp có rào đón (ADR-0050, phục vụ; câu chữ VI chờ người dùng duyệt) — PAPER_NOTES S74–S77; ảnh demo chưa chụp lại vì Docker đang tạm dừng; bản chính thức 104 trang
 (giới hạn 150), `check_midterm_docx` đạt. **Tiếp theo:** field test chờ clip điện thoại của người dùng
 (`scripts.field_test`), rồi Phase 5 (đếm lại khối lượng, dựng DOCX/PDF chính thức, đọc chéo). Người dùng còn: sáu câu hỏi GVHD
 (thêm: giới hạn số trang), ngày báo cáo GVHD, xác nhận Phụ lục D.
@@ -825,6 +825,10 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-24 (tối) — Cải thiện RAG và sinh mô tả (ADR-0049, ADR-0050)
+
+Người dùng yêu cầu tìm hướng cải thiện RAG và mô tả (/deep-research, /plan), duyệt kế hoạch, cho đưa backfill lên test và làm cả Pha 4. Ba tác tử nghiên cứu (rà soát nội bộ, văn liệu RAG, văn liệu mô tả) → `reports/Cải thiện RAG và sinh mô tả.md`. Backfill ghi trước ở ADR-0049, kiểm HNSW không cắt kết quả lọc, validation rồi test một lần: nDCG@10 hơn vector_only +0.041…+0.097 và hơn hybrid +0.057…+0.160 ở bốn kho. Phân rã lỗi truy hồi (B0: 349/705 cặp liên quan bị loại vì SED). RQ2 ba tầng trên dev: so với nhãn gốc mọi nhánh bỏ sót 0.34–0.42 lớp ở f2/B0/V2. Độ nhạy bộ chấm: ~100% trong từ điển, 62% ngoài taxonomy. Mô tả gộp có rào đón (ADR-0050): V3 ngắn 400→156 ký tự, mệnh đề rào đón đúng 17/98 so với 202/228. Demo: API/UI backfill hai tầng, bộ sinh gộp. Tự bắt: một câu nói sai độ lệch giữa các nhánh ở V3; chỉ số ảo giác theo số lần nhắc bị loãng nên thêm chỉ số theo lớp trước khi commit measurement; θ chép tay sai, thêm test so YAML với measurement; một lượt test phân rã lỗi chạy khi tree bẩn, chạy lại trùng hoàn toàn. Không train, không mở test ngoài hai lượt đọc danh sách đã lưu (đã ghi sổ test).
 
 ### 2026-11-24 — Tăng tính nghiên cứu của báo cáo: 12 hình phân tích, sổ đăng ký run
 
