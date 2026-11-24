@@ -256,7 +256,27 @@ Ba điều cần đọc cùng nhau. **Một,** vector_only không tôn trọng r
 
 @@INCLUDE:report/final_tables/f05c_rq3_groups.md@@
 
-Hệ quả cho việc dùng hệ thống: khi người dùng cần kết quả đúng ràng buộc (đúng lớp, đúng khoảng thời lượng, đúng quan hệ trước–sau), hybrid và structured_only là lựa chọn phù hợp với độ phủ đủ cao; khi chỉ cần gợi ý gần nghĩa, xếp hạng ngữ nghĩa đứng riêng cho nDCG cao hơn nhưng không bảo đảm ràng buộc. Một hướng chưa thử là dùng bộ lọc như điểm cộng thay cho điều kiện cứng; nhóm nêu hướng này ở Chương 7 và không khẳng định nó tốt hơn.
+Hệ quả cho việc dùng hệ thống: khi người dùng cần kết quả đúng ràng buộc (đúng lớp, đúng khoảng thời lượng, đúng quan hệ trước–sau), hybrid và structured_only là lựa chọn phù hợp với độ phủ đủ cao; khi chỉ cần gợi ý gần nghĩa, xếp hạng ngữ nghĩa đứng riêng cho nDCG cao hơn nhưng không bảo đảm ràng buộc.
+
+### Chế độ backfill: giữ bộ lọc cứng và lấp chỗ trống
+
+Phân tích trên chỉ ra rằng hybrid thua không phải vì xếp sai mà vì trả quá ít kết quả: ở kho f2, 32/97 truy vấn có danh sách hybrid rỗng. Từ đó nhóm thử một chế độ thứ tư, gọi là backfill: giữ nguyên danh sách hybrid ở đầu (tầng 1, mọi kết quả thỏa bộ lọc), rồi nối các kết quả của vector_only chưa có trong danh sách cho đủ 10 (tầng 2, gắn nhãn "gần khớp, không thỏa bộ lọc"). Chế độ này không có tham số nào để chỉnh. Định nghĩa, so sánh chính và luật diễn giải được ghi trước ở ADR-0049, chạy trên validation rồi mới chạy test đúng một lần. Kết quả tính từ chính danh sách đã lưu của các lượt đánh giá trước, không dựng lại kho hay embed lại. Trước khi ghi ADR, nhóm kiểm rằng chỉ mục HNSW không cắt bớt kết quả lọc: ở cả tám báo cáo gold, mọi câu hybrid trả dưới 10 kết quả đều trả đúng tập của structured_only.
+
+@@CAP:tbl:rq3backfill|RQ3 trên test với bộ lọc gold: backfill so với vector_only và hybrid@@
+
+@@COLWIDTHS:12,10,10,11,20,20,17@@
+
+@@INCLUDE:report/final_tables/f05d_rq3_backfill.md@@
+
+⟪tbl:rq3backfill⟫ và ⟪fig:rq3backfill⟫ cho thấy backfill cao hơn cả hai chế độ gốc ở cả bốn kho, và mọi khoảng tin cậy ghép cặp đều không chứa 0. So với vector_only, mức tăng là +0,041 đến +0,049 ở ba kho độ phủ thấp và +0,097 ở V3. So với hybrid, mức tăng là +0,116 đến +0,160 ở ba kho độ phủ thấp và +0,057 ở V3. Backfill không thua hybrid ở truy vấn nào, vì tầng 1 chính là danh sách hybrid. Tiếng Việt và bộ lọc do bộ phân tích câu hỏi sinh ra cho cùng chiều; trộn thứ hạng kiểu RRF (k = 60) cũng tăng nhưng thấp hơn backfill ở mọi ô (`retrieval_backfill_test_20261124`).
+
+![](report/research_figures/r13_rq3_backfill.png){width=14cm}
+
+@@CAP:fig:rq3backfill|RQ3: nDCG@10 của vector_only, hybrid và backfill trên test; số trên cột cam là tỷ lệ kết quả top-10 của backfill thỏa bộ lọc@@
+
+@@NOTE:Nguồn: retrieval_backfill_test_20261124.json (bộ lọc gold, tiếng Anh), sinh bởi scripts.report_rq3_backfill.@@
+
+Cái giá là độ đúng bộ lọc: chỉ 29% đến 31% kết quả top-10 của backfill thỏa bộ lọc ở ba kho độ phủ thấp (57% ở V3); phần còn lại là gợi ý gần nghĩa. Vì vậy nhóm không thay số RQ3 đã khóa của hybrid bằng backfill, mà dùng backfill trong ứng dụng với hai tầng tách bạch: câu trả lời chỉ khẳng định trên tầng 1, tầng 2 được hiển thị như gợi ý. Lượt chạy test này chỉ đọc danh sách đã lưu và được ghi vào sổ test như một lượt riêng.
 
 Độ đúng bộ lọc của structured_only và hybrid là 1,000 như kiến trúc yêu cầu. Con số này đo sự nhất quán với bộ lọc đã áp và với các sự kiện *dự đoán* lưu trong kho, không phải sự đúng đắn đối với ý người hỏi hay với âm thanh (bộ phân tích câu hỏi và SED đều có thể sai); truy vấn không có kết quả được tính bằng 1 theo quy ước, nên cần đọc cùng số truy vấn có trả lời ở bảng trên (58 đến 65 trên 97 với f2, B0 và V2). Ở mọi cấu hình trả lời, tỷ lệ khẳng định thiếu bằng chứng là 0,000: câu trả lời không vượt ra ngoài những gì kho chứa; đổi lại, kho thiếu thì câu trả lời cũng thiếu. Bộ lọc gold giả định câu hỏi luôn được phân tích đúng nên chỉ là cận trên: với bộ lọc do bộ phân tích câu hỏi sinh ra (parsed), nDCG@10 của hybrid tiếng Anh là 0,409 (f2), 0,377 (B0), 0,398 (V2) và 0,655 (V3), thấp hơn gold từ 0,006 đến 0,015.
 
@@ -287,7 +307,7 @@ Tập test annotated (139 bản ghi) không phải "dùng một lần" theo ngh�
 
 ## Thảo luận và hạn chế
 
-Tóm lại, nhóm có một hệ thống đầu–cuối chạy được, cùng bằng chứng cho từng câu hỏi nghiên cứu. RQ1 âm tính với nhiều seed và hai công thức. RQ2 cho thấy ràng buộc ngữ pháp loại bỏ các dạng ảo giác và suy diễn đo được ở cả bốn hệ SED, với cái giá là bỏ sót khi danh sách sự kiện dày, mà biến thể cover giải quyết. RQ3 cho thấy bộ lọc cứng bảo đảm đúng ràng buộc tuyệt đối (1,000 so với 0,27 của chỉ ngữ nghĩa), nhưng hybrid không hơn chỉ xếp hạng ngữ nghĩa về nDCG@10 trên ba kho có độ phủ thấp (thấp hơn có ý nghĩa), vì chất lượng xếp hạng bị chặn bởi việc SED dự đoán những sự kiện nào; riêng kho độ phủ cao V3 thì hybrid hơn. Điểm tiến bộ lớn nhất của SED là LBR (event-F1 micro 0,1806 lên 0,2965), nhưng cái giá là PSDS-2 và độ phủ giảm. Các hạn chế chính:
+Tóm lại, nhóm có một hệ thống đầu–cuối chạy được, cùng bằng chứng cho từng câu hỏi nghiên cứu. RQ1 âm tính với nhiều seed và hai công thức. RQ2 cho thấy ràng buộc ngữ pháp loại bỏ các dạng ảo giác và suy diễn đo được ở cả bốn hệ SED, với cái giá là bỏ sót khi danh sách sự kiện dày, mà biến thể cover giải quyết. RQ3 cho thấy bộ lọc cứng bảo đảm đúng ràng buộc tuyệt đối (1,000 so với 0,27 của chỉ ngữ nghĩa), nhưng hybrid không hơn chỉ xếp hạng ngữ nghĩa về nDCG@10 trên ba kho có độ phủ thấp (thấp hơn có ý nghĩa), vì chất lượng xếp hạng bị chặn bởi việc SED dự đoán những sự kiện nào; riêng kho độ phủ cao V3 thì hybrid hơn; chế độ backfill, giữ bộ lọc cứng và lấp chỗ trống bằng kết quả ngữ nghĩa, cao hơn cả hai ở mọi kho. Điểm tiến bộ lớn nhất của SED là LBR (event-F1 micro 0,1806 lên 0,2965), nhưng cái giá là PSDS-2 và độ phủ giảm. Các hạn chế chính:
 
 - **Tập đánh giá nhỏ.** Dev có 137 (134 annotated) và test có 142 (139 annotated) bản ghi, nên khoảng tin cậy rộng. Để có thước đo cụ thể: trên 139 bản ghi test, nửa độ rộng khoảng tin cậy 95% của hiệu micro ghép cặp là khoảng 0,022 ở RQ1 công thức v2 ([−0,0254; +0,0199]) và khoảng 0,043 ở LBR so với B0 ([+0,0741; +0,1593]); khoảng tin cậy riêng của từng hệ còn rộng hơn: khoảng ±0,031 ở v1 và từ ±0,056 đến ±0,066 ở f2, B0 và LBR V2. Một cải tiến nhỏ hơn cỡ 0,02 đến 0,04 event-F1 micro vì vậy không thể phân biệt với nhiễu chọn mẫu trên tập này, và đó là lý do nhóm không gọi các chênh lệch nhỏ giữa v2, f2 và B0 trên test là cải thiện. Bootstrap theo bản ghi chỉ phản ánh bất định do mẫu bản ghi, không phản ánh dao động giữa các seed.
 - **Huấn luyện SED không tất định.** Cùng mã và cùng seed, F1 macro theo khung của nhánh B vẫn đổi từ 0,5850 sang 0,5705; mọi so sánh SED cần nhiều seed, trong khi các thử nghiệm bỏ-từng-phần của v2 chỉ có một seed.

@@ -71,6 +71,17 @@ def test_rq3_modes_tables_report_hybrid_minus_vector_and_groups():
     assert "0.126 / 0.426" in groups  # f2, quan hệ thời gian
 
 
+BACKFILL = ROOT / "docs" / "measurements" / "retrieval_backfill_test_20261124.json"
+
+
+@pytest.mark.skipif(not BACKFILL.is_file(), reason="chưa có retrieval_backfill")
+def test_rq3_backfill_table_reports_locked_hybrid_and_paired_gain():
+    text = bft.build_rq3_backfill(json.loads(BACKFILL.read_text(encoding="utf-8")), "abcdef0",
+                                  BACKFILL)
+    assert "| B0 | 0.458 | 0.383 | 0.500 |" in text
+    assert "+0.097 [+0.070, +0.126]" in text  # V3, backfill − vector
+
+
 CONTEXT = ROOT / "docs" / "measurements" / "lbr_context_20261123.json"
 
 

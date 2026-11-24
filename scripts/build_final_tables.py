@@ -222,6 +222,25 @@ def build_rq3_groups(data: dict[str, Any], revision: str, source: Path) -> str:
     )
 
 
+def build_rq3_backfill(data: dict[str, Any], revision: str, source: Path) -> str:
+    """nDCG@10 bốn chế độ và hiệu ghép cặp của backfill (từ `report_rq3_backfill`, ADR-0049)."""
+    rows = []
+    for key, label in SYSTEMS.items():
+        s = data["results"][f"{key}/gold/en"]["summary"]
+        nd = {m: s["mean"][m]["ndcg@10"] for m in ("vector_only", "hybrid", "backfill")}
+        p = s["paired_ndcg@10"]
+        rows.append([label, f"{nd['vector_only']:.3f}", f"{nd['hybrid']:.3f}",
+                     f"{nd['backfill']:.3f}", _signed(p["backfill−vector_only"]),
+                     _signed(p["backfill−hybrid"]),
+                     f"{s['mean']['backfill']['tier1_share']:.3f}"])
+    return table(
+        f"RQ3 ({data['split']}, bộ lọc gold): chế độ backfill so với vector_only và hybrid",
+        ["Corpus", "vector", "hybrid", "backfill", "backfill − vector", "backfill − hybrid",
+         "Tỷ lệ thỏa bộ lọc"],
+        rows, [source], revision, ["---", "---:", "---:", "---:", "---:", "---:", "---:"],
+    )
+
+
 def build_lbr_context(data: dict[str, Any], revision: str, source: Path) -> str:
     """LBR cạnh các mốc đơn giản hơn và trần sửa biên, trên OOF (từ `report_lbr_context`)."""
     r, d, ex = data["rows"], data["deltas"], data["exploratory"]
@@ -433,6 +452,7 @@ def main() -> None:
     parser.add_argument("--ledger", type=Path, help="test_ledger_*.json")
     parser.add_argument("--freeze", type=Path, help="artifact_freeze_*.json")
     parser.add_argument("--rq3-modes", type=Path, help="rq3_modes_*.json")
+    parser.add_argument("--rq3-backfill", type=Path, help="retrieval_backfill_test_*.json")
     parser.add_argument("--lbr-context", type=Path, help="lbr_context_*.json")
     parser.add_argument("--calibration", type=Path, help="calibration_*.json")
     parser.add_argument("--workload", type=Path, help="workload_*.json")
@@ -470,6 +490,7 @@ def main() -> None:
         ("f08_freeze.md", build_freeze, args.freeze),
         ("f05b_rq3_paired.md", build_rq3_paired, args.rq3_modes),
         ("f05c_rq3_groups.md", build_rq3_groups, args.rq3_modes),
+        ("f05d_rq3_backfill.md", build_rq3_backfill, args.rq3_backfill),
         ("f10_lbr_context.md", build_lbr_context, args.lbr_context),
         ("f11_calibration.md", build_calibration, args.calibration),
         ("f12_workload.md", build_workload, args.workload),

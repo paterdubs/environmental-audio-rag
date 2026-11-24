@@ -19,6 +19,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.dates  # noqa: E402
+import matplotlib.patches  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 
 from ml.provenance import git_state  # noqa: E402
@@ -47,6 +48,7 @@ SOURCES = {
     "rq2": M / "rq2_llm_systems_20261110_test_annotated.json",
     "rq3": M / "rq3_modes_20261123.json",
     "registry": M / "run_registry_20261123.json",
+    "backfill": M / "retrieval_backfill_test_20261124.json",
 }
 TASK_GROUPS = {
     "Huấn luyện SED": ("sed_polyphonic",),
@@ -402,6 +404,28 @@ def fig_rq3_queries(rq3: dict, path: Path) -> list[dict]:
     return [{k: v for k, v in s.items() if k != "diffs"} for s in stores]
 
 
+def fig_rq3_backfill(backfill: dict, path: Path) -> None:
+    modes = (("vector_only", "vector_only", GRAY), ("hybrid", "hybrid", BLUE),
+             ("backfill", "backfill", ORANGE))
+    fig, ax = plt.subplots(figsize=(6.4, 3.0))
+    width = 0.26
+    for i, key in enumerate(SYSTEM_NAMES):
+        s = backfill["results"][f"{key}/gold/en"]["summary"]
+        for j, (mode, _, color) in enumerate(modes):
+            ax.bar(i + (j - 1) * width, s["mean"][mode]["ndcg@10"], width, color=color)
+        share = s["mean"]["backfill"]["tier1_share"]
+        ax.text(i + width, s["mean"]["backfill"]["ndcg@10"] + 0.015, f"{share:.0%}",
+                ha="center", fontsize=6.5, color=MUTED)
+    handles = [matplotlib.patches.Patch(color=color, label=label) for _, label, color in modes]
+    ax.set_xticks(range(len(SYSTEM_NAMES)), list(SYSTEM_NAMES.values()))
+    ax.set_ylim(0, 0.85)
+    ax.set_ylabel("nDCG@10 (test, bộ lọc gold, EN)")
+    ax.legend(handles=handles, frameon=False, fontsize=7, loc="upper left", ncol=3)
+    _style(ax)
+    fig.tight_layout()
+    _save(fig, path)
+
+
 def fig_run_timeline(registry: dict, path: Path) -> None:
     from datetime import date
 
@@ -454,6 +478,7 @@ def build(output: Path) -> dict[str, Any]:
     fig_rq2_errors(data["rq2"], output / "r10_rq2_errors.png")
     rq3_counts = fig_rq3_queries(data["rq3"], output / "r11_rq3_queries.png")
     fig_run_timeline(data["registry"], output / "r12_run_timeline.png")
+    fig_rq3_backfill(data["backfill"], output / "r13_rq3_backfill.png")
     manifest = {"figures": sorted(p.name for p in output.glob("r*.png")),
                 "sources": [p.relative_to(ROOT).as_posix() for p in SOURCES.values()],
                 "spearman_dev_test": rho, "rq3_query_counts": rq3_counts,
