@@ -1,0 +1,886 @@
+{
+ "split": "dev",
+ "eval_set": "annotated",
+ "results": {
+  "f2/template": {
+   "oracle": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.011194029850746268,
+     "lower": 0.0,
+     "upper": 0.029850746268656716
+    },
+    "omission_rate": {
+     "estimate": 0.37256574271499643,
+     "lower": 0.30982231698649615,
+     "upper": 0.431725302061123
+    },
+    "event_precision": {
+     "estimate": 0.9888059701492538,
+     "lower": 0.9701492537313433,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.6274342572850036,
+     "lower": 0.568274697938877,
+     "upper": 0.6901776830135039
+    }
+   }
+  },
+  "f2/unconstrained": {
+   "oracle": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.009328358208955225,
+     "lower": 0.0018656716417910447,
+     "upper": 0.019278606965174132
+    },
+    "omission_rate": {
+     "estimate": 0.0177683013503909,
+     "lower": 0.006609808102345414,
+     "upper": 0.03305437100213219
+    },
+    "event_precision": {
+     "estimate": 0.9906716417910447,
+     "lower": 0.9807213930348259,
+     "upper": 0.9981343283582089
+    },
+    "event_recall": {
+     "estimate": 0.9822316986496091,
+     "lower": 0.9669456289978678,
+     "upper": 0.9933901918976545
+    }
+   },
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.01492537313432836,
+     "lower": 0.0049751243781094535,
+     "upper": 0.027363184079601994
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 0.9850746268656716,
+     "lower": 0.972636815920398,
+     "upper": 0.9950248756218906
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.02611940298507463,
+     "lower": 0.009950248756218907,
+     "upper": 0.04729477611940296
+    },
+    "omission_rate": {
+     "estimate": 0.3700781805259417,
+     "lower": 0.30619358564321253,
+     "upper": 0.43023587420042647
+    },
+    "event_precision": {
+     "estimate": 0.9738805970149254,
+     "lower": 0.9527052238805971,
+     "upper": 0.9900497512437811
+    },
+    "event_recall": {
+     "estimate": 0.6299218194740582,
+     "lower": 0.5697641257995736,
+     "upper": 0.6938064143567875
+    }
+   }
+  },
+  "f2/constrained": {
+   "oracle": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.08448827292110875,
+     "lower": 0.05099191542288558,
+     "upper": 0.11856165600568586
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.9155117270788913,
+     "lower": 0.8814383439943141,
+     "upper": 0.9490080845771144
+    }
+   },
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.007462686567164179,
+     "lower": 0.0,
+     "upper": 0.018656716417910446
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.9925373134328358,
+     "lower": 0.9813432835820896,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.011194029850746268,
+     "lower": 0.0,
+     "upper": 0.029850746268656716
+    },
+    "omission_rate": {
+     "estimate": 0.3781627576403696,
+     "lower": 0.31554415422885573,
+     "upper": 0.4373147654584222
+    },
+    "event_precision": {
+     "estimate": 0.9888059701492538,
+     "lower": 0.9701492537313433,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.6218372423596304,
+     "lower": 0.5626852345415778,
+     "upper": 0.6844558457711443
+    }
+   }
+  },
+  "f2/constrained_cover": {
+   "oracle": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.011194029850746268,
+     "lower": 0.0,
+     "upper": 0.029850746268656716
+    },
+    "omission_rate": {
+     "estimate": 0.37256574271499643,
+     "lower": 0.30982231698649615,
+     "upper": 0.431725302061123
+    },
+    "event_precision": {
+     "estimate": 0.9888059701492538,
+     "lower": 0.9701492537313433,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.6274342572850036,
+     "lower": 0.568274697938877,
+     "upper": 0.6901776830135039
+    }
+   }
+  },
+  "B0/template": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.01890547263681592,
+     "lower": 0.004838308457711453,
+     "upper": 0.03943718905472636
+    },
+    "omission_rate": {
+     "estimate": 0.3415482113243307,
+     "lower": 0.2826723525230988,
+     "upper": 0.4008434020374319
+    },
+    "event_precision": {
+     "estimate": 0.981094527363184,
+     "lower": 0.9605628109452736,
+     "upper": 0.9951616915422886
+    },
+    "event_recall": {
+     "estimate": 0.6584517886756692,
+     "lower": 0.599156597962568,
+     "upper": 0.7173276474769011
+    }
+   }
+  },
+  "B0/unconstrained": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.012437810945273632,
+     "lower": 0.0024875621890547268,
+     "upper": 0.024875621890547265
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 0.9875621890547264,
+     "lower": 0.9751243781094527,
+     "upper": 0.9975124378109452
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.033582089552238806,
+     "lower": 0.013059701492537313,
+     "upper": 0.05970149253731343
+    },
+    "omission_rate": {
+     "estimate": 0.339060649135276,
+     "lower": 0.2806889658848614,
+     "upper": 0.39890813788201845
+    },
+    "event_precision": {
+     "estimate": 0.9664179104477612,
+     "lower": 0.9402985074626866,
+     "upper": 0.9869402985074627
+    },
+    "event_recall": {
+     "estimate": 0.660939350864724,
+     "lower": 0.6010918621179816,
+     "upper": 0.7193110341151385
+    }
+   }
+  },
+  "B0/constrained": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.021144278606965175,
+     "lower": 0.006187810945273661,
+     "upper": 0.03980099502487562
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.9788557213930348,
+     "lower": 0.9601990049751243,
+     "upper": 0.9938121890547263
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.017412935323383085,
+     "lower": 0.0037313432835820895,
+     "upper": 0.03795087064676616
+    },
+    "omission_rate": {
+     "estimate": 0.3548566690357735,
+     "lower": 0.2951043887704336,
+     "upper": 0.4151689469320067
+    },
+    "event_precision": {
+     "estimate": 0.9825870646766169,
+     "lower": 0.9620491293532338,
+     "upper": 0.996268656716418
+    },
+    "event_recall": {
+     "estimate": 0.6451433309642265,
+     "lower": 0.5848310530679934,
+     "upper": 0.7048956112295665
+    }
+   }
+  },
+  "B0/constrained_cover": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.01890547263681592,
+     "lower": 0.004838308457711453,
+     "upper": 0.03943718905472636
+    },
+    "omission_rate": {
+     "estimate": 0.3415482113243307,
+     "lower": 0.2826723525230988,
+     "upper": 0.4008434020374319
+    },
+    "event_precision": {
+     "estimate": 0.981094527363184,
+     "lower": 0.9605628109452736,
+     "upper": 0.9951616915422886
+    },
+    "event_recall": {
+     "estimate": 0.6584517886756692,
+     "lower": 0.599156597962568,
+     "upper": 0.7173276474769011
+    }
+   }
+  },
+  "lbrv2/template": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.022388059701492536,
+     "lower": 0.005597014925373134,
+     "upper": 0.04477611940298507
+    },
+    "omission_rate": {
+     "estimate": 0.41496683250414595,
+     "lower": 0.34483312603648436,
+     "upper": 0.48953565505804303
+    },
+    "event_precision": {
+     "estimate": 0.9776119402985075,
+     "lower": 0.9552238805970149,
+     "upper": 0.9944029850746269
+    },
+    "event_recall": {
+     "estimate": 0.5850331674958541,
+     "lower": 0.5104643449419569,
+     "upper": 0.6551668739635157
+    }
+   }
+  },
+  "lbrv2/unconstrained": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.012437810945273632,
+     "lower": 0.0024875621890547268,
+     "upper": 0.024875621890547265
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 0.9875621890547264,
+     "lower": 0.9751243781094527,
+     "upper": 0.9975124378109452
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.03482587064676617,
+     "lower": 0.01365049751243784,
+     "upper": 0.058457711442786074
+    },
+    "omission_rate": {
+     "estimate": 0.4116086235489221,
+     "lower": 0.3404208126036484,
+     "upper": 0.4864490049751244
+    },
+    "event_precision": {
+     "estimate": 0.9651741293532339,
+     "lower": 0.9415422885572139,
+     "upper": 0.9863495024875621
+    },
+    "event_recall": {
+     "estimate": 0.588391376451078,
+     "lower": 0.5135509950248757,
+     "upper": 0.6595791873963516
+    }
+   }
+  },
+  "lbrv2/constrained": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.007462686567164179,
+     "lower": 0.0,
+     "upper": 0.018656716417910446
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.9925373134328358,
+     "lower": 0.9813432835820896,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.018656716417910446,
+     "lower": 0.0037313432835820895,
+     "upper": 0.03917910447761194
+    },
+    "omission_rate": {
+     "estimate": 0.41869817578772806,
+     "lower": 0.3475642620232173,
+     "upper": 0.4932763266998341
+    },
+    "event_precision": {
+     "estimate": 0.9813432835820896,
+     "lower": 0.960820895522388,
+     "upper": 0.996268656716418
+    },
+    "event_recall": {
+     "estimate": 0.581301824212272,
+     "lower": 0.5067236733001659,
+     "upper": 0.6524357379767828
+    }
+   }
+  },
+  "lbrv2/constrained_cover": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.022388059701492536,
+     "lower": 0.005597014925373134,
+     "upper": 0.04477611940298507
+    },
+    "omission_rate": {
+     "estimate": 0.41496683250414595,
+     "lower": 0.34483312603648436,
+     "upper": 0.48953565505804303
+    },
+    "event_precision": {
+     "estimate": 0.9776119402985075,
+     "lower": 0.9552238805970149,
+     "upper": 0.9944029850746269
+    },
+    "event_recall": {
+     "estimate": 0.5850331674958541,
+     "lower": 0.5104643449419569,
+     "upper": 0.6551668739635157
+    }
+   }
+  },
+  "lbrv3/template": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.1784554955840586,
+     "lower": 0.1423018094633917,
+     "upper": 0.21561828445882814
+    },
+    "omission_rate": {
+     "estimate": 0.10703624733475481,
+     "lower": 0.0767968194740583,
+     "upper": 0.14049751243781095
+    },
+    "event_precision": {
+     "estimate": 0.8215445044159414,
+     "lower": 0.7843817155411719,
+     "upper": 0.8576981905366082
+    },
+    "event_recall": {
+     "estimate": 0.8929637526652452,
+     "lower": 0.859502487562189,
+     "upper": 0.9232031805259417
+    }
+   }
+  },
+  "lbrv3/unconstrained": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.011069651741293532,
+     "lower": 0.0037313432835820895,
+     "upper": 0.020901741293532332
+    },
+    "omission_rate": {
+     "estimate": 0.03062366737739872,
+     "lower": 0.016289534470504623,
+     "upper": 0.04649986673773987
+    },
+    "event_precision": {
+     "estimate": 0.9889303482587065,
+     "lower": 0.9790982587064677,
+     "upper": 0.996268656716418
+    },
+    "event_recall": {
+     "estimate": 0.9693763326226013,
+     "lower": 0.9535001332622601,
+     "upper": 0.9837104655294954
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.23395522388059703,
+     "lower": 0.19203669154228856,
+     "upper": 0.27513059701492537
+    },
+    "omission_rate": {
+     "estimate": 0.10522980336413172,
+     "lower": 0.07404554607912818,
+     "upper": 0.13889466358682775
+    },
+    "event_precision": {
+     "estimate": 0.766044776119403,
+     "lower": 0.7248694029850746,
+     "upper": 0.8079633084577115
+    },
+    "event_recall": {
+     "estimate": 0.8947701966358683,
+     "lower": 0.8611053364131723,
+     "upper": 0.9259544539208718
+    }
+   }
+  },
+  "lbrv3/constrained": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.14467839374555794,
+     "lower": 0.10555614783226724,
+     "upper": 0.1844809434968017
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 0.8553216062544421,
+     "lower": 0.8155190565031982,
+     "upper": 0.8944438521677327
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.19156005685856434,
+     "lower": 0.145856135986733,
+     "upper": 0.23808072731580188
+    },
+    "omission_rate": {
+     "estimate": 0.20367211561241413,
+     "lower": 0.152771855010661,
+     "upper": 0.25281405472636814
+    },
+    "event_precision": {
+     "estimate": 0.8084399431414356,
+     "lower": 0.761919272684198,
+     "upper": 0.8541438640132669
+    },
+    "event_recall": {
+     "estimate": 0.7963278843875858,
+     "lower": 0.7471859452736318,
+     "upper": 0.847228144989339
+    }
+   }
+  },
+  "lbrv3/constrained_cover": {
+   "e2e_vs_pred": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "omission_rate": {
+     "estimate": 0.0,
+     "lower": 0.0,
+     "upper": 0.0
+    },
+    "event_precision": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    },
+    "event_recall": {
+     "estimate": 1.0,
+     "lower": 1.0,
+     "upper": 1.0
+    }
+   },
+   "e2e_vs_gt": {
+    "n": 134,
+    "hallucination_rate": {
+     "estimate": 0.19889851049879387,
+     "lower": 0.16046226694998444,
+     "upper": 0.2413223912516711
+    },
+    "omission_rate": {
+     "estimate": 0.10703624733475481,
+     "lower": 0.0767968194740583,
+     "upper": 0.14049751243781095
+    },
+    "event_precision": {
+     "estimate": 0.8011014895012061,
+     "lower": 0.7586776087483289,
+     "upper": 0.8395377330500156
+    },
+    "event_recall": {
+     "estimate": 0.8929637526652452,
+     "lower": 0.859502487562189,
+     "upper": 0.9232031805259417
+    }
+   }
+  }
+ },
+ "sources": {
+  "ground_truth": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/captions/constrained_dev.jsonl (level oracle)",
+  "f2/unconstrained": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/captions/unconstrained_dev.jsonl",
+  "f2/constrained": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/captions/constrained_dev.jsonl",
+  "f2/constrained_cover": "ml/runs/sed_ensemble_s13_f2_20260929T045053Z/captions/constrained_cover_dev.jsonl",
+  "B0/unconstrained": "ml/runs/sed_filtered_B0_oof_dev_20261107T181008Z/captions/unconstrained_dev.jsonl",
+  "B0/constrained": "ml/runs/sed_filtered_B0_oof_dev_20261107T181008Z/captions/constrained_dev.jsonl",
+  "B0/constrained_cover": "ml/runs/sed_filtered_B0_oof_dev_20261107T181008Z/captions/constrained_cover_dev.jsonl",
+  "lbrv2/unconstrained": "ml/runs/sed_lbr_oofevents_sed_lbr_B0_20261109T172809Z_f1_20261110T062901Z/captions/unconstrained_dev.jsonl",
+  "lbrv2/constrained": "ml/runs/sed_lbr_oofevents_sed_lbr_B0_20261109T172809Z_f1_20261110T062901Z/captions/constrained_dev.jsonl",
+  "lbrv2/constrained_cover": "ml/runs/sed_lbr_oofevents_sed_lbr_B0_20261109T172809Z_f1_20261110T062901Z/captions/constrained_cover_dev.jsonl",
+  "lbrv3/unconstrained": "ml/runs/sed_lbr_oofevents_sed_lbr_B0v3_20261110T042337Z_recall_first_20261110T063606Z/captions/unconstrained_dev.jsonl",
+  "lbrv3/constrained": "ml/runs/sed_lbr_oofevents_sed_lbr_B0v3_20261110T042337Z_recall_first_20261110T063606Z/captions/constrained_dev.jsonl",
+  "lbrv3/constrained_cover": "ml/runs/sed_lbr_oofevents_sed_lbr_B0v3_20261110T042337Z_recall_first_20261110T063606Z/captions/constrained_cover_dev.jsonl"
+ },
+ "git": {
+  "revision": "c6a6cb8db8d5d631b2b9cbd22967ddf2c0290227",
+  "dirty": false
+ },
+ "created_at": "2026-11-24T04:36:14.153185+00:00"
+}
