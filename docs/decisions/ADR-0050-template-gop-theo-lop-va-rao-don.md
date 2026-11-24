@@ -61,8 +61,8 @@ Trên dòng thời gian dev đã lưu của bốn hệ SED (134 bản ghi có nh
 `grouped_captions_dev_20261124` (dev, tree sạch). θ_hedge = 0.4756.
 
 - So với dòng thời gian dự đoán: ảo giác và bỏ sót 0,000, thứ tự 1,000 ở cả bốn hệ, như mẫu cố định.
-- Độ dài: V3 trung bình 400 → 156 ký tự, dài nhất
-  2361 → 560; ba hệ còn lại giảm khoảng 2,4–2,7 lần.
+- Độ dài (câu chữ kiểu thông báo, xem Bổ sung): V3 trung bình 400 → 119 ký tự, dài nhất 2361 → 449;
+  ba hệ còn lại giảm khoảng 2,9–3,6 lần. Bản câu chữ đầu (văn xuôi) cho 156 và 560.
 - So với nhãn gốc: bỏ sót không đổi; ảo giác **theo lớp** không đổi (V3 0.240).
   Ảo giác **theo số lần nhắc** của mô tả gộp cao hơn (V3 0.178 →
   0.240) chỉ vì mô tả mẫu nhắc lặp các lớp đúng làm loãng tỷ lệ; lượt đo

@@ -232,13 +232,13 @@ Ba điều rút ra. **Một,** so với nhãn gốc, mọi cách sinh đều b�
 
 ### Mô tả gộp theo lớp và rào đón theo điểm tin cậy
 
-Vì độ đúng của mô tả do SED quyết định, phần còn cải thiện được ở bộ sinh là làm mô tả dễ đọc hơn và nói ra mức chắc chắn của SED. Mô tả mẫu viết một câu cho mỗi sự kiện, nên với dòng thời gian dày của LBR V3 nó dài trung bình 400 ký tự trên dev, dài nhất 2 361 ký tự. Nhóm thêm một bộ sinh cho hệ phục vụ (ADR-0050, ghi trước khi đo): mỗi lớp một mệnh đề, lớp lặp lại được đếm số lần, và lớp mà sự kiện chắc chắn nhất vẫn có điểm dưới ngưỡng thì được rào đón ("possibly", "có lẽ"). Ngưỡng là phân vị 33,3% điểm sự kiện dev của V3, tính một lần (0,4756). Trên dev (`grouped_captions_dev_20261124`):
+Vì độ đúng của mô tả do SED quyết định, phần còn cải thiện được ở bộ sinh là làm mô tả dễ đọc hơn và nói ra mức chắc chắn của SED. Mô tả mẫu viết một câu cho mỗi sự kiện, nên với dòng thời gian dày của LBR V3 nó dài trung bình 400 ký tự trên dev, dài nhất 2 361 ký tự. Nhóm thêm một bộ sinh cho hệ phục vụ (ADR-0050, ghi trước khi đo): mỗi lớp một dòng theo kiểu thông báo ("Phát hiện: tiếng chim, 2 lần, 0,0–20,0 giây."), lớp lặp lại được đếm số lần, và lớp mà sự kiện chắc chắn nhất vẫn có điểm dưới ngưỡng thì được gắn nhãn "Có thể có (độ tin cậy thấp)". Nhãn không dùng chữ "cảnh báo" vì đây là từ cấm của ràng buộc G3. Ngưỡng là phân vị 33,3% điểm sự kiện dev của V3, tính một lần (0,4756). Trên dev (`grouped_captions_dev_20261124`):
 
-- Ảo giác và bỏ sót so với dòng thời gian dự đoán vẫn bằng 0 và thứ tự đúng 1,000 ở cả bốn hệ. Độ dài của V3 giảm còn trung bình 156 ký tự (dài nhất 560); ba hệ còn lại ngắn đi khoảng 2,4 đến 2,7 lần.
+- Ảo giác và bỏ sót so với dòng thời gian dự đoán vẫn bằng 0 và thứ tự đúng 1,000 ở cả bốn hệ. Độ dài của V3 giảm còn trung bình 119 ký tự (dài nhất 449); ba hệ còn lại ngắn đi khoảng 2,9 đến 3,6 lần.
 - So với nhãn gốc, bỏ sót và tỷ lệ lớp được nêu sai không đổi (V3: 0,240 cho cả hai bộ sinh). Tỷ lệ ảo giác tính theo số lần nhắc thì tăng (V3: 0,178 lên 0,240), nhưng đây là do cách đếm: mô tả mẫu nhắc lặp các lớp đúng nên làm loãng tỷ lệ, còn mô tả gộp nhắc mỗi lớp một lần.
-- Rào đón mang thông tin. Ở V3, mệnh đề có rào đón chỉ đúng với nhãn gốc 17/98 lần, còn mệnh đề không rào đón đúng 202/228; hiệu độ chính xác +0,712 [+0,628; +0,796]. Như vậy "có lẽ" trong giao diện báo đúng chỗ SED hay sai, và vì nó lấy từ điểm của bộ phát hiện chứ không do mô hình ngôn ngữ tự đặt, người dùng có thể dựa vào nó. f2 và B0 không có mệnh đề nào bị rào đón vì thang điểm của chúng khác thang của V3.
+- Rào đón mang thông tin. Ở V3, mệnh đề có rào đón chỉ đúng với nhãn gốc 17/98 lần, còn mệnh đề không rào đón đúng 202/228; hiệu độ chính xác +0,712 [+0,628; +0,796]. Như vậy nhãn "độ tin cậy thấp" trong giao diện báo đúng chỗ SED hay sai, và vì nó lấy từ điểm của bộ phát hiện chứ không do mô hình ngôn ngữ tự đặt, người dùng có thể dựa vào nó. f2 và B0 không có mệnh đề nào bị rào đón vì thang điểm của chúng khác thang của V3.
 
-Câu chữ tiếng Việt của bộ sinh này ("Nghe thấy …", "Có lẽ nghe thấy …", "… n lần trong khoảng …") mới được nhóm tự duyệt.
+
 
 Về độ tin cậy của lượt chạy: trong lúc sinh mô tả cho V3 trên dev, máy chủ llama.cpp gặp lỗi hết bộ nhớ GPU một lần; nhóm khởi động lại máy chủ và chạy tiếp, các tệp đã xong được giữ nguyên. Chuỗi yêu cầu sau khi khởi động lại khác chuỗi ban đầu, và vì llama.cpp chỉ tất định theo chuỗi yêu cầu, mô tả của các tệp chạy sau điểm này không chắc tái tạo được từng ký tự nếu chạy lại từ đầu. Sự việc được ghi ở ADR-0048.
 
