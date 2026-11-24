@@ -1,0 +1,358 @@
+{
+ "split": "dev",
+ "eval_set": "annotated",
+ "systems": [
+  "f2",
+  "B0",
+  "lbrv2",
+  "lbrv3"
+ ],
+ "seed": 20260922,
+ "oov_sources": [
+  "a baby crying",
+  "a door slamming",
+  "a hammer striking",
+  "rain falling",
+  "a crowd cheering",
+  "a cat meowing",
+  "a clock ticking",
+  "a phone vibrating"
+ ],
+ "results": {
+  "unconstrained": {
+   "by_kind": {
+    "swap_canonical": {
+     "caught": 464,
+     "n": 465,
+     "rate": 0.9978494623655914
+    },
+    "swap_synonym": {
+     "caught": 465,
+     "n": 465,
+     "rate": 1.0
+    },
+    "insert_class": {
+     "caught": 536,
+     "n": 536,
+     "rate": 1.0
+    },
+    "insert_oov": {
+     "caught": 334,
+     "n": 536,
+     "rate": 0.6231343283582089
+    }
+   },
+   "by_oov_source": {
+    "a baby crying": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a door slamming": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a hammer striking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "rain falling": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a crowd cheering": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a cat meowing": {
+     "caught": 66,
+     "n": 67,
+     "rate": 0.9850746268656716
+    },
+    "a clock ticking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "a phone vibrating": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    }
+   }
+  },
+  "constrained": {
+   "by_kind": {
+    "swap_canonical": {
+     "caught": 465,
+     "n": 465,
+     "rate": 1.0
+    },
+    "swap_synonym": {
+     "caught": 465,
+     "n": 465,
+     "rate": 1.0
+    },
+    "insert_class": {
+     "caught": 536,
+     "n": 536,
+     "rate": 1.0
+    },
+    "insert_oov": {
+     "caught": 334,
+     "n": 536,
+     "rate": 0.6231343283582089
+    }
+   },
+   "by_oov_source": {
+    "a baby crying": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a door slamming": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a hammer striking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "rain falling": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a crowd cheering": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a cat meowing": {
+     "caught": 66,
+     "n": 67,
+     "rate": 0.9850746268656716
+    },
+    "a clock ticking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "a phone vibrating": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    }
+   }
+  },
+  "template": {
+   "by_kind": {
+    "swap_canonical": {
+     "caught": 465,
+     "n": 465,
+     "rate": 1.0
+    },
+    "swap_synonym": {
+     "caught": 465,
+     "n": 465,
+     "rate": 1.0
+    },
+    "insert_class": {
+     "caught": 536,
+     "n": 536,
+     "rate": 1.0
+    },
+    "insert_oov": {
+     "caught": 334,
+     "n": 536,
+     "rate": 0.6231343283582089
+    }
+   },
+   "by_oov_source": {
+    "a baby crying": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a door slamming": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a hammer striking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "rain falling": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a crowd cheering": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a cat meowing": {
+     "caught": 66,
+     "n": 67,
+     "rate": 0.9850746268656716
+    },
+    "a clock ticking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "a phone vibrating": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    }
+   }
+  },
+  "constrained_cover": {
+   "by_kind": {
+    "swap_canonical": {
+     "caught": 465,
+     "n": 465,
+     "rate": 1.0
+    },
+    "swap_synonym": {
+     "caught": 465,
+     "n": 465,
+     "rate": 1.0
+    },
+    "insert_class": {
+     "caught": 536,
+     "n": 536,
+     "rate": 1.0
+    },
+    "insert_oov": {
+     "caught": 334,
+     "n": 536,
+     "rate": 0.6231343283582089
+    }
+   },
+   "by_oov_source": {
+    "a baby crying": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a door slamming": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a hammer striking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "rain falling": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a crowd cheering": {
+     "caught": 67,
+     "n": 67,
+     "rate": 1.0
+    },
+    "a cat meowing": {
+     "caught": 66,
+     "n": 67,
+     "rate": 0.9850746268656716
+    },
+    "a clock ticking": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    },
+    "a phone vibrating": {
+     "caught": 0,
+     "n": 67,
+     "rate": 0.0
+    }
+   }
+  }
+ },
+ "pooled": {
+  "by_kind": {
+   "swap_canonical": {
+    "caught": 1859,
+    "n": 1860,
+    "rate": 0.9994623655913979
+   },
+   "swap_synonym": {
+    "caught": 1860,
+    "n": 1860,
+    "rate": 1.0
+   },
+   "insert_class": {
+    "caught": 2144,
+    "n": 2144,
+    "rate": 1.0
+   },
+   "insert_oov": {
+    "caught": 1336,
+    "n": 2144,
+    "rate": 0.6231343283582089
+   }
+  },
+  "by_oov_source": {
+   "a baby crying": {
+    "caught": 268,
+    "n": 268,
+    "rate": 1.0
+   },
+   "a door slamming": {
+    "caught": 268,
+    "n": 268,
+    "rate": 1.0
+   },
+   "a hammer striking": {
+    "caught": 0,
+    "n": 268,
+    "rate": 0.0
+   },
+   "rain falling": {
+    "caught": 268,
+    "n": 268,
+    "rate": 1.0
+   },
+   "a crowd cheering": {
+    "caught": 268,
+    "n": 268,
+    "rate": 1.0
+   },
+   "a cat meowing": {
+    "caught": 264,
+    "n": 268,
+    "rate": 0.9850746268656716
+   },
+   "a clock ticking": {
+    "caught": 0,
+    "n": 268,
+    "rate": 0.0
+   },
+   "a phone vibrating": {
+    "caught": 0,
+    "n": 268,
+    "rate": 0.0
+   }
+  }
+ },
+ "git": {
+  "revision": "08393a732498315442af95adf2453b0f2987bd7c",
+  "dirty": false
+ },
+ "created_at": "2026-11-24T04:40:37.420033+00:00"
+}
