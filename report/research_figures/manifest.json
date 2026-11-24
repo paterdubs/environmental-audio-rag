@@ -11,7 +11,8 @@
     "r09_rq1_seeds.png",
     "r10_rq2_errors.png",
     "r11_rq3_queries.png",
-    "r12_run_timeline.png"
+    "r12_run_timeline.png",
+    "r13_rq3_backfill.png"
   ],
   "sources": [
     "docs/measurements/data_profile_20261008_lf.json",
@@ -27,7 +28,8 @@
     "docs/measurements/rq1_v2_multiseed_20260929.json",
     "docs/measurements/rq2_llm_systems_20261110_test_annotated.json",
     "docs/measurements/rq3_modes_20261123.json",
-    "docs/measurements/run_registry_20261123.json"
+    "docs/measurements/run_registry_20261123.json",
+    "docs/measurements/retrieval_backfill_test_20261124.json"
   ],
   "spearman_dev_test": 0.6181818181818182,
   "rq3_query_counts": [
@@ -69,7 +71,7 @@
     }
   ],
   "git": {
-    "revision": "478e1538ee83194f505d9b14c3f99b452cf33428",
+    "revision": "4195369deb4c22157ef49e61fda3ddfb0a90c319",
     "dirty": true
   }
 }
