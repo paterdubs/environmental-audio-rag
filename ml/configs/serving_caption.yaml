@@ -1,0 +1,5 @@
+# Bộ sinh mô tả phục vụ (ADR-0050). Không dùng cho số RQ2 (TemplateCaptioner giữ nguyên).
+captioner: grouped
+# Phân vị 33,3% điểm sự kiện dev của LBR V3 recall_first, sinh bởi scripts.report_grouped_captions
+# (docs/measurements/grouped_captions_dev_20261124.json, trường hedge_threshold).
+hedge_threshold: 0.4756241246422508

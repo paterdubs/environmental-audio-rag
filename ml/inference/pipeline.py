@@ -15,8 +15,8 @@ import librosa
 import numpy as np
 import soundfile
 
+from ml.captioning.grouped import GroupedTemplateCaptioner
 from ml.captioning.lexicon import VI_LEXICON_CONFIG, CaptionLexicon
-from ml.captioning.template import TemplateCaptioner
 from ml.captioning.timeline import canonicalize_timeline
 from ml.features.logmel import extract_logmel, load_logmel_config
 from ml.inference.sed import ServedSed
@@ -48,14 +48,28 @@ def served_waveform(path: Path) -> np.ndarray:
     return np.clip(np.round(waveform * 32768.0), -32768, 32767).astype(np.int16)
 
 
+SERVING_CAPTION_CONFIG = Path(__file__).resolve().parents[1] / "configs" / "serving_caption.yaml"
+
+
+def serving_hedge_threshold(path: Path = SERVING_CAPTION_CONFIG) -> float:
+    """θ_hedge of the served captioner (ADR-0050), chosen on dev and stored in config."""
+    import yaml
+
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if raw.get("captioner") != "grouped":
+        raise ValueError(f"{path}: unsupported captioner {raw.get('captioner')!r}")
+    return float(raw["hedge_threshold"])
+
+
 class Analyzer:
     def __init__(self, sed: ServedSed, taxonomy: Taxonomy) -> None:
         self.sed = sed
         self.taxonomy = taxonomy
+        hedge = serving_hedge_threshold()
         self.captioners = {
-            "en": TemplateCaptioner(CaptionLexicon.from_taxonomy(taxonomy)),
-            "vi": TemplateCaptioner(CaptionLexicon.from_taxonomy(taxonomy,
-                                                                  config=VI_LEXICON_CONFIG)),
+            "en": GroupedTemplateCaptioner(CaptionLexicon.from_taxonomy(taxonomy), hedge),
+            "vi": GroupedTemplateCaptioner(
+                CaptionLexicon.from_taxonomy(taxonomy, config=VI_LEXICON_CONFIG), hedge),
         }
 
     def timeline(self, recording_id: str, signal: np.ndarray, *, total_frames: int | None = None

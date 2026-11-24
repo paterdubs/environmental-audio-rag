@@ -47,3 +47,13 @@ def test_empty_timeline_and_language_mismatch():
     assert GroupedTemplateCaptioner(EN).caption(empty)["text"].startswith("No target sound")
     with pytest.raises(ValueError):
         GroupedTemplateCaptioner(EN).caption(TIMELINE, "vi")
+
+
+def test_serving_threshold_matches_the_dev_measurement():
+    import json
+
+    from ml.inference.pipeline import serving_hedge_threshold
+
+    measured = ROOT / "docs/measurements/grouped_captions_dev_20261124.json"
+    expected = json.loads(measured.read_text(encoding="utf-8"))["hedge_threshold"]
+    assert serving_hedge_threshold() == expected
