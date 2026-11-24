@@ -24,6 +24,7 @@ import numpy as np
 
 from ml.evaluation.bootstrap import recording_bootstrap
 from ml.provenance import git_state
+from ml.retrieval import fusion
 from ml.retrieval.relevance import relevant_recordings
 from scripts.evaluate_retrieval import QUERYSET, corpus_ground_truth, rank_metrics
 
@@ -50,8 +51,7 @@ TOL = 1e-9
 
 def backfill(hybrid: Sequence[str], vector: Sequence[str], k: int = K) -> list[str]:
     """Hybrid results first, then vector results not already present, cut at k."""
-    seen = set(hybrid)
-    return (list(hybrid) + [r for r in vector if r not in seen])[:k]
+    return fusion.backfill(hybrid, vector, k)
 
 
 def rrf(lists: Sequence[Sequence[str]], k_rrf: int = RRF_K, k: int = K) -> list[str]:

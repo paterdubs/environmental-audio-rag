@@ -74,7 +74,7 @@ async def query(request: Request, body: QueryRequest):
     if unknown:
         return fail(422, "unknown_class", f"lớp ngoài 21 lớp SED: {unknown}")
     vector, version = None, None
-    if body.mode == "hybrid":
+    if body.mode in ("hybrid", "backfill"):
         try:
             embedded = await state.inference.embed([body.question])
         except InferenceUnavailable as exc:

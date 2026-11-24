@@ -35,7 +35,8 @@
         "properties": {
           "recording_id": {"type": "string", "pattern": "^(datased|datasec|upload):.+$"},
           "text": {"type": "string"},
-          "score": {"type": "number"}
+          "score": {"type": "number"},
+          "tier": {"enum": ["match", "near"]}
         }
       }
     }

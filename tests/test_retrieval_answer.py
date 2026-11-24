@@ -59,3 +59,30 @@ def test_no_match_returns_empty_evidence_with_the_applied_filters() -> None:
                     VI.canonical_phrase, 10)
     assert result["evidence"] == [] and result["answer"].startswith("Không bản ghi")
     assert result["filters_applied"]["hard_filters"] == {"classes_all": ["train"]}
+
+
+def test_backfill_near_matches_are_named_but_never_claimed() -> None:
+    for language, lexicon, name in (("en", EN, LABEL.__getitem__),
+                                    ("vi", VI, VI.canonical_phrase)):
+        result = answer("q", BEFORE, "backfill", ["datased:S-1", "datased:S-2"], EVENTS,
+                        language, name, k=10)
+        assert list(Draft202012Validator(SCHEMA).iter_errors(result)) == []
+        tiers = {d["recording_id"]: d["tier"] for d in result["documents"]}
+        assert tiers == {"datased:S-1": "match", "datased:S-2": "near"}
+        assert {e["recording_id"] for e in result["evidence"]} == {"datased:S-1"}
+        assert "datased:S-2" in result["answer"]
+        assert unsupported_claims(result, lexicon) == []
+
+
+def test_only_near_matches_still_says_nothing_satisfies_the_filters() -> None:
+    result = answer("q", BEFORE, "backfill", ["datased:S-2"], EVENTS, "en",
+                    LABEL.__getitem__, 10)
+    assert result["evidence"] == []
+    assert result["answer"].startswith("No indexed recording satisfies")
+    assert "1 further result(s) are near matches" in result["answer"]
+
+
+def test_fusion_backfill_keeps_tier_one_order() -> None:
+    from ml.retrieval.fusion import backfill
+
+    assert backfill(["a"], ["b", "a", "c"], 2) == ["a", "b"]

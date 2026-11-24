@@ -14,11 +14,12 @@ Corpus = Literal["upload", "validation", "test"]
 
 class QueryRequest(BaseModel):
     """Retrieval needs hard filters: the evidence-bound answer only cites events that satisfy
-    them (SYSTEM §7.4). `vector_only` stays a benchmark mode (RQ3), not a user-facing one."""
+    them (SYSTEM §7.4). `vector_only` stays a benchmark mode (RQ3), not a user-facing one;
+    `backfill` appends labelled near matches after the filtered results (ADR-0049)."""
 
     question: str = Field(min_length=1, max_length=500)
     filters: Filters | None = None
-    mode: Literal["hybrid", "structured_only"] = "hybrid"
+    mode: Literal["backfill", "hybrid", "structured_only"] = "backfill"
     corpus: Corpus = "upload"
     language: Literal["en", "vi"] = "vi"
     k: int = Field(default=10, ge=1, le=50)

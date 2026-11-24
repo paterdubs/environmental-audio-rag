@@ -5,7 +5,8 @@ Three retrieval modes (SYSTEM §7.6), always scoped to one corpus — a benchmar
 
 - ``structured_only`` — hard filters, ordered by the earliest onset of a filtered class;
 - ``vector_only``     — cosine ranking over every document, no filter;
-- ``hybrid``          — hard filters first, cosine ranking inside the filtered set.
+- ``hybrid``          — hard filters first, cosine ranking inside the filtered set;
+- ``backfill``        — hybrid, then unfiltered cosine results appended up to k (ADR-0049).
 
 Hard filters are SQL over the *indexed (predicted)* events, with the same predicate text as
 ``ml.retrieval.temporal`` — the semantic score can never override them (SYSTEM §7.2).
@@ -20,10 +21,12 @@ from typing import Any
 
 import numpy as np
 
+from ml.retrieval import fusion
 from ml.retrieval.temporal import PREDICATES
 
 DEFAULT_DSN = "postgresql://app:app@localhost:5432/environmental_audio"
-MODES = ("structured_only", "vector_only", "hybrid")
+MODES = ("structured_only", "vector_only", "hybrid")  # RQ3 benchmark modes
+SERVING_MODES = ("hybrid", "structured_only", "backfill")  # backfill: ADR-0049
 UPLOAD_CORPUS = "upload"
 
 
@@ -100,6 +103,10 @@ def _order_classes(filters: Mapping[str, Any]) -> list[str]:
 def search(conn, mode: str, split: str, filters: Mapping[str, Any],
            query_vector: np.ndarray | None, embedding_version: str, k: int = 10) -> list[str]:
     """Top-k recording ids for one query in one corpus."""
+    if mode == "backfill":
+        return fusion.backfill(
+            search(conn, "hybrid", split, filters, query_vector, embedding_version, k),
+            search(conn, "vector_only", split, filters, query_vector, embedding_version, k), k)
     params: dict[str, Any] = {"split": split, "version": embedding_version, "k": k}
     base = ("SELECT d.recording_id FROM retrieval_documents d JOIN recordings r "
             f"USING (recording_id) WHERE {corpus_clause(split)}"

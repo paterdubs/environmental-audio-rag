@@ -2,9 +2,10 @@
 
 The generator is deterministic: it cites only recordings whose *indexed* events satisfy the
 applied filters, and every sentence restates an evidence event (class + time span) — A1.
-Nothing matched → ``evidence: []`` with the filters applied (A2, A4). No cause, intent or
-danger is ever stated (A3, same G3 lexicon as captions). `unsupported_claims` re-reads the
-answer text independently and reports any class/time claim not backed by evidence.
+Nothing matched → ``evidence: []`` with the filters applied (A2, A4). Ranked recordings that do
+not satisfy the filters (backfill tier 2, ADR-0049) are listed by id as near matches only. No
+cause, intent or danger is ever stated (A3, same G3 lexicon as captions). `unsupported_claims`
+re-reads the answer text independently and reports any class/time claim not backed by evidence.
 """
 
 from __future__ import annotations
@@ -21,11 +22,14 @@ MAX_CITED = 3
 TEXT = {
     "en": {"none": "No indexed recording satisfies the applied filters.",
            "count": "{n} of the top {k} results satisfy the filters.",
-           "cite": "In {rid}, {items}.", "item": "{name} at {on}–{off} s", "join": ", then "},
+           "cite": "In {rid}, {items}.", "item": "{name} at {on}–{off} s", "join": ", then ",
+           "near": "{n} further result(s) are near matches that do not satisfy the filters: "
+                   "{rids}."},
     "vi": {"none": "Không bản ghi nào trong kho thoả bộ lọc đã áp dụng.",
            "count": "{n} trong {k} kết quả đầu thoả bộ lọc.",
            "cite": "Trong {rid}, {items}.", "item": "{name} ở {on}–{off} giây",
-           "join": ", sau đó "},
+           "join": ", sau đó ",
+           "near": "Thêm {n} kết quả gần nghĩa nhưng không thoả bộ lọc: {rids}."},
 }
 _SPAN = re.compile(r"(\d+[.,]\d)–(\d+[.,]\d) (?:s|giây)")
 
@@ -76,11 +80,16 @@ def answer(question: str, filters: Mapping[str, Any], mode: str, ranked: Sequenc
             name=name(e["class_id"]), on=_seconds(e["onset_s"], language),
             off=_seconds(e["offset_s"], language)) for e in support)
         sentences.append(words["cite"].format(rid=rid, items=items))
+    matched_ids = {rid for rid, _ in matched}
+    near = [rid for rid in ranked if rid not in matched_ids]
+    if near:  # tier 2 (ADR-0049): named only, no class or time claim about them
+        sentences.append(words["near"].format(n=len(near), rids=", ".join(near)))
     return {"question": question, "answer": " ".join(sentences), "evidence": evidence,
             "filters_source": filters_source,
             "filters_applied": {"mode": mode, "hard_filters": dict(filters), "k": k,
                                 "language": language},
-            "documents": [{"recording_id": rid, "text": "", "score": float(len(ranked) - i)}
+            "documents": [{"recording_id": rid, "text": "", "score": float(len(ranked) - i),
+                           "tier": "match" if rid in matched_ids else "near"}
                           for i, rid in enumerate(ranked)]}
 
 

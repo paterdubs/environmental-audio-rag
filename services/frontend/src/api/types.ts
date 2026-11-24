@@ -9,7 +9,7 @@ export interface Envelope<T> {
 
 export type Corpus = "upload" | "validation" | "test";
 export type Language = "vi" | "en";
-export type Mode = "hybrid" | "structured_only";
+export type Mode = "backfill" | "hybrid" | "structured_only";
 
 export interface TaxonomyClass {
   class_id: string;
@@ -115,7 +115,7 @@ export interface RetrievalResult {
   evidence: AnswerEvidence[];
   filters_applied: { mode: Mode; hard_filters: Filters; k: number; language: Language };
   filters_source: "user" | "parsed";
-  documents: { recording_id: string; score: number }[];
+  documents: { recording_id: string; score: number; tier?: "match" | "near" }[];
 }
 
 export interface Health {
