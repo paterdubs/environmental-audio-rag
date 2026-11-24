@@ -1,0 +1,193 @@
+{
+ "split": "test",
+ "k": 10,
+ "results": {
+  "f2": {
+   "by_group": {
+    "all": {
+     "beyond_top10_or_miss": 78,
+     "hit": 277,
+     "sed_false_match": 23,
+     "retrieved": 300,
+     "sed_miss": 350
+    },
+    "duration": {
+     "hit": 120,
+     "beyond_top10_or_miss": 23,
+     "sed_false_match": 9,
+     "retrieved": 129,
+     "sed_miss": 66
+    },
+    "multi_class": {
+     "sed_miss": 103,
+     "hit": 16,
+     "sed_false_match": 3,
+     "retrieved": 19
+    },
+    "single_class": {
+     "beyond_top10_or_miss": 55,
+     "hit": 128,
+     "sed_false_match": 7,
+     "retrieved": 135,
+     "sed_miss": 89
+    },
+    "temporal": {
+     "sed_miss": 92,
+     "sed_false_match": 4,
+     "retrieved": 17,
+     "hit": 13
+    }
+   },
+   "parser_vs_gold": {
+    "n": 97,
+    "different": 7
+   }
+  },
+  "B0": {
+   "by_group": {
+    "all": {
+     "beyond_top10_or_miss": 95,
+     "hit": 261,
+     "sed_false_match": 21,
+     "retrieved": 282,
+     "sed_miss": 349
+    },
+    "duration": {
+     "hit": 112,
+     "beyond_top10_or_miss": 23,
+     "sed_false_match": 11,
+     "retrieved": 123,
+     "sed_miss": 74
+    },
+    "multi_class": {
+     "sed_miss": 110,
+     "sed_false_match": 1,
+     "retrieved": 10,
+     "hit": 9
+    },
+    "single_class": {
+     "beyond_top10_or_miss": 72,
+     "hit": 126,
+     "sed_false_match": 6,
+     "retrieved": 132,
+     "sed_miss": 74
+    },
+    "temporal": {
+     "sed_miss": 91,
+     "sed_false_match": 3,
+     "retrieved": 17,
+     "hit": 14
+    }
+   },
+   "parser_vs_gold": {
+    "n": 97,
+    "different": 5
+   }
+  },
+  "lbrv2": {
+   "by_group": {
+    "all": {
+     "sed_miss": 381,
+     "hit": 253,
+     "sed_false_match": 24,
+     "retrieved": 277,
+     "beyond_top10_or_miss": 71
+    },
+    "duration": {
+     "hit": 91,
+     "beyond_top10_or_miss": 17,
+     "sed_false_match": 9,
+     "retrieved": 100,
+     "sed_miss": 101
+    },
+    "multi_class": {
+     "sed_miss": 105,
+     "sed_false_match": 2,
+     "retrieved": 16,
+     "hit": 14
+    },
+    "single_class": {
+     "sed_miss": 89,
+     "hit": 129,
+     "sed_false_match": 12,
+     "retrieved": 141,
+     "beyond_top10_or_miss": 54
+    },
+    "temporal": {
+     "sed_miss": 86,
+     "sed_false_match": 1,
+     "retrieved": 20,
+     "hit": 19
+    }
+   },
+   "parser_vs_gold": {
+    "n": 97,
+    "different": 4
+   }
+  },
+  "lbrv3": {
+   "by_group": {
+    "all": {
+     "hit": 417,
+     "beyond_top10_or_miss": 161,
+     "sed_false_match": 138,
+     "retrieved": 555,
+     "sed_miss": 127
+    },
+    "duration": {
+     "hit": 144,
+     "beyond_top10_or_miss": 47,
+     "sed_false_match": 39,
+     "retrieved": 183,
+     "sed_miss": 18
+    },
+    "multi_class": {
+     "sed_miss": 53,
+     "hit": 66,
+     "sed_false_match": 30,
+     "retrieved": 96
+    },
+    "single_class": {
+     "hit": 152,
+     "beyond_top10_or_miss": 114,
+     "sed_false_match": 34,
+     "retrieved": 186,
+     "sed_miss": 6
+    },
+    "temporal": {
+     "hit": 55,
+     "sed_miss": 50,
+     "sed_false_match": 35,
+     "retrieved": 90
+    }
+   },
+   "parser_vs_gold": {
+    "n": 97,
+    "different": 12
+   }
+  }
+ },
+ "sources": {
+  "f2": [
+   "docs/measurements/retrieval_benchmark_test_20261002.json",
+   "docs/measurements/retrieval_benchmark_test_parsed_20261002.json"
+  ],
+  "B0": [
+   "docs/measurements/retrieval_benchmark_test_s8lite_b0_gold_20261108.json",
+   "docs/measurements/retrieval_benchmark_test_s8lite_b0_parsed_20261108.json"
+  ],
+  "lbrv2": [
+   "docs/measurements/retrieval_benchmark_test_lbrv2_gold_20261110.json",
+   "docs/measurements/retrieval_benchmark_test_lbrv2_parsed_20261110.json"
+  ],
+  "lbrv3": [
+   "docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json",
+   "docs/measurements/retrieval_benchmark_test_lbrv3_parsed_20261110.json"
+  ]
+ },
+ "git": {
+  "revision": "bf6fa55c03109de4c49b1e2c48b5c42d4a7be0b0",
+  "dirty": false
+ },
+ "created_at": "2026-11-24T04:42:07.427004+00:00"
+}
