@@ -1,0 +1,14 @@
+{
+  "git": {
+    "revision": "f7f0e342365ffb0ad736c6d072241673cdaeb095",
+    "dirty": true
+  },
+  "dpi": 300,
+  "source": "docs/measurements/final_numbers_20261110.json",
+  "figures": [
+    "f01_sed_final.png",
+    "f02_architecture.png",
+    "f03a_demo_upload_timeline.png",
+    "f03b_demo_query_evidence.png"
+  ]
+}

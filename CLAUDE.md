@@ -58,6 +58,8 @@ thừa quyết định ngầm. Xem [ADR-0001](docs/decisions/ADR-0001-scope-and-
 
 ## 3. Trạng thái hiện tại
 
+**Cập nhật 27/11/2026 — Bản khóa luận tinh gọn (bản sao, không đè bản chính).** Theo yêu cầu người dùng và nghiên cứu `reports/Tinh gọn báo cáo khóa luận.md`: nguồn `report/gon_src/` (dựng ra `report/Khoa_luan_environmental_audio_rag_ban_gon.{docx,pdf}`, 98 trang, thân bài khoảng 63 trang; bản chính 130 trang giữ nguyên, dựng lại trùng từng byte). Viết lại câu ngắn, mỗi khái niệm một tên (hệ mốc = f2, hệ cơ sở = B0, LBR chính = V2, LBR ứng dụng = V3; tập huấn luyện/phát triển/kiểm tra; chỉ lọc/chỉ ngữ nghĩa/kết hợp/bổ sung), bỏ mã nội bộ khỏi thân bài (bảng tra ở Phụ lục B), luận điểm viết lại không còn "không thêm lỗi", thêm danh mục thuật ngữ, gộp hạn chế vào Ch.7, chuyển quy trình tái lập xuống Phụ lục B, khai báo dùng AI ở Phụ lục D (bản nháp, **người dùng phải sửa cho đúng thực tế**). Bảy sơ đồ khối vẽ bằng shape Word sửa được (`scripts/report_diagrams.py`, `scripts/report_docx/diagram.py`, marker `@@DIAGRAM:tên@@`); bảng đổi tên và dấu thập phân lúc dựng qua `report/gon_src/display.yaml`; hình đồ thị đổi nhãn qua `--labels` vào `report/gon_figures/`. Danh mục tài liệu của bản sao (`report/gon_src/bibliography.bib`): 5 bản arXiv thay bằng bản đã đăng (tra Crossref), thêm 4 trích dẫn còn thiếu, không bỏ mục nào. Kiểm 30/30, không có số mới so với bản chính. **Còn:** người dùng đọc bản gọn, sửa khai báo AI, tự viết lại phần lập luận bằng lời của mình, hỏi Khoa công cụ kiểm AI.
+
 **Cập nhật 25/11/2026 — Hoàn thiện báo cáo theo mẫu khoa (Bước 1–5 của kế hoạch rà soát).** Theo `reports/Rà soát báo cáo theo mẫu khoa.md` và yêu cầu người dùng bổ sung phần hệ thống: Tóm tắt/Abstract một trang có câu luận điểm; bỏ mọi "lần đầu"; trang Nhận xét phản biện 1 và 2; bổ sung viết tắt; Ch.1 thêm "Kết quả chính và luận điểm"; Ch.2 thêm ba kỹ thuật (giải mã có ràng buộc, GBM + cross-fit, bootstrap ghép cặp); Ch.4 hình luồng dữ liệu, hình LBR, backfill, mô tả gộp, bốn phép đo phụ; Ch.5 sắp lại (yêu cầu → công nghệ → kiến trúc → hai luồng → ERD + API → giao diện → độ trễ → demo → tái lập); Ch.6 bảng Kết quả chính, tách 6.6, tập 19 lớp, công khai nguồn gốc backfill; Ch.7 luận điểm, bảng mục tiêu. Script mới: `build_system_figures`, `report_system_tables`, `report_key_results`; `check_midterm_docx` kiểm thêm định dạng mẫu. Bản chính thức 130 trang, kiểm 30/30. Nhật ký tuần 5–7, 9 để trống theo người dùng. **Còn:** người dùng tự đổi repo sang private trên GitHub (máy không có gh CLI), đọc bản PDF; field test nếu có clip.
 
 **Cập nhật 23/11/2026 — Giai đoạn F: rà soát độc lập, mở lại báo cáo để sửa (PLAN, khối "Giai đoạn F").**
@@ -827,6 +829,10 @@ Cuối mỗi block công việc:
 ---
 
 ## 10. Nhật ký tiến độ
+
+### 2026-11-27 — Bản khóa luận tinh gọn, sơ đồ sửa được trong Word
+
+Người dùng yêu cầu rút gọn, viết dễ hiểu, thuật ngữ không bị bắt bẻ, sơ đồ vẽ bằng khối Word, rà tài liệu tham khảo, làm trên bản sao; chạy /deep-research (năm hướng) rồi /plan, duyệt và cho chạy tự động. Thêm cờ `--bibliography`, tầng hiển thị bảng (`display.py`), đổi nhãn hình (`figure_labels.py`), bộ vẽ sơ đồ DrawingML (canvas `wpc` nội dòng) cùng 7 sơ đồ đọc từ manifest, giới hạn tải lên, tệp kiểm kê và migration. Kiểm bằng Word 365: mở được, cập nhật field, xuất PDF. Tự bắt: Pandoc đọc "- (1)" thành danh sách lồng làm mất số (đã thoát ngoặc); bộ đánh dấu hàng nền xám chạy trước bước đổi tên (giữ regex theo tên gốc); nhãn dài đè khung trong hình SED (tách hai dòng); heredoc nuốt `\n` hai lần (sửa bằng Edit). Script nháp so số: văn bản bản gọn không có số nào ngoài bản chính và các bảng kết quả. Không train, không mở test, không đo mới.
 
 ### 2026-11-25 — Hoàn thiện báo cáo theo mẫu khoa và bổ sung phần hệ thống
 
