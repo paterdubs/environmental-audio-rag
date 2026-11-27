@@ -21,9 +21,11 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 from ml.provenance import git_state  # noqa: E402
 from scripts.build_midterm_figures import figure_architecture  # noqa: E402
+from scripts.report_docx import figure_labels  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "report" / "final_figures"
+FIGURE_NAMES: figure_labels.Names = ()
 DPI = 300
 WIDTH_IN = 6.6
 INK, MUTED, GRID = "#1f2328", "#57606a", "#d0d7de"
@@ -99,6 +101,7 @@ def figure_sed_final(data: dict[str, Any], path: Path) -> None:
         ax.grid(axis="x", color=GRID, linewidth=0.6)
         ax.set_axisbelow(True)
         ax.spines[["top", "right"]].set_visible(False)
+    figure_labels.relabel(fig, FIGURE_NAMES)
     fig.savefig(path, dpi=DPI, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
@@ -131,7 +134,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--final-numbers", type=Path, required=True)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--labels", type=Path, help="display.yaml có figure_names (bản tinh gọn)")
     args = parser.parse_args()
+    global FIGURE_NAMES
+    FIGURE_NAMES = figure_labels.load(args.labels)
     data = json.loads(args.final_numbers.read_text(encoding="utf-8"))
     args.output.mkdir(parents=True, exist_ok=True)
     out = args.output / "f01_sed_final.png"

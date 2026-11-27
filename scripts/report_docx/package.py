@@ -359,7 +359,16 @@ def marker_handlers(entries: list[biblio.Entry]) -> dict:
         "BIB": lambda _: bibliography_paragraphs(entries),
         "REVIEWPAGE": lambda _: review_page(),
         "APPENDIX": lambda _: "",
+        "DIAGRAM": _diagram_paragraph,
     }
+
+
+def _diagram_paragraph(name: str) -> str:
+    """Sơ đồ khối dạng shape Word (scripts/report_diagrams.py), thay cho ảnh PNG."""
+    from scripts.report_diagrams import build
+    from scripts.report_docx.diagram import render
+
+    return render(build(name.strip()))
 
 
 # ---------------------------------------------------------------- gói

@@ -23,6 +23,7 @@ import matplotlib.patches  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 
 from ml.provenance import git_state  # noqa: E402
+from scripts.report_docx import figure_labels  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 M = ROOT / "docs" / "measurements"
@@ -91,7 +92,11 @@ def _style(ax: plt.Axes, axis: str = "y") -> None:
     ax.spines[["top", "right"]].set_visible(False)
 
 
+FIGURE_NAMES: figure_labels.Names = ()
+
+
 def _save(fig: plt.Figure, path: Path) -> None:
+    figure_labels.relabel(fig, FIGURE_NAMES)
     fig.savefig(path, dpi=DPI, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
@@ -492,7 +497,11 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
-    manifest = build(parser.parse_args().output)
+    parser.add_argument("--labels", type=Path, help="display.yaml có figure_names (bản tinh gọn)")
+    args = parser.parse_args()
+    global FIGURE_NAMES
+    FIGURE_NAMES = figure_labels.load(args.labels)
+    manifest = build(args.output)
     rho = manifest["spearman_dev_test"]
     print(f"Đã ghi {len(manifest['figures'])} hình; Spearman dev–test {rho:.3f}")
 

@@ -19,6 +19,7 @@ from pathlib import Path
 import yaml
 
 from scripts.report_docx import bib as biblio
+from scripts.report_docx import display as disp
 from scripts.report_docx.markdown import prepare
 from scripts.report_docx.ooxml import transform_body
 from scripts.report_docx.package import FrontInfo, assemble, marker_handlers
@@ -60,16 +61,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--build-dir", type=Path, default=BUILD, help="thư mục dựng trung gian"
     )
+    parser.add_argument(
+        "--bibliography",
+        type=Path,
+        default=BIBLIOGRAPHY,
+        help="tệp BibTeX (mặc định docs/thesis/bibliography.bib)",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    entries = biblio.load(BIBLIOGRAPHY)
+    entries = biblio.load(args.bibliography.resolve())
     numbers = biblio.numbering(entries)
     source = args.source.resolve()
     files = sorted(source.glob("[0-9][0-9]_*.md"))
-    text, registry = prepare(files, ROOT, numbers)
+    text, registry = prepare(files, ROOT, numbers, disp.load(source / "display.yaml"))
     cited = {key for key in numbers if f"[{numbers[key]}" in text or f", {numbers[key]}" in text}
     unused = sorted(set(numbers) - cited)
     build = args.build_dir.resolve()

@@ -23,6 +23,8 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from scripts.report_docx import display as disp
+
 CITATION = re.compile(r"\[(@[^\]\s;]+(?:\s*;\s*@[^\]\s;]+)*)\]")
 CAPTION = re.compile(r"^@@CAP:(tbl|fig):([\w-]+)\|(.+)@@\s*$")
 INCLUDE = re.compile(r"^@@INCLUDE:([^@|]+)((?:\|(?:\\.|[^@|\\])+)*)@@\s*$")
@@ -105,7 +107,7 @@ def _bold_best(rows: list[list[str]], spec: str, group: int | None) -> None:
                     row[col] = f"**{row[col]}**"
 
 
-def expand_include(path: Path, options: str = "") -> list[str]:
+def expand_include(path: Path, options: str = "", display: disp.Display = disp.NONE) -> list[str]:
     """Chỉ lấy bảng và dòng `**Nguồn:**` của một bảng do script sinh ra; áp tuỳ chọn trình bày."""
     lines = path.read_text(encoding="utf-8").splitlines()
     table = [line for line in lines if line.startswith("|")]
@@ -114,11 +116,15 @@ def expand_include(path: Path, options: str = "") -> list[str]:
     opts = _options(options)
     if opts:
         table = _restyle_table(table, opts)
+    table = disp.apply_table(table, path.name, display)
     source = next((line for line in lines if line.startswith("**Nguồn:**")), None)
     out = ["", *table, ""]
     if source:
         note = source.replace("**Nguồn:**", "Nguồn:").replace("`", "")
-        note += " Bảng sinh tự động bởi script, không sửa tay."
+        if display.short_sources:
+            note = disp.apply_source(note, path.name, display) + " Sinh tự động từ kết quả đo."
+        else:
+            note += " Bảng sinh tự động bởi script, không sửa tay."
         legend = []
         if "best" in opts:
             legend.append("In đậm: giá trị tốt nhất trong cột (không hàm ý khác biệt có ý nghĩa)")
@@ -151,7 +157,9 @@ def _restyle_table(table: list[str], opts: dict[str, str]) -> list[str]:
     return [render(pick(head)), render(pick(align)), *(render(row) for row in rows)]
 
 
-def number_document(lines: list[str], root: Path) -> tuple[list[str], Registry]:
+def number_document(
+    lines: list[str], root: Path, display: disp.Display = disp.NONE
+) -> tuple[list[str], Registry]:
     """Mở rộng INCLUDE, đánh số chú thích/công thức theo chương; trả về dòng mới và registry."""
     registry = Registry()
     chapter = 0
@@ -162,7 +170,7 @@ def number_document(lines: list[str], root: Path) -> tuple[list[str], Registry]:
     for line in lines:
         include = INCLUDE.match(line)
         if include:
-            out.extend(expand_include(root / include.group(1).strip(), include.group(2)))
+            out.extend(expand_include(root / include.group(1).strip(), include.group(2), display))
             continue
         if line.strip() == "@@APPENDIX@@":
             appendix = True
@@ -200,12 +208,17 @@ def check_references(lines: list[str], registry: Registry) -> None:
         raise KeyError(f"Tham chiếu tới khóa chưa khai báo: {missing}")
 
 
-def prepare(files: list[Path], root: Path, cite_numbers: dict[str, int]) -> tuple[str, Registry]:
+def prepare(
+    files: list[Path],
+    root: Path,
+    cite_numbers: dict[str, int],
+    display: disp.Display = disp.NONE,
+) -> tuple[str, Registry]:
     lines: list[str] = []
     for path in files:
         lines.extend(path.read_text(encoding="utf-8").splitlines())
         lines.append("")
-    lines, registry = number_document(lines, root)
+    lines, registry = number_document(lines, root, display)
     check_references(lines, registry)
     text = replace_citations("\n".join(lines), cite_numbers)
     return text, registry
