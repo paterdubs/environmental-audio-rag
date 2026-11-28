@@ -1,0 +1,9 @@
+# Phụ thuộc để dựng hình cho báo cáo khóa luận (không cần cho huấn luyện, đánh giá hay dịch vụ).
+#
+#   .venv/Scripts/python.exe -m pip install -r requirements-report.txt
+#
+# svgpath2mpl (BSD, chỉ cần NumPy và matplotlib) đổi đường SVG của biểu tượng công nghệ thành
+# PathPatch để vẽ hình tổng quan công nghệ (`scripts.build_tech_overview`). Không dùng cairosvg
+# vì cần DLL cairo trên Windows.
+matplotlib>=3.9,<4
+svgpath2mpl==1.0.0

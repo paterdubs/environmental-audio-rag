@@ -109,6 +109,23 @@ def test_unicode_minus_in_documents_is_read_as_a_negative_number(repo):
     assert len(checker.check([spec], root=root, runs_root=runs)) == 1
 
 
+def test_vietnamese_decimal_comma_is_read_and_compared(repo):
+    root, runs = repo
+    (root / "docs/n.json").write_text(json.dumps({"d": -0.028981, "p": 0.29600}),
+                                      encoding="utf-8")
+    (root / "docs/A.md").write_text("cho hiệu từ −0,0290 đến +0,0002; PSDS-2 0,2960, vì",
+                                    encoding="utf-8")
+    specs = [{"id": "d", "source": "docs/n.json", "key": ["d"], "decimals": 4,
+              "mentions": [{"file": "docs/A.md", "text": "hiệu từ {value} đến"}]},
+             {"id": "p", "source": "docs/n.json", "key": ["p"], "decimals": 4,
+              "mentions": [{"file": "docs/A.md", "text": "PSDS-2 {value}, vì"}]}]
+    assert checker.check(specs, root=root, runs_root=runs) == []
+    (root / "docs/A.md").write_text("cho hiệu từ −0,0291 đến +0,0002; PSDS-2 0,2960, vì",
+                                    encoding="utf-8")
+    failures = checker.check(specs, root=root, runs_root=runs)
+    assert [f.claim for f in failures] == ["d"]
+
+
 def test_filters_may_match_several_fields_and_bad_keys_are_reported_not_raised(repo):
     import json as _json
 

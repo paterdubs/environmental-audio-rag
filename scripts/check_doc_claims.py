@@ -22,7 +22,7 @@ from typing import Any
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-NUMBER = r"([-+]?\d+\.\d+)"
+NUMBER = r"([-+]?\d+[.,]\d+)"  # dấu chấm (docs) hoặc dấu phẩy (báo cáo)
 WHITESPACE = re.compile(r"\s+")
 UNICODE_MINUS = "−"  # tài liệu viết "−0.0128"; so như "-0.0128"
 
@@ -92,7 +92,7 @@ def check(claims: list[dict[str, Any]], *, root: Path, runs_root: Path) -> list[
             if not found:
                 failures.append(Failure(spec["id"], name, f"không thấy mẫu {mention['text']!r}"))
             for written in found:
-                if written.lstrip("+") != expected:
+                if written.lstrip("+").replace(",", ".") != expected:
                     message = f"ghi {written}, artifact {expected} ({spec['source']})"
                     failures.append(Failure(spec["id"], name, message))
     return failures

@@ -1,0 +1,124 @@
+{
+  "package": "simple-icons@16.38.1",
+  "url": "https://registry.npmjs.org/simple-icons/-/simple-icons-16.38.1.tgz",
+  "sha256": "8ad81af0009aa0935df4411080feb4547b72e13458bbcf4d803b259b1f078804",
+  "icons": {
+    "docker": {
+      "title": "Docker",
+      "hex": "2496ED",
+      "source": "https://www.docker.com/company/newsroom/media-resources",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "pytorch": {
+      "title": "PyTorch",
+      "hex": "EE4C2C",
+      "source": "https://github.com/pytorch/pytorch.github.io/blob/8f083bd12192ca12d5e1c1f3d236f4831d823d8f/assets/images/logo.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": "https://github.com/pytorch/pytorch.github.io/blob/381117ec296f002b2de475402ef29cca6c55e209/assets/brand-guidelines/PyTorch-Brand-Guidelines.pdf"
+    },
+    "scikitlearn": {
+      "title": "scikit-learn",
+      "hex": "F7931E",
+      "source": "https://github.com/scikit-learn/scikit-learn/blob/c5ef2e985c13119001aa697e446ebb3dbcb326e5/doc/logos/scikit-learn-logo.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "qwen": {
+      "title": "QWen",
+      "hex": "6950EF",
+      "source": "https://qwen.ai",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "huggingface": {
+      "title": "Hugging Face",
+      "hex": "FFD21E",
+      "source": "https://huggingface.co/brand",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": "https://huggingface.co/brand"
+    },
+    "pytest": {
+      "title": "Pytest",
+      "hex": "0A9EDC",
+      "source": "https://github.com/pytest-dev/design/blob/081f06cd2d6cd742e68f593560a2e8c1802feb7c/pytest_logo/pytest_logo.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "ruff": {
+      "title": "Ruff",
+      "hex": "D7FF64",
+      "source": "https://astral.sh/ruff",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "fastapi": {
+      "title": "FastAPI",
+      "hex": "009688",
+      "source": "https://github.com/tiangolo/fastapi/blob/ffb4f77a11f83132b521ba0aac6c95792c19e797/docs/en/docs/img/icon-white.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "react": {
+      "title": "React",
+      "hex": "61DAFB",
+      "source": "https://github.com/facebook/create-react-app/blob/282c03f9525fdf8061ffa1ec50dce89296d916bd/test/fixtures/relative-paths/src/logo.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "typescript": {
+      "title": "TypeScript",
+      "hex": "3178C6",
+      "source": "https://www.typescriptlang.org/branding",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": "https://www.typescriptlang.org/branding"
+    },
+    "vite": {
+      "title": "Vite",
+      "hex": "9135FF",
+      "source": "https://github.com/voidzero-dev/community-design-resources/blob/55902097229cf01cf2a4ceb376f992f5cf306756/brand-assets/vite/vite-icon-color-bracketless.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "reactquery": {
+      "title": "React Query",
+      "hex": "FF4154",
+      "source": "https://github.com/tannerlinsley/react-query/blob/9b5d18cd47a4c1454d6c8dd0f38280641c1dd5dd/docs/src/images/emblem-light.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    },
+    "vitest": {
+      "title": "Vitest",
+      "hex": "00FF74",
+      "source": "https://github.com/voidzero-dev/community-design-resources/blob/55902097229cf01cf2a4ceb376f992f5cf306756/brand-assets/vitest/vitest-icon-color-bracketless.svg",
+      "license": {
+        "type": "CC0-1.0"
+      },
+      "guidelines": null
+    }
+  }
+}
