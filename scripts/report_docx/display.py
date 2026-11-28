@@ -8,6 +8,12 @@ Một bản báo cáo (ví dụ bản tinh gọn `report/gon_src/`) có thể kh
     vi_numbers: true  # 0.2965 -> 0,2965; [a, b] -> [a; b]; -0.1 -> −0,1
     numbers_skip: [f15_tech_stack.md]      # bảng có số phiên bản, không đổi dấu thập phân
     short_sources: true                    # dòng nguồn chỉ giữ tên tệp, bỏ đường dẫn
+    table:            # kiểu bảng; thiếu khóa nào thì giữ giá trị mặc định của mẫu cũ
+      text_pt: 13     # chữ trong bảng (mặc định 11; bảng từ 7 cột mặc định 10)
+      small_pt: 13
+      note_pt: 13     # dòng ghi chú dưới bảng
+      header_fill: "" # nền ô tiêu đề; "" là trắng (mặc định E7E6E6)
+    diagram_levels: true   # sơ đồ khối tô màu theo mức quan trọng, có dải chú giải
 
 Mặc định (không có tệp) thì không làm gì, nên bản báo cáo cũ dựng ra y hệt.
 """
@@ -27,12 +33,24 @@ _PATH = re.compile(r"(?<![\w])(?:[\w.\-]+/)+([\w.\-*{},]+)")
 
 
 @dataclass(frozen=True)
+class TableStyle:
+    """Cỡ chữ (pt) và nền tiêu đề của bảng; mặc định đúng như các bản đã dựng trước đây."""
+
+    text_pt: float = 11.0
+    small_pt: float = 10.0
+    note_pt: float = 11.0
+    header_fill: str = "E7E6E6"
+
+
+@dataclass(frozen=True)
 class Display:
     names: tuple[tuple[str, str], ...] = ()
     names_skip: frozenset[str] = field(default_factory=frozenset)
     vi_numbers: bool = False
     numbers_skip: frozenset[str] = field(default_factory=frozenset)
     short_sources: bool = False
+    table: TableStyle = field(default_factory=TableStyle)
+    diagram_levels: bool = False
 
     @property
     def active(self) -> bool:
@@ -53,6 +71,22 @@ def load(path: Path | None) -> Display:
         vi_numbers=bool(raw.get("vi_numbers", False)),
         numbers_skip=frozenset(raw.get("numbers_skip", [])),
         short_sources=bool(raw.get("short_sources", False)),
+        table=_table_style(raw.get("table") or {}),
+        diagram_levels=bool(raw.get("diagram_levels", False)),
+    )
+
+
+def _table_style(raw: dict) -> TableStyle:
+    unknown = set(raw) - {"text_pt", "small_pt", "note_pt", "header_fill"}
+    if unknown:
+        raise KeyError(f"display.yaml: khóa table không hỗ trợ: {sorted(unknown)}")
+    base = TableStyle()
+    fill = raw.get("header_fill", base.header_fill)
+    return TableStyle(
+        text_pt=float(raw.get("text_pt", base.text_pt)),
+        small_pt=float(raw.get("small_pt", base.small_pt)),
+        note_pt=float(raw.get("note_pt", base.note_pt)),
+        header_fill="" if fill in (None, "", "none") else str(fill).upper(),
     )
 
 

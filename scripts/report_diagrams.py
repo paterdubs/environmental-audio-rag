@@ -43,8 +43,34 @@ def _fmt_int(number: int) -> str:
     return f"{number:,}".replace(",", ".")
 
 
+LEGEND_H = 1.25
+LEGEND_LEVELS = ("bối cảnh", "bước thường", "bước quan trọng", "đóng góp chính")
+
+
+def legend_items(y: float) -> list[Box]:
+    """Dải chú giải dưới sơ đồ: bốn mức (xám M1 đến M4) và nghĩa của sắc độ."""
+    label_w, gap = 2.3, 0.15
+    box_w = (WIDTH - label_w - gap * len(LEGEND_LEVELS)) / len(LEGEND_LEVELS)
+    items = [_label(0, y, label_w, "Mức quan trọng:", size=8.5, h=0.55, align="left")]
+    for index, text in enumerate(LEGEND_LEVELS):
+        x = label_w + gap + index * (box_w + gap)
+        items.append(Box(x, y, box_w, 0.55, (text,), title=False, size=8.5, level=index + 1))
+    items.append(_label(0, y + 0.65, WIDTH, "Sắc độ: xám – bước chung; cam – mô hình; "
+                        "lam – kho dữ liệu; lục – ngoại tuyến.", size=8.5, h=0.5,
+                        italic=True, align="left"))
+    return items
+
+
+def _finish(name: str, height: float, items, legend: bool, descr: str) -> Diagram:
+    """Dựng sơ đồ; chế độ mức quan trọng thêm dải chú giải ngay dưới sơ đồ."""
+    if not legend:
+        return Diagram(name, WIDTH, height, tuple(items), descr)
+    return Diagram(name, WIDTH, height + LEGEND_H + 0.35,
+                   (*items, *legend_items(height + 0.35)), descr)
+
+
 # ---------------------------------------------------------------- D0–D4
-def pipeline() -> Diagram:
+def pipeline(legend: bool = False) -> Diagram:
     load = lambda rel: json.loads((ROOT / rel).read_text(encoding="utf-8"))  # noqa: E731
     sec = load("data/manifests/datasec_inventory_summary.json")
     sed = load("data/manifests/datased_inventory_summary.json")
@@ -58,20 +84,21 @@ def pipeline() -> Diagram:
     y1 = 2.7
     items = (
         Box(x0, 0, w, h, ("D0. Kiểm tệp nén", "kích thước và MD5,", "nhãn khớp hệ lớp,",
-                          "trước khi giải nén")),
+                          "trước khi giải nén"), level=2),
         Box(x1, 0, w, h, ("D1. Kiểm kê", f"DataSEC {_fmt_int(sec['files'])} tệp",
-                          f"DataSED {_fmt_int(sed['files'])} tệp", "trích sẵn phổ log-mel")),
+                          f"DataSED {_fmt_int(sed['files'])} tệp", "trích sẵn phổ log-mel"),
+            level=2),
         Box(x2, 0, w, h, ("D2. Chuẩn hóa nhãn", f"{_fmt_int(poly['events'])} sự kiện đa âm",
                           f"{poly['classes']} lớp, phủ {poly['recordings_with_events']}"
-                          f"/{sed['files']} bản ghi", "nhãn gốc không sửa")),
+                          f"/{sed['files']} bản ghi", "nhãn gốc không sửa"), level=2),
         Box(x2, y1, w, h, ("D3. Tìm bản trùng", f"ba tầng: {dup['groups']} nhóm trùng",
                            f"{dup['cross_dataset_groups']} nhóm giữa hai bộ",
-                           f"{dup['review_queue_cross_dataset']} cặp nghe duyệt tay")),
+                           f"{dup['review_queue_cross_dataset']} cặp nghe duyệt tay"), level=4),
         Box(x1, y1, w, h, ("D4. Chia tập và khóa",
                            f"DataSED {s_sed['train']}/{s_sed['validation']}/{s_sed['test']}",
                            f"DataSEC {_fmt_int(s_sec['train'])}/{s_sec['validation']}"
                            f"/{s_sec['test']}", f"loại {excluded} đoạn DataSEC"),
-            fill="offline"),
+            fill="offline", level=3),
         Box(x0, y1, w, h, ("Cổng sau chỉ chạy khi cổng trước đạt.",
                            "Tập chia được khóa bằng mã băm SHA-256."),
             fill="none", title=False, border=False, italic=True, size=9),
@@ -80,12 +107,12 @@ def pipeline() -> Diagram:
         Line(((x2 + w / 2, h), (x2 + w / 2, y1))),
         Line(((x2, y1 + 1.0), (x1 + w, y1 + 1.0))),
     )
-    return Diagram("pipeline", WIDTH, y1 + h, items,
+    return _finish("pipeline", y1 + h, items, legend,
                    "Quy trình chuẩn bị dữ liệu D0 đến D4")
 
 
 # ---------------------------------------------------------------- luồng dữ liệu
-def dataflow() -> Diagram:
+def dataflow(legend: bool = False) -> Diagram:
     facts = served_facts()
     if facts.recipe != "t2b":
         raise ValueError(
@@ -96,18 +123,20 @@ def dataflow() -> Diagram:
         ("1. Tệp âm thanh", formats, f"≤ {MAX_BYTES // 2**20} MB, ≤ {MAX_DURATION_S:g} s"),
         ("2. Tiền xử lý", "đơn kênh 16 kHz;", "log-mel 128 dải, 100 khung/s"),
         ("3. Cửa sổ trượt", f"dài {_fmt(facts.window_s)} s, bước {_fmt(facts.hop_s)} s,",
-         "gộp theo trọng số tam giác"),
-        ("4. Mô hình SED", f"Frame-MobileNet × {facts.folds} fold,", "trung bình xác suất"),
+         "trung bình trọng số tam giác"),
+        ("4. Mô hình SED", f"Frame-MobileNet × {facts.folds} phần,", "trung bình xác suất"),
         ("5. Xác suất theo khung", "21 lớp × khung 10 ms"),
         ("6. cSEBB", "tách thành hộp sự kiện;", "ngưỡng chỉ giữ hoặc bỏ hộp"),
         ("7. LBR", "dời biên và chấm lại", "từng hộp"),
         ("8. Dòng thời gian", "lớp, bắt đầu, kết thúc,", "điểm tin cậy"),
-        ("9. Mô tả Anh, Việt", "gộp theo lớp, rào đón", "khi điểm thấp"),
+        ("9. Mô tả Anh, Việt", "theo lớp, rào đón", "khi điểm thấp"),
         ("10. Tài liệu truy hồi", "mô tả và tóm tắt", "sự kiện"),
         ("11. Nhúng BGE-M3", "vector 1024 chiều"),
         ("12. Kho sự kiện", "PostgreSQL 16", "và pgvector"),
     ]
     fills = {3: "model", 4: "store", 6: "model", 7: "store", 10: "model", 11: "store"}
+    # Mức quan trọng: LBR và mô tả bám sát sự kiện là đóng góp chính (M4).
+    levels = {0: 1, 3: 3, 5: 3, 6: 4, 7: 3, 8: 4, 11: 3}
     w, h, row_gap = 4.6, 1.55, 0.6
     xs = _grid(3, w)
     items: list[Box | Line] = []
@@ -116,7 +145,8 @@ def dataflow() -> Diagram:
         row, col = divmod(index, 3)
         col = col if row % 2 == 0 else 2 - col
         x, y = xs[col], row * (h + row_gap)
-        items.append(Box(x, y, w, h, lines, fill=fills.get(index, "plain")))
+        items.append(Box(x, y, w, h, lines, fill=fills.get(index, "plain"),
+                         level=levels.get(index, 2)))
         corners.append((x, y))
     for index in range(len(steps) - 1):
         (xa, ya), (xb, yb) = corners[index], corners[index + 1]
@@ -129,34 +159,34 @@ def dataflow() -> Diagram:
     y_off = 4 * (h + row_gap)
     items.append(Box(0, y_off, WIDTH, 1.7, (
         "Ngoại tuyến (không chạy khi phục vụ)",
-        "Ngưỡng, cSEBB và LBR được chọn trên dữ liệu phát triển rồi khóa cạnh checkpoint;",
-        "dịch vụ suy luận chỉ nạp tham số đã khóa."), fill="offline"))
-    return Diagram("dataflow", WIDTH, y_off + 1.7, tuple(items),
+        "Ngưỡng, cSEBB và LBR được chọn trên dữ liệu phát triển rồi khóa cạnh trọng số;",
+        "dịch vụ suy luận chỉ nạp tham số đã khóa."), fill="offline", level=1))
+    return _finish("dataflow", y_off + 1.7, items, legend,
                    "Luồng xử lý dữ liệu của hệ thống cuối, từ tệp âm thanh tới kho sự kiện")
 
 
 # ---------------------------------------------------------------- LBR
-def lbr() -> Diagram:
+def lbr(legend: bool = False) -> Diagram:
     w, h = 4.6, 1.9
     x0, x1, x2 = _grid(3, w)
     y1, y2 = 2.6, 5.2
     items = (
         Box(x0, 0, w, h, ("Đầu vào", "hộp cSEBB của hệ cơ sở", "và xác suất ngoài mẫu"),
-            fill="store"),
+            fill="store", level=1),
         Box(x1, 0, w, h, ("Đặc trưng mỗi hộp", "điểm, độ dài, vị trí, lớp;",
                           "xác suất quanh hai biên")),
         Box(x2, 0, w, h, ("Bộ tinh chỉnh", "cây tăng cường gradient,", "dự đoán độ dời biên"),
-            fill="model"),
+            fill="model", level=4),
         Box(x2, y1, w, h, ("Bộ chấm lại", "cây tăng cường gradient,", "xác suất hộp đúng"),
-            fill="model"),
-        Box(x1, y1, w, h, ("Điểm vận hành", "LBR chính: tối đa event-F1",
-                           "LBR ứng dụng: ưu tiên", "phát hiện")),
+            fill="model", level=4),
+        Box(x1, y1, w, h, ("Điểm vận hành", "LBR chính: tối đa F1",
+                           "theo sự kiện; LBR ứng dụng:", "ưu tiên độ phủ sự kiện"), level=3),
         Box(x0, y1, w, h, ("Dòng thời gian mới", "hộp đã dời biên, giữ", "nếu điểm ≥ ngưỡng"),
-            fill="store"),
+            fill="store", level=3),
         Box(0, y2, WIDTH, 1.7, (
-            "Học chéo lồng nhau (cross-fit, 5 fold theo bản ghi)",
-            "Mô hình áp cho fold k chỉ học trên 4 fold còn lại;",
-            "nhãn để chọn ngưỡng lấy từ một vòng chia bên trong."), fill="offline"),
+            "Học chéo lồng nhau (5 phần theo bản ghi)",
+            "Mô hình áp cho phần k chỉ học trên 4 phần còn lại;",
+            "nhãn để chọn ngưỡng lấy từ một vòng chia bên trong."), fill="offline", level=1),
         Line(((x0 + w, h / 2), (x1, h / 2))),
         Line(((x1 + w, h / 2), (x2, h / 2))),
         Line(((x2 + w / 2, h), (x2 + w / 2, y1))),
@@ -164,34 +194,34 @@ def lbr() -> Diagram:
         Line(((x2, y1 + h / 2), (x1 + w, y1 + h / 2))),
         Line(((x1, y1 + h / 2), (x0 + w, y1 + h / 2))),
     )
-    return Diagram("lbr", WIDTH, y2 + 1.7, items,
+    return _finish("lbr", y2 + 1.7, items, legend,
                    "Hai bộ học của LBR và cách học chéo lồng nhau")
 
 
 # ---------------------------------------------------------------- kiến trúc
-def architecture() -> Diagram:
+def architecture(legend: bool = False) -> Diagram:
     facts = served_facts()
     w, h = 4.3, 1.8
     x0, x1, x2 = _grid(3, w)
     y1, y2, y3 = 2.8, 5.6, 7.9
     mid1, mid2 = x1 + w / 2, x2 + w / 2
     items = (
-        Box(x0, 0, w, h, ("Người dùng", "trình duyệt: tải tệp,", "hỏi, nghe lại")),
+        Box(x0, 0, w, h, ("Người dùng", "trình duyệt: tải tệp,", "hỏi, nghe lại"), level=1),
         Box(x1, 0, w, h, ("Giao diện web", "React và Vite;", "dòng thời gian, thẻ lọc")),
         _label(x2, 0.4, w, "Docker Compose chạy ba dịch vụ: db, api, inference", size=8.5,
                h=1.0, italic=True),
         Box(x0, y1, w, h, ("llama.cpp (GPU máy chủ)", facts.llm, "câu hỏi → bộ lọc JSON"),
             fill="model"),
         Box(x1, y1, w, h, ("Dịch vụ API", "FastAPI, không nạp PyTorch;",
-                           "điều phối, bằng chứng")),
-        Box(x2, y1, w, h, ("Dịch vụ suy luận", f"SED × {facts.folds} fold và LBR;",
-                           "mô tả, BGE-M3"), fill="model"),
+                           "điều phối, bằng chứng"), level=3),
+        Box(x2, y1, w, h, ("Dịch vụ suy luận", f"SED × {facts.folds} phần và LBR;",
+                           "mô tả, BGE-M3"), fill="model", level=4),
         Box(x1, y2, w, h, ("Kho sự kiện", "PostgreSQL 16 + pgvector;",
-                           "sự kiện, mô tả, tài liệu"), fill="store"),
+                           "sự kiện, mô tả, tài liệu"), fill="store", level=3),
         Box(x0, y3, x2 - x0 - 0.5, 1.7, (
             "Quy trình nghiên cứu (ngoại tuyến)",
             "chuẩn bị dữ liệu → huấn luyện → chọn trên tập phát triển",
-            "→ đo tập kiểm tra một lần → khóa checkpoint và tham số"), fill="offline"),
+            "→ đo tập kiểm tra một lần → khóa trọng số và tham số"), fill="offline", level=1),
         Line(((x0 + w, h / 2), (x1, h / 2))),
         Line(((mid1, h), (mid1, y1))),
         _label(mid1 + 0.1, h + 0.15, 1.6, "HTTP", align="left"),
@@ -204,7 +234,8 @@ def architecture() -> Diagram:
         Line(((x2 - 0.5, y3 + 0.85), (mid2, y3 + 0.85), (mid2, y1 + h)), dashed=True),
         _label(mid2 + 0.1, y2 + 0.3, 2.0, "gắn chỉ đọc", align="left"),
     )
-    return Diagram("architecture", WIDTH, y3 + 1.7, items, "Kiến trúc triển khai của hệ thống")
+    return _finish("architecture", y3 + 1.7, items, legend,
+                   "Kiến trúc triển khai của hệ thống")
 
 
 # ---------------------------------------------------------------- tuần tự
@@ -246,7 +277,7 @@ def uploadflow() -> Diagram:
         (1, 3, "tìm bản ghi có cùng mã băm"),
         (3, 1, "đã có: trả mã bản ghi cũ, dừng"),
         (1, 2, "gửi tệp để phân tích"),
-        (2, 2, f"SED × {folds} fold → cSEBB → LBR"),
+        (2, 2, f"SED × {folds} phần → cSEBB → LBR"),
         (2, 2, "mô tả Anh, Việt; tài liệu; vector"),
         (2, 1, "dòng thời gian, mô tả, tài liệu, vector"),
         (1, 3, "ghi 5 bảng trong một giao dịch"),
@@ -281,6 +312,8 @@ def queryflow() -> Diagram:
 
 
 # ---------------------------------------------------------------- ERD
+# Bảng lõi (M3) và bảng nối mô tả với sự kiện, nơi cài ràng buộc bám sát (M4).
+ERD_LEVELS = {"recordings": 3, "events": 3, "caption_evidence": 4}
 ERD_COLUMNS = {  # cột x (0, 1, 2) và thứ tự từ trên xuống; bảng mới mà thiếu ở đây sẽ báo lỗi
     "captions": (0, 0),
     "retrieval_documents": (0, 1),
@@ -315,7 +348,9 @@ def erd(max_columns: int = 9) -> Diagram:
             lines.append(f"… {hidden} cột khác")
         h = 0.3 + row * len(lines)
         x, y = xs[col], tops[col]
-        items.append(Box(x, y, w, h, tuple(lines), fill="store", size=8, align="left"))
+        level = ERD_LEVELS.get(table.name, 2)
+        items.append(Box(x, y, w, h, tuple(lines), fill="store", size=8, align="left",
+                         level=level))
         rects[table.name] = (x, y, w, h)
         tops[col] = y + h + gap
     for table in tables:
@@ -347,7 +382,7 @@ def _fk_route(child: tuple[float, float, float, float],
     return ((start_x, y0), (x1, y0), (x1, end_y))
 
 
-BUILDERS: dict[str, Callable[[], Diagram]] = {
+BUILDERS: dict[str, Callable[..., Diagram]] = {
     "pipeline": pipeline,
     "dataflow": dataflow,
     "lbr": lbr,
@@ -358,8 +393,15 @@ BUILDERS: dict[str, Callable[[], Diagram]] = {
 }
 
 
+LEGEND_DIAGRAMS = frozenset({"pipeline", "dataflow", "lbr", "architecture"})
+
+
 @cache
-def build(name: str) -> Diagram:
+def build(name: str, legend: bool = False) -> Diagram:
+    """`legend=True` thêm dải chú giải mức quan trọng cho bốn sơ đồ khối; sơ đồ tuần tự và ERD
+    chỉ đánh dấu vài hộp nên không cần chú giải."""
     if name not in BUILDERS:
         raise KeyError(f"không có sơ đồ '{name}'; có: {sorted(BUILDERS)}")
+    if name in LEGEND_DIAGRAMS:
+        return BUILDERS[name](legend=legend)
     return BUILDERS[name]()

@@ -76,7 +76,8 @@ def main() -> None:
     numbers = biblio.numbering(entries)
     source = args.source.resolve()
     files = sorted(source.glob("[0-9][0-9]_*.md"))
-    text, registry = prepare(files, ROOT, numbers, disp.load(source / "display.yaml"))
+    shown = disp.load(source / "display.yaml")
+    text, registry = prepare(files, ROOT, numbers, shown)
     cited = {key for key in numbers if f"[{numbers[key]}" in text or f", {numbers[key]}" in text}
     unused = sorted(set(numbers) - cited)
     build = args.build_dir.resolve()
@@ -95,9 +96,10 @@ def main() -> None:
         ],
         check=True,
     )
-    body = transform_body(body_inner(body_docx), registry, marker_handlers(entries))
+    body = transform_body(body_inner(body_docx), registry,
+                          marker_handlers(entries, shown.diagram_levels), shown.table.header_fill)
     info = FrontInfo(**yaml.safe_load((source / "front_info.yaml").read_text(encoding="utf-8")))
-    assemble(TEMPLATE, body_docx, body, info, args.output)
+    assemble(TEMPLATE, body_docx, body, info, args.output, shown.table)
     print(
         f"Đã ghi {args.output}: {len(files)} tệp nguồn, "
         f"{len(registry.numbers)} đối tượng đánh số, {len(entries)} tài liệu tham khảo."

@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from scripts.report_docx import bib as biblio
+from scripts.report_docx.display import TableStyle
 from scripts.report_docx.ooxml import TEXT_WIDTH, field, paragraph, run, text_of, top_level_elements
 
 NS_EXTRA = {
@@ -86,23 +87,34 @@ _NO_INDENT = '<w:ind w:firstLine="0"/>'
 _SIZE = '<w:sz w:val="{0}"/><w:szCs w:val="{0}"/>'
 _TNR = '<w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>'
 _DOT_TAB = f'<w:tabs><w:tab w:val="right" w:leader="dot" w:pos="{TEXT_WIDTH}"/></w:tabs>'
-NEW_STYLES = "".join(
-    [
+def _half_points(pt: float) -> int:
+    return round(pt * 2)
+
+
+def _table_styles(table: TableStyle) -> str:
+    """Ba style bảng; cỡ chữ theo `display.yaml` (mặc định 11/10/11 pt như trước)."""
+    return "".join([
         _style(
             "TableText",
             "Table Text",
             "Normal",
             f'<w:keepLines/>{_spacing(20, 20, 240)}{_NO_INDENT}<w:jc w:val="left"/>',
-            _SIZE.format(22),
+            _SIZE.format(_half_points(table.text_pt)),
         ),
-        _style("TableTextSmall", "Table Text Small", "TableText", rpr=_SIZE.format(20)),
+        _style("TableTextSmall", "Table Text Small", "TableText",
+               rpr=_SIZE.format(_half_points(table.small_pt))),
         _style(
             "TableNote",
             "Table Note",
             "Normal",
             f'{_spacing(60, 120, 240)}{_NO_INDENT}<w:jc w:val="left"/>',
-            "<w:i/><w:iCs/>" + _SIZE.format(22),
+            "<w:i/><w:iCs/>" + _SIZE.format(_half_points(table.note_pt)),
         ),
+    ])
+
+
+OTHER_STYLES = "".join(
+    [
         _style(
             "FigurePara",
             "Figure Paragraph",
@@ -148,7 +160,14 @@ NEW_STYLES = "".join(
 )
 
 
-def patch_styles(styles: str) -> str:
+def new_styles(table: TableStyle | None = None) -> str:
+    return _table_styles(table or TableStyle()) + OTHER_STYLES
+
+
+NEW_STYLES = new_styles()
+
+
+def patch_styles(styles: str, table: TableStyle | None = None) -> str:
     """Chuẩn hóa style theo hướng dẫn bằng chữ của mẫu (report/quy_cach_bao_cao.md §3)."""
     no_indent = '<w:ind w:left="0" w:firstLine="0"/>'
     patches = {
@@ -195,7 +214,7 @@ def patch_styles(styles: str) -> str:
         styles = styles.replace(block, _set_ppr(block, ppr))
     if 'w:styleId="VerbatimChar"' in styles:
         raise ValueError("Mẫu đã có VerbatimChar; cần xem lại trước khi ghi đè")
-    return styles.replace("</w:styles>", NEW_STYLES + "</w:styles>")
+    return styles.replace("</w:styles>", new_styles(table) + "</w:styles>")
 
 
 # ---------------------------------------------------------------- bìa
@@ -340,7 +359,7 @@ def bibliography_paragraphs(entries: list[biblio.Entry]) -> str:
     return "".join(out)
 
 
-def marker_handlers(entries: list[biblio.Entry]) -> dict:
+def marker_handlers(entries: list[biblio.Entry], diagram_levels: bool = False) -> dict:
     page_break = '<w:p><w:r><w:br w:type="page"/></w:r></w:p>'
     return {
         "PAGEBREAK": lambda _: page_break,
@@ -359,20 +378,21 @@ def marker_handlers(entries: list[biblio.Entry]) -> dict:
         "BIB": lambda _: bibliography_paragraphs(entries),
         "REVIEWPAGE": lambda _: review_page(),
         "APPENDIX": lambda _: "",
-        "DIAGRAM": _diagram_paragraph,
+        "DIAGRAM": lambda name: _diagram_paragraph(name, diagram_levels),
     }
 
 
-def _diagram_paragraph(name: str) -> str:
+def _diagram_paragraph(name: str, levels: bool = False) -> str:
     """Sơ đồ khối dạng shape Word (scripts/report_diagrams.py), thay cho ảnh PNG."""
     from scripts.report_diagrams import build
     from scripts.report_docx.diagram import render
 
-    return render(build(name.strip()))
+    return render(build(name.strip(), legend=levels), levels=levels)
 
 
 # ---------------------------------------------------------------- gói
-def assemble(template: Path, body_docx: Path, body_xml: str, info: FrontInfo, output: Path) -> None:
+def assemble(template: Path, body_docx: Path, body_xml: str, info: FrontInfo, output: Path,
+             table: TableStyle | None = None) -> None:
     with zipfile.ZipFile(template) as tz, zipfile.ZipFile(body_docx) as bz:
         files = {name: tz.read(name) for name in tz.namelist()}
         document = files["word/document.xml"].decode("utf-8")
@@ -402,7 +422,7 @@ def assemble(template: Path, body_docx: Path, body_xml: str, info: FrontInfo, ou
                 "</Relationships>",
             )
     files["word/_rels/document.xml.rels"] = rels.encode("utf-8")
-    files["word/styles.xml"] = patch_styles(files["word/styles.xml"].decode("utf-8")).encode(
+    files["word/styles.xml"] = patch_styles(files["word/styles.xml"].decode("utf-8"), table).encode(
         "utf-8"
     )
     files["word/header1.xml"] = set_header_footer_text(

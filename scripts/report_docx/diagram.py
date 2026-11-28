@@ -8,6 +8,12 @@ Ba điều đã kiểm bằng Word 365 khi thử nghiệm (ghi chú nghiên cứ
 khai báo `xmlns:a` ngay trên `<a:graphic>` (gói mẫu của khoa không khai báo ở gốc); mọi id phải
 duy nhất trong toàn văn bản (dùng một bộ đếm chung, bắt đầu từ 900001); đoạn trong hộp phải đặt
 `pPr` tường minh, nếu không sẽ thừa hưởng thụt dòng đầu của style thân bài.
+
+Chế độ mức quan trọng (`render(..., levels=True)`, bật bằng khóa `diagram_levels` của
+`display.yaml`): độ sáng của nền nói mức quan trọng của hộp (M1 bối cảnh đến M4 đóng góp chính),
+sắc độ nói loại hộp (trung tính, mô hình, kho dữ liệu, ngoại tuyến). Bậc màu lấy từ ColorBrewer
+nên ở cùng một mức mọi loại có độ sáng gần nhau và in xám vẫn phân biệt được bốn mức; hộp M4
+dùng chữ trắng đậm, hộp M2 trở lên chỉ dùng chữ đen (chữ xám không đủ tương phản).
 """
 
 from __future__ import annotations
@@ -28,6 +34,15 @@ FILLS = {
     "offline": "ECF8F1",
     "none": None,
 }
+# (loại, mức) -> màu nền. "plain" là loại trung tính.
+LEVEL_FILLS = {
+    "plain": ("F0F0F0", "BDBDBD", "969696", "525252"),
+    "model": ("FEE6CE", "FDAE6B", "F16913", "A63603"),
+    "store": ("DEEBF7", "9ECAE1", "4292C6", "08519C"),
+    "offline": ("E5F5E0", "A1D99B", "41AB5D", "006D2C"),
+}
+LEVEL_BORDER_PT = (0.5, 0.75, 1.0, 1.5)
+WHITE = "FFFFFF"
 URI_CANVAS = "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
 NS_A = "http://schemas.openxmlformats.org/drawingml/2006/main"
 
@@ -47,6 +62,7 @@ class Box:
     border: bool = True
     align: str = "center"
     italic: bool = False
+    level: int = 2  # 1 bối cảnh, 2 bước thường, 3 bước quan trọng, 4 đóng góp chính
 
 
 @dataclass(frozen=True)
@@ -96,8 +112,19 @@ def _run(text: str, size: float, bold: bool, italic: bool, color: str) -> str:
     )
 
 
-def _paragraph(text: str, box: Box, bold: bool) -> str:
-    color = INK if bold or not box.title else MUTED
+def _text_color(box: Box, bold: bool, levels: bool) -> str:
+    if levels and box.fill != "none":
+        if box.level >= 4:
+            return WHITE
+        if box.level >= 2:
+            return INK
+    return INK if bold or not box.title else MUTED
+
+
+def _paragraph(text: str, box: Box, bold: bool, levels: bool = False) -> str:
+    color = _text_color(box, bold, levels)
+    if levels and box.fill != "none" and box.level >= 4:
+        bold = True
     return (
         '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/>'
         '<w:ind w:left="0" w:right="0" w:firstLine="0"/>'
@@ -106,17 +133,30 @@ def _paragraph(text: str, box: Box, bold: bool) -> str:
     )
 
 
-def _box_xml(box: Box) -> str:
+def _fill_of(box: Box, levels: bool) -> str | None:
+    if levels and box.fill in LEVEL_FILLS:
+        return LEVEL_FILLS[box.fill][min(max(box.level, 1), 4) - 1]
+    return FILLS[box.fill]
+
+
+def _border_xml(box: Box, levels: bool) -> str:
+    if not box.border:
+        return "<a:ln><a:noFill/></a:ln>"
+    if not levels:
+        return f'<a:ln w="9525"><a:solidFill><a:srgbClr val="{MUTED}"/></a:solidFill></a:ln>'
+    level = min(max(box.level, 1), 4)
+    color = INK if level >= 3 else MUTED
+    width = round(LEVEL_BORDER_PT[level - 1] * 12700)
+    return f'<a:ln w="{width}"><a:solidFill><a:srgbClr val="{color}"/></a:solidFill></a:ln>'
+
+
+def _box_xml(box: Box, levels: bool = False) -> str:
     ident = next(_ids)
-    fill = FILLS[box.fill]
+    fill = _fill_of(box, levels)
     fill_xml = f'<a:solidFill><a:srgbClr val="{fill}"/></a:solidFill>' if fill else "<a:noFill/>"
-    line_xml = (
-        f'<a:ln w="9525"><a:solidFill><a:srgbClr val="{MUTED}"/></a:solidFill></a:ln>'
-        if box.border
-        else "<a:ln><a:noFill/></a:ln>"
-    )
+    line_xml = _border_xml(box, levels)
     paragraphs = "".join(
-        _paragraph(text, box, box.title and index == 0 and len(box.lines) > 1)
+        _paragraph(text, box, box.title and index == 0 and len(box.lines) > 1, levels)
         for index, text in enumerate(box.lines)
     )
     inset = emu(0.08)
@@ -134,7 +174,7 @@ def _box_xml(box: Box) -> str:
 
 
 def _segment_xml(start: tuple[float, float], end: tuple[float, float], line: Line,
-                 head: bool) -> str:
+                 head: bool, levels: bool = False) -> str:
     ident = next(_ids)
     (x0, y0), (x1, y1) = start, end
     flips = (' flipH="1"' if x1 < x0 else "") + (' flipV="1"' if y1 < y0 else "")
@@ -145,26 +185,35 @@ def _segment_xml(start: tuple[float, float], end: tuple[float, float], line: Lin
         f"<wps:spPr><a:xfrm{flips}><a:off x=\"{emu(min(x0, x1))}\" y=\"{emu(min(y0, y1))}\"/>"
         f'<a:ext cx="{emu(abs(x1 - x0))}" cy="{emu(abs(y1 - y0))}"/></a:xfrm>'
         '<a:prstGeom prst="straightConnector1"><a:avLst/></a:prstGeom>'
-        f'<a:ln w="{round(line.width_pt * 12700)}"><a:solidFill><a:srgbClr val="{MUTED}"/>'
+        f'<a:ln w="{_line_width(line, levels)}"><a:solidFill>'
+        f'<a:srgbClr val="{INK if levels and not line.dashed else MUTED}"/>'
         f"</a:solidFill>{dash}{tail}</a:ln></wps:spPr><wps:bodyPr/></wps:wsp>"
     )
 
 
-def _line_xml(line: Line) -> str:
+def _line_width(line: Line, levels: bool) -> int:
+    """Chế độ mức: đường chính 1,25 pt đen, đường phụ (nét đứt) 0,75 pt xám."""
+    if levels:
+        return round((0.75 if line.dashed else 1.25) * 12700)
+    return round(line.width_pt * 12700)
+
+
+def _line_xml(line: Line, levels: bool = False) -> str:
     points = line.points
     if len(points) < 2:
         raise ValueError("đường cần ít nhất hai điểm")
     last = len(points) - 2
     return "".join(
-        _segment_xml(points[i], points[i + 1], line, line.arrow and i == last)
+        _segment_xml(points[i], points[i + 1], line, line.arrow and i == last, levels)
         for i in range(len(points) - 1)
     )
 
 
-def render(diagram: Diagram) -> str:
+def render(diagram: Diagram, levels: bool = False) -> str:
     """Đoạn `FigurePara` chứa khung vẽ; marker `@@CAP:fig:…@@` ngay sau sẽ thêm keepNext."""
     shapes = "".join(
-        _box_xml(item) if isinstance(item, Box) else _line_xml(item) for item in diagram.items
+        _box_xml(item, levels) if isinstance(item, Box) else _line_xml(item, levels)
+        for item in diagram.items
     )
     doc_id = next(_ids)
     cx, cy = emu(diagram.width), emu(diagram.height)

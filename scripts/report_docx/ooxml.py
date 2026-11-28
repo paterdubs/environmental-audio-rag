@@ -203,7 +203,8 @@ def _column_widths(rows: list[list[str]]) -> list[int]:
     return widths
 
 
-def transform_table(xml: str, percents: list[float] | None = None) -> str:
+def transform_table(xml: str, percents: list[float] | None = None,
+                    header_fill: str = "E7E6E6") -> str:
     rows_xml = re.findall(r"<w:tr>.*?</w:tr>|<w:tr .*?</w:tr>", xml, re.S)
     rows = [
         [text_of(cell) for cell in re.findall(r"<w:tc>.*?</w:tc>", row, re.S)] for row in rows_xml
@@ -250,7 +251,7 @@ def transform_table(xml: str, percents: list[float] | None = None) -> str:
             if header:
                 runs = re.sub(r"<w:r>(?!<w:rPr>)", "<w:r><w:rPr><w:b/></w:rPr>", runs)
                 runs = runs.replace("<w:rPr><w:rStyle", "<w:rPr><w:b/><w:rStyle")
-            fill = "E7E6E6" if header else ("D9D9D9" if used else "")
+            fill = header_fill if header else ("D9D9D9" if used else "")
             shade = f'<w:shd w:val="clear" w:color="auto" w:fill="{fill}"/>' if fill else ""
             # Bảng ngắn: giữ mọi hàng cùng trang với hàng sau (và với tiêu đề bảng ở trên).
             keep = "<w:keepNext/>" if len(rows_xml) <= KEEP_TABLE_ROWS else ""
@@ -266,13 +267,15 @@ def transform_table(xml: str, percents: list[float] | None = None) -> str:
 
 
 # ---------------------------------------------------------------- lắp thân bài
-def transform_body(body: str, registry: Registry, handlers: dict[str, Callable[[str], str]]) -> str:
+def transform_body(body: str, registry: Registry, handlers: dict[str, Callable[[str], str]],
+                   header_fill: str = "E7E6E6") -> str:
     """Áp mọi biến đổi lên dãy phần tử thân bài theo thứ tự."""
     out: list[str] = []
     percents: list[float] | None = None
     for element in top_level_elements(body):
         if element.startswith("<w:tbl"):
-            out.append(transform_table(replace_inline_refs(element, registry), percents))
+            out.append(transform_table(replace_inline_refs(element, registry), percents,
+                                       header_fill))
             percents = None
             continue
         text = text_of(element).strip()
