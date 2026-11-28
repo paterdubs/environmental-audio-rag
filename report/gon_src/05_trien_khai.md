@@ -37,6 +37,14 @@ Những gì sản phẩm **không** làm cũng là yêu cầu: không đo mức 
 
 @@INCLUDE:report/final_tables/f15_tech_stack.md@@
 
+⟪fig:techstack⟫ vẽ lại bảng này theo tầng, từ hạ tầng ở dưới lên giao diện ở trên. Hình được sinh từ chính tệp bảng, nên hai bên luôn cùng danh sách công nghệ.
+
+![](report/gon_figures/t01_tech_stack.png){width=15.5cm}
+
+@@CAP:fig:techstack|Công nghệ của hệ thống theo tầng@@
+
+@@NOTE:Các tên và logo sản phẩm trong hình là nhãn hiệu hoặc nhãn hiệu đã đăng ký của chủ sở hữu tương ứng; nhóm dùng chúng chỉ để nhận diện công nghệ mà hệ thống sử dụng, không hàm ý liên kết hay được các chủ sở hữu xác nhận. Biểu tượng lấy từ Simple Icons 16.38.1 (CC0 1.0), giữ nguyên hình và màu; biểu tượng màu sáng đặt trên nền tối. Python, PostgreSQL và Playwright chỉ ghi tên, theo chính sách nhãn hiệu của chủ sở hữu.@@
+
 Ba lựa chọn cần nói lý do:
 
 - **PostgreSQL với pgvector** thay cho một cơ sở dữ liệu vector riêng, vì bộ lọc theo lớp, điều kiện thời gian giữa hai sự kiện và xếp hạng vector cần nằm trong **một** câu SQL.

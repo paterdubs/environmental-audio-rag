@@ -549,3 +549,66 @@ claims:
     decimals: 3
     mentions:
       - {file: docs/PAPER_NOTES.md, text: "B0 segment / đồng thuận {value}"}
+
+  # ---------- Bản khóa luận tinh gọn (report/gon_src, dấu phẩy thập phân; 28/11/2026) ----------
+  - id: gon_v2_test_micro
+    source: *sed
+    key: [lbr, points, f1, all, micro_f1]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "macro 0,2356 và micro {value} [0,2293"}
+  - id: gon_v2_delta_micro
+    source: *sed
+    key: [lbr, delta_micro_vs_baseline, estimate]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "Hiệu micro so với hệ cơ sở là {value} ["}
+  - id: gon_lbr_oof_v2_delta
+    source: docs/measurements/oof_selection_20261109_LBR.json
+    key: [deltas, LBR_v2, estimate]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "lên 0,3332, hiệu {value} [+0,0761"}
+  - id: gon_b0_intersection_recall
+    source: *sed
+    key: [lbr, baseline, all, intersection, micro, recall]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "độ phủ sự kiện 0,5108 so với {value} của hệ cơ sở"}
+  - id: gon_v2_intersection_recall
+    source: *sed
+    key: [lbr, points, f1, all, intersection, micro, recall]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "LBR chính có độ phủ sự kiện {value} so với"}
+  - id: gon_v3_rf_intersection_recall
+    source: *sed
+    key: [lbr_extra, *v3, points, recall_first, all, intersection, micro, recall]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "đạt độ phủ sự kiện {value} và độ chính xác"}
+  - id: gon_v3_rq3_hybrid_en
+    source: docs/measurements/retrieval_benchmark_test_lbrv3_gold_20261110.json
+    key: [summary, hybrid/en, ndcg@10]
+    decimals: 3
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "cao hơn hẳn ({value}) và trả lời"}
+  - id: gon_rq1_v2_boot
+    source: docs/measurements/final_numbers_20261110.json
+    key: [rq1, v2, bootstrap_c_minus_b, estimate, value]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "hiệu là {value} [−0,0254; +0,0199]"}
+  - id: gon_oof_beats_delta
+    source: docs/measurements/oof_selection_20261014.json
+    key: [differences, OD, estimate]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "cho hiệu từ {value} đến"}
+  - id: gon_oof_p1_delta
+    source: docs/measurements/oof_selection_20261108.json
+    key: [differences, P1, estimate]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "đến {value}, không hướng nào"}
+  - id: gon_v2_psds2_old_grid
+    source: *grid
+    key: [results, *v2run, curves, "T_GRID (cũ)", psds, psds_2]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "chỉ đạt PSDS-2 {value}, vì"}
+  - id: gon_v2_psds1_log
+    source: *grid
+    key: [results, *v2run, curves, "log 1e-5..0.99 (mới)", psds, psds_1]
+    mentions:
+      - {file: report/gon_src/06_ket_qua.md, text: "LBR chính đạt PSDS-1 {value} và PSDS-2"}

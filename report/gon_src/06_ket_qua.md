@@ -40,11 +40,17 @@ Mô hình phân loại đạt macro-F1 0,8466 trên 22 lớp cấp trên của t
 
 ## Câu hỏi nghiên cứu 1: huấn luyện thêm trên DataSEC có giúp không?
 
-Vì huấn luyện SED không cho kết quả giống hệt nhau giữa các lần chạy, câu trả lời dựa trên nhiều lần chạy (⟪tbl:rq1⟫). Với SED v1 (3 lần chạy nhánh B, 4 lần chạy nhánh C, chấm trên 142 bản ghi), F1 theo sự kiện micro trung bình của B là 0,0610 và của C là 0,0539; hiệu C − B là −0,0071 [−0,0164; +0,0021]. Với SED v2 (3 lần chạy mỗi nhánh), hiệu là −0,0029 [−0,0254; +0,0199]. Cả hai khoảng tin cậy đều chứa 0. Dao động giữa các lần huấn luyện lớn ngang hoặc lớn hơn hiệu giữa hai nhánh: ở SED v1, kết quả của nhánh C trải từ 0,0472 đến 0,0660 qua 4 lần huấn luyện, phủ trọn khoảng của nhánh B (0,0557 đến 0,0651).
+Vì huấn luyện SED không cho kết quả giống hệt nhau giữa các lần chạy, câu trả lời dựa trên nhiều lần chạy (⟪tbl:rq1⟫). Với SED v1 (3 lần chạy nhánh B, 4 lần chạy nhánh C, chấm trên 142 bản ghi), F1 theo sự kiện micro trung bình của B là 0,0610 và của C là 0,0539; hiệu C − B là −0,0071 [−0,0164; +0,0021]. Với SED v2 (3 lần chạy mỗi nhánh), hiệu là −0,0029 [−0,0254; +0,0199]. Cả hai khoảng tin cậy đều chứa 0. Dao động giữa các lần huấn luyện lớn ngang hoặc lớn hơn hiệu giữa hai nhánh (⟪fig:rq1seeds⟫): ở SED v1, kết quả của nhánh C trải từ 0,0472 đến 0,0660 qua 4 lần huấn luyện, phủ trọn khoảng của nhánh B (0,0557 đến 0,0651).
 
 @@CAP:tbl:rq1|Kết quả Câu hỏi nghiên cứu 1 trên tập kiểm tra@@
 
 @@INCLUDE:docs/thesis/tables/03_rq1.md@@
+
+![](report/gon_figures/c12_rq1_seeds.png){width=15.5cm}
+
+@@CAP:fig:rq1seeds|F1 theo sự kiện micro của nhánh B và nhánh C qua nhiều lần huấn luyện (điểm: trung bình; vạch màu: ±1 độ lệch chuẩn; dải xám: từ nhỏ nhất đến lớn nhất)@@
+
+@@NOTE:Nguồn: rq1_multiseed_clean_20260924.json, rq1_v2_multiseed_20260929.json (đọc lại thống kê đã lưu).@@
 
 Ngược lại, tiền huấn luyện nói chung giúp rõ: nhánh A học từ đầu chỉ đạt F1 theo sự kiện 0,0360, so với 0,0621 của nhánh B. Riêng PSDS-2 của SED v2 tăng +0,0279 (p = 0,0193), nhưng đây là một trong nhiều chỉ số được so và chưa hiệu chỉnh cho việc so nhiều lần.
 
@@ -60,9 +66,21 @@ Ngược lại, tiền huấn luyện nói chung giúp rõ: nhánh A học từ 
 
 @@NOTE:Nguồn: s13_test_20261018.json, final_numbers_20261110.json, lbr_context_20261123.json, calibration_20261123.json.@@
 
-**SED v1: vì sao F1 theo sự kiện thấp?** Chẩn đoán trên tập phát triển cho thấy hai nguyên nhân. Thứ nhất, CNN14 ra quyết định theo khối 0,64 s, nên kể cả nhận dạng hoàn hảo thì F1 theo sự kiện tối đa chỉ là 0,6294. Thứ hai, phần lớn lỗi nằm ở biên và ở bỏ sót: trong 886 sự kiện tham chiếu, chỉ 112 khớp dung sai, 417 đúng lớp nhưng lệch biên, và 357 bị bỏ sót. Nới dung sai từ 0,2 s lên 1 s làm F1 theo sự kiện của nhánh B tăng khoảng ba lần (0,062 lên 0,185), phù hợp với chẩn đoán này.
+**SED v1: vì sao F1 theo sự kiện thấp?** Chẩn đoán trên tập phát triển cho thấy hai nguyên nhân. Thứ nhất, CNN14 ra quyết định theo khối 0,64 s, nên kể cả nhận dạng hoàn hảo thì F1 theo sự kiện tối đa chỉ là 0,6294 (⟪fig:ceiling⟫, trái). Thứ hai, phần lớn lỗi nằm ở biên và ở bỏ sót: trong 886 sự kiện tham chiếu, chỉ 112 khớp dung sai, 417 đúng lớp nhưng lệch biên, và 357 bị bỏ sót. Nới dung sai từ 0,2 s lên 1 s làm F1 theo sự kiện của nhánh B tăng khoảng ba lần (0,062 lên 0,185), phù hợp với chẩn đoán này.
 
-**SED v2.** Sửa độ phân giải thời gian là thay đổi có tác dụng rõ nhất: quay về nén 64 lần làm F1 theo sự kiện giảm 0,0840. Tổ hợp 3 lần huấn luyện của SED v2 đạt F1 theo sự kiện micro 0,1476 trên 142 bản ghi kiểm tra, so với 0,0941 của SED v1; hiệu +0,0536 [+0,0261; +0,0853]. Cũng ở bước này, nhóm thấy ngưỡng riêng cho từng lớp bị quá khớp tập phát triển: từ tập phát triển sang tập kiểm tra, F1 theo sự kiện với ngưỡng riêng giảm 39% đến 48%, còn với ngưỡng chung chỉ giảm 2% đến 15%.
+![](report/gon_figures/c04_resolution_ceiling.png){width=15.5cm}
+
+@@CAP:fig:ceiling|Trần F1 theo sự kiện khi nhận dạng đúng nhưng ra quyết định theo khối (trái), và phân rã 886 sự kiện tham chiếu của tập phát triển theo kiểu lỗi (phải)@@
+
+@@NOTE:Nguồn: sed_ceilings_20260926.json, sed_ceilings_v2_20260926.json (tập phát triển; trần tính từ nhãn, không cần mô hình).@@
+
+**SED v2.** Sửa độ phân giải thời gian là thay đổi có tác dụng rõ nhất (⟪fig:ablation⟫): quay về nén 64 lần làm F1 theo sự kiện giảm 0,0840, trong khi bỏ tăng cường dữ liệu hay nới trần trọng số mẫu dương không tách được khỏi dao động giữa các phần. Trên tập phát triển, số sự kiện khớp dung sai tăng từ 112 lên 148 (⟪fig:ceiling⟫, phải). Tổ hợp 3 lần huấn luyện của SED v2 đạt F1 theo sự kiện micro 0,1476 trên 142 bản ghi kiểm tra, so với 0,0941 của SED v1; hiệu +0,0536 [+0,0261; +0,0853]. Cũng ở bước này, nhóm thấy ngưỡng riêng cho từng lớp bị quá khớp tập phát triển: từ tập phát triển sang tập kiểm tra, F1 theo sự kiện với ngưỡng riêng giảm 39% đến 48%, còn với ngưỡng chung chỉ giảm 2% đến 15%.
+
+![](report/gon_figures/c05_v2_ablation.png){width=15.5cm}
+
+@@CAP:fig:ablation|Đóng góp của từng thay đổi trong SED v2: F1 theo sự kiện micro kiểm chứng chéo 5 phần trên tập phát triển; dải nền xanh là khoảng của 3 lần huấn luyện SED v2 đủ@@
+
+@@NOTE:Nguồn: sed_v2_ablation_20260926.json (tập phát triển). Tệp tổng hợp ghi cây làm việc chưa sạch; các lần huấn luyện SED v2 trong hình đều chạy trên cây sạch, riêng dòng tham chiếu SED v1 thì không.@@
 
 **Hệ mốc.** Vòng chọn tiếp theo so 11 ứng viên bằng kiểm chứng chéo trên tập phát triển và khóa hệ mốc (F1 theo sự kiện micro kiểm chứng chéo 0,2383 ± 0,0562). Trên tập kiểm tra, hệ mốc đạt micro 0,1643 [0,1103; 0,2242]. Thứ hạng trên tập kiểm tra không trùng thứ hạng trên tập phát triển: một ứng viên chỉ đứng thứ tư trên tập phát triển lại có micro kiểm tra cao nhất (0,1817). Hệ mốc **không** được chọn lại, vì chọn lại theo tập kiểm tra chính là tinh chỉnh trên tập kiểm tra. Bảng xếp hạng đầy đủ ở Phụ lục B (⟪tbl:s13⟫). Ở hệ mốc, cSEBB tốt hơn ngưỡng chung (0,2383 so với 0,2107), trong khi với các thế hệ trước nó thua; kết luận về cSEBB vì vậy phụ thuộc vào mô hình.
 
@@ -77,6 +95,14 @@ Trên dự đoán ngoài mẫu, LBR chính nâng F1 theo sự kiện micro từ 
 @@COLWIDTHS:38,12,12,38@@
 
 @@INCLUDE:report/final_tables/f10_lbr_context.md@@
+
+⟪fig:oofcands⟫ đặt LBR cạnh mọi ứng viên khác đã được so với hệ cơ sở trên cùng 564 bản ghi ngoài mẫu. Bảy hướng thay hoặc tổ hợp mô hình, thêm lần huấn luyện và tăng cường dữ liệu cho hiệu từ −0,0290 đến +0,0002, không hướng nào có khoảng tin cậy nằm hẳn bên phải 0. Chỉ các biến thể LBR làm được điều đó. Nói cách khác, sau hệ cơ sở, phần còn cải thiện được nằm ở biên hộp chứ không ở mô hình.
+
+![](report/gon_figures/c02_oof_candidates.png){width=15.5cm}
+
+@@CAP:fig:oofcands|Hiệu F1 theo sự kiện micro so với hệ cơ sở của mọi ứng viên đã so trên dự đoán ngoài mẫu (564 bản ghi), kèm KTC 95%@@
+
+@@NOTE:Nguồn: oof_selection_20261009.json, oof_selection_20261014.json, oof_selection_20261108.json, oof_selection_20261108_P4.json, lbr_selection_annotated.json, lbr_application_annotated.json.@@
 
 Tập kiểm tra được mở một lần cho các cấu hình đã khóa (⟪tbl:sedfinal⟫). LBR chính đạt F1 theo sự kiện macro 0,2356 và micro 0,2965 [0,2293; 0,3603]. Hiệu micro so với hệ cơ sở là +0,1159 [+0,0741; +0,1593]; khoảng tin cậy không chứa 0 và cùng hướng với kết quả ngoài mẫu. **Hệ thống cuối của đề tài là hệ cơ sở cộng LBR; LBR chính là số chính.**
 
@@ -104,7 +130,13 @@ LBR có đánh đổi (⟪fig:sedfinal⟫). Theo tiêu chí giao nhau (mục 2.2
 
 Trên **19 lớp** của bối cảnh đô thị Việt Nam (Chương 1), F1 theo sự kiện micro của hệ cơ sở là 0,1892 và của LBR chính là 0,3120; LBR ứng dụng có độ phủ sự kiện 0,8319 với độ chính xác theo giao nhau 0,7810. Đây chỉ là phép lọc lớp trên DataSED, không phải dữ liệu thu tại Việt Nam.
 
-**PSDS.** PSDS tính trên một dải ngưỡng nên phụ thuộc cách chọn dải (mục 2.2.3). Trên cùng dải ngưỡng log, LBR chính đạt PSDS-1 0,3512 và PSDS-2 0,6116, còn hệ cơ sở đạt 0,3061 và 0,7452. Như vậy LBR tăng PSDS-1, kịch bản đòi biên khớp, nhưng **giảm rõ** PSDS-2, kịch bản chỉ đòi chồng lấp ít; điều này nhất quán với việc LBR làm biên khớp hơn mà không tăng độ phủ sự kiện. Chẩn đoán chi tiết về PSDS ở Phụ lục B (⟪tbl:psdsdiag⟫).
+**PSDS.** PSDS tính trên một dải ngưỡng nên phụ thuộc cách chọn dải (mục 2.2.3). Trên cùng dải ngưỡng log, LBR chính đạt PSDS-1 0,3512 và PSDS-2 0,6116, còn hệ cơ sở đạt 0,3061 và 0,7452. Như vậy LBR tăng PSDS-1, kịch bản đòi biên khớp, nhưng **giảm rõ** PSDS-2, kịch bản chỉ đòi chồng lấp ít; điều này nhất quán với việc LBR làm biên khớp hơn mà không tăng độ phủ sự kiện. Dải ngưỡng quan trọng đến mức nào thể hiện ở ⟪fig:psdsgrid⟫: với dải ngưỡng ban đầu, LBR chính chỉ đạt PSDS-2 0,2960, vì 542 hộp có điểm thấp hơn ngưỡng nhỏ nhất của dải và không bao giờ được tính. Vì vậy mọi so sánh PSDS trong báo cáo dùng chung dải ngưỡng log. Chẩn đoán chi tiết về PSDS ở Phụ lục B (⟪tbl:psdsdiag⟫).
+
+![](report/gon_figures/c06_psds_grid.png){width=15.5cm}
+
+@@CAP:fig:psdsgrid|PSDS-1 và PSDS-2 trên tập kiểm tra theo hai dải ngưỡng: dải ban đầu của từng hệ (gạch chéo) và dải log dùng chung (tô đặc)@@
+
+@@NOTE:Nguồn: final_numbers_20261110.json, lbr_psds_grid_20261110_annotated.json. Dải ban đầu của hệ cơ sở là lưới tuyến tính mặc định của bước đánh giá; của LBR là lưới cũ của bước LBR.@@
 
 ## F1 theo sự kiện khoảng 0,30 là cao hay thấp?
 
@@ -117,6 +149,14 @@ Một con số F1 theo sự kiện đứng riêng khó đọc, nên báo cáo đ
 @@COLWIDTHS:34,16,16,16,18@@
 
 @@INCLUDE:report/final_tables/f11_calibration.md@@
+
+⟪fig:calibration⟫ vẽ lại ba cột của bảng cạnh mức đồng thuận. Khoảng cách tới đường đứt nét lớn nhất ở F1 theo sự kiện dung sai 0,2 s và gần như biến mất ở F1 theo đoạn 1 s; LBR ứng dụng còn vượt đường này ở F1 theo đoạn, nhưng hai bên đo trên các bản ghi khác nhau nên không đọc thành "hơn người".
+
+![](report/gon_figures/c03_calibration.png){width=15.5cm}
+
+@@CAP:fig:calibration|F1 theo ba cách đo của ba hệ SED trên tập kiểm tra, cạnh mức đồng thuận giữa hai lần gán nhãn (đường đứt nét, 8 cặp bản ghi)@@
+
+@@NOTE:Nguồn: calibration_20261123.json.@@
 
 **Mốc thứ hai: thử thách DCASE** (⟪tbl:dcase⟫). Với DESED, PSDS của các hệ cơ sở DCASE cùng cỡ với PSDS của đề tài. Tuy nhiên DESED là đoạn 10 s, 10 lớp, phần lớn là dữ liệu tổng hợp; DataSED là bản ghi trung bình 94 s, 21 lớp và chỉ có 564 bản ghi có nhãn để huấn luyện. Nhóm không viết "tương đương DESED".
 
@@ -136,13 +176,19 @@ Một con số F1 theo sự kiện đứng riêng khó đọc, nên báo cáo đ
 
 ## Câu hỏi nghiên cứu 2: mô tả có bám sát sự kiện không?
 
-Bốn cách sinh được so trên cùng danh sách sự kiện của từng hệ SED, trên 139 bản ghi kiểm tra (⟪tbl:rq2final⟫). Có ba kết quả.
+Bốn cách sinh được so trên cùng danh sách sự kiện của từng hệ SED, trên 139 bản ghi kiểm tra (⟪tbl:rq2final⟫, ⟪fig:rq2errors⟫). Có ba kết quả.
 
 @@CAP:tbl:rq2final|Bỏ sót và ảo giác theo cách sinh và hệ SED (tập kiểm tra, so với danh sách sự kiện dự đoán)@@
 
 @@COLWIDTHS:28,18,18,18,18@@
 
 @@INCLUDE:report/final_tables/f04_rq2.md@@
+
+![](report/gon_figures/c13_rq2_errors.png){width=15.5cm}
+
+@@CAP:fig:rq2errors|Tỷ lệ bỏ sót, ảo giác nguồn âm và mô tả có suy diễn bối cảnh theo cách sinh và hệ SED (tập kiểm tra); tam giác đánh dấu giá trị bằng 0@@
+
+@@NOTE:Nguồn: rq2_llm_systems_20261110_test_annotated.json. Màu đậm dần theo mức ràng buộc của cách sinh.@@
 
 **Thứ nhất, cách theo mẫu cho 0 ở mọi chỉ số**, cả tiếng Anh lẫn tiếng Việt, trên cả bốn hệ SED. Đây là bằng chứng bộ đo không báo lỗi giả trên mô tả đúng.
 
@@ -160,11 +206,23 @@ Cần đọc Câu hỏi nghiên cứu 2 đúng mức. Kết quả "0 vi phạm" 
 
 @@INCLUDE:report/final_tables/f04b_caption_tiers.md@@
 
-Kết quả cho thấy ba điều. **Một,** so với nhãn gốc, mọi cách sinh đều bỏ sót khoảng 34% đến 42% số lớp có thật ở hệ mốc, hệ cơ sở và LBR chính, kể cả hai cách vốn bằng 0 khi so với dự đoán. **Hai,** chênh lệch giữa các cách sinh nhỏ hơn nhiều so với chênh lệch giữa các hệ SED: trong cùng một hệ, ảo giác so với nhãn gốc của bốn cách sinh lệch nhau nhiều nhất 0,056, còn cùng một cách sinh lệch 0,16 đến 0,20 khi đổi từ LBR chính sang LBR ứng dụng. **Ba,** vì vậy độ đúng của mô tả với âm thanh chủ yếu do SED quyết định; phần của bộ sinh là không tự thêm nguồn âm ngoài danh sách.
+Kết quả cho thấy ba điều (⟪fig:captiongt⟫). **Một,** so với nhãn gốc, mọi cách sinh đều bỏ sót khoảng 34% đến 42% số lớp có thật ở hệ mốc, hệ cơ sở và LBR chính, kể cả hai cách vốn bằng 0 khi so với dự đoán. **Hai,** chênh lệch giữa các cách sinh nhỏ hơn nhiều so với chênh lệch giữa các hệ SED: trong cùng một hệ, ảo giác so với nhãn gốc của bốn cách sinh lệch nhau nhiều nhất 0,056, còn cùng một cách sinh lệch 0,16 đến 0,20 khi đổi từ LBR chính sang LBR ứng dụng. **Ba,** vì vậy độ đúng của mô tả với âm thanh chủ yếu do SED quyết định; phần của bộ sinh là không tự thêm nguồn âm ngoài danh sách.
+
+![](report/gon_figures/c07_caption_vs_gt.png){width=15.5cm}
+
+@@CAP:fig:captiongt|Ảo giác và bỏ sót của mô tả khi so với danh sách dự đoán (điểm rỗng) và khi so với nhãn gốc (điểm đặc), theo hệ SED và cách sinh (tập phát triển)@@
+
+@@NOTE:Nguồn: caption_vs_gt_dev_20261124.json (134 bản ghi; chấm lại mô tả đã sinh, không gọi lại mô hình ngôn ngữ).@@
 
 **Mô tả theo lớp.** Với LBR ứng dụng, mô tả theo mẫu dài trung bình 400 ký tự trên tập phát triển; mô tả theo lớp còn trung bình 119 ký tự, và vẫn không có ảo giác hay bỏ sót so với danh sách sự kiện. Nhãn "độ tin cậy thấp" mang thông tin: ở LBR ứng dụng, mệnh đề có nhãn này chỉ đúng với nhãn gốc 17/98 lần, còn mệnh đề không có nhãn đúng 202/228 lần. Ngưỡng của nhãn được chọn trên chính tập phát triển này, nên đây là phép đo trong mẫu.
 
-**Giới hạn của bộ đo.** Bộ đo tìm nguồn âm bằng từ điển cụm từ. Trên 60 mô tả được một người đọc đối chiếu, từ điển đạt độ chính xác 0,896 và độ đầy đủ 0,936 so với người đọc. Nhóm cũng cố tình chèn nguồn âm sai vào mô tả để đo độ nhạy, theo ý tưởng của BRACE [@guo2025brace]: khi nguồn âm sai thuộc 21 lớp, bộ đo bắt được gần như mọi ca (1859/1860); khi nguồn âm nằm ngoài hệ lớp, chỉ 62% bị bắt (ví dụ "a hammer striking" không bị bắt). Vì vậy tỷ lệ ảo giác của cách viết tự do là **cận dưới**: nguồn âm lạ có thể lọt qua bộ đo.
+**Giới hạn của bộ đo.** Bộ đo tìm nguồn âm bằng từ điển cụm từ. Trên 60 mô tả được một người đọc đối chiếu, từ điển đạt độ chính xác 0,896 và độ đầy đủ 0,936 so với người đọc. Nhóm cũng cố tình chèn nguồn âm sai vào mô tả để đo độ nhạy, theo ý tưởng của BRACE [@guo2025brace]: khi nguồn âm sai thuộc 21 lớp, bộ đo bắt được gần như mọi ca (1859/1860); khi nguồn âm nằm ngoài hệ lớp, chỉ 62% bị bắt (⟪fig:checker⟫). Lỗi dồn vào vài cụm cụ thể: "a hammer striking", "a clock ticking" và "a phone vibrating" không bị bắt lần nào, còn năm cụm còn lại bị bắt gần như mọi lần. Vì vậy tỷ lệ ảo giác của cách viết tự do là **cận dưới**: nguồn âm lạ có thể lọt qua bộ đo.
+
+![](report/gon_figures/c08_checker_sensitivity.png){width=15.5cm}
+
+@@CAP:fig:checker|Độ nhạy của bộ đo ảo giác: tỷ lệ lỗi cố tình chèn vào mô tả bị bắt được, theo kiểu lỗi (trái) và theo cụm nguồn âm ngoài hệ lớp (phải)@@
+
+@@NOTE:Nguồn: checker_sensitivity_dev_20261124.json (tập phát triển, gộp các cách sinh).@@
 
 ## Câu hỏi nghiên cứu 3: truy hồi và câu trả lời có bằng chứng
 
@@ -178,7 +236,7 @@ Kết quả cho thấy ba điều. **Một,** so với nhãn gốc, mọi cách 
 
 Với hệ mốc, hệ cơ sở và LBR chính, nDCG@10 của chế độ kết hợp là 0,415, 0,383 và 0,404, khoảng tin cậy chồng nhau nhiều. Điều này đáng chú ý: LBR chính tăng F1 theo sự kiện micro khoảng 1,6 lần so với hệ cơ sở, nhưng truy hồi gần như không đổi. Truy hồi phụ thuộc vào việc *sự kiện nào* được phát hiện, không phải vào độ khớp của biên. Riêng kho của LBR ứng dụng cao hơn hẳn (0,670) và trả lời được 95/97 câu truy vấn, so với 58 đến 65 của ba kho kia. Đây là **hiệu ứng độ phủ sự kiện**: LBR ứng dụng phát hiện nhiều sự kiện thật hơn (độ phủ sự kiện 0,8203 so với 0,5108 đến 0,5351), nên bộ lọc ít loại nhầm bản ghi liên quan. Cái giá là tỷ lệ trích dẫn đúng thấp hơn (0,712 so với 0,915 của hệ cơ sở).
 
-**Kết hợp có tốt hơn từng thành phần không?** Đây là nội dung gốc của Câu hỏi nghiên cứu 3, và câu trả lời trên dữ liệu này là **không, xét theo nDCG@10** (⟪tbl:rq3paired⟫). Với ba kho có độ phủ sự kiện thấp, chế độ kết hợp thấp hơn chế độ chỉ ngữ nghĩa: −0,111, −0,075 và −0,087, khoảng tin cậy không chứa 0. Riêng kho của LBR ứng dụng, chiều này đảo lại (+0,040). Chế độ kết hợp gần như trùng chế độ chỉ lọc (mọi hiệu không quá 0,013).
+**Kết hợp có tốt hơn từng thành phần không?** Đây là nội dung gốc của Câu hỏi nghiên cứu 3, và câu trả lời trên dữ liệu này là **không, xét theo nDCG@10** (⟪tbl:rq3paired⟫). Với ba kho có độ phủ sự kiện thấp, chế độ kết hợp thấp hơn chế độ chỉ ngữ nghĩa: −0,111, −0,075 và −0,087, khoảng tin cậy không chứa 0. Riêng kho của LBR ứng dụng, chiều này đảo lại (+0,040). Chế độ kết hợp gần như trùng chế độ chỉ lọc (mọi hiệu không quá 0,013). Hiệu âm không do vài câu truy vấn ngoại lai (⟪fig:rq3queries⟫): ở kho hệ mốc, trong 97 câu truy vấn có bản ghi liên quan, chế độ kết hợp thua ở 49 câu, hòa 33 câu và thắng 15 câu; kho LBR ứng dụng đảo lại, thua 18 và thắng 44.
 
 @@CAP:tbl:rq3paired|Hiệu nDCG@10 ghép cặp giữa các chế độ và độ đúng bộ lọc (tập kiểm tra)@@
 
@@ -186,7 +244,19 @@ Với hệ mốc, hệ cơ sở và LBR chính, nDCG@10 của chế độ kết 
 
 @@INCLUDE:report/final_tables/f05b_rq3_paired.md@@
 
-Ba điều cần đọc cùng nhau. **Một,** chế độ chỉ ngữ nghĩa không tôn trọng điều kiện: chỉ khoảng 27% kết quả của nó thỏa bộ lọc, so với 1,000 của chế độ kết hợp. nDCG cao hơn của nó không có nghĩa là nó đáp ứng câu truy vấn có điều kiện tốt hơn. **Hai,** chênh lệch tập trung ở câu truy vấn nhiều lớp và câu truy vấn quan hệ thời gian (⟪tbl:rq3groups⟫); ví dụ ở kho hệ mốc, nhóm quan hệ thời gian đạt 0,126 với chế độ kết hợp so với 0,426 với chế độ chỉ ngữ nghĩa. **Ba,** nguyên nhân hợp lý nhất là bộ lọc chạy trên sự kiện *dự đoán*: chỉ bản ghi mà SED đã dự đoán đủ mọi lớp và quan hệ trong câu truy vấn mới qua được bộ lọc. Đếm trực tiếp trên kho của hệ cơ sở: trong 705 cặp (câu truy vấn, bản ghi liên quan), 349 cặp bị loại vì sự kiện dự đoán không thỏa bộ lọc. Bộ phân tích câu hỏi chỉ làm đổi kết quả ở 4 đến 12 trên 97 câu truy vấn, nhỏ hơn nhiều so với phần do SED.
+![](report/gon_figures/c14_rq3_queries.png){width=15.5cm}
+
+@@CAP:fig:rq3queries|Hiệu nDCG@10 kết hợp − chỉ ngữ nghĩa theo từng câu truy vấn (điểm xám) và trung bình kèm KTC 95% ghép cặp; dòng trên cùng: số câu thua / hòa / thắng@@
+
+@@NOTE:Nguồn: per_query trong bốn tệp kết quả truy hồi trên tập kiểm tra (danh sách ở rq3_modes_20261123.json); tiếng Anh, bộ lọc chuẩn.@@
+
+Ba điều cần đọc cùng nhau. **Một,** chế độ chỉ ngữ nghĩa không tôn trọng điều kiện: chỉ khoảng 27% kết quả của nó thỏa bộ lọc, so với 1,000 của chế độ kết hợp. nDCG cao hơn của nó không có nghĩa là nó đáp ứng câu truy vấn có điều kiện tốt hơn. **Hai,** chênh lệch tập trung ở câu truy vấn nhiều lớp và câu truy vấn quan hệ thời gian (⟪tbl:rq3groups⟫); ví dụ ở kho hệ mốc, nhóm quan hệ thời gian đạt 0,126 với chế độ kết hợp so với 0,426 với chế độ chỉ ngữ nghĩa. **Ba,** nguyên nhân hợp lý nhất là bộ lọc chạy trên sự kiện *dự đoán*: chỉ bản ghi mà SED đã dự đoán đủ mọi lớp và quan hệ trong câu truy vấn mới qua được bộ lọc. Đếm trực tiếp trên kho của hệ cơ sở: trong 705 cặp (câu truy vấn, bản ghi liên quan), 349 cặp bị loại vì sự kiện dự đoán không thỏa bộ lọc (⟪fig:rq3failures⟫). Ở kho LBR ứng dụng, số cặp bị loại giảm còn 127, đúng như dự đoán từ độ phủ sự kiện cao hơn. Bộ phân tích câu hỏi chỉ làm đổi kết quả ở 4 đến 12 trên 97 câu truy vấn, nhỏ hơn nhiều so với phần do SED.
+
+![](report/gon_figures/c09_retrieval_failures.png){width=15.5cm}
+
+@@CAP:fig:rq3failures|Số phận của 705 cặp (câu truy vấn, bản ghi liên quan) ở chế độ kết hợp, theo kho sự kiện (tập kiểm tra, bộ lọc chuẩn)@@
+
+@@NOTE:Nguồn: retrieval_failures_test_20261124.json. Phân tích làm sau khi đã thấy kết quả trên tập kiểm tra, chỉ đọc lại danh sách đã lưu.@@
 
 @@CAP:tbl:rq3groups|nDCG@10 kết hợp / chỉ ngữ nghĩa theo nhóm câu truy vấn (tập kiểm tra)@@
 
@@ -204,7 +274,13 @@ Phân tích trên cho thấy chế độ kết hợp thua không phải vì xế
 
 @@NOTE:Nguồn: retrieval_backfill_test_20261124.json (bộ lọc chuẩn, tiếng Anh).@@
 
-Hình này cho thấy chế độ bổ sung cao hơn cả hai chế độ gốc ở cả bốn kho, và mọi khoảng tin cậy ghép cặp đều không chứa 0. So với chỉ ngữ nghĩa, mức tăng là +0,041 đến +0,097; so với kết hợp là +0,057 đến +0,160. Câu truy vấn tiếng Việt và bộ lọc do bộ phân tích sinh ra cho cùng chiều. Cái giá là chỉ 29% đến 31% kết quả thỏa bộ lọc ở ba kho độ phủ sự kiện thấp (57% ở kho LBR ứng dụng); phần còn lại là gợi ý gần nghĩa. Vì vậy ứng dụng tách bạch hai phần: câu trả lời chỉ khẳng định trên phần thỏa bộ lọc, phần gần nghĩa chỉ hiện như gợi ý.
+Hình này cho thấy chế độ bổ sung cao hơn cả hai chế độ gốc ở cả bốn kho, và mọi khoảng tin cậy ghép cặp đều không chứa 0 (⟪fig:backfillpaired⟫). So với chỉ ngữ nghĩa, mức tăng là +0,041 đến +0,097; so với kết hợp là +0,057 đến +0,160. So với chỉ ngữ nghĩa, ở ba kho độ phủ sự kiện thấp phần lớn câu truy vấn hòa, nên mức tăng đến từ một số ít câu; ở mọi so sánh, số câu thua không quá 5 trên 97. Câu truy vấn tiếng Việt và bộ lọc do bộ phân tích sinh ra cho cùng chiều. Cái giá là chỉ 29% đến 31% kết quả thỏa bộ lọc ở ba kho độ phủ sự kiện thấp (57% ở kho LBR ứng dụng); phần còn lại là gợi ý gần nghĩa. Vì vậy ứng dụng tách bạch hai phần: câu trả lời chỉ khẳng định trên phần thỏa bộ lọc, phần gần nghĩa chỉ hiện như gợi ý.
+
+![](report/gon_figures/c10_backfill_paired.png){width=15.5cm}
+
+@@CAP:fig:backfillpaired|Hiệu nDCG@10 ghép cặp của chế độ bổ sung so với hai chế độ gốc, kèm KTC 95% và số câu truy vấn thắng / hòa / thua (tập kiểm tra)@@
+
+@@NOTE:Nguồn: retrieval_backfill_test_20261124.json (bộ lọc chuẩn, tiếng Anh; 97 câu truy vấn có bản ghi liên quan).@@
 
 **Câu trả lời.** Ở mọi cấu hình, tỷ lệ khẳng định thiếu bằng chứng là 0,000: câu trả lời không vượt ra ngoài những gì kho chứa; đổi lại, kho thiếu thì câu trả lời cũng thiếu. Độ đúng bộ lọc 1,000 chỉ cho biết kết quả nhất quán với bộ lọc và với sự kiện *dự đoán* trong kho, không cho biết kết quả đúng với ý người hỏi hay với âm thanh.
 
@@ -219,6 +295,14 @@ Bộ phân tích cho đầu ra đúng lược đồ ở 240/240 câu (⟪tbl:par
 @@INCLUDE:docs/thesis/tables/10_parser_l2.md|cols=1,2,3,4,5,6,7@@
 
 ## Mức tin cậy của các so sánh
+
+⟪fig:maindiffs⟫ gom các hiệu chính của phần SED, mỗi hiệu kèm khoảng tin cậy, tập đo và cỡ mẫu. Hai hiệu của Câu hỏi nghiên cứu 1 và hiệu giữa hệ cơ sở với hệ mốc có khoảng tin cậy chứa 0; hiệu SED v2 so với SED v1 và hai hiệu của LBR chính thì không.
+
+![](report/gon_figures/c01_main_differences.png){width=15.5cm}
+
+@@CAP:fig:maindiffs|Các hiệu F1 theo sự kiện micro chính của báo cáo, kèm KTC 95% bootstrap ghép cặp (điểm rỗng: dự đoán ngoài mẫu; điểm đặc: tập kiểm tra)@@
+
+@@NOTE:Nguồn: final_numbers_20261110.json, rq1_multirun_bootstrap_sedv2_vs_v1_20260926.json (đổi dấu thành SED v2 − SED v1), lbr_context_20261123.json.@@
 
 Tập kiểm tra không được dùng "một lần" theo nghĩa đen: sổ ghi có **42 lượt đánh giá SED trên tập kiểm tra**, cùng các lượt đo mô tả và truy hồi. Điều nhóm bảo đảm hẹp hơn: mỗi cấu hình đã khóa chỉ được đo trên tập kiểm tra **một lần**, lựa chọn được lưu trước khi sinh dự đoán kiểm tra, và không cấu hình nào được chọn lại sau khi xem kết quả. Ba điểm cần nói thẳng:
 

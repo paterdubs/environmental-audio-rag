@@ -47,13 +47,21 @@ Mô hình phân loại có hai vai trò: là bước giữa của nhánh C trong
 
 ## Tinh chỉnh biên học được (LBR)
 
-Phân tích lỗi trên dự đoán ngoài mẫu của hệ cơ sở (⟪fig:fnbreakdown⟫) cho thấy hệ chỉ khớp đúng 592 trong 3.294 sự kiện tham chiếu. Trong 2.702 sự kiện bị bỏ sót, 1.477 không có hộp dự đoán cùng lớp nào chồng lên. Nhưng 789 trong số đó (53%) có xác suất lớn nhất từ 0,9 trở lên: mô hình đã "nghe thấy", chỉ là hộp bị loại ở bước ghép. Thêm 872 sự kiện có hộp cùng lớp nhưng lệch biên, phần lớn ở biên đầu (656). Biên đầu thường bị đoán sớm: với các lớp kéo dài như `train` và `jet_aircrafts`, độ lệch trung vị khoảng −1,5 s. Như vậy nút thắt nằm ở biên hộp sau bước ghép, không phải ở khả năng nhận dạng.
+Phân tích lỗi trên dự đoán ngoài mẫu của hệ cơ sở (⟪fig:fnbreakdown⟫) cho thấy hệ chỉ khớp đúng 592 trong 3.294 sự kiện tham chiếu. Trong 2.702 sự kiện bị bỏ sót, 1.477 không có hộp dự đoán cùng lớp nào chồng lên. Nhưng 789 trong số đó (53%) có xác suất lớn nhất từ 0,9 trở lên: mô hình đã "nghe thấy", chỉ là hộp bị loại ở bước ghép. Thêm 872 sự kiện có hộp cùng lớp nhưng lệch biên, phần lớn ở biên đầu (656). Biên đầu thường bị đoán sớm (⟪fig:onsetbias⟫): với các lớp kéo dài như `train` và `jet_aircrafts`, độ lệch trung vị khoảng −1,5 s. Như vậy nút thắt nằm ở biên hộp sau bước ghép, không phải ở khả năng nhận dạng.
 
 ![](report/gon_figures/r05_fn_breakdown.png){width=15cm}
 
 @@CAP:fig:fnbreakdown|Phân loại 2.702 sự kiện bị hệ cơ sở bỏ sót trên dự đoán ngoài mẫu, và xác suất lớn nhất của mô hình trong các sự kiện không có hộp cùng lớp@@
 
 @@NOTE:Nguồn: lbr_diagnosis_20261109.json (564 bản ghi của tập huấn luyện và tập phát triển; không dùng tập kiểm tra).@@
+
+Độ lệch này có hướng và khác nhau theo lớp: lớp ngắn như `glass_breaking` hay `horn` nằm trong dung sai, còn lớp kéo dài bị đoán sớm rõ rệt. Một độ lệch có hệ thống như vậy có thể học để sửa mà không cần huấn luyện lại mô hình SED, và đó là ý tưởng của LBR.
+
+![](report/gon_figures/c11_onset_bias.png){width=15.5cm}
+
+@@CAP:fig:onsetbias|Trung vị độ lệch thời điểm bắt đầu theo lớp của hệ cơ sở trên dự đoán ngoài mẫu; cột đỏ là lớp lệch ra ngoài dung sai 0,2 s@@
+
+@@NOTE:Nguồn: lbr_diagnosis_20261109.json; tính trên các sự kiện khớp 1–1 cùng lớp.@@
 
 LBR là bước hậu xử lý gồm hai mô hình cây tăng cường gradient, học trên dự đoán ngoài mẫu (⟪fig:lbr⟫). **Bộ tinh chỉnh** dự đoán độ dời của thời điểm bắt đầu và kết thúc cho từng hộp. **Bộ chấm lại** nhận đặc trưng của hộp cùng độ dời vừa dự đoán, rồi ước lượng xác suất hộp đó đúng. Hộp được giữ nếu điểm vượt ngưỡng. Cả hai được học bằng học chéo lồng nhau, nên không mô hình nào được áp lên phần dữ liệu nó đã học.
 
