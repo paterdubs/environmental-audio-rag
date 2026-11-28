@@ -32,16 +32,16 @@ Phụ lục này gom các chi tiết quy trình mà thân bài chỉ nhắc tớ
 
 | Tên trong báo cáo | Mã | Ghi chú |
 |---|---|---|
-| Nhánh A, B, C | A, B, C | Ba nhánh của RQ1: học từ đầu; khởi tạo AudioSet; AudioSet rồi DataSEC |
+| Nhánh A, B, C | A, B, C | Ba nhánh của Câu hỏi nghiên cứu 1: học từ đầu; khởi tạo AudioSet; AudioSet rồi DataSEC |
 | SED v1, SED v2 | v1, v2 | Hai thế hệ dùng CNN14: v1 nén thời gian 64 lần; v2 nén 8 lần, thêm BiGRU và tăng cường dữ liệu |
 | BEATs đóng băng; Frame-MobileNet | T2a; T2b | Hai bộ mã hóa tiền huấn luyện theo khung |
 | Ứng viên vòng chọn trước | a–e, f1–f4, g1–g2 | 11 ứng viên của vòng chọn hệ mốc (⟪tbl:s13⟫) |
-| Hệ mốc | f2 | Gộp 3 mô hình Frame-MobileNet, cSEBB; khóa ở vòng chọn S13 |
-| Hệ cơ sở | B0 | 5 mô hình Frame-MobileNet theo fold, suy luận chồng lấn, cSEBB; hệ cuối của giai đoạn tối ưu |
-| LBR chính | LBR V2 | Bộ tinh chỉnh và bộ chấm lại, điểm tối đa event-F1 |
-| LBR ứng dụng | LBR V3 | Bộ chấm lại dùng nhãn theo giao nhau, điểm "ưu tiên phát hiện" (recall_first) |
+| Hệ mốc | f2 | Tổ hợp 3 mô hình Frame-MobileNet, cSEBB; khóa ở vòng chọn S13 |
+| Hệ cơ sở | B0 | 5 mô hình Frame-MobileNet theo phần dữ liệu, suy luận chồng lấn, cSEBB; hệ cuối của giai đoạn tối ưu |
+| LBR chính | LBR V2 | Bộ tinh chỉnh và bộ chấm lại, điểm tối đa F1 theo sự kiện |
+| LBR ứng dụng | LBR V3 | Bộ chấm lại dùng nhãn theo giao nhau, điểm "ưu tiên phát hiện" (`recall_first`) |
 
-**Tái lập.** Mỗi lần chạy ghi một tệp mô tả (manifest) gồm cấu hình, seed, phiên bản mã, mã băm của tập chia, hệ lớp, đặc trưng và tham số ghép sự kiện. Dự đoán thô được lưu thành tệp có mã băm, tách khỏi bước tính chỉ số, nên chọn lại ngưỡng không cần chạy lại mô hình. Mỗi quyết định thiết kế được ghi thành một bản ghi quyết định (Architecture Decision Record – ADR); dự án có 50 ADR. Trước khi viết báo cáo, mọi lần chạy, mô hình gộp và checkpoint được trích dẫn đã được kiểm sự tồn tại và ghi mã băm (⟪tbl:freeze⟫); không thiếu tệp nào. Mọi lần dùng tập kiểm tra được ghi vào một sổ (⟪tbl:ledger⟫). Một số lượt đánh giá trên tập kiểm tra chạy khi kho mã có tệp chưa lưu vào git, do chính script đánh giá sinh ra; mã và cấu hình không đổi, và các lượt này không được chạy lại.
+**Tái lập.** Mỗi lần chạy ghi một tệp mô tả (manifest) gồm cấu hình, hạt giống ngẫu nhiên, phiên bản mã, mã băm của tập chia, hệ lớp, đặc trưng và tham số ghép sự kiện. Dự đoán thô được lưu thành tệp có mã băm, tách khỏi bước tính chỉ số, nên chọn lại ngưỡng không cần chạy lại mô hình. Mỗi quyết định thiết kế được ghi thành một bản ghi quyết định (Architecture Decision Record – ADR); dự án có 50 ADR. Trước khi viết báo cáo, mọi lần chạy, mô hình gộp và checkpoint được trích dẫn đã được kiểm sự tồn tại và ghi mã băm (⟪tbl:freeze⟫); không thiếu tệp nào. Mọi lần dùng tập kiểm tra được ghi vào một sổ (⟪tbl:ledger⟫). Một số lượt đánh giá trên tập kiểm tra chạy khi kho mã có tệp chưa lưu vào git, do chính script đánh giá sinh ra; mã và cấu hình không đổi, và các lượt này không được chạy lại.
 
 @@CAP:tbl:freeze|Các thành phần đã khóa và kiểm mã băm SHA-256@@
 
@@ -75,11 +75,11 @@ Phụ lục này gom các chi tiết quy trình mà thân bài chỉ nhắc tớ
 
 @@INCLUDE:report/final_tables/f12_workload.md@@
 
-**Nhật ký huấn luyện hệ cơ sở.** ⟪fig:training⟫ là nhật ký huấn luyện của năm mô hình fold. Hàm mất mát trên phần kiểm của fold ổn định sau khoảng 10 epoch và không tăng trở lại. Checkpoint được chọn theo macro AP theo khung, rơi vào epoch 15, 23, 25, 26 và 28 trên 30.
+**Nhật ký huấn luyện hệ cơ sở.** ⟪fig:training⟫ là nhật ký huấn luyện của năm mô hình, mỗi mô hình ứng với một phần dữ liệu. Hàm mất mát trên phần giữ lại để kiểm ổn định sau khoảng 10 vòng huấn luyện và không tăng trở lại. Bản lưu trọng số được chọn theo độ chính xác trung bình (Average Precision – AP) theo khung, lấy trung bình macro, và rơi vào vòng 15, 23, 25, 26 và 28 trên 30.
 
 ![](report/gon_figures/r03_training_curves.png){width=15cm}
 
-@@CAP:fig:training|Nhật ký huấn luyện năm mô hình fold của hệ cơ sở@@
+@@CAP:fig:training|Nhật ký huấn luyện năm mô hình của hệ cơ sở (mỗi mô hình một phần dữ liệu)@@
 
 @@NOTE:Nguồn: nhật ký huấn luyện của năm lần chạy thành viên.@@
 
@@ -95,7 +95,7 @@ Phụ lục này gom các chi tiết quy trình mà thân bài chỉ nhắc tớ
 
 @@NOTE:Nguồn: s13_ranking_annotated_20260928.json và s13_test_20261018.json.@@
 
-**Chẩn đoán PSDS.** Hiện tượng "event-F1 tăng nhưng PSDS không tăng" xuất hiện từ SED v1 sang v2. Nhóm kiểm bốn giả thuyết ghi trước trên tập phát triển (⟪tbl:psdsdiag⟫). Đổi sang dải ngưỡng log và bỏ phần phạt độ lệch giữa các lớp đều làm hiện tượng gần biến mất. Đây là phép đo trên tập phát triển, hiệu rất nhỏ, nên chỉ gợi ý nguyên nhân.
+**Chẩn đoán PSDS.** Hiện tượng "F1 theo sự kiện tăng nhưng PSDS không tăng" xuất hiện từ SED v1 sang v2. Nhóm kiểm bốn giả thuyết ghi trước trên tập phát triển (⟪tbl:psdsdiag⟫). Đổi sang dải ngưỡng log và bỏ phần phạt độ lệch giữa các lớp đều làm hiện tượng gần biến mất. Đây là phép đo trên tập phát triển, hiệu rất nhỏ, nên chỉ gợi ý nguyên nhân.
 
 @@CAP:tbl:psdsdiag|Chẩn đoán PSDS từ SED v1 sang v2 trên tập phát triển@@
 
@@ -113,17 +113,17 @@ Phụ lục này gom các chi tiết quy trình mà thân bài chỉ nhắc tớ
 
 Lớp có dưới 10 mẫu kiểm tra chỉ được báo bằng số tuyệt đối. Bảng đầu là mô hình phân loại DataSEC; bảng sau là hệ cơ sở và LBR chính trên tập kiểm tra; bảng cuối là hệ mốc.
 
-@@CAP:tbl:classperclass|Mô hình phân loại DataSEC theo lớp gộp (tập kiểm tra)@@
+@@CAP:tbl:classperclass|Mô hình phân loại DataSEC theo lớp cấp trên (tập kiểm tra)@@
 
 @@INCLUDE:report/tables/m02_classifier_per_class.md@@
 
-@@CAP:tbl:b0perclass|Event-F1 theo lớp của hệ cơ sở và LBR chính trên tập kiểm tra@@
+@@CAP:tbl:b0perclass|F1 theo sự kiện theo lớp của hệ cơ sở và LBR chính trên tập kiểm tra@@
 
 @@COLWIDTHS:33,13,12,12,15,15@@
 
 @@INCLUDE:report/final_tables/f09_per_class.md@@
 
-@@CAP:tbl:f2perclass|Event-F1 theo lớp của hệ mốc trên tập kiểm tra@@
+@@CAP:tbl:f2perclass|F1 theo sự kiện theo lớp của hệ mốc trên tập kiểm tra@@
 
 @@INCLUDE:report/tables/m05_f2_per_class.md@@
 
@@ -138,11 +138,11 @@ Hai thành viên chia công việc thành hai phần có khối lượng tương
 | TT | Mảng công việc | Phụ trách chính | Kiểm chéo |
 |---:|---|---|---|
 | 1 | Dữ liệu: kiểm tệp nén, kiểm kê, tìm bản trùng, chia tập | Phạm Hoàng Phát | Thân Trọng Tính |
-| 2 | Mô hình phân loại DataSEC và câu hỏi RQ1 | Thân Trọng Tính | Phạm Hoàng Phát |
+| 2 | Mô hình phân loại DataSEC và Câu hỏi nghiên cứu 1 | Thân Trọng Tính | Phạm Hoàng Phát |
 | 3 | Mô hình SED, hậu xử lý, cách chọn trên dự đoán ngoài mẫu | Phạm Hoàng Phát | Thân Trọng Tính |
 | 4 | Tinh chỉnh biên học được (LBR) và chỉ số ứng dụng | Thân Trọng Tính | Phạm Hoàng Phát |
-| 5 | Mô tả có căn cứ, bộ đo và RQ2 | Thân Trọng Tính | Phạm Hoàng Phát |
-| 6 | Kho sự kiện, truy hồi, câu trả lời có bằng chứng và RQ3 | Phạm Hoàng Phát | Thân Trọng Tính |
+| 5 | Mô tả bám sát sự kiện, bộ đo và Câu hỏi nghiên cứu 2 | Thân Trọng Tính | Phạm Hoàng Phát |
+| 6 | Kho sự kiện, truy hồi, câu trả lời có bằng chứng và Câu hỏi nghiên cứu 3 | Phạm Hoàng Phát | Thân Trọng Tính |
 | 7 | Dịch vụ suy luận và API, giao diện web, Docker Compose | Thân Trọng Tính | Phạm Hoàng Phát |
 | 8 | Tra cứu văn liệu và bối cảnh quy chuẩn | Phạm Hoàng Phát | Thân Trọng Tính |
 | 9 | Báo cáo, slide và tài liệu tái lập | Cả hai | Cả hai |
@@ -162,7 +162,7 @@ Mô hình Qwen3.5-9B nhắc đến ở Chương 4 là một thành phần của 
 
 **Đề tài:** Xây dựng hệ thống phát hiện, sinh mô tả và truy vấn sự kiện âm thanh môi trường dựa trên RAG
 
-**Giảng viên hướng dẫn:** TS. Huỳnh Công Bằng
+**Giảng viên hướng dẫn (GVHD):** TS. Huỳnh Công Bằng
 
 **Ngày bắt đầu:** 22/09/2026
 
@@ -170,13 +170,13 @@ Mô hình Qwen3.5-9B nhắc đến ở Chương 4 là một thành phần của 
 
 | Tuần | Từ ngày | Đến ngày | Ngày báo cáo GVHD | Tóm tắt công việc đã thực hiện | Nhận xét của GVHD |
 |---|---|---|---|---|---|
-| 1 | 22/09/2026 | 28/09/2026 | 04/10/2026 | Kiểm tệp nén, kiểm kê, tìm bản trùng, khóa tập chia; mô hình phân loại DataSEC; SED ba nhánh và RQ1 nhiều seed; chỉ số event-F1 và PSDS; mô tả có căn cứ (RQ2); kho sự kiện và truy hồi (RQ3); SED v2; dịch vụ suy luận, API, giao diện; bộ phân tích câu hỏi | |
-| 2 | 29/09/2026 | 03/10/2026 | 04/10/2026 | Vòng chọn hệ mốc và đo trên tập kiểm tra; RQ1 với SED v2; chạy lại RQ2, RQ3 trên hệ mốc; hoàn thiện demo, khóa artifact, tài liệu tái lập; báo cáo giữa kỳ | |
+| 1 | 22/09/2026 | 28/09/2026 | 04/10/2026 | Kiểm tệp nén, kiểm kê, tìm bản trùng, khóa tập chia; mô hình phân loại DataSEC; SED ba nhánh và Câu hỏi nghiên cứu 1 với nhiều lần huấn luyện; chỉ số F1 theo sự kiện và PSDS; mô tả bám sát sự kiện (Câu hỏi nghiên cứu 2); kho sự kiện và truy hồi (Câu hỏi nghiên cứu 3); SED v2; dịch vụ suy luận, API, giao diện; bộ phân tích câu hỏi | |
+| 2 | 29/09/2026 | 03/10/2026 | 04/10/2026 | Vòng chọn hệ mốc và đo trên tập kiểm tra; Câu hỏi nghiên cứu 1 với SED v2; chạy lại Câu hỏi nghiên cứu 2, Câu hỏi nghiên cứu 3 trên hệ mốc; hoàn thiện ứng dụng minh họa, khóa artifact, tài liệu tái lập; báo cáo giữa kỳ | |
 | 3 | 04/10/2026 | 10/10/2026 | | Biên tập báo cáo giữa kỳ; lập kế hoạch tối ưu SED; sàng lọc trên tập phát triển: suy luận chồng lấn, sửa dữ liệu huấn luyện; chọn trên dự đoán ngoài mẫu vòng 1 | |
 | 4 | 11/10/2026 | 17/10/2026 | | Chọn trên dự đoán ngoài mẫu vòng 2; chọn hệ cơ sở theo luật ghi trước và đo trên tập kiểm tra (14/10) | |
 | 5 | 18/10/2026 | 24/10/2026 | |  | |
 | 6 | 25/10/2026 | 31/10/2026 | |  | |
 | 7 | 01/11/2026 | 07/11/2026 | |  | |
-| 8 | 08/11/2026 | 14/11/2026 | | Phục vụ hệ cơ sở; bốn hướng thử thêm (đều âm tính); LBR và đo trên tập kiểm tra; RQ2, RQ3 trên LBR; chẩn đoán PSDS; tra văn liệu | |
+| 8 | 08/11/2026 | 14/11/2026 | | Phục vụ hệ cơ sở; bốn hướng thử thêm (đều âm tính); LBR và đo trên tập kiểm tra; Câu hỏi nghiên cứu 2, Câu hỏi nghiên cứu 3 trên LBR; chẩn đoán PSDS; tra văn liệu | |
 | 9 | 15/11/2026 | 21/11/2026 | |  | |
-| 10 | 22/11/2026 | 28/11/2026 | | Rà soát trước khi nộp; sửa nội dung báo cáo; đo độ trễ demo; chụp lại ảnh giao diện; bản báo cáo tinh gọn; nộp ngày 28/11 (kế hoạch) | |
+| 10 | 22/11/2026 | 28/11/2026 | | Rà soát trước khi nộp; sửa nội dung báo cáo; đo độ trễ ứng dụng minh họa; chụp lại ảnh giao diện; bản báo cáo tinh gọn; nộp ngày 28/11 (kế hoạch) | |
